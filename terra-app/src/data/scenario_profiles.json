@@ -1,0 +1,101 @@
+{
+  "profiles": [
+    {
+      "profile_id": "wyoming_coal_transition",
+      "name": "Wyoming Basin Coal Transition",
+      "description": "Phase out coal generation while maintaining economic and social capital across Wyoming Basin counties.",
+      "target_year": 2045,
+      "quest_conditions": [
+        {
+          "condition_id": "coal_capacity_pct_remaining",
+          "label": "Coal capacity reduced to 30% or less",
+          "met": false,
+          "current_value": 1.0,
+          "target_value": 0.30,
+          "distance": -0.70,
+          "unit": "fraction"
+        },
+        {
+          "condition_id": "E_study_area",
+          "label": "Energy capital above 0.65",
+          "met": false,
+          "current_value": 0,
+          "target_value": 0.65,
+          "distance": -0.65,
+          "unit": "EES score"
+        },
+        {
+          "condition_id": "jobs_created",
+          "label": "5,000+ transition jobs created",
+          "met": false,
+          "current_value": 0,
+          "target_value": 5000,
+          "distance": -5000,
+          "unit": "jobs"
+        },
+        {
+          "condition_id": "S_wyoming_counties",
+          "label": "Social capital not degraded (WY counties)",
+          "met": false,
+          "current_value": 0,
+          "target_value": 5.0,
+          "distance": -5.0,
+          "unit": "EES score"
+        }
+      ]
+    },
+    {
+      "profile_id": "wyoming_2032_nuclear_dc",
+      "name": "Wyoming 2032: Nuclear-DC Strategy",
+      "description": "Demonstrate nuclear-data center coupling in Laramie County by 2035 without degrading social or ecological capital.",
+      "target_year": 2035,
+      "quest_conditions": [
+        {
+          "condition_id": "nuclear_dc_coupling_active",
+          "label": "Nuclear-DC coupling activated",
+          "met": false,
+          "current_value": 0,
+          "target_value": 1,
+          "distance": -1,
+          "unit": "boolean"
+        },
+        {
+          "condition_id": "deficit_mw_56021",
+          "label": "Laramie County firm supply gap closed",
+          "met": false,
+          "current_value": 0,
+          "target_value": 0,
+          "distance": 0,
+          "unit": "MW"
+        },
+        {
+          "condition_id": "S_56021",
+          "label": "Laramie County S capital not degraded",
+          "met": false,
+          "current_value": 0,
+          "target_value": 5.0,
+          "distance": -5.0,
+          "unit": "EES score"
+        },
+        {
+          "condition_id": "Ec_56021",
+          "label": "Laramie County Ec capital not degraded",
+          "met": false,
+          "current_value": 0,
+          "target_value": 6.5,
+          "distance": -6.5,
+          "unit": "EES score"
+        },
+        {
+          "condition_id": "build_complete_before_2035",
+          "label": "Natrium units commissioned before 2035",
+          "met": false,
+          "current_value": 0,
+          "target_value": 1,
+          "distance": -1,
+          "unit": "boolean"
+        }
+      ]
+    }
+  ]
+}

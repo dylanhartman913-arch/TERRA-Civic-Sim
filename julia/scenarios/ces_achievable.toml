@@ -1,0 +1,40 @@
+# ============================================================
+#  ces_achievable.toml
+#  Maximum-feasible clean energy standard (CES) — 50% of
+#  total annual load served by clean generators.
+#
+#  The true zone-constrained ceiling is 50.9% (249 GW of clean
+#  capacity can serve up to 50.9% of the 490 GW load when each
+#  zone is treated as a self-contained copper-plate island).
+#  This ceiling is lower than the naive nameplate estimate of
+#  57.4% because ~34 GW of clean capacity in hydro-heavy western
+#  BAs (BPAT: 13.5 GW stranded, SPA: 3.1 GW, DOPD: 2.0 GW,
+#  PACW: 2.0 GW, etc.) cannot be "exported" to thermal-heavy
+#  eastern zones without transmission.
+#
+#  The 50% target sits 0.9 percentage points below the ceiling,
+#  providing a feasible margin while representing a policy-
+#  meaningful "half-from-clean" standard.
+#
+#  Interpretation:
+#    baseline       → no clean-energy mandate
+#    ces_achievable → 50% CES (max feasible with 2023 copper-plate fleet)
+#    ces_80pct      → aspirational 80% CES (INFEASIBLE — requires new
+#                     build and/or interregional transmission expansion)
+# ============================================================
+
+scenario_name = "ces_achievable"
+year          = "y2023"
+description   = "Maximum-feasible CES: 50% clean with the 2023 existing fleet (zone-constrained ceiling = 50.9%)"
+
+[solver]
+type            = "HiGHS"
+solver          = "simplex"
+log_to_console  = false
+
+[policies.ces]
+type        = "renewable_portfolio_standard"
+fraction    = 0.50
+# Fuels whose generation counts toward the CES target.
+# These map to the genfuel column in zonal_generators.arrow.
+clean_fuels = ["hydro", "wind", "solar", "nuclear", "geothermal"]

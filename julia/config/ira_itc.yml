@@ -1,0 +1,49 @@
+base_out_path:       "/Users/dylanhartman/Library/CloudStorage/OneDrive-UniversityofWyoming/Research/Energy Modeling/energy-map/data/processed/e4st_results_v2/ira_itc"
+gen_file:            "/Users/dylanhartman/Library/CloudStorage/OneDrive-UniversityofWyoming/Research/Energy Modeling/energy-map/data/processed/e4st_inputs/gen.csv"
+bus_file:            "/Users/dylanhartman/Library/CloudStorage/OneDrive-UniversityofWyoming/Research/Energy Modeling/energy-map/data/processed/e4st_inputs/bus.csv"
+branch_file:         "/Users/dylanhartman/Library/CloudStorage/OneDrive-UniversityofWyoming/Research/Energy Modeling/energy-map/data/processed/e4st_inputs/branch.csv"
+hours_file:          "/Users/dylanhartman/Library/CloudStorage/OneDrive-UniversityofWyoming/Research/Energy Modeling/energy-map/data/processed/e4st_inputs/hours.csv"
+nominal_load_file:   "/Users/dylanhartman/Library/CloudStorage/OneDrive-UniversityofWyoming/Research/Energy Modeling/energy-map/data/processed/e4st_inputs/nominal_load.csv"
+load_shape_file:     "/Users/dylanhartman/Library/CloudStorage/OneDrive-UniversityofWyoming/Research/Energy Modeling/energy-map/data/processed/e4st_inputs/load_shape.csv"
+af_file:             "/Users/dylanhartman/Library/CloudStorage/OneDrive-UniversityofWyoming/Research/Energy Modeling/energy-map/data/processed/e4st_inputs/af.csv"
+year_gen_data:       "y2024"
+logging:             true
+voll:                5000
+objective_scalar:    1000
+years:
+  - y2025
+  - y2030
+  - y2035
+optimizer:
+  type:    "HiGHS"
+  solver:  ipm
+  run_crossover: "on"
+mods:
+  # IRA Section 45 / 48 Wind onshore: 30% ITC through 2032 (y2025, y2030 active; y2035 expired)
+  itc_wind_onshore:
+    type: "ITC"
+    values:
+      y2025: 0.30
+      y2030: 0.30
+    gen_filters:
+      gentype: "wind_onshore"
+      build_status: "unbuilt"
+  # IRA Section 48 Solar utility-scale: 30% ITC through 2032 (y2025, y2030 active; y2035 expired)
+  itc_solar_pv:
+    type: "ITC"
+    values:
+      y2025: 0.30
+      y2030: 0.30
+    gen_filters:
+      gentype: "solar_pv"
+      build_status: "unbuilt"
+  # IRA Section 48C Advanced Nuclear / SMR: 30% ITC extended through 2035
+  itc_smr:
+    type: "ITC"
+    values:
+      y2025: 0.30
+      y2030: 0.30
+      y2035: 0.30
+    gen_filters:
+      gentype: "smr"
+      build_status: "unbuilt"

@@ -1,0 +1,32 @@
+{
+  "_meta": {
+    "source": "EIA Form 860 via notebooks/10_eia860_retirements.ipynb",
+    "eia_period": "2026-02",
+    "description": "Scheduled retirements for WY study-area flagship assets. Plant-level entry; scheduled_retirement_year = earliest unit with EIA-860 planned or imputed date within 2025-2045 window."
+  },
+  "56009": {
+    "Dave Johnston Power Plant": {
+      "plant_id": "4158",
+      "scheduled_retirement_year": 2027,
+      "retirement_source": "eia860_planned",
+      "units": [
+        { "generator_id": "1", "capacity_mw": 113.6, "year_on": 1959, "year_shutdown": 2009, "retirement_source": "eia860_imputed" },
+        { "generator_id": "2", "capacity_mw": 113.6, "year_on": 1961, "year_shutdown": 2011, "retirement_source": "eia860_imputed" },
+        { "generator_id": "3", "capacity_mw": 229.5, "year_on": 1964, "year_shutdown": 2027, "retirement_source": "eia860_planned" },
+        { "generator_id": "4", "capacity_mw": 360.0, "year_on": 1972, "year_shutdown": 2022, "retirement_source": "eia860_imputed" }
+      ]
+    }
+  },
+  "56037": {
+    "Jim Bridger Power Plant": {
+      "plant_id": "6204",
+      "scheduled_retirement_year": 2031,
+      "retirement_source": "eia860_imputed",
+      "units": [
+        { "generator_id": "1", "capacity_mw": 621.0, "year_on": 1981, "year_shutdown": 2031, "retirement_source": "eia860_imputed" },
+        { "generator_id": "2", "capacity_mw": 621.0, "year_on": 1981, "year_shutdown": 2031, "retirement_source": "eia860_imputed" },
+        { "generator_id": "3", "capacity_mw": 621.0, "year_on": 1982, "year_shutdown": 2032, "retirement_source": "eia860_imputed" }
+      ]
+    }
+  }
+}

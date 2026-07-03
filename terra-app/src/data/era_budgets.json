@@ -1,0 +1,81 @@
+{
+  "eras": [
+    {
+      "era_start": 2025,
+      "era_end": 2035,
+      "era_name": "Foundation Era",
+      "capital_cost_usd": 15000000000,
+      "labor_years": 50000,
+      "steel_tons": 500000,
+      "concrete_tons": 2000000,
+      "HALEU_kg": 9000,
+      "transmission_row_miles": 500
+    },
+    {
+      "era_start": 2035,
+      "era_end": 2045,
+      "era_name": "Transition Era",
+      "capital_cost_usd": 25000000000,
+      "labor_years": 80000,
+      "steel_tons": 800000,
+      "concrete_tons": 3000000,
+      "HALEU_kg": 10000,
+      "transmission_row_miles": 800
+    },
+    {
+      "era_start": 2045,
+      "era_end": 2055,
+      "era_name": "Buildout Era",
+      "capital_cost_usd": 35000000000,
+      "labor_years": 100000,
+      "steel_tons": 1000000,
+      "concrete_tons": 4000000,
+      "HALEU_kg": 15000,
+      "transmission_row_miles": 1200
+    },
+    {
+      "era_start": 2055,
+      "era_end": 2075,
+      "era_name": "Steady State Era",
+      "capital_cost_usd": 20000000000,
+      "labor_years": 60000,
+      "steel_tons": 600000,
+      "concrete_tons": 2500000,
+      "HALEU_kg": 20000,
+      "transmission_row_miles": 600
+    }
+  ],
+  "sources": {
+    "capital_cost_usd": {
+      "basis": "NREL ATB 2024 regional capex estimates scaled to Mountain West study area; IRA/BIL federal funding projections",
+      "confidence": "low",
+      "note": "Order-of-magnitude estimates; actual spending depends on policy, market conditions, and private investment"
+    },
+    "labor_years": {
+      "basis": "ACP Clean Energy Employment Impacts 2023; IMPLAN Mountain West multiplier v3.2; BLS QCEW energy sector employment",
+      "confidence": "low",
+      "note": "Person-years available for energy transition work in study area; includes construction and O&M workforce"
+    },
+    "steel_tons": {
+      "basis": "NREL TP-5000-73853 (wind), TP-6A20-73436 (solar), NETL Vol.1 (thermal); aggregated by era deployment targets",
+      "confidence": "low",
+      "note": "Derived from per-action material coefficients in action_library_v3.json scaled to projected era deployment"
+    },
+    "concrete_tons": {
+      "basis": "Same sources as steel_tons; concrete-intensive actions include wind foundations, nuclear containment, transmission",
+      "confidence": "low",
+      "note": "Concrete supply assumed unconstrained in Mountain West; constraint is labor and transport, not material"
+    },
+    "HALEU_kg": {
+      "basis": "Centrus Piketon OH cascade 900 kg/yr initial production (DOE press release 2023-12-13); BWXT Gillette increment at 2029",
+      "confidence": "low",
+      "source": "Centrus Piketon 900 kg/yr x era years; BWXT increment at 2029",
+      "note": "Foundation era: 900 kg/yr x 10 yr = 9,000 kg. Transition era: +BWXT if operational. Later eras assume scale-up."
+    },
+    "transmission_row_miles": {
+      "basis": "WECC Transmission Plan 2023; Wyoming Infrastructure Authority corridor studies",
+      "confidence": "low",
+      "note": "Right-of-way miles permitted per era; actual construction depends on NEPA, state permitting timelines"
+    }
+  }
+}

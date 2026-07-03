@@ -1,0 +1,250 @@
+
+<style>
+  .ees-root { font-size: 14px; color: var(--color-text-primary); padding: 1rem 0; }
+  .capital-block { margin-bottom: 2rem; }
+  .capital-header { display: flex; align-items: baseline; gap: 10px; margin-bottom: 0.5rem; padding-bottom: 0.4rem; border-bottom: 1.5px solid var(--color-border-secondary); }
+  .capital-label { font-size: 18px; font-weight: 500; }
+  .capital-score { font-size: 13px; color: var(--color-text-secondary); }
+  .capital-note { font-size: 12px; color: var(--color-text-tertiary); margin-bottom: 0.8rem; font-style: italic; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; font-weight: 500; font-size: 12px; color: var(--color-text-secondary); padding: 6px 10px 6px 0; border-bottom: 1px solid var(--color-border-tertiary); }
+  td { padding: 7px 10px 7px 0; border-bottom: 1px solid var(--color-border-tertiary); vertical-align: top; color: var(--color-text-primary); line-height: 1.5; }
+  td:last-child, th:last-child { color: var(--color-text-secondary); font-size: 12px; }
+  .tag { display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: 20px; font-weight: 500; white-space: nowrap; }
+  .tag-proxy { background: #FAEEDA; color: #854F0B; }
+  .tag-live { background: #EAF3DE; color: #3B6D11; }
+  .tag-derived { background: #E6F1FB; color: #185FA5; }
+  .tag-energy { background: #EEEDFE; color: #534AB7; }
+  @media (prefers-color-scheme: dark) {
+    .tag-proxy { background: #633806; color: #FAC775; }
+    .tag-live { background: #27500A; color: #C0DD97; }
+    .tag-derived { background: #0C447C; color: #B5D4F4; }
+    .tag-energy { background: #3C3489; color: #CECBF6; }
+  }
+  .method-box { background: var(--color-background-secondary); border-radius: var(--border-radius-lg); padding: 1rem 1.2rem; margin-bottom: 2rem; font-size: 13px; line-height: 1.7; color: var(--color-text-secondary); }
+  .method-box strong { color: var(--color-text-primary); font-weight: 500; }
+  .ecoregion-table { margin-top: 0.5rem; }
+  .ecoregion-table td:first-child { font-weight: 500; color: var(--color-text-primary); }
+  .bar-wrap { display: flex; align-items: center; gap: 8px; }
+  .bar { height: 10px; border-radius: 3px; display: inline-block; }
+  .bar-e { background: #3B6D11; }
+  .bar-ec { background: #185FA5; }
+  .bar-s { background: #854F0B; }
+  .section-title { font-size: 16px; font-weight: 500; margin: 2rem 0 0.5rem; color: var(--color-text-primary); }
+  .todo-flag { font-size: 11px; color: var(--color-text-danger); }
+</style>
+<div class="ees-root">
+
+  <div class="method-box">
+    <strong>How the scores are built:</strong> 1,676 census tracts across 9 Mountain West states are scored on 16 indicators. Each indicator is min-max normalized to 0–10 using the Mountain West distribution (not national, preserving regional variation). Indicators within each capital type are averaged into a capital score. Ecoregion scores are population-weighted averages across constituent tracts. Composite score = mean(E, Ec, S).
+    <br><br>
+    <strong>Data vintage:</strong> ACS 5-year 2022 · TIGER/Line 2020 · EIA power plants 2024 · EPA Level III ecoregions
+  </div>
+
+  <div class="capital-block">
+    <div class="capital-header">
+      <span class="capital-label" style="color:#3B6D11">E — Environmental capital</span>
+      <span class="capital-score">3 indicators · proxy approach (raster sources pending)</span>
+    </div>
+    <p class="capital-note">Three sub-indicators assembled from vector/tabular sources. All flagged for replacement with raster-based equivalents in future work.</p>
+    <table>
+      <tr>
+        <th style="width:22%">Indicator</th>
+        <th style="width:28%">What it measures</th>
+        <th style="width:28%">Source / method</th>
+        <th style="width:22%">Status</th>
+      </tr>
+      <tr>
+        <td>Ecoregion base score</td>
+        <td>Structural ecological condition, 0–10 scale derived from EPA Level III descriptions (2011)</td>
+        <td>EPA L3 ecoregion lookup — higher = better ecological condition / lower development pressure</td>
+        <td><span class="tag tag-proxy">Proxy</span> <span class="todo-flag">→ replace with NLCD 2021 land cover %</span></td>
+      </tr>
+      <tr>
+        <td>Water stress (inverted)</td>
+        <td>Aridity of the watershed — higher arid fraction = lower E score</td>
+        <td>HUC-8 watershed arid fraction: overlap with Wyoming Basin (18), Colorado Plateaus (20), High Plains (25) ecoregions. USGS WBD REST API (fallback: ecoregion lookup)</td>
+        <td><span class="tag tag-proxy">Proxy</span> <span class="todo-flag">→ replace with USDA NRCS water balance</span></td>
+      </tr>
+      <tr>
+        <td>Development pressure</td>
+        <td>Growth pressure on natural land — low vacancy in rural areas signals pressure</td>
+        <td>ACS B25002 housing vacancy rate (already pulled in economic step) — higher vacancy → lower pressure → better E score</td>
+        <td><span class="tag tag-derived">Derived</span> <span class="todo-flag">→ replace with NLCD impervious surface change 2011–2021</span></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="capital-block">
+    <div class="capital-header">
+      <span class="capital-label" style="color:#185FA5">Ec — Economic capital</span>
+      <span class="capital-score">6 indicators · ACS + EIA infrastructure data</span>
+    </div>
+    <p class="capital-note">Four ACS indicators plus two energy infrastructure indicators computed from the EIA plant inventory and synthetic transmission network.</p>
+    <table>
+      <tr>
+        <th style="width:22%">Indicator</th>
+        <th style="width:28%">What it measures</th>
+        <th style="width:28%">Source / method</th>
+        <th style="width:22%">Status</th>
+      </tr>
+      <tr>
+        <td>Median household income</td>
+        <td>Income level — direct measure of economic wellbeing</td>
+        <td>ACS 5-yr 2022, table B19013_001E</td>
+        <td><span class="tag tag-live">Live data</span></td>
+      </tr>
+      <tr>
+        <td>Employment rate</td>
+        <td>Share of labor force employed</td>
+        <td>ACS B23025: employed / labor force × 100</td>
+        <td><span class="tag tag-derived">Derived</span></td>
+      </tr>
+      <tr>
+        <td>Poverty rate (inverted)</td>
+        <td>Share below poverty line — inverted so higher = better</td>
+        <td>ACS 5-yr subject table S1701_C03_001E</td>
+        <td><span class="tag tag-live">Live data</span></td>
+      </tr>
+      <tr>
+        <td>Vacancy rate (inverted)</td>
+        <td>Housing market health — high vacancy signals economic stress</td>
+        <td>ACS B25002: vacant units / total units × 100</td>
+        <td><span class="tag tag-derived">Derived</span></td>
+      </tr>
+      <tr>
+        <td>Generation capacity within 50 km</td>
+        <td>Energy infrastructure access — MW of operating capacity within 50 km of tract centroid</td>
+        <td>EIA power plant inventory (15,034 plants). Spatial buffer join in EPSG:5070 (Albers Equal Area). Median: 2,039 MW · Max: 5,185 MW · 163 zero-MW tracts</td>
+        <td><span class="tag tag-energy">Energy infra</span></td>
+      </tr>
+      <tr>
+        <td>Distance to nearest bus (inverted)</td>
+        <td>Transmission network access — closer = better Ec score</td>
+        <td>500-bus synthetic network (notebook 07). Nearest-neighbor join in EPSG:5070. Median: 33.6 km · Max: 212.9 km</td>
+        <td><span class="tag tag-energy">Energy infra</span></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="capital-block">
+    <div class="capital-header">
+      <span class="capital-label" style="color:#854F0B">S — Social capital</span>
+      <span class="capital-score">7 indicators · ACS + HIFLD institutional data</span>
+    </div>
+    <p class="capital-note">ACS socioeconomic indicators plus institutional anchor counts from HIFLD. Government employment uses class-of-worker table C24060 (not industry sector C24050).</p>
+    <table>
+      <tr>
+        <th style="width:22%">Indicator</th>
+        <th style="width:28%">What it measures</th>
+        <th style="width:28%">Source / method</th>
+        <th style="width:22%">Status</th>
+      </tr>
+      <tr>
+        <td>Educational attainment</td>
+        <td>% population with bachelor's degree or higher</td>
+        <td>ACS 5-yr subject table S1501_C02_015E</td>
+        <td><span class="tag tag-live">Live data</span></td>
+      </tr>
+      <tr>
+        <td>Health insurance coverage</td>
+        <td>% with health insurance — proxy for institutional access and stability</td>
+        <td>ACS 5-yr subject table S2701_C03_001E</td>
+        <td><span class="tag tag-live">Live data</span></td>
+      </tr>
+      <tr>
+        <td>Housing age</td>
+        <td>Median year built — newer housing = higher score (infrastructure quality proxy)</td>
+        <td>ACS B25035_001E</td>
+        <td><span class="tag tag-live">Live data</span></td>
+      </tr>
+      <tr>
+        <td>Internet access</td>
+        <td>% with broadband internet — connectivity as social infrastructure</td>
+        <td>ACS 5-yr subject table S2801_C02_014E</td>
+        <td><span class="tag tag-live">Live data</span></td>
+      </tr>
+      <tr>
+        <td>Hospital count</td>
+        <td>Healthcare institutional anchor density per tract</td>
+        <td>HIFLD hospital layer (point-in-polygon count per tract). Tracts with &lt;10 non-null values → defaulted to 5.0 (neutral)</td>
+        <td><span class="tag tag-proxy">Proxy</span></td>
+      </tr>
+      <tr>
+        <td>University presence</td>
+        <td>Binary flag — presence of college/university in or near tract</td>
+        <td>HIFLD Colleges layer <span class="todo-flag">→ validate against NCES IPEDS 2022</span></td>
+        <td><span class="tag tag-proxy">Proxy</span></td>
+      </tr>
+      <tr>
+        <td>Government employment share</td>
+        <td>% of workers in public sector — institutional stability and diversification signal</td>
+        <td>ACS C24060: (local + state + federal workers) / total workers × 100. Uses class-of-worker rows 5+6+7, not C24050 industry sector row 3</td>
+        <td><span class="tag tag-derived">Derived</span></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="section-title">Ecoregion results — Wyoming Basin in context</div>
+  <p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:0.8rem;">Population-weighted average across constituent tracts. Composite = mean(E, Ec, S). 1,676 tracts total, 74 in Wyoming Basin.</p>
+  <table class="ecoregion-table">
+    <tr>
+      <th style="width:24%">Ecoregion</th>
+      <th style="width:13%">E</th>
+      <th style="width:13%">Ec</th>
+      <th style="width:13%">S</th>
+      <th style="width:13%">Composite</th>
+      <th style="width:24%">Profile</th>
+    </tr>
+    <tr>
+      <td>Southern Rockies</td>
+      <td><div class="bar-wrap"><div class="bar bar-e" style="width:75px"></div>7.52</div></td>
+      <td><div class="bar-wrap"><div class="bar bar-ec" style="width:63px"></div>6.28</div></td>
+      <td><div class="bar-wrap"><div class="bar bar-s" style="width:54px"></div>5.39</div></td>
+      <td>6.40</td>
+      <td style="font-size:12px;color:var(--color-text-secondary)">Balanced — high E from Rocky Mtn ecosystems</td>
+    </tr>
+    <tr>
+      <td>Middle Rockies</td>
+      <td><div class="bar-wrap"><div class="bar bar-e" style="width:66px"></div>6.56</div></td>
+      <td><div class="bar-wrap"><div class="bar bar-ec" style="width:58px"></div>5.84</div></td>
+      <td><div class="bar-wrap"><div class="bar bar-s" style="width:52px"></div>5.21</div></td>
+      <td>5.87</td>
+      <td style="font-size:12px;color:var(--color-text-secondary)">Moderate — includes parts of WY and MT</td>
+    </tr>
+    <tr>
+      <td>High Plains</td>
+      <td><div class="bar-wrap"><div class="bar bar-e" style="width:24px"></div>2.40</div></td>
+      <td><div class="bar-wrap"><div class="bar bar-ec" style="width:76px"></div>7.56</div></td>
+      <td><div class="bar-wrap"><div class="bar bar-s" style="width:54px"></div>5.43</div></td>
+      <td>5.13</td>
+      <td style="font-size:12px;color:var(--color-text-secondary)">Ec-dominant — agricultural economy, depleted E</td>
+    </tr>
+    <tr>
+      <td>Northwestern Great Plains</td>
+      <td><div class="bar-wrap"><div class="bar bar-e" style="width:30px"></div>2.96</div></td>
+      <td><div class="bar-wrap"><div class="bar bar-ec" style="width:58px"></div>5.82</div></td>
+      <td><div class="bar-wrap"><div class="bar bar-s" style="width:49px"></div>4.85</div></td>
+      <td>4.55</td>
+      <td style="font-size:12px;color:var(--color-text-secondary)">PRB coal country — Gillette's ecoregion</td>
+    </tr>
+    <tr>
+      <td>Colorado Plateaus</td>
+      <td><div class="bar-wrap"><div class="bar bar-e" style="width:7px"></div>0.69</div></td>
+      <td><div class="bar-wrap"><div class="bar bar-ec" style="width:60px"></div>6.04</div></td>
+      <td><div class="bar-wrap"><div class="bar bar-s" style="width:50px"></div>4.96</div></td>
+      <td>3.89</td>
+      <td style="font-size:12px;color:var(--color-text-secondary)">Arid / extractive — E score near floor</td>
+    </tr>
+    <tr style="background:var(--color-background-info);font-weight:500">
+      <td>Wyoming Basin ★</td>
+      <td><div class="bar-wrap"><div class="bar bar-e" style="width:6px"></div>0.60</div></td>
+      <td><div class="bar-wrap"><div class="bar bar-ec" style="width:58px"></div>5.78</div></td>
+      <td><div class="bar-wrap"><div class="bar bar-s" style="width:49px"></div>4.85</div></td>
+      <td>3.74</td>
+      <td style="font-size:12px;color:var(--color-text-secondary)">Lowest composite — E near floor, Ec from coal extraction</td>
+    </tr>
+  </table>
+  <p style="font-size:12px;color:var(--color-text-tertiary);margin-top:0.5rem;">★ Contains Gillette / Campbell County. Northern Basin and Range (4.34, 19 tracts) omitted for space.</p>
+
+</div>

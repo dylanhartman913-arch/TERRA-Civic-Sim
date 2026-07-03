@@ -1,0 +1,217 @@
+{
+  "campaigns": [
+    {
+      "campaign_id": "wyoming_coal_transition",
+      "title": "Wyoming Basin Coal Transition",
+      "subtitle": "2025–2045: From coal country to clean energy anchor",
+      "scenario_profile_id": "wyoming_coal_transition",
+      "unlocks_free_play": true,
+      "estimated_time": "~20 min",
+      "difficulty": "Tutorial",
+      "acts": {
+        "act_1": {
+          "id": "baseline_tour",
+          "title": "Act I — The Baseline",
+          "narration_mode": "auto",
+          "description": "Tour Wyoming's energy landscape as it stands today. Watch how coal, communities, and ecology are connected before the transition begins.",
+          "auto_advance_to_year": 2026,
+          "narration_steps": [
+            {
+              "year": 2025,
+              "geoid": "56005",
+              "text": "Campbell County produces more coal than any county in the United States. The Powder River Basin fuels a quarter of America's electricity — and almost all of Wyoming's tax base.",
+              "highlight_metric": "firm_capacity_margin"
+            },
+            {
+              "year": 2025,
+              "geoid": "56021",
+              "text": "Laramie County is Wyoming's most populous county. Cheyenne sits at the intersection of the WACM and PSCO balancing areas — a natural hub for the grid transition to come.",
+              "highlight_metric": "Ec"
+            },
+            {
+              "year": 2025,
+              "geoid": "56023",
+              "text": "Lincoln County hosts the Naughton plant — converting from coal to gas in 2026 — and the Kemmerer site where TerraPower's Natrium Unit 1 is under construction.",
+              "highlight_metric": "E"
+            },
+            {
+              "year": 2026,
+              "geoid": "56023",
+              "text": "2026: Naughton Unit 1 completes its coal-to-gas conversion. A milestone, but not a destination.",
+              "highlight_metric": "firm_capacity_margin"
+            }
+          ]
+        },
+        "act_2": {
+          "id": "set_targets",
+          "title": "Act II — Choose Your Future",
+          "narration_mode": "interactive",
+          "description": "The Wyoming Basin transition can unfold many ways. Set your targets for energy, equity, and ecology.",
+          "configurator": {
+            "show_scenario_matrix": true,
+            "preselected_profile": "wyoming_coal_transition",
+            "sliders": [
+              {
+                "metric": "E",
+                "label": "Environmental Capital Target",
+                "min": 0.5,
+                "max": 0.9,
+                "default": 0.65
+              },
+              {
+                "metric": "Ec",
+                "label": "Economic Capital Target",
+                "min": 0.4,
+                "max": 0.85,
+                "default": 0.6
+              },
+              {
+                "metric": "S",
+                "label": "Social Capital Floor",
+                "min": 0.3,
+                "max": 0.7,
+                "default": 0.45
+              }
+            ],
+            "confirm_button": "Lock in my targets",
+            "on_confirm": "advance_to_act_3"
+          }
+        },
+        "act_3": {
+          "id": "build",
+          "title": "Act III — The Build",
+          "narration_mode": "guided",
+          "description": "Execute the Wyoming Basin transition. Place each action when the hint appears. You have until 2045.",
+          "hints": [
+            {
+              "action_id": "wind_utility",
+              "target_geoid": "56005",
+              "text": "Start with Wyoming's wind. The Powder River Basin has some of the strongest sustained winds in North America. Place utility-scale wind in Campbell County."
+            },
+            {
+              "action_id": "solar_utility",
+              "target_geoid": "56037",
+              "text": "The Wyoming Basin receives exceptional solar irradiance. Sweetwater County — home to Jim Bridger — is the natural complement to PRB wind."
+            },
+            {
+              "action_id": "smr_advanced",
+              "target_geoid": "56023",
+              "text": "Firm clean power anchors the transition. Lincoln County already has the Kemmerer site. Place an SMR here to build on the infrastructure being developed."
+            },
+            {
+              "action_id": "pumped_hydro",
+              "target_geoid": "16019",
+              "text": "Wind and solar need long-duration storage. The Middle Rockies have the elevation change for pumped hydro. Place it to buffer seasonal variability."
+            },
+            {
+              "action_id": "transmission_500kv",
+              "target_geoid": "30011",
+              "text": "Wyoming's renewables need to reach load centers in Colorado and Utah. The 500kV corridor unlocks the western grid for Wyoming's clean energy exports."
+            },
+            {
+              "action_id": "prairie_restoration",
+              "target_geoid": "56005",
+              "text": "The PRB's mined and disturbed lands can become prairie again. Campbell County has 1.5M acres of restoration potential. This is the ecological anchor of the transition."
+            },
+            {
+              "action_id": "bison_reintroduction",
+              "target_geoid": "56005",
+              "text": "Bison are the keystone species of the northern Great Plains. Where prairie restoration goes, bison reintroduction follows — rebuilding the ecological foundation coal displaced."
+            },
+            {
+              "action_id": "beaver_reintroduction",
+              "target_geoid": "56023",
+              "text": "Beaver restore watershed hydrology. The Green River headwaters in Lincoln County are the priority site — 8 watersheds where low-tech process-based restoration can reverse a century of degradation."
+            },
+            {
+              "action_id": "workforce_retraining",
+              "target_geoid": "56005",
+              "text": "Campbell County has 2,000 coal workers who need a pathway forward. Workforce retraining here is not optional — it is the social license for everything else."
+            },
+            {
+              "action_id": "workforce_retraining",
+              "target_geoid": "56023",
+              "text": "Rock Springs and Kemmerer need the same transition support. Lincoln County workers at Naughton and Kemmerer need retraining before the gas conversion is complete."
+            },
+            {
+              "action_id": "affordable_housing",
+              "target_geoid": "56021",
+              "text": "Clean energy growth will drive up Cheyenne housing costs. Place affordable housing in Laramie County before the pressure arrives — not after."
+            },
+            {
+              "action_id": "affordable_housing",
+              "target_geoid": "56001",
+              "text": "University of Wyoming anchors Albany County's economy. Housing affordability here is a social capital floor, not a ceiling."
+            },
+            {
+              "action_id": "affordable_housing",
+              "target_geoid": "56025",
+              "text": "Casper is the pivot point for the Powder River Basin's economic transition. Housing affordability here closes the social equity gap the coal economy created."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "campaign_id": "wyoming_2032_nuclear_dc",
+      "title": "Wyoming 2032: Nuclear + Data Center",
+      "subtitle": "Close the supply gap. Activate the coupling. Before 2035.",
+      "scenario_profile_id": "wyoming_2032_nuclear_dc",
+      "unlocks_free_play": false,
+      "is_pitch_demo": true,
+      "estimated_time": "~15 min",
+      "difficulty": "Challenge",
+      "briefing": {
+        "text": "Meta and Jade/Crusoe have announced major data centers in Laramie County. TerraPower's Kemmerer Unit 1 is under construction in Lincoln County. But the data centers will create a 375 MW firm supply gap that existing generation cannot close.\n\nYou have until 2035 to place enough firm clean generation to close the gap and activate the nuclear–DC coupling. Housing and workforce pressure will build as construction workers arrive — you must keep social capital at or above its 2025 baseline or the community fractures before the transition can hold.\n\nThe announced assets are already placed. The rest is yours."
+      },
+      "pre_placed_assets": [
+        {
+          "action_id": "data_center_hyperscale",
+          "geoid": "56021",
+          "magnitude": 100,
+          "decision_year": 2025
+        },
+        {
+          "action_id": "data_center_campus_phase",
+          "geoid": "56021",
+          "magnitude": 200,
+          "decision_year": 2025
+        },
+        {
+          "action_id": "smr_advanced",
+          "geoid": "56023",
+          "magnitude": 345,
+          "decision_year": 2025,
+          "operational_year_override": 2031
+        }
+      ],
+      "win_conditions": [
+        {
+          "id": "nuclear_dc_coupling_active",
+          "description": "Nuclear-DC coupling activated on bus serving Laramie County"
+        },
+        {
+          "id": "deficit_mw_56021",
+          "description": "Laramie County firm supply gap closed (deficit ≤ 0 MW)"
+        },
+        {
+          "id": "S_56021",
+          "description": "Laramie County social capital at or above 2025 baseline"
+        },
+        {
+          "id": "Ec_56021",
+          "description": "Laramie County equity capital at or above 2025 baseline"
+        },
+        {
+          "id": "build_complete_before_2035",
+          "description": "Natrium units commissioned before 2035"
+        }
+      ],
+      "loss_condition": {
+        "description": "Year exceeds 2035 with any win condition unmet.",
+        "year": 2035
+      },
+      "non_triviality_note": "The housing and workforce pressure is intentional. Each data center or SMR placement adds construction workers. If affordable_housing and workforce_retraining are not placed, S will fall below baseline before 2032. The player must balance the energy build with the social investment. This is the dissertation's central claim made playable."
+    }
+  ]
+}

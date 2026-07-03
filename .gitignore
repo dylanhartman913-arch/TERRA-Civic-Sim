@@ -1,0 +1,75 @@
+# ── Raw and processed data ────────────────────────────────────────────────────
+# All raw inputs and derived outputs live outside version control.
+# See data/README.md for download instructions and notebook execution order.
+data/raw/
+data/processed/
+# But preserve directory skeletons so `git clone` produces the expected layout.
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# ── Build artifacts ───────────────────────────────────────────────────────────
+dist/
+node_modules/
+
+# ── Secrets ───────────────────────────────────────────────────────────────────
+.env
+.env.*
+*.key
+secrets/
+
+# ── Large binary / domain-specific formats ────────────────────────────────────
+# These can exceed 50 MB and should never be committed regardless of location.
+*.parquet
+*.arrow
+*.graphml
+*.jls          # Julia serialization (E4ST model_debug / data_parsed files, up to 500 MB)
+*.zip
+*.cpg          # Shapefile component
+*.dbf          # Shapefile component
+*.prj          # Shapefile component
+*.sbn          # Shapefile component
+*.sbx          # Shapefile component
+*.shp          # Shapefile component
+*.shx          # Shapefile component
+*.shp.xml      # Shapefile component
+
+# ── Large GeoJSON / HTML maps ─────────────────────────────────────────────────
+# Individual files that exceed the 50 MB threshold even outside data/ dirs.
+# Check `find . -size +50M` before committing new geo outputs.
+data/processed/mw_huc8.geojson
+data/processed/osm_transmission_hv.geojson
+data/processed/combined_map.html
+data/processed/HTML/
+data/processed/figures/14_lmp_map.html
+
+# ── Notebooks with embedded large outputs ────────────────────────────────────
+notebooks/14_e4st_results.ipynb
+
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+*.egg-info/
+.venv/
+venv/
+env/
+
+# ── Julia ─────────────────────────────────────────────────────────────────────
+julia/Manifest.toml
+
+# ── macOS ─────────────────────────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ── Editors ───────────────────────────────────────────────────────────────────
+.vscode/settings.json
+*.swp
+*.swo
+.idea/
+
+# ── Jupyter ───────────────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+notebooks/.claude/

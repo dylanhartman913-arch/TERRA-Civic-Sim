@@ -1,0 +1,44 @@
+{
+  "fixture_id": "golden_f",
+  "schema_version": "3.2",
+  "engine_version": "2.4",
+  "created": "2026-06-24T00:00:00.000000+00:00",
+  "description": "Three-ledger X2 production reduction — PRB Coal Mines -10M tons; v2.4 full Ledger A/B/C",
+  "inputs": {
+    "action": "reduce_production_asset",
+    "geoid": "56005",
+    "commodity": "coal_surface",
+    "delta_volume": 10000000,
+    "starting_volume": 170045000,
+    "note": "Applied to fresh initial state (no Golden A replay). Ledger C is positive for Campbell (recapture county): as mineral AV falls, recapture burden shrinks."
+  },
+  "assertions": {
+    "delta_volume": 10000000,
+    "new_volume": 160045000,
+    "ledger_a_delta": -12630200.0,
+    "ledger_b_delta": -5066642.22,
+    "ledger_c_delta": 1514490.91,
+    "ledger_a_status": "applied",
+    "ledger_c_sign": "positive",
+    "action_id": "production_decline_coal_surface"
+  },
+  "county_fiscal_after": {
+    "56005": {
+      "ledger_a_cumulative_delta": -12630200.0,
+      "ledger_b_cumulative_delta": -5066642.22,
+      "ledger_c_cumulative_delta": 1514490.91,
+      "severance_share": 237568227.78,
+      "advalorem_production": 2364581.46,
+      "school_finance_net": -35081778.80,
+      "assessed_mineral": 3596717342.0
+    }
+  },
+  "digests_after": {
+    "fiscal_digest_md5": "b2a9567a9545db98d2509c9e75a98a66",
+    "existing_assets_digest_md5": "80f48310c47b6dd9c97dfb999da4bf56"
+  },
+  "digests_before": {
+    "fiscal_digest_md5": "af67c87f142045222bcaf324cdc9a947",
+    "existing_assets_digest_md5": "a881df20643298394d53c2ac43012fe3"
+  }
+}

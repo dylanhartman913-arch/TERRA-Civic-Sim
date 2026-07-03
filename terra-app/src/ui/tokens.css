@@ -1,0 +1,39 @@
+@import 'maplibre-gl/dist/maplibre-gl.css';
+
+:root {
+  /* Base */
+  --bg-base:       #0d1117;
+  --bg-surface:    #161b22;
+  --bg-elevated:   #21262d;
+  --border:        #30363d;
+
+  /* Brand */
+  --teal:          #2dd4bf;
+  --teal-dim:      #0d9488;
+  --amber:         #f59e0b;
+  --amber-dim:     #92400e;
+  --purple:        #a78bfa;
+  --purple-dim:    #6d28d9;
+
+  /* Text */
+  --text-primary:  #e6edf3;
+  --text-secondary:#8b949e;
+  --text-muted:    #484f58;
+
+  /* Semantic */
+  --deficit:       #f87171;
+  --surplus:       #34d399;
+  --warning:       #fbbf24;
+  --construction:  #fb923c;
+
+  /* Font */
+  --font-mono:     'DM Mono', monospace;
+
+  /* Choropleth scale — E capital low→high */
+  --choro-0:       #0d1117;
+  --choro-1:       #0d3d38;
+  --choro-2:       #0d6b5e;
+  --choro-3:       #0d9488;
+  --choro-4:       #2dd4bf;
+  --choro-5:       #99f6e4;
+}
