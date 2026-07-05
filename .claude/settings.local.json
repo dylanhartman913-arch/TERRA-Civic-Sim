@@ -90,7 +90,26 @@
       "Bash(npx tsx -e ':*)",
       "Bash(pip install:*)",
       "Bash(find . -not -path './.git/*' -not -path './terra-app/node_modules/*' -size +30M -exec ls -lh {} \\\\;)",
-      "Bash(find . -not -path './.git/*' -not -path './terra-app/node_modules/*' -size +50M -exec ls -lh {} \\\\;)"
+      "Bash(find . -not -path './.git/*' -not -path './terra-app/node_modules/*' -size +50M -exec ls -lh {} \\\\;)",
+      "Bash(python -m pytest tests/test_terra_engine_v3.py -x -q)",
+      "Bash(python -m pytest tests/test_terra_engine_v3.py -q -k \"not \\(test_7g or test_7h or test_7i\\)\")",
+      "Bash(python -m pytest tests/test_terra_engine_v3.py -q)",
+      "Bash(node -e ':*)",
+      "Bash(python -m pytest tests/ -q)",
+      "Bash(python -m pytest tests/test_terra_engine_v3.py -v)",
+      "Bash(grep -n \"hardcoded\\\\|OneDrive\\\\|Library.*CloudStorage\\\\|dylanhartman\" terra-app/src/engine/engine.ts terra-app/src/engine/types.ts terra-app/tests/parity/helpers.ts terra-app/tests/parity/*.ts)",
+      "Read(//Users/dylanhartman/**)",
+      "Bash(env)",
+      "Bash(python scripts/pull_housing_baseline.py)",
+      "Bash(python scripts/generate_golden_h.py)",
+      "Bash(python -c ':*)",
+      "Bash(npx jest:*)",
+      "Bash(npm run:*)",
+      "Bash(python -m pytest tests/test_terra_engine_v3.py -v --tb=short)",
+      "Bash(echo \"TSC_EXIT:$?\")",
+      "Bash(grep -E \"\\\\.\\(tsx|ts\\)$\")",
+      "Bash(wc:*)",
+      "Bash(python -m pytest tests/test_terra_engine_v3.py -q --tb=no)"
     ]
   }
 }

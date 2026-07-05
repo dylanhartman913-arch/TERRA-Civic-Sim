@@ -5,6 +5,7 @@ import type { ActiveMetric } from '../../state/store.js';
 import { useTerraStore } from '../../state/store.js';
 import countiesGeoJson from '../../data/counties.geojson';
 import { JOBS_PER_MW } from '../panels/CountyYields.js';
+import { computeFiscalNetDelta, computeFiscalBaselineRevenue } from '../../state/selectors.js';
 
 const SOURCE_ID = 'counties';
 const FILL_LAYER = 'county-fill';
@@ -72,16 +73,8 @@ function metricValue(
     const geoidPadded = geoid.padStart(5, '0');
     const cf = engineState.county_fiscal[geoidPadded];
     if (!cf) return 0;
-    const ptDelta = cf.fiscal_actions.reduce((s, fa) => s + fa.property_tax_delta, 0);
-    const suDelta = cf.fiscal_actions.reduce((s, fa) => s + fa.sales_use_delta, 0);
-    const netDelta = ptDelta + suDelta + cf.ledger_a_cumulative_delta + cf.ledger_b_cumulative_delta + cf.ledger_c_cumulative_delta;
-    // Baseline revenue for normalization
-    const baselineAdv = cf.advalorem_production - cf.ledger_a_cumulative_delta;
-    const baseSev = cf.severance_share - cf.ledger_b_cumulative_delta;
-    const baseSF  = cf.school_finance_net - cf.ledger_c_cumulative_delta;
-    const basePT  = cf.property_tax - ptDelta;
-    const baseSU  = cf.sales_use - suDelta;
-    const baselineTotal = baselineAdv + baseSev + baseSF + basePT + baseSU + cf.federal_royalty_share + cf.pilt;
+    const netDelta    = computeFiscalNetDelta(cf);
+    const baselineTotal = computeFiscalBaselineRevenue(cf);
     return baselineTotal !== 0 ? netDelta / Math.abs(baselineTotal) : 0;
   }
 

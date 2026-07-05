@@ -5,7 +5,7 @@ import { createHash } from 'crypto';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
 import { initializeState } from '../../src/engine/engine.js';
-import type { EngineState, CountyEESBaseline, CrosswalkRow, ActionLibrary, InitialNetwork, FiscalBaseline, FiscalCoefficients, AnyExistingAsset, ProductionAsset } from '../../src/engine/types.js';
+import type { EngineState, CountyEESBaseline, CrosswalkRow, ActionLibrary, InitialNetwork, FiscalBaseline, FiscalCoefficients, AnyExistingAsset, ProductionAsset, PopulationProjection } from '../../src/engine/types.js';
 
 /** Marker: serialize a JS number as Python would serialize a float (e.g. 0 → "0.0"). */
 class PyFloat {
@@ -18,6 +18,14 @@ const FIXTURE_DIR = resolve(__dirname, 'fixtures');
 export function loadFixture(name: string): Record<string, unknown> {
   const raw = readFileSync(resolve(FIXTURE_DIR, `${name}.json`), 'utf-8');
   return JSON.parse(raw);
+}
+
+/** Load county_population_projections.json (v4.2). Optional — returns undefined if not present. */
+function loadPopulationProjections(): Record<string, PopulationProjection> | undefined {
+  try {
+    const raw = JSON.parse(readFileSync(resolve(DATA_DIR, 'county_population_projections.json'), 'utf-8'));
+    return raw.counties as Record<string, PopulationProjection>;
+  } catch { return undefined; }
 }
 
 export function loadInitialState(): EngineState {
@@ -37,7 +45,14 @@ export function loadInitialState(): EngineState {
     // Fiscal data optional — existing tests still work without it
   }
 
-  return initializeState(baseline, crosswalk, actionLibrary, initialNetwork, countyCards, 2025, fiscalBaseline, fiscalCoefficients);
+  // v3.3 housing baseline
+  let housingBaselineData: Record<string, unknown> | undefined;
+  try {
+    const raw = JSON.parse(readFileSync(resolve(DATA_DIR, 'county_housing_baseline.json'), 'utf-8'));
+    housingBaselineData = raw.counties as Record<string, unknown>;
+  } catch { /* optional */ }
+
+  return initializeState(baseline, crosswalk, actionLibrary, initialNetwork, countyCards, 2025, fiscalBaseline, fiscalCoefficients, undefined, undefined, housingBaselineData, loadPopulationProjections());
 }
 
 /** Load initial state with EIA-860 baseline retirement schedules applied. */
@@ -56,7 +71,21 @@ export function loadInitialStateWithRetirements(): EngineState {
   const retirements = JSON.parse(readFileSync(resolve(DATA_DIR, 'baseline_retirements.json'), 'utf-8'));
   // Strip _meta key — only geoid keys pass through
   const { _meta, ...retirementData } = retirements;
-  return initializeState(baseline, crosswalk, actionLibrary, initialNetwork, countyCards, 2025, fiscalBaseline, fiscalCoefficients, retirementData);
+
+  // v3.1 lifecycle coefficients
+  let lifecycleCoefficients: Record<string, unknown> | undefined;
+  try {
+    lifecycleCoefficients = JSON.parse(readFileSync(resolve(DATA_DIR, 'lifecycle_coefficients.json'), 'utf-8'));
+  } catch { /* optional */ }
+
+  // v3.3 housing baseline
+  let housingBaselineData: Record<string, unknown> | undefined;
+  try {
+    const raw = JSON.parse(readFileSync(resolve(DATA_DIR, 'county_housing_baseline.json'), 'utf-8'));
+    housingBaselineData = raw.counties as Record<string, unknown>;
+  } catch { /* optional */ }
+
+  return initializeState(baseline, crosswalk, actionLibrary, initialNetwork, countyCards, 2025, fiscalBaseline, fiscalCoefficients, retirementData, lifecycleCoefficients, housingBaselineData, loadPopulationProjections());
 }
 
 /**

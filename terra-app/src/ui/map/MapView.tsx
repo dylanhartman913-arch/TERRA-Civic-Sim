@@ -9,6 +9,7 @@ import { PlacementOverlay } from './PlacementOverlay.js';
 import { CouplingLinks } from './CouplingLinks.js';
 import { Tooltip } from './Tooltip.js';
 import { YieldBadges } from './YieldBadges.js';
+import { SiteMarkers } from './SiteMarkers.js';
 
 export function MapView() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -86,6 +87,7 @@ export function MapView() {
           <BranchLayer map={mapRef.current} engineState={engineState} visible={layers.branches} />
           <CouplingLinks map={mapRef.current} engineState={engineState} />
           <YieldBadges map={mapRef.current} />
+          <SiteMarkers map={mapRef.current} />
         </>
       )}
       {tooltipState && (

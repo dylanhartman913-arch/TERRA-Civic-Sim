@@ -26,6 +26,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useTerraStore } from '../../state/store.js';
 import type { EngineState, BuildQueueItem, CountyFiscal, ProductionAsset } from '../../engine/types.js';
 import { getExistingAssets } from '../../engine/engine.js';
+import { computeFiscalNetDelta, computeFiscalBaselineRevenue } from '../../state/selectors.js';
 
 // ── Jobs per unit (construction + operations) ──────────────────────────────
 // Sources documented in module header above.
@@ -63,34 +64,6 @@ function jobsForBuild(item: BuildQueueItem): { c: number; o: number } {
   return { c: rates.c * item.magnitude, o: rates.o * item.magnitude };
 }
 
-/**
- * Compute baseline revenue from CountyFiscal by reversing cumulative deltas.
- * fiscal_actions records every change to the mutable fields, so we can
- * back-calculate baseline = current - sum(all deltas).
- */
-function baselineRevenue(cf: CountyFiscal): number {
-  const ptDeltaSum = cf.fiscal_actions.reduce((s, fa) => s + fa.property_tax_delta, 0);
-  const suDeltaSum = cf.fiscal_actions.reduce((s, fa) => s + fa.sales_use_delta, 0);
-  const baseline_property_tax   = cf.property_tax   - ptDeltaSum;
-  const baseline_sales_use      = cf.sales_use       - suDeltaSum;
-  const baseline_advalorem      = cf.advalorem_production - cf.ledger_a_cumulative_delta;
-  const baseline_severance      = cf.severance_share      - cf.ledger_b_cumulative_delta;
-  const baseline_school_finance = cf.school_finance_net   - cf.ledger_c_cumulative_delta;
-  return (
-    baseline_property_tax + baseline_advalorem + baseline_severance +
-    cf.federal_royalty_share + baseline_sales_use + cf.pilt + baseline_school_finance
-  );
-}
-
-/** Net revenue delta (live – baseline) */
-function revenueNetDelta(cf: CountyFiscal): number {
-  const ptDeltaSum = cf.fiscal_actions.reduce((s, fa) => s + fa.property_tax_delta, 0);
-  const suDeltaSum = cf.fiscal_actions.reduce((s, fa) => s + fa.sales_use_delta, 0);
-  return (
-    ptDeltaSum + suDeltaSum +
-    cf.ledger_a_cumulative_delta + cf.ledger_b_cumulative_delta + cf.ledger_c_cumulative_delta
-  );
-}
 
 function fmt$(v: number): string {
   const abs = Math.abs(v);
@@ -256,7 +229,7 @@ function RevenueBreakdown({ cf }: RevenueBreakdownProps) {
   ];
   const maxAbs = Math.max(...allValues.map(Math.abs), 1);
 
-  const netDelta = revenueNetDelta(cf);
+  const netDelta = computeFiscalNetDelta(cf);
 
   return (
     <div>
@@ -492,10 +465,13 @@ function CapacityBreakdown({ ees, queuedBuilds, engineState }: CapacityBreakdown
 
 // ── Main CountyYields component ────────────────────────────────────────────
 
+type YieldMode = 'baseline' | 'delta' | 'net';
+
 export function CountyYields() {
   const selectedGeoid  = useTerraStore(s => s.selectedGeoid);
   const enterPlacementMode = useTerraStore(s => s.enterPlacementMode);
   const setSelectedGeoid = useTerraStore(s => s.setSelectedGeoid);
+  const setOpenChartIndicator = useTerraStore(s => s.setOpenChartIndicator);
   const engineState    = useTerraStore(s => s.engineState) as EngineState;
 
   const [openYield, setOpenYield] = useState<string | null>(null);
@@ -512,11 +488,15 @@ export function CountyYields() {
   const ees  = engineState.county_ees[selectedGeoid];
   const card = engineState.county_cards[selectedGeoid] as {
     county_name?: string; state?: string; employment?: number;
+    generation_capacity_mw?: number;
     water_withdrawals_mgd?: number | null;
   } | undefined;
   if (!ees || !card) return null;
 
   const isWY = card.state === 'WY';
+
+  // Default: Net for WY counties, Player Δ elsewhere
+  const [yieldMode, setYieldMode] = useState<YieldMode>(isWY ? 'net' : 'delta');
   const geoidPadded = selectedGeoid.padStart(5, '0');
   const cf: CountyFiscal | undefined = isWY ? engineState.county_fiscal[geoidPadded] : undefined;
 
@@ -524,7 +504,15 @@ export function CountyYields() {
   const laborForce = card.employment ?? 0;
 
   // ── Capacity ───────────────────────────────────────────────────────────
-  const capacityMarginMw = ees.added_firm_mw - ees.load_mw;
+  const baselineCapacityMw = card.generation_capacity_mw ?? 0;
+  const playerAddedMw = queuedBuilds
+    .filter(b => b.commissioned)
+    .reduce((s, b) => {
+      const action = engineState.action_library.actions[b.action_id];
+      return s + ((action?.bucket === 'energy_generation') ? b.magnitude : 0);
+    }, 0);
+  const netCapacityMw = ees.added_firm_mw;
+  const capacityMarginMw = netCapacityMw - ees.load_mw;
 
   // ── Jobs ──────────────────────────────────────────────────────────────
   let opsJobs = 0;
@@ -535,13 +523,16 @@ export function CountyYields() {
     else                constructionJobs += c;
   }
   const totalJobs = opsJobs + constructionJobs;
+  const baselineJobs = getExistingAssets(engineState, selectedGeoid)
+    .filter(a => a.asset_kind === 'production_asset' && (a as ProductionAsset).employment_direct != null)
+    .reduce((s, a) => s + ((a as ProductionAsset).employment_direct ?? 0), 0);
   const jobsPctLaborForce = laborForce > 0 ? totalJobs / laborForce : 0;
   const housingPressure   = laborForce > 0 ? constructionJobs / laborForce : 0;
   const boomtownFlag      = housingPressure >= HOUSING_PRESSURE_THRESHOLD;
 
   // ── Revenue (WY only) ─────────────────────────────────────────────────
-  const revNetDelta  = cf ? revenueNetDelta(cf)  : null;
-  const revBaseline  = cf ? baselineRevenue(cf)  : null;
+  const revNetDelta  = cf ? computeFiscalNetDelta(cf)          : null;
+  const revBaseline  = cf ? computeFiscalBaselineRevenue(cf)   : null;
   const revPct       = (revNetDelta != null && revBaseline && revBaseline !== 0)
     ? revNetDelta / Math.abs(revBaseline) : null;
 
@@ -596,10 +587,50 @@ export function CountyYields() {
     borderBottom: '1px solid var(--border)',
   };
 
+  // ── Mode-dependent display values ───────────────────────────────────
+  const capLabel = yieldMode === 'baseline' ? `${baselineCapacityMw.toFixed(0)} MW`
+    : yieldMode === 'delta' ? `${playerAddedMw > 0 ? '+' : ''}${playerAddedMw.toFixed(0)} MW`
+    : `${capacityMarginMw >= 0 ? '+' : ''}${capacityMarginMw.toFixed(0)} MW`;
+  const capColor = yieldMode === 'baseline' ? 'var(--text-primary)'
+    : yieldMode === 'delta' ? (playerAddedMw > 0 ? 'var(--teal)' : 'var(--text-muted)')
+    : (capacityMarginMw >= 0 ? 'var(--surplus)' : 'var(--deficit)');
+
+  const jobsDisplay = yieldMode === 'baseline' ? baselineJobs
+    : yieldMode === 'delta' ? totalJobs
+    : baselineJobs + totalJobs;
+  const jobsColor = yieldMode === 'baseline' ? 'var(--text-primary)' : 'var(--teal)';
+
+  const revDisplay = yieldMode === 'baseline' ? revBaseline
+    : yieldMode === 'delta' ? revNetDelta
+    : (revBaseline != null && revNetDelta != null) ? revBaseline + revNetDelta : null;
+  const revColor = revDisplay == null ? 'var(--text-muted)'
+    : yieldMode === 'baseline' ? 'var(--text-primary)'
+    : revDisplay >= 0 ? 'var(--teal)' : 'var(--deficit)';
+
+  const modeToggleStyle = (mode: YieldMode): React.CSSProperties => ({
+    padding: '2px 6px',
+    background: yieldMode === mode ? 'var(--bg-elevated)' : 'transparent',
+    border: `1px solid ${yieldMode === mode ? 'var(--border)' : 'transparent'}`,
+    borderRadius: 3,
+    color: yieldMode === mode ? 'var(--text-primary)' : 'var(--text-muted)',
+    fontSize: 8,
+    cursor: 'pointer',
+    fontFamily: 'var(--font-mono)',
+    letterSpacing: 0.3,
+    textTransform: 'uppercase',
+  });
+
   return (
     <div style={sectionStyle}>
-      <div style={{ fontSize: 10, color: 'var(--text-muted)', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 }}>
-        Yields
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+        <div style={{ fontSize: 10, color: 'var(--text-muted)', letterSpacing: 1, textTransform: 'uppercase' }}>
+          Yields
+        </div>
+        <div style={{ display: 'flex', gap: 2 }}>
+          <button onClick={() => setYieldMode('baseline')} style={modeToggleStyle('baseline')}>Baseline</button>
+          <button onClick={() => setYieldMode('delta')} style={modeToggleStyle('delta')}>Player Δ</button>
+          <button onClick={() => setYieldMode('net')} style={modeToggleStyle('net')}>Net</button>
+        </div>
       </div>
 
       <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
@@ -609,15 +640,16 @@ export function CountyYields() {
           ref={refs.capacity}
           style={itemStyle('capacity')}
           onClick={() => toggleYield('capacity')}
-          title="Net firm capacity margin — click to expand"
+          title="Firm capacity — click to expand"
         >
           <span style={labelStyle}>⚡ Capacity</span>
-          <span style={valueStyle(capacityMarginMw >= 0 ? 'var(--surplus)' : 'var(--deficit)')}>
-            {capacityMarginMw >= 0 ? '+' : ''}{capacityMarginMw.toFixed(0)} MW
+          <span style={valueStyle(capColor)}>
+            {capLabel}
           </span>
           {openYield === 'capacity' && (
             <YieldPopover anchorRef={refs.capacity} onClose={() => setOpenYield(null)}>
               <CapacityBreakdown ees={ees} queuedBuilds={queuedBuilds} engineState={engineState} />
+              <div onClick={() => { setOpenChartIndicator('firm_margin'); setOpenYield(null); }} style={viewChartLinkStyle}>View trajectory chart &rarr;</div>
             </YieldPopover>
           )}
         </div>
@@ -627,11 +659,11 @@ export function CountyYields() {
           ref={refs.jobs}
           style={itemStyle('jobs')}
           onClick={() => toggleYield('jobs')}
-          title="Operations + construction jobs — click to expand"
+          title="Employment — click to expand"
         >
           <span style={labelStyle}>🔨 Jobs</span>
-          <span style={valueStyle('var(--teal)')}>
-            {Math.round(totalJobs)}
+          <span style={valueStyle(jobsColor)}>
+            {yieldMode === 'delta' && totalJobs > 0 ? '+' : ''}{Math.round(jobsDisplay)}
           </span>
           {laborForce > 0 && (
             <span style={subStyle}>{fmtPct(jobsPctLaborForce)} LF</span>
@@ -644,6 +676,7 @@ export function CountyYields() {
                   Labor force baseline: {laborForce.toLocaleString()} · {fmtPct(jobsPctLaborForce)} total employment impact
                 </div>
               )}
+              <div onClick={() => { setOpenChartIndicator('labor_utilization'); setOpenYield(null); }} style={viewChartLinkStyle}>View ratio band chart &rarr;</div>
             </YieldPopover>
           )}
         </div>
@@ -657,13 +690,10 @@ export function CountyYields() {
             title="Local revenue change — click to see signed breakdown"
           >
             <span style={labelStyle}>💰 Revenue</span>
-            <span style={valueStyle(
-              revNetDelta == null ? 'var(--text-muted)' :
-              revNetDelta >= 0 ? 'var(--teal)' : 'var(--deficit)'
-            )}>
-              {revNetDelta != null ? fmt$(revNetDelta) : '—'}
+            <span style={valueStyle(revColor)}>
+              {revDisplay != null ? (yieldMode === 'delta' ? fmt$(revDisplay) : `$${Math.abs(revDisplay) >= 1e6 ? (revDisplay / 1e6).toFixed(1) + 'M' : Math.round(revDisplay).toLocaleString()}`) : '—'}
             </span>
-            {revPct != null && (
+            {yieldMode !== 'baseline' && revPct != null && (
               <span style={subStyle}>{fmtPct(revPct)} baseline</span>
             )}
             {openYield === 'revenue' && (
@@ -674,6 +704,7 @@ export function CountyYields() {
                     Baseline total: {fmt$(revBaseline)}
                   </div>
                 )}
+                <div onClick={() => { setOpenChartIndicator('payback_year'); setOpenYield(null); }} style={viewChartLinkStyle}>View payback chart &rarr;</div>
               </YieldPopover>
             )}
           </div>
@@ -777,6 +808,7 @@ export function CountyYields() {
                   </div>
                 </div>
               )}
+              <div onClick={() => { setOpenChartIndicator('housing_pressure'); setOpenYield(null); }} style={viewChartLinkStyle}>View pressure trajectory &rarr;</div>
             </YieldPopover>
           )}
         </div>
@@ -785,3 +817,14 @@ export function CountyYields() {
     </div>
   );
 }
+
+const viewChartLinkStyle: React.CSSProperties = {
+  marginTop: 8,
+  paddingTop: 6,
+  borderTop: '1px solid var(--border)',
+  fontSize: 9,
+  color: 'var(--teal)',
+  cursor: 'pointer',
+  textTransform: 'uppercase',
+  letterSpacing: 0.3,
+};

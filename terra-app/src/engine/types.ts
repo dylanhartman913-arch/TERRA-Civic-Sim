@@ -13,10 +13,41 @@ export interface CountyEES {
   Ec_baseline: number;
   S_baseline: number;
   county_name: string;
-  population: number;
+  population: number;              // total population; advanced each year by advanceYear (v4.2)
+  working_age_population: number;  // ages 18-64; ACS B01001 base; advanced proportionally (v4.2)
   load_mw: number;
   added_firm_mw: number;
   deficit_mw: number;
+}
+
+// ── Population Projection (v4.2) ────────────────────────────────────────────
+
+/** Per-county baseline projection data. Loaded from county_population_projections.json. */
+export interface PopulationProjection {
+  county_name: string;
+  source: string;                  // "WY_EAD_2022" | "CO_SDO_2022" | "ACS_2022_trend"
+  confidence: string;
+  method: 'official_projection' | 'acs_trend' | 'constant_share';
+  base_population: number;
+  base_year: number;
+  working_age_share: number;       // fraction of population aged 18-64 (ACS B01001)
+  annual_growth_rate: number;      // compound annual rate; engine uses (1 + r) per step
+  note?: string;
+  flag?: string;                   // "no_published_projection_constant_share" for derived counties
+}
+
+/**
+ * Session-level population model configuration.
+ * Stored on EngineState; can be overridden in session config to pin population
+ * to the baseline projection (disable employment-linked migration).
+ */
+export interface PopulationConfig {
+  migration_enabled: boolean;
+  /** Economic-base multiplier for ops-job → permanent-resident link.
+   *  Headwaters Economics (2017) rural energy multiplier range: 1.4–2.0.
+   *  confidence: low — highly uncertain for small western counties. */
+  labor_migration_multiplier: number;
+  migration_confidence: 'low';
 }
 
 export interface EcoregionEES {
@@ -439,7 +470,7 @@ export type AnyExistingAsset = ExistingAsset | ProductionAsset;
 
 export type AssetOrigin = 'baseline' | 'player';
 export type AssetLifecycle = 'operating' | 'queued' | 'under_construction' | 'retired';
-export type AssetClass = 'generator' | 'demand' | 'production' | 'storage';
+export type AssetClass = 'generator' | 'demand' | 'production' | 'storage' | 'housing_stock' | 'site';
 
 /** Unified asset instance — replaces BuildQueueItem + AnyExistingAsset as source of truth. */
 export interface AssetInstance {
@@ -487,6 +518,49 @@ export interface AssetInstance {
 
   // Retirement scheduling (v3.0 Step 2+)
   scheduled_retirement_year: number | null;
+
+  // v3.1 reclamation obligation tracking (production assets only; null for others)
+  reclamation_year_log: Array<{ year: number; acres: number }> | null;
+  active_reclamation_acres: number | null;
+  reclamation_jobs_direct: number | null;
+
+  // v3.2 decommissioning cost draw (MW-based generator assets only; null until retirement)
+  decommissioning_cost_usd: number | null;
+  decommissioning_labor_usd: number | null;
+  decommissioning_duration_years: number | null;
+  decommissioning_start_year: number | null;
+
+  // v3.3 housing stock detail (housing_stock asset_class only; null for all other assets)
+  housing_total_units: number | null;
+  housing_occupied_units: number | null;
+  housing_convertible_units: number | null;
+  housing_subsidized_units: number | null;
+  housing_permits_per_year: number | null;
+  housing_affordable_added: number | null;
+  housing_pressure_ratio: number | null;
+  housing_seasonal_excluded: number | null;
+
+  // v4.1 site mechanics (site asset_class only; null for all other assets)
+  // Literature: DOE (2022) coal-to-nuclear siting study; Gorman et al. (2022) LBNL;
+  // Kemmerer/Naughton brownfield reuse as validation anchor.
+  site_origin_asset_id: string | null;          // asset_id of the retired asset that spawned this site
+  site_origin_type: 'generator' | 'mine' | null;
+  site_class: 'thermal' | 'generator' | 'mine' | null;  // for SITE_COMPAT lookup
+  interconnection_mw: number | null;            // inherited nameplate from retired generator
+  water_rights_flag: boolean | null;            // known debt: populate from county data
+  acres: number | null;                         // known debt: populate from county data
+  workforce_pool_initial: number | null;        // ops jobs at retirement (NREL JEDI proxy)
+  workforce_pool_current: number | null;        // decayed ops jobs (half-life 5 yr; Carley 2018)
+  workforce_pool_half_life_years: number | null;
+  site_spawn_year: number | null;
+  restoration_eligibility: boolean | null;      // true for mine sites
+
+  // v4.1 succession discount tracking (player-queued assets only; null for baseline/site)
+  succession_site_id: string | null;            // site asset_id providing discounts
+  ttd_reduction_applied: number | null;         // years subtracted from time_to_deploy
+  capex_discount_fraction: number | null;       // fraction of overnight cost saved (confidence: low)
+  tx_waiver_mw: number | null;                  // MW waived up to site.interconnection_mw
+  convert_source_asset_id: string | null;       // coal_to_smr: the coal asset being converted
 }
 
 // ── Engine State ────────────────────────────────────────────────────────────
@@ -521,6 +595,34 @@ export interface EngineState {
   last_delta: DeltaSummary | null;
   // v3.0 unified asset registry — source of truth; build_queue & existing_assets are materialized views
   asset_registry: AssetInstance[];
+  // v3.1 lifecycle coefficients (decommissioning, reclamation, autonomous decline, Z1 hooks)
+  lifecycle_coefficients: Record<string, unknown> | null;
+  // v3.3 housing baseline (read-only reference; indexed by geoid)
+  housing_baseline: Record<string, unknown>;
+  // v4.0 indicator history — appended by advanceYear; additive read, never in main digest
+  history: IndicatorSnapshot[];
+  // v4.2 demographic denominators — one population state shared by housing and indicators
+  population_projections: Record<string, PopulationProjection>;
+  population_config: PopulationConfig;
+}
+
+// ── Indicator Snapshot (per-year history entry) ─────────────────────────────
+
+export interface IndicatorSnapshot {
+  year: number;
+  study: { E: number | null; Ec: number | null; S: number | null };
+  counties: Record<string, {
+    E: number;
+    Ec: number;
+    S: number;
+    property_tax: number;
+    cumulative_net: number;
+    labor_utilization: number;
+    service_funding_per_capita: number;
+    population: number;              // live population after this year's advance_year step (v4.2)
+    working_age_population: number;  // ages 18-64 after this year's step (v4.2)
+  }>;
+  pools: Record<string, number | null>;
 }
 
 // ── Delta Summary (returned by applyAction) ─────────────────────────────────
@@ -792,6 +894,9 @@ export interface ScenarioFile {
   eventHistory: GameEvent[];   // display only — events re-drawn from seed on replay
   year_reached: number;
   replay_digest: string;       // md5 of canonical final state
+  // Session mode (optional — only present in workshop sessions)
+  session_meta?: SessionMeta;
+  annotations?: Annotation[];
 }
 
 // ── Save Slot Metadata ─────────────────────────────────────────────────────
@@ -815,6 +920,59 @@ export interface Trajectory {
   material_ledger_by_year: MaterialLedgerSummary[];
   quest_conditions_by_year: QuestCondition[][];
   events_by_year: GameEvent[][];
+}
+
+// ── Session Mode (workshop) ───────────────────────────────────────────────────
+
+/** Metadata stamped into the ScenarioFile when playing in a facilitated session. */
+export interface SessionMeta {
+  session_code: string;
+  participant_label: string;
+  started_at: string;     // ISO timestamp
+  app_version: string;
+}
+
+/** Which auto-pause moment triggers an annotation prompt. */
+export type AnnotationTrigger =
+  | 'build_decision'     // build_complete or coupling_activated auto-pause
+  | 'disturbance_event'  // event_fired auto-pause
+  | 'era_transition'     // era_transition auto-pause
+  | 'manual';            // participant-initiated from reflection card
+
+export interface SessionAnnotationPrompt {
+  trigger: AnnotationTrigger;
+  prompt: string;        // e.g. "Why this move?" or "How are you responding?"
+}
+
+export interface SessionLockedSettings {
+  disable_stress_test?: boolean;   // hide stress-test panel
+  disable_comparison?: boolean;    // hide comparison mode
+  max_year?: number;               // also in root; repeated here for panel-level checks
+}
+
+/** Facilitator-authored config loaded from the session start screen. */
+export interface SessionConfig {
+  schema_version: '1.0';
+  session_code: string;
+  title: string;
+  description?: string;
+  campaign_id?: string;           // if set, auto-starts this campaign on session enter
+  scenario_profile_id?: string;   // ignored if campaign_id present
+  fixed_seed?: number;            // ensures identical event draws across participants
+  max_year?: number;              // session ends (reflection card shown) at this year
+  annotation_prompts?: SessionAnnotationPrompt[];
+  locked_settings?: SessionLockedSettings;
+}
+
+/** A participant's free-text annotation attached to an auto-pause moment. */
+export interface Annotation {
+  id: string;
+  year: number;
+  trigger_type: AnnotationTrigger;
+  trigger_id: string;    // event_id, action name, or era label
+  prompt: string;
+  text: string;
+  timestamp: number;
 }
 
 // ── Campaign types (Phase 5) ───────────────────────────────────────────────

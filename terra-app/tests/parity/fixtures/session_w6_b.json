@@ -1,0 +1,58 @@
+{
+  "schema_version": "3.0",
+  "terra_version": "1.0",
+  "exported_at": "2026-07-05T12:05:00.000Z",
+  "name": "WY2032 — Table 2 — Year 2030",
+  "gameSeed": 314159265,
+  "start_year": 2025,
+  "activeScenario": null,
+  "actionLog": [
+    {
+      "type": "queue",
+      "actionId": "wind_utility",
+      "geoid": "56021",
+      "magnitude": 200,
+      "year": 2025,
+      "decisionYear": 2025,
+      "timestamp": 0
+    },
+    {
+      "type": "queue",
+      "actionId": "battery_grid",
+      "geoid": "56021",
+      "magnitude": 500,
+      "year": 2027,
+      "decisionYear": 2027,
+      "timestamp": 1
+    }
+  ],
+  "eventHistory": [],
+  "year_reached": 2030,
+  "replay_digest": "",
+  "session_meta": {
+    "session_code": "WY2032",
+    "participant_label": "Table 2",
+    "started_at": "2026-07-05T09:00:00.000Z",
+    "app_version": "1.0"
+  },
+  "annotations": [
+    {
+      "id": "ann_w6b_001",
+      "year": 2027,
+      "trigger_type": "build_decision",
+      "trigger_id": "build_complete_y2027",
+      "prompt": "Why this investment in this county?",
+      "text": "Battery storage first — grid reliability before workforce expansion.",
+      "timestamp": 1720176300000
+    },
+    {
+      "id": "ann_w6b_002",
+      "year": 2028,
+      "trigger_type": "disturbance_event",
+      "trigger_id": "heat_wave_y2028",
+      "prompt": "How does this change your next move?",
+      "text": "Heat wave confirms need for storage. Staying the course.",
+      "timestamp": 1720262700000
+    }
+  ]
+}

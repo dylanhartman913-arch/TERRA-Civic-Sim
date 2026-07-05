@@ -1,0 +1,50 @@
+{
+  "fixture_id": "golden_i",
+  "schema_version": "4.1",
+  "engine_version": "4.1",
+  "created": "2026-07-03T00:00:00+00:00",
+  "description": "Golden I \u2014 site spawning + succession mechanics (Z4). Zero-player-action run 2025\u21922031: Jim Bridger (56037, 2120 MW coal) retires on schedule \u2192 site spawns in Sweetwater County. On-site SMR vs greenfield SMR demonstrates the succession discount triple (TTD-2yr, 15% capex, TX waiver). coal_to_smr convert path: TX waiver only (no TTD/capex \u2014 brownfield premium already in $8,500,000/MW). Workforce pool decays to 148.4 FTE at 2041. Digests at 2031 are IDENTICAL to Golden G\u2032 (site assets excluded from all three digest domains).",
+  "digest_stability_note": "state_digest, fiscal_digest, and existing_assets_digest at 2031 match Golden G\u2032 byte-for-byte. Site assets are excluded from all three digest serializations. 2041 digests cover workforce pool decay only \u2014 no player actions in this fixture.",
+  "assertions": {
+    "jb_site_asset_id": "site_56037_jim_bridger_power_plant_2031",
+    "jb_site_geoid": "56037",
+    "jb_site_interconnection_mw": 2120.0,
+    "jb_site_site_class": "thermal",
+    "jb_site_origin_asset_id": "baseline_56037_jim_bridger_power_plant",
+    "jb_site_spawn_year": 2031,
+    "jb_site_workforce_pool_initial": 593.6,
+    "jb_site_workforce_pool_at_spawn": 593.6,
+    "onsite_smr_operational_year": 2041,
+    "greenfield_smr_operational_year": 2043,
+    "onsite_ttd_reduction_applied": 2,
+    "onsite_capex_discount_fraction": 0.15,
+    "onsite_tx_waiver_mw": 345.0,
+    "onsite_succession_site_id": "site_56037_jim_bridger_power_plant_2031",
+    "greenfield_ttd_reduction_applied": null,
+    "greenfield_capex_discount_fraction": null,
+    "greenfield_tx_waiver_mw": null,
+    "ttd_improvement_years": 2,
+    "coal_to_smr_operational_year": 2044,
+    "coal_to_smr_ttd_reduction_applied": null,
+    "coal_to_smr_capex_discount_fraction": null,
+    "coal_to_smr_tx_waiver_mw": 345.0,
+    "coal_to_smr_succession_site_id": "site_56037_jim_bridger_power_plant_2031",
+    "coal_to_smr_convert_source_asset_id": "baseline_56037_jim_bridger_power_plant",
+    "tx_waiver_cap_at_max_magnitude": 2120.0,
+    "workforce_pool_at_2041": 148.4,
+    "workforce_pool_half_life_years": 5,
+    "workforce_decay_note": "N(t) = 593.6 \u00d7 0.5^(10/5) = 593.6 \u00d7 0.25 = 148.4 FTE at year 2041 (Carley et al. 2018)"
+  },
+  "digests_yr2031": {
+    "state_digest_md5": "a4619f25b45f7d006933de9efe83fbb2",
+    "fiscal_digest_md5": "ad9da9c73fda224a42f0d9c1e5c685e4",
+    "existing_assets_digest_md5": "509f39bec10746c8c751971b6e1146b2",
+    "note": "Identical to Golden G\u2032 at 2031. Site assets excluded from all three digest domains."
+  },
+  "digests_yr2041": {
+    "state_digest_md5": "08a97354f047f0ed59e3ed52d99a1567",
+    "fiscal_digest_md5": "c251dce1f96ec87747160a75ed48fb64",
+    "existing_assets_digest_md5": "bafce40eb2e2e3d43846d18e87861283",
+    "note": "Covers 10 years of PRB autonomous coal decline + workforce pool decay (no player actions)."
+  }
+}

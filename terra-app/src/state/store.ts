@@ -14,6 +14,9 @@ import type {
   MaterialLedgerSummary,
   Campaign,
   CampaignFlyTarget,
+  SessionMeta,
+  SessionConfig,
+  Annotation,
 } from '../engine/types.js';
 import {
   initializeState,
@@ -23,6 +26,10 @@ import {
   injectDisturbance as engineInjectDisturbance,
   computeEesSummary,
   reduceProductionAsset as engineReduceProductionAsset,
+  scheduleRetirement as engineScheduleRetirement,
+  accelerateRetirement as engineAccelerateRetirement,
+  delayRetirement as engineDelayRetirement,
+  cancelQueued as engineCancelQueued,
 } from '../engine/engine.js';
 import {
   getEraBudgets,
@@ -76,6 +83,7 @@ export interface LayerVisibility {
   interchange: boolean;
   oracle: boolean;
   yieldBadges: boolean;
+  sites: boolean;
 }
 
 // ── Era boundaries ─────────────────────────────────────────────────────────
@@ -428,6 +436,12 @@ interface TerraStore {
   advanceYear: () => void;
   reduceProductionAsset: (geoid: string, commodity: string, deltaVolume: number) => void;
 
+  // Lifecycle controls (v3.0 retirement transitions + v4.1 cancel)
+  scheduleRetirement: (assetId: string, year: number) => void;
+  accelerateRetirement: (assetId: string, newYear: number) => void;
+  delayRetirement: (assetId: string, newYear: number) => { delay_cost_hook: number; confidence: string };
+  cancelQueued: (assetId: string) => { sunk_cost_fraction: number; sunk_cost_usd: number; confidence: string };
+
   // Undo / Redo actions
   undoAction: () => void;
   redoAction: () => void;
@@ -488,6 +502,32 @@ interface TerraStore {
   hudOpenChip: string | null;
   setPoolHighlightGeoids: (geoids: string[] | null) => void;
   setHudOpenChip: (chip: string | null) => void;
+
+  // Chart system state
+  openChartIndicator: string | null;
+  setOpenChartIndicator: (id: string | null) => void;
+
+  // Decomposition view
+  decompositionCapital: 'E' | 'Ec' | 'S' | null;
+  setDecompositionCapital: (c: 'E' | 'Ec' | 'S' | null) => void;
+
+  // Era report
+  showEraReport: boolean;
+  setShowEraReport: (show: boolean) => void;
+
+  // Session mode state
+  sessionMeta: SessionMeta | null;
+  sessionConfig: SessionConfig | null;
+  annotations: Annotation[];
+  showReflectionCard: boolean;
+
+  // Session mode actions
+  enterSessionMode: (sessionCode: string, participantLabel: string, config?: SessionConfig) => void;
+  addAnnotation: (a: Omit<Annotation, 'id' | 'timestamp'>) => void;
+  setShowReflectionCard: (show: boolean) => void;
+
+  // Debrief: replay a session file with the store's static baseline data
+  replaySessionFile: (file: ScenarioFile) => EngineState;
 }
 
 // ── Initial state ────────────────────────────────────────────────────────────
@@ -530,6 +570,7 @@ export const useTerraStore = create<TerraStore>((set, get) => ({
     interchange: false,
     oracle: false,
     yieldBadges: false,
+    sites: true,
   },
 
   // Undo / Redo
@@ -570,6 +611,24 @@ export const useTerraStore = create<TerraStore>((set, get) => ({
   setPoolHighlightGeoids: (geoids) => set({ poolHighlightGeoids: geoids }),
   setHudOpenChip: (chip) => set({ hudOpenChip: chip }),
 
+  // Chart system state
+  openChartIndicator: null,
+  setOpenChartIndicator: (id) => set({ openChartIndicator: id }),
+
+  // Decomposition view
+  decompositionCapital: null,
+  setDecompositionCapital: (c) => set({ decompositionCapital: c }),
+
+  // Era report
+  showEraReport: false,
+  setShowEraReport: (show) => set({ showEraReport: show }),
+
+  // Session mode state
+  sessionMeta: null,
+  sessionConfig: null,
+  annotations: [],
+  showReflectionCard: false,
+
   // ── Core game actions ─────────────────────────────────────────────────────
 
   applyAction: (actionId, geoid, magnitude) => {
@@ -592,6 +651,32 @@ export const useTerraStore = create<TerraStore>((set, get) => ({
     const { engineState } = get();
     const [newState] = engineReduceProductionAsset(engineState, geoid, commodity, deltaVolume);
     set({ engineState: newState });
+  },
+
+  scheduleRetirement: (assetId, year) => {
+    const { engineState } = get();
+    const newState = engineScheduleRetirement(engineState, assetId, year);
+    set({ engineState: newState });
+  },
+
+  accelerateRetirement: (assetId, newYear) => {
+    const { engineState } = get();
+    const newState = engineAccelerateRetirement(engineState, assetId, newYear);
+    set({ engineState: newState });
+  },
+
+  delayRetirement: (assetId, newYear) => {
+    const { engineState } = get();
+    const [newState, result] = engineDelayRetirement(engineState, assetId, newYear);
+    set({ engineState: newState });
+    return result;
+  },
+
+  cancelQueued: (assetId) => {
+    const { engineState } = get();
+    const [newState, result] = engineCancelQueued(engineState, assetId);
+    set({ engineState: newState });
+    return result;
   },
 
   queueAction: (actionId, geoid, magnitude, decisionYear, overrideOp) => {
@@ -643,12 +728,17 @@ export const useTerraStore = create<TerraStore>((set, get) => ({
     const newConditions = evaluateQuestConditions(activeScenario, newState);
     const autoPause = detectAutoPause(prevState, newState, events, prevConditions, newConditions);
 
+    // Session max_year: auto-show reflection card when limit reached
+    const { sessionConfig } = get();
+    const hitMaxYear = sessionConfig?.max_year != null && newState.year >= sessionConfig.max_year;
+
     set({
       engineState: newState, yearSnapshots: newSnapshots, actionLog,
       remainingBudget: remaining,
       eventHistory: [...eventHistory, ...events],
       questConditions: newConditions,
       pendingAutoPause: autoPause,
+      ...(hitMaxYear ? { showReflectionCard: true } : {}),
     });
 
     // Campaign 2 win/loss check
@@ -771,7 +861,7 @@ export const useTerraStore = create<TerraStore>((set, get) => ({
   },
 
   saveToSlot: (slot_id, name) => {
-    const { engineState, actionLog, eventHistory, activeScenario, gameSeed } = get();
+    const { engineState, actionLog, eventHistory, activeScenario, gameSeed, sessionMeta, annotations } = get();
     const digest = computeReplayDigest(engineState);
     const file: ScenarioFile = {
       schema_version: '3.0',
@@ -785,6 +875,7 @@ export const useTerraStore = create<TerraStore>((set, get) => ({
       eventHistory,
       year_reached: engineState.year,
       replay_digest: digest,
+      ...(sessionMeta ? { session_meta: sessionMeta, annotations } : {}),
     };
     persistenceSaveToSlot(browserStorage, slot_id, file);
     get().refreshSlots();
@@ -832,7 +923,7 @@ export const useTerraStore = create<TerraStore>((set, get) => ({
   },
 
   exportScenario: () => {
-    const { engineState, actionLog, eventHistory, activeScenario, gameSeed } = get();
+    const { engineState, actionLog, eventHistory, activeScenario, gameSeed, sessionMeta, annotations } = get();
     const digest = computeReplayDigest(engineState);
     const file: ScenarioFile = {
       schema_version: '3.0',
@@ -846,6 +937,7 @@ export const useTerraStore = create<TerraStore>((set, get) => ({
       eventHistory,
       year_reached: engineState.year,
       replay_digest: digest,
+      ...(sessionMeta ? { session_meta: sessionMeta, annotations } : {}),
     };
     const json = exportToJson(file);
     const blob = new Blob([json], { type: 'application/json' });
@@ -1083,4 +1175,45 @@ export const useTerraStore = create<TerraStore>((set, get) => ({
     campaignOutcome: null,
     campaignFlyTarget: null,
   }),
+
+  // ── Session mode actions ──────────────────────────────────────────────────
+
+  enterSessionMode: (sessionCode, participantLabel, config) => {
+    const meta: SessionMeta = {
+      session_code: sessionCode,
+      participant_label: participantLabel,
+      started_at: new Date().toISOString(),
+      app_version: '1.0',
+    };
+
+    set({
+      sessionMeta: meta,
+      sessionConfig: config ?? null,
+      annotations: [],
+      showReflectionCard: false,
+      ...(config?.fixed_seed != null ? { gameSeed: config.fixed_seed } : {}),
+    });
+
+    // Auto-start campaign if config specifies one
+    if (config?.campaign_id) {
+      get().startCampaign(config.campaign_id);
+    }
+  },
+
+  addAnnotation: (a) => {
+    const annotation: Annotation = {
+      ...a,
+      id: `ann_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+      timestamp: Date.now(),
+    };
+    set(s => ({ annotations: [...s.annotations, annotation] }));
+  },
+
+  setShowReflectionCard: (show) => set({ showReflectionCard: show }),
+
+  replaySessionFile: (file) => replayFile(file),
 }));
+
+// Re-export session types so consumers don't need to import from engine
+export type { SessionMeta, SessionConfig, Annotation };
+export type { AnnotationTrigger } from '../engine/types.js';

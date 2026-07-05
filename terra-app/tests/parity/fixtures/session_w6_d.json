@@ -1,0 +1,66 @@
+{
+  "schema_version": "3.0",
+  "terra_version": "1.0",
+  "exported_at": "2026-07-05T12:15:00.000Z",
+  "name": "WY2032 — Table 4 — Year 2030",
+  "gameSeed": 314159265,
+  "start_year": 2025,
+  "activeScenario": null,
+  "actionLog": [
+    {
+      "type": "queue",
+      "actionId": "wind_utility",
+      "geoid": "56021",
+      "magnitude": 200,
+      "year": 2025,
+      "decisionYear": 2025,
+      "timestamp": 0
+    },
+    {
+      "type": "apply",
+      "actionId": "workforce_retraining",
+      "geoid": "56021",
+      "magnitude": 1,
+      "year": 2027,
+      "timestamp": 2
+    },
+    {
+      "type": "queue",
+      "actionId": "wind_utility",
+      "geoid": "56025",
+      "magnitude": 300,
+      "year": 2028,
+      "decisionYear": 2028,
+      "timestamp": 3
+    }
+  ],
+  "eventHistory": [],
+  "year_reached": 2030,
+  "replay_digest": "",
+  "session_meta": {
+    "session_code": "WY2032",
+    "participant_label": "Table 4",
+    "started_at": "2026-07-05T09:00:00.000Z",
+    "app_version": "1.0"
+  },
+  "annotations": [
+    {
+      "id": "ann_w6d_001",
+      "year": 2027,
+      "trigger_type": "build_decision",
+      "trigger_id": "build_complete_y2027",
+      "prompt": "Why this investment in this county?",
+      "text": "Retraining addresses near-term displacement; wind expansion follows.",
+      "timestamp": 1720176900000
+    },
+    {
+      "id": "ann_w6d_002",
+      "year": 2028,
+      "trigger_type": "build_decision",
+      "trigger_id": "build_complete_y2028",
+      "prompt": "Why this investment in this county?",
+      "text": "Expanding wind to Natrona — diversifying geography to reduce single-county risk.",
+      "timestamp": 1720263300000
+    }
+  ]
+}

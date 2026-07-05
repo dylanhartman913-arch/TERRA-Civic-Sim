@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { MapView } from './ui/map/MapView.js';
 import { ActionPalette } from './ui/panels/ActionPalette.js';
 import { CountyCardDrawer } from './ui/panels/CountyCardDrawer.js';
@@ -24,16 +24,48 @@ import { CampaignOutcome } from './ui/campaigns/CampaignOutcome.js';
 import { OnboardingTooltips } from './ui/onboarding/OnboardingTooltips.js';
 import { MethodsPage } from './ui/pages/MethodsPage.js';
 import { ResourceHUD } from './ui/panels/ResourceHUD.js';
+import { ReflectionCard } from './ui/panels/ReflectionCard.js';
+import { DebriefView } from './ui/panels/DebriefView.js';
+import { AnalyzeView } from './ui/panels/AnalyzeView.js';
 import { useTerraStore } from './state/store.js';
+import type { SessionConfig } from './engine/types.js';
 
-type AppState = 'title' | 'campaign_select' | 'playing' | 'outcome';
+type AppState = 'title' | 'session_start' | 'campaign_select' | 'playing' | 'outcome' | 'debrief' | 'analyze';
 
 const isDebug = typeof window !== 'undefined' && window.location.search.includes('debug=1');
 
+/** Read ?session=<code> from URL; returns empty string if absent. */
+function getUrlSessionCode(): string {
+  if (typeof window === 'undefined') return '';
+  return new URLSearchParams(window.location.search).get('session') ?? '';
+}
+
+const inputStyle: React.CSSProperties = {
+  background: 'var(--bg-base)',
+  border: '1px solid var(--border)',
+  borderRadius: 4,
+  color: 'var(--text-primary)',
+  fontFamily: 'var(--font-mono)',
+  fontSize: 12,
+  padding: '8px 10px',
+  width: '100%',
+  outline: 'none',
+  boxSizing: 'border-box',
+};
+
 export default function App() {
-  const [appState, setAppState] = useState<AppState>('title');
+  const urlSessionCode = getUrlSessionCode();
+  const [appState, setAppState] = useState<AppState>(urlSessionCode ? 'session_start' : 'title');
   const [showSaveLoad, setShowSaveLoad] = useState(false);
   const [showMethods, setShowMethods] = useState(false);
+
+  // Session start screen local state
+  const [sessionCodeInput, setSessionCodeInput] = useState(urlSessionCode);
+  const [participantLabel, setParticipantLabel] = useState('');
+  const [sessionConfigRaw, setSessionConfigRaw] = useState('');
+  const [sessionConfigError, setSessionConfigError] = useState('');
+  const sessionFileRef = useRef<HTMLInputElement>(null);
+
   const [reducedMotion, setReducedMotion] = useState(() => {
     if (typeof window === 'undefined') return false;
     try {
@@ -45,6 +77,11 @@ export default function App() {
 
   const replayMode = useTerraStore(s => s.replayMode);
   const comparisonMode = useTerraStore(s => s.comparisonMode);
+  const sessionMeta = useTerraStore(s => s.sessionMeta);
+  const sessionConfig = useTerraStore(s => s.sessionConfig);
+  const showReflectionCard = useTerraStore(s => s.showReflectionCard);
+  const setShowReflectionCard = useTerraStore(s => s.setShowReflectionCard);
+  const enterSessionMode = useTerraStore(s => s.enterSessionMode);
   const activeCampaign = useTerraStore(s => s.activeCampaign);
   const campaignAct = useTerraStore(s => s.campaignAct);
   const campaignOutcome = useTerraStore(s => s.campaignOutcome);
@@ -72,6 +109,55 @@ export default function App() {
       try { localStorage.setItem('terra_reduced_motion', String(next)); } catch { /* ignore */ }
       return next;
     });
+  }
+
+  // Session: parse optional config JSON and enter session mode
+  function handleJoinSession() {
+    const code = sessionCodeInput.trim();
+    if (!code) return;
+    if (!participantLabel.trim()) return;
+
+    let config: SessionConfig | undefined;
+    if (sessionConfigRaw.trim()) {
+      try {
+        const parsed = JSON.parse(sessionConfigRaw.trim()) as SessionConfig;
+        if (parsed.schema_version !== '1.0') throw new Error('Unexpected schema_version');
+        config = parsed;
+        setSessionConfigError('');
+      } catch (err) {
+        setSessionConfigError(`Config parse error: ${String(err)}`);
+        return;
+      }
+    }
+
+    enterSessionMode(code, participantLabel.trim(), config);
+
+    // If config specifies a campaign, enterSessionMode already calls startCampaign
+    if (config?.campaign_id) {
+      setAppState('playing');
+    } else {
+      setAppState('campaign_select');
+    }
+  }
+
+  // Session config file loader
+  function handleSessionConfigFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const text = reader.result as string;
+      setSessionConfigRaw(text);
+      setSessionConfigError('');
+      // Auto-populate session code from file if not already set
+      try {
+        const parsed = JSON.parse(text) as SessionConfig;
+        if (parsed.session_code && !sessionCodeInput.trim()) {
+          setSessionCodeInput(parsed.session_code);
+        }
+      } catch { /* ignore parse errors here; validated on join */ }
+    };
+    reader.readAsText(file);
   }
 
   // Global keyboard shortcuts
@@ -193,8 +279,233 @@ export default function App() {
             Begin
           </button>
 
+          {/* Workshop session entry — enter code or type ?session=code in URL */}
+          <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+            <input
+              value={sessionCodeInput}
+              onChange={e => setSessionCodeInput(e.target.value)}
+              placeholder="Session code"
+              onKeyDown={e => {
+                if (e.key === 'Enter' && sessionCodeInput.trim()) setAppState('session_start');
+              }}
+              style={{
+                background: 'var(--bg-elevated)',
+                border: '1px solid var(--border)',
+                borderRadius: 4,
+                color: 'var(--text-primary)',
+                fontFamily: 'var(--font-mono)',
+                fontSize: 11,
+                padding: '6px 10px',
+                width: 120,
+                outline: 'none',
+                textAlign: 'center',
+              }}
+            />
+            <button
+              onClick={() => { if (sessionCodeInput.trim()) setAppState('session_start'); }}
+              disabled={!sessionCodeInput.trim()}
+              style={{
+                padding: '6px 12px',
+                background: sessionCodeInput.trim() ? 'var(--bg-surface)' : 'transparent',
+                border: '1px solid var(--border)',
+                borderRadius: 4,
+                color: sessionCodeInput.trim() ? 'var(--text-secondary)' : 'var(--text-muted)',
+                fontFamily: 'var(--font-mono)',
+                fontSize: 11,
+                cursor: sessionCodeInput.trim() ? 'pointer' : 'default',
+              }}
+            >
+              Join
+            </button>
+          </div>
+
+          <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+            <button
+              onClick={() => setShowMethods(true)}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: 'var(--text-muted)',
+                fontFamily: 'var(--font-mono)',
+                fontSize: 10,
+                cursor: 'pointer',
+                textDecoration: 'underline',
+                letterSpacing: 1,
+              }}
+            >
+              Methods & Sources
+            </button>
+            <button
+              onClick={() => setAppState('debrief')}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: 'var(--text-muted)',
+                fontFamily: 'var(--font-mono)',
+                fontSize: 10,
+                cursor: 'pointer',
+                textDecoration: 'underline',
+                letterSpacing: 1,
+              }}
+            >
+              ◆ Debrief
+            </button>
+            <button
+              onClick={() => setAppState('analyze')}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: 'var(--text-muted)',
+                fontFamily: 'var(--font-mono)',
+                fontSize: 10,
+                cursor: 'pointer',
+                textDecoration: 'underline',
+                letterSpacing: 1,
+              }}
+            >
+              ⣿ Analyze
+            </button>
+          </div>
+        </div>
+
+        {showMethods && (
+          <MethodsPage onClose={() => setShowMethods(false)} />
+        )}
+      </div>
+    );
+  }
+
+  // ── Debrief ────────────────────────────────────────────────────────────────
+  if (appState === 'debrief') {
+    return <DebriefView onClose={() => setAppState('title')} />;
+  }
+
+  // ── Analyze ────────────────────────────────────────────────────────────────
+  if (appState === 'analyze') {
+    return <AnalyzeView onClose={() => setAppState('title')} />;
+  }
+
+  // ── Session start ──────────────────────────────────────────────────────────
+  if (appState === 'session_start') {
+    const canJoin = sessionCodeInput.trim().length > 0 && participantLabel.trim().length > 0;
+    return (
+      <div style={{
+        position: 'fixed',
+        inset: 0,
+        background: 'var(--bg-base)',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontFamily: 'var(--font-mono)',
+        gap: 20,
+      }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: 32, fontWeight: 700, color: 'var(--teal)', letterSpacing: 6 }}>
+            TERRA
+          </div>
+          <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 6, letterSpacing: 1 }}>
+            Workshop Session
+          </div>
+        </div>
+
+        <div style={{
+          background: 'var(--bg-elevated)',
+          border: '1px solid var(--border)',
+          borderRadius: 8,
+          padding: 24,
+          width: 320,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 14,
+        }}>
+          {/* Session code */}
+          <div>
+            <div style={{ fontSize: 10, color: 'var(--text-muted)', marginBottom: 5, letterSpacing: 0.5 }}>
+              SESSION CODE
+            </div>
+            <input
+              value={sessionCodeInput}
+              onChange={e => setSessionCodeInput(e.target.value)}
+              placeholder="e.g. WY2032"
+              style={inputStyle}
+            />
+          </div>
+
+          {/* Participant label */}
+          <div>
+            <div style={{ fontSize: 10, color: 'var(--text-muted)', marginBottom: 5, letterSpacing: 0.5 }}>
+              YOUR NAME / TABLE
+            </div>
+            <input
+              value={participantLabel}
+              onChange={e => setParticipantLabel(e.target.value)}
+              placeholder="e.g. Table 3 or your name"
+              onKeyDown={e => { if (e.key === 'Enter' && canJoin) handleJoinSession(); }}
+              style={inputStyle}
+              autoFocus
+            />
+          </div>
+
+          {/* Config file loader */}
+          <div>
+            <div style={{ fontSize: 10, color: 'var(--text-muted)', marginBottom: 5, letterSpacing: 0.5 }}>
+              SESSION CONFIG (optional — load file provided by facilitator)
+            </div>
+            <input
+              ref={sessionFileRef}
+              type="file"
+              accept=".json"
+              onChange={handleSessionConfigFile}
+              style={{ display: 'none' }}
+            />
+            <button
+              onClick={() => sessionFileRef.current?.click()}
+              style={{
+                width: '100%',
+                padding: '7px 0',
+                background: 'transparent',
+                border: '1px solid var(--border)',
+                borderRadius: 4,
+                color: sessionConfigRaw ? 'var(--teal)' : 'var(--text-muted)',
+                fontFamily: 'var(--font-mono)',
+                fontSize: 11,
+                cursor: 'pointer',
+                textAlign: 'center',
+              }}
+            >
+              {sessionConfigRaw ? 'Config loaded' : 'Load config.json'}
+            </button>
+            {sessionConfigError && (
+              <div style={{ fontSize: 10, color: 'var(--deficit)', marginTop: 4 }}>
+                {sessionConfigError}
+              </div>
+            )}
+          </div>
+
+          {/* Join button */}
           <button
-            onClick={() => setShowMethods(true)}
+            onClick={handleJoinSession}
+            disabled={!canJoin}
+            style={{
+              padding: '11px 0',
+              background: canJoin ? 'var(--teal-dim)' : 'var(--bg-surface)',
+              border: 'none',
+              borderRadius: 4,
+              color: canJoin ? 'var(--text-primary)' : 'var(--text-muted)',
+              fontFamily: 'var(--font-mono)',
+              fontSize: 13,
+              fontWeight: 500,
+              cursor: canJoin ? 'pointer' : 'default',
+              letterSpacing: 0.5,
+            }}
+          >
+            Join Session
+          </button>
+
+          {/* Back to title */}
+          <button
+            onClick={() => setAppState('title')}
             style={{
               background: 'transparent',
               border: 'none',
@@ -203,16 +514,11 @@ export default function App() {
               fontSize: 10,
               cursor: 'pointer',
               textDecoration: 'underline',
-              letterSpacing: 1,
             }}
           >
-            Methods & Sources
+            Back
           </button>
         </div>
-
-        {showMethods && (
-          <MethodsPage onClose={() => setShowMethods(false)} />
-        )}
       </div>
     );
   }
@@ -342,6 +648,45 @@ export default function App() {
             >
               ☰ Save / Load
             </button>
+
+            {/* Session mode — report button + participant badge */}
+            {sessionMeta && (
+              <>
+                <button
+                  onClick={() => setShowReflectionCard(true)}
+                  title="Session Report"
+                  style={{
+                    padding: '6px 14px',
+                    background: 'var(--teal-dim)',
+                    border: '1px solid var(--border)',
+                    borderRadius: 4,
+                    color: 'var(--text-primary)',
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 12,
+                    cursor: 'pointer',
+                  }}
+                >
+                  ◆ Report
+                </button>
+                <div style={{
+                  padding: '6px 10px',
+                  background: 'var(--bg-surface)',
+                  border: '1px solid var(--border)',
+                  borderRadius: 4,
+                  color: 'var(--text-muted)',
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 10,
+                  userSelect: 'none',
+                }}>
+                  {sessionMeta.participant_label}
+                  {sessionConfig?.max_year != null && (
+                    <span style={{ color: 'var(--text-muted)', marginLeft: 6 }}>
+                      → {sessionConfig.max_year}
+                    </span>
+                  )}
+                </div>
+              </>
+            )}
           </div>
         </div>
 
@@ -362,6 +707,9 @@ export default function App() {
 
       {/* Auto-pause modal (fixed overlay) */}
       <AutoPauseModal />
+
+      {/* Session reflection card */}
+      {showReflectionCard && <ReflectionCard />}
 
       {/* Campaign narration — Act 1 */}
       {activeCampaign && campaignAct === 1 && (

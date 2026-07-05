@@ -3,6 +3,7 @@ import { loadFixture, loadInitialStateWithRetirements, computeDigestMd5, compute
 import { advanceYear } from '../../src/engine/engine.js';
 import type { AssetInstance } from '../../src/engine/types.js';
 
+// Assertion fixture (structural assertions — same in Golden G and G′)
 const fixture = loadFixture('golden_g') as {
   fixture_id: string;
   assertions: {
@@ -23,6 +24,13 @@ const fixture = loadFixture('golden_g') as {
     dj_capacity_drop_mw: number;
     jb_capacity_drop_mw: number;
   };
+  digests_yr2027: { state_digest_md5: string; fiscal_digest_md5: string; existing_assets_digest_md5: string };
+  digests_yr2031: { state_digest_md5: string; fiscal_digest_md5: string; existing_assets_digest_md5: string };
+  digests_yr2045: { state_digest_md5: string; fiscal_digest_md5: string; existing_assets_digest_md5: string };
+};
+
+// Digest fixture — engine v3.1 (autonomous decline active); use Golden G′ for digest checks
+const primeFixture = loadFixture('golden_g_prime') as {
   digests_yr2027: { state_digest_md5: string; fiscal_digest_md5: string; existing_assets_digest_md5: string };
   digests_yr2031: { state_digest_md5: string; fiscal_digest_md5: string; existing_assets_digest_md5: string };
   digests_yr2045: { state_digest_md5: string; fiscal_digest_md5: string; existing_assets_digest_md5: string };
@@ -93,25 +101,25 @@ describe('Golden G — Scheduled Baseline Retirements 2025→2045', () => {
       .toBe(fixture.assertions.yr2045_bus_56037_capacity_mw);
   });
 
-  it('(7g) Digests match fixture at year 2027', () => {
+  it('(7g) Digests match Golden G′ at year 2027 (engine v3.1 — autonomous decline active)', () => {
     const state = advanceToYear(loadInitialStateWithRetirements(), 2027);
-    expect(computeDigestMd5(state).md5).toBe(fixture.digests_yr2027.state_digest_md5);
-    expect(computeFiscalDigestMd5(state).md5).toBe(fixture.digests_yr2027.fiscal_digest_md5);
-    expect(computeExistingAssetsDigestMd5(state).md5).toBe(fixture.digests_yr2027.existing_assets_digest_md5);
+    expect(computeDigestMd5(state).md5).toBe(primeFixture.digests_yr2027.state_digest_md5);
+    expect(computeFiscalDigestMd5(state).md5).toBe(primeFixture.digests_yr2027.fiscal_digest_md5);
+    expect(computeExistingAssetsDigestMd5(state).md5).toBe(primeFixture.digests_yr2027.existing_assets_digest_md5);
   });
 
-  it('(7h) Digests match fixture at year 2031', () => {
+  it('(7h) Digests match Golden G′ at year 2031', () => {
     const state = advanceToYear(loadInitialStateWithRetirements(), 2031);
-    expect(computeDigestMd5(state).md5).toBe(fixture.digests_yr2031.state_digest_md5);
-    expect(computeFiscalDigestMd5(state).md5).toBe(fixture.digests_yr2031.fiscal_digest_md5);
-    expect(computeExistingAssetsDigestMd5(state).md5).toBe(fixture.digests_yr2031.existing_assets_digest_md5);
+    expect(computeDigestMd5(state).md5).toBe(primeFixture.digests_yr2031.state_digest_md5);
+    expect(computeFiscalDigestMd5(state).md5).toBe(primeFixture.digests_yr2031.fiscal_digest_md5);
+    expect(computeExistingAssetsDigestMd5(state).md5).toBe(primeFixture.digests_yr2031.existing_assets_digest_md5);
   });
 
-  it('(7i) Digests match fixture at year 2045', () => {
+  it('(7i) Digests match Golden G′ at year 2045', () => {
     const state = advanceToYear(loadInitialStateWithRetirements(), 2045);
-    expect(computeDigestMd5(state).md5).toBe(fixture.digests_yr2045.state_digest_md5);
-    expect(computeFiscalDigestMd5(state).md5).toBe(fixture.digests_yr2045.fiscal_digest_md5);
-    expect(computeExistingAssetsDigestMd5(state).md5).toBe(fixture.digests_yr2045.existing_assets_digest_md5);
+    expect(computeDigestMd5(state).md5).toBe(primeFixture.digests_yr2045.state_digest_md5);
+    expect(computeFiscalDigestMd5(state).md5).toBe(primeFixture.digests_yr2045.fiscal_digest_md5);
+    expect(computeExistingAssetsDigestMd5(state).md5).toBe(primeFixture.digests_yr2045.existing_assets_digest_md5);
   });
 
   it('(7j) Original state is unmodified (pure function)', () => {

@@ -31,6 +31,30 @@ something changed that shouldn't have.
 | Golden F | fiscal digest after X2 (-10M tons) | `b2a9567a9545db98d2509c9e75a98a66` |
 | Golden F | existing_assets digest before X2 | `a881df20643298394d53c2ac43012fe3` |
 | Golden F | existing_assets digest after X2 (-10M tons) | `80f48310c47b6dd9c97dfb999da4bf56` |
+| Golden G′ yr2027 | state digest (TS + Python) | `316fe412b9d030cc91db4b3ae50ede46` |
+| Golden G′ yr2027 | fiscal digest (TS + Python) | `63ecffeb94175ed53150c042b96b7c03` |
+| Golden G′ yr2027 | existing_assets digest (TS + Python) | `3a6f5ab498b87a8dbfba07f25a3ff482` |
+| Golden G′ yr2031 | state digest (TS + Python) | `a4619f25b45f7d006933de9efe83fbb2` |
+| Golden G′ yr2031 | fiscal digest (TS + Python) | `ad9da9c73fda224a42f0d9c1e5c685e4` |
+| Golden G′ yr2031 | existing_assets digest (TS + Python) | `509f39bec10746c8c751971b6e1146b2` |
+| Golden G′ yr2045 | state digest (TS + Python) | `f81d33175334549b3fe24a105a752fad` |
+| Golden G′ yr2045 | fiscal digest (TS + Python) | `045f30e465a518e78870f00bb9b27aea` |
+| Golden G′ yr2045 | existing_assets digest (TS + Python) | `d4fcd3d212d58ee99227d45e3937467a` |
+| Golden H Player A | state_digest_md5 | `a46c1dd9f9d23c467f300f918da931f0` |
+| Golden H Player A | fiscal_digest_md5 | `4fb3eb1b84612723780439595c157537` |
+| Golden H Player A | existing_assets_digest_md5 | `906ad6827b7b6646b6ae840151b2a6cd` |
+| Golden H Player B | state_digest_md5 | `866d7317755340a8bf9d6a4a1f3e3af4` |
+| Golden H Player B | fiscal_digest_md5 | `736e5343867c2f4c9c1fb892e0db65b9` |
+| Golden H Player B | existing_assets_digest_md5 | `906ad6827b7b6646b6ae840151b2a6cd` |
+| Golden J | history_digest_md5 | `b314878564e4118e7a60d6fc04d6a03d` |
+| Golden J | history_n_years | 63 |
+| Golden J | history_year_range | [2026, 2088] |
+| Golden I yr2031 | state_digest_md5 (TS + Python) | `a4619f25b45f7d006933de9efe83fbb2` |
+| Golden I yr2031 | fiscal_digest_md5 (TS + Python) | `ad9da9c73fda224a42f0d9c1e5c685e4` |
+| Golden I yr2031 | existing_assets_digest_md5 (TS + Python) | `509f39bec10746c8c751971b6e1146b2` |
+| Golden I yr2041 | state_digest_md5 (TS + Python) | `08a97354f047f0ed59e3ed52d99a1567` |
+| Golden I yr2041 | fiscal_digest_md5 (TS + Python) | `c251dce1f96ec87747160a75ed48fb64` |
+| Golden I yr2041 | existing_assets_digest_md5 (TS + Python) | `bafce40eb2e2e3d43846d18e87861283` |
 
 **Why two Golden B digests:** `716b189a...` is the pure engine parity contract
 (Vitest suite, no events). `a63401e3...` is what a real playthrough produces
@@ -40,20 +64,19 @@ a fixture bug.
 
 ---
 
-## Parity Test Count History
+## Parity Test Count History (summary — see Phase Z3 section for per-file breakdown)
 
-| After Phase | Passing |
-|---|---|
-| Phase 1 | 19/19 |
-| Phase 2 | 19/19 |
-| Phase 3 | 23/23 (+4 game loop assertions) |
-| Phase 4 | 23/23 (+4 replay integrity, total held at 23) |
-| Phase W3 (NB19) | 33/33 (+10 Golden D fiscal assertions) |
-| Phase W5 (engine v2.2) | 41/41 (+8 Golden E existing-asset assertions) |
-| Phase W5.1 (engine v2.3) | 43/43 (+2 Golden E X2/production_asset assertions) |
-| Phase W5.2 (engine v2.4) | 52/52 (+9 Golden F three-ledger X2 assertions) |
-| Phase Z1 (engine v3.0 TS) | 76/76 (+14 retirement + 10 Golden G) |
-| Phase Z1 (engine v3.0 Python) | 24/24 (14 retirement + 10 Golden G) |
+| After Phase | TS | Python | Total |
+|---|---|---|---|
+| Phase 1–W5.2 | 52 | — | 52 |
+| Phase Z1 (v3.0) | 76 | 24 | 100 |
+| Phase Z1.1 (v3.1, Golden G′) | 96 | 34 | 130 |
+| Phase Z2 (v3.3, Golden H) | 111 | 49 | 160 |
+| Phase Z3 (v4.0, Golden J) | 129 | 65 | 194 |
+| Phase Z4 (v4.1, Golden I) | **147** | **83** | **230** |
+| Phase W6 (debrief + W5 session tests) | **174** | **83** | **257** |
+| V2 (v4.2, Golden J′) | **191** | **99** | **290** |
+| V4 (analyze-v4.test.ts) | **215** | **99** | **314** |
 
 ---
 
@@ -903,4 +926,531 @@ Assertions:
 - `reduce_production_asset`: 0 external call sites
 - Direct `state["existing_assets"]` reads: 2 in generate_golden_e.py (safe — materialized view preserves shape)
 
-#
+---
+
+## Phase Z1.1 — Engine v3.1: Autonomous PRB Coal Decline + Reclamation Arc + Golden G′
+**Date completed:** 2026-07-03
+**Status:** ✓ Complete (TS + Python parity)
+
+### What was built
+- **`lifecycle_coefficients.json`**: new data file; `prb_coal_56005` entry: `annual_decline_rate: -0.02` (−2%/yr compound surface decline), `start_year: 2026`
+- **Python v3.1** (`terra_engine.py`): `lifecycle_coefficients` param added to `initialize_state`; `_apply_lifecycle_effects()` called in `advance_year` — mutates PRB Coal Mines `production_volume` by −2%/yr, accumulates reclamation obligation (bond cohort log → `active_reclamation_acres` → `reclamation_jobs_direct`)
+- **TS v3.1** (`engine.ts`): identical port; `initializeState` extended; `_applyLifecycleEffects()` in `advanceYear`
+- **Golden G′ fixture** (`terra-app/tests/parity/fixtures/golden_g_prime.json`): 2045-endpoint, 3 digest checkpoints (2027/2031/2045), 11 behavioral assertions (production volume, reclamation acres/jobs arcs)
+- **golden-g-prime.test.ts**: 20 TS tests (11 behavioral + 9 digest parity); **TestGoldenGPrime**: 10 Python tests
+- **fixture_registry.json**: Golden G superseded (amendment_number=1), Golden G′ added (amendment_number=2), `amendments_used: 2`
+
+### Digest registry additions (Golden G′)
+| Artifact | Type | md5 |
+|---|---|---|
+| Golden G′ yr2027 | state digest (TS + Python) | `316fe412b9d030cc91db4b3ae50ede46` |
+| Golden G′ yr2027 | fiscal digest (TS + Python) | `63ecffeb94175ed53150c042b96b7c03` |
+| Golden G′ yr2027 | existing_assets digest (TS + Python) | `3a6f5ab498b87a8dbfba07f25a3ff482` |
+| Golden G′ yr2031 | state digest (TS + Python) | `a4619f25b45f7d006933de9efe83fbb2` |
+| Golden G′ yr2031 | fiscal digest (TS + Python) | `ad9da9c73fda224a42f0d9c1e5c685e4` |
+| Golden G′ yr2031 | existing_assets digest (TS + Python) | `509f39bec10746c8c751971b6e1146b2` |
+| Golden G′ yr2045 | state digest (TS + Python) | `f81d33175334549b3fe24a105a752fad` |
+| Golden G′ yr2045 | fiscal digest (TS + Python) | `045f30e465a518e78870f00bb9b27aea` |
+| Golden G′ yr2045 | existing_assets digest (TS + Python) | `d4fcd3d212d58ee99227d45e3937467a` |
+
+Note: Golden G′ state digest at 2027 (`316fe4...`) equals Golden G yr2027 state digest — state_digest
+excludes production volumes, so the decline is invisible to state_digest. The fixture_registry
+records this: `"amendment_reason": "fiscal_digest and existing_assets_digest values changed;
+state_digest values are identical."` This is by design.
+
+### Constraints upheld
+- Golden A–G state digests: **byte-identical** (advance_year lifecycle change doesn't alter EES/bus/sc_pools)
+- `_apply_lifecycle_effects` is copy-on-write; only affects `existing_assets` production_asset entries
+- `history` field: `[]` at this phase (added in v4.0)
+
+### Test count: 96 TS + 34 Python = 130 total
+- TS: Golden A: 2, Golden B: 10, Golden C: 7, Golden D: 11, Replay: 4, Golden E: 10, Golden F: 9, Retirement: 14, Golden G: 10, Golden G′: 20
+- Python: Retirement+EA: 15, Golden G: 10, Golden G′: 10 (=35 — but note TS Golden A has 2, Python hasn't yet added Golden A–F to this test file)
+
+---
+
+## Phase Z2 — Engine v3.3: Housing Stock + Golden H
+**Date completed:** 2026-07-03
+**Status:** ✓ Complete (TS + Python parity)
+
+### What was built
+- **`county_housing_baseline.json`**: new data file; per-county housing inventory (total_units, occupied, convertible, subsidized, permits_per_year, seasonal_excluded) for all 23 WY counties
+- **`housing_stock` asset class**: seeded into `asset_registry` at `initializeState`/`initialize_state` from housing baseline; NOT in `existing_assets` materialized view (so existing_assets_digest is unaffected)
+- **`housing_pressure_ratio`**: `occupied_units / total_units` — annual update in `advance_year`; population pressure from queued/commissioned assets adds to occupied count
+- **Housing actions** (v3 library already had them; engine now executes):
+  - `housing_retrofit_affordable`: converts N `housing_convertible_units` → subsidized, validates cap, raises `assessed_residential` by `N × $150k × 9.5% WY ratio`
+  - `affordable_housing`: queue N new units, commission at `op_year`, add to `housing_total_units` + `housing_subsidized_units`
+- **SMR housing pressure hook**: queued `smr_advanced` adds construction workforce pressure to Lincoln County housing in intervening years
+- **Golden H fixture** (`terra-app/tests/parity/fixtures/golden_h.json`): two-player scenario, Lincoln County 2025→2034
+
+### Golden H: two-player scenario (Lincoln County, Kemmerer boomtown 2026–2034)
+- **Player A**: do-nothing 2025→2034; housing_pressure_ratio < 1.05 (no stress)
+- **Player B**: queue Kemmerer SMR 345 MW (op=2030), retrofit 300 units, queue 100 new affordable units (op=2027), advance to 2034
+  - 300 convertible consumed → 115 remain (from original 415)
+  - 400 affordable_added (300 retrofit + 100 new-build)
+  - assessed_residential uplift = 300 × $150k × 9.5% = **$4,275,000**
+  - pressure_ratio lower in B than A (more supply)
+  - Ec elevated in B (SMR + housing EES)
+
+### Golden H digest registry
+| Player | Type | md5 |
+|---|---|---|
+| Golden H Player A | state_digest_md5 | `a46c1dd9f9d23c467f300f918da931f0` |
+| Golden H Player A | fiscal_digest_md5 | `4fb3eb1b84612723780439595c157537` |
+| Golden H Player A | existing_assets_digest_md5 | `906ad6827b7b6646b6ae840151b2a6cd` |
+| Golden H Player B | state_digest_md5 | `866d7317755340a8bf9d6a4a1f3e3af4` |
+| Golden H Player B | fiscal_digest_md5 | `736e5343867c2f4c9c1fb892e0db65b9` |
+| Golden H Player B | existing_assets_digest_md5 | `906ad6827b7b6646b6ae840151b2a6cd` |
+
+Note: A and B share the same `existing_assets_digest_md5` — `housing_stock` assets are intentionally
+excluded from the materialized `existing_assets` view.
+
+### Constraints upheld
+- Golden A–G′ state/fiscal/existing_assets digests: **byte-identical**
+- `housing_stock` asset not in `existing_assets` view → `existing_assets_digest` unaffected
+- `applyAction('housing_retrofit_affordable', ...)` throws if `units > housing_convertible_units`
+
+### Test count: 111 TS + 49 Python = 160 total
+- TS adds golden-h.test.ts: 15 tests (8a–8o)
+- Python adds TestGoldenH: 15 tests (8a–8o)
+
+---
+
+## Phase Z3 — Engine v4.0: Indicator Registry + History Recorder + Projection Runner + Golden J
+**Date completed:** 2026-07-03
+**Status:** ✓ Complete (TS + Python parity)
+
+### Why v4.0 (not v3.4)
+The indicator/history/projection system is a new observability tier — it adds a separate digest
+contract (`history_digest`), a new public API surface (`project`, `project_delta`, `computeIndicator`,
+`snapshotIndicators`), and a 17-indicator catalog. The jump from v3.3 → v4.0 reflects the additive
+scope: the three existing digest contracts (state_digest, fiscal_digest, existing_assets_digest)
+are byte-identical; history is a fourth, separate contract. The roadmap referred to a future
+"v3.2" step for decommissioning budget machinery — that step is still pending and will ship as
+a future version (not v3.2, since that label is now passed). The TS engine file header still reads
+"v2.4" (from Phase 1) — this is known debt; the header was not updated when the engine crossed
+v3.x. The version string in the Python file header is correct: v3.1 (last major feature was v3.1;
+v3.3 and v4.0 additions are annotated inline).
+
+### What was built
+
+**`src/indicators.py`** (new, 584 lines — Python):
+- `INDICATOR_CATALOG`: 17 IndicatorDef entries (E/Ec/S tiers, composites, derived)
+- `compute_indicator(state, id, scale, geoid?, denominator?)` — dispatch by id
+- `snapshot_indicators(state)` → `{year, study:{E,Ec,S}, counties:{geoid:{E,Ec,S,property_tax,cumulative_net,labor_utilization,service_funding_per_capita}}, pools:{...}}`
+- `payback_year`: property-tax-based payback vs `action_history` capex; ~2084 for dual Natrium at WY mill-levy rates
+- Pool utilization: 2 live (HALEU_kg_per_year, fuel_fabrication_units_per_year) + 4 stubs returning `None` (capital_cost_usd, labor_years, steel_tons, transmission_row_miles — Session 3 deliverables)
+
+**`terra-app/src/engine/indicators.ts`** (new, 518 lines — TypeScript):
+- Identical API to Python version
+- Uses `state.crosswalk.find(r => r.geoid === g && r.primary_bus === true)` for bus lookup
+
+**Engine changes (both runtimes)**:
+- `history: []` added to `initializeState` / `initialize_state`
+- `shallowCopyState` / `_shallow_copy_state`: history shallow-copied (snapshots are immutable dicts — never mutated after creation)
+- `advance_year` / `advanceYear`: appends `snapshot_indicators(state)` to history before returning
+- New public functions: `history_digest(state)`, `project(state, n)`, `project_delta(state, action, n)`
+- `history_digest` uses key-aware canonical JSON (integers → bare, other floats → Python `.0` suffix) to match Python's `json.dumps(sort_keys=True)`
+
+**Projection doctrine phrasing** (ships to UI verbatim):
+> "conditional forecasts under 'no further decisions,' not predictions"
+
+### Golden J fixture (`terra-app/tests/parity/fixtures/golden_j.json`)
+- Base: `loadInitialStateWithRetirements()` + Golden B action sequence; advance to 2028; `project(state, 60)`
+- Final year: 2088 (63 total snapshots: 2026/2027/2028 pre-projection + 60 projected)
+- Uses `loadInitialStateWithRetirements()` (not `loadInitialState()`) because lifecycle_coefficients are needed for the Campbell coal decline assertions in J4
+
+### Golden J digest registry
+| Artifact | Type | md5 |
+|---|---|---|
+| Golden J | history_digest_md5 | `b314878564e4118e7a60d6fc04d6a03d` |
+| Golden J | history_n_years | 63 |
+| Golden J | history_year_range | [2026, 2088] |
+
+### Golden J assertion values (both runtimes, identical)
+| Test | Assertion | Computed | Band/Threshold | Pass |
+|---|---|---|---|---|
+| J1 | payback_year, Laramie dual-SMR | 2084 | [2081, 2087] | ✓ |
+| J2 | labor_utilization @ 2030 (construction peak) | 0.073443 | [0.066099, 0.080787] | ✓ |
+| J3 | labor_utilization @ 2033 (post-commission) | 0.000000 | ≤ 0.001 | ✓ |
+| J4 | Campbell sfpc_2028 vs sfpc_2038 shrink | \|2028\|=748.70, \|2038\|=654.07, delta=94.63 | \|2038\| < \|2028\| | ✓ |
+
+### Test count reconciliation: Python +16 vs TS +18
+Golden J adds 16 Python tests and 18 TS tests — a 2-test gap that is **intentional**:
+
+**Python breakdown (+16):**
+| Class | Tests |
+|---|---|
+| TestReplayHistory | 6 (determinism, year count, sequential years, main digests unchanged, study/counties keys, county snapshot fields) |
+| TestGoldenJ | 10 (J1–J10) |
+
+**TypeScript breakdown (+18, file: golden-j.test.ts):**
+| Block | Tests |
+|---|---|
+| Structure suite (J-S1–J-S8) | 8 |
+| Main suite (J1–J10) | 10 |
+
+**The 2 extra TS tests (J-S7, J-S8) are TS-specific:**
+- **J-S7** (`history shallow copy is independent`): Explicitly verifies that advancing a forked state doesn't mutate the original's history array. Python's immutable-dict pattern makes this impossible to break — no explicit test needed.
+- **J-S8** (`snapshotIndicators produces same result as advance_year snapshot`): Cross-checks the public `snapshotIndicators` export against what `advanceYear` embedded. Python's optional-import guard (`_HAS_INDICATORS`) means the function isn't independently exported in the same way — covered implicitly by the determinism test.
+
+These are runtime-specific tests, not a miscount.
+
+### Final test count: 129 TS + 65 Python = 194 total
+| File / Class | TS | Python |
+|---|---|---|
+| golden-a.test.ts | 2 | — |
+| golden-b.test.ts | 10 | — |
+| golden-c.test.ts | 7 | — |
+| golden-d.test.ts | 11 | — |
+| golden-e.test.ts | 10 | — |
+| golden-f.test.ts | 9 | — |
+| retirement.test.ts | 14 | — |
+| golden-g.test.ts | 10 | — |
+| golden-g-prime.test.ts | 20 | — |
+| golden-h.test.ts | 15 | — |
+| replay-integrity.test.ts | 4 | — |
+| golden-j.test.ts | 18 | — |
+| **TS total** | **129** | |
+| Retirement + EA digest | — | 15 |
+| Golden G | — | 10 |
+| Golden G′ | — | 10 |
+| Golden H | — | 15 |
+| TestReplayHistory | — | 6 |
+| TestGoldenJ | — | 10 |
+| **Python total** | | **65** |
+
+### Call-site audit (v4.0, both runtimes)
+History is written at exactly 3 call sites per runtime — no others needed because `project` and `project_delta` inherit via `advance_year` loop:
+
+**Python (3 sites in `terra_engine.py`):**
+1. `initialize_state` (~line 1271): `"history": []`
+2. `_shallow_copy_state` (~line 1668): `new["history"] = list(state.get("history", []))`
+3. `advance_year` (~line 2043): `state["history"] = state.get("history", []) + [_snapshot_indicators(state)]`
+
+**TypeScript (3 sites in `engine.ts`):**
+1. `initializeState` (~line 926): `history: []`
+2. `shallowCopyState` (~line 687): `history: [...(state.history ?? [])]`
+3. `advanceYear` (before return): `state.history = [...(state.history ?? []), snapshotIndicators(state)]`
+
+### Known debt
+- TS engine file header (`engine.ts`) still reads "TERRA Engine v2.4" — never updated through v3.x/v4.0 cycles. Fix in next session's first commit.
+- 4 stub pool indicators (`capital_cost_usd`, `labor_years`, `steel_tons`, `transmission_row_miles`) return `None` pending budget pool machinery (Session 3 deliverables).
+- Roadmap text still references "v3.2" for decommissioning budget step — that label is passed; next decommission-budget phase should use whatever version is current when it ships.
+
+---
+
+## Parity Test Count History (updated)
+
+| After Phase | TS | Python | Total |
+|---|---|---|---|
+| Phase 1 | 19 | — | 19 |
+| Phase 2 | 19 | — | 19 |
+| Phase 3 | 23 | — | 23 |
+| Phase 4 | 23 | — | 23 |
+| Phase W3 | 33 | — | 33 |
+| Phase W5 | 41 | — | 41 |
+| Phase W5.1 | 43 | — | 43 |
+| Phase W5.2 | 52 | — | 52 |
+| Phase Z1 (v3.0) | 76 | 24 | 100 |
+| Phase Z1.1 (v3.1, Golden G′) | 96 | 34 | 130 |
+| Phase Z2 (v3.3, Golden H) | 111 | 49 | 160 |
+| Phase Z3 (v4.0, Golden J) | 129 | 65 | 194 |
+| Phase Z4 (v4.1, Golden I) | **147** | **83** | **230** |
+| Phase W6 (debrief + W5 session tests) | **174** | **83** | **257** |
+| V2 (v4.2, Golden J′) | **191** | **99** | **290** |
+| V4 (analyze-v4.test.ts) | **215** | **99** | **314** |
+
+---
+
+## Phase Z4 — Engine v4.1: Site Spawning + Succession Mechanics + Golden I
+**Date completed:** 2026-07-03
+**Status:** ✓ Complete (TS + Python parity)
+
+### Why v4.1 (not v4.2 or a new major)
+Site mechanics are a targeted additive layer on the existing asset_registry model. The three existing
+digest contracts (state_digest, fiscal_digest, existing_assets_digest) are byte-identical because site
+assets are excluded from all three serializations. The history_digest is unaffected (history snapshots
+do not enumerate asset_registry). No schema-breaking change occurred — the 16 new fields on AssetInstance
+are all nullable/null for baseline and player assets that aren't sites. A minor version bump is correct.
+
+### What was built
+
+**Both runtimes (`src/terra_engine.py` + `terra-app/src/engine/engine.ts`)**:
+
+**New constants:**
+- `SITE_COMPAT`: 3 site classes with succession parameters (literature-flagged as `confidence: 'low'`)
+  - `thermal` (coal/gas/nuclear): TTD-2yr, capex 15% off, compatible: `['smr_advanced', 'gas_combined_cycle']`
+  - `generator` (other MW): TTD-1yr, capex 10% off, compatible: `['battery_grid', 'pumped_hydro', 'data_center_hyperscale', 'data_center_campus_phase']`
+  - `mine` (reclaimed): TTD-1yr, capex 20% off, compatible: `['prairie_restoration', 'solar_utility', 'reclamation_tech']`
+- `COAL_TO_SMR_SITE_CLASS_COMPAT = 'thermal'`
+- `SITE_OPS_JOBS_PER_MW`: coal=0.28, gas=0.10, nuclear=0.38, wind=0.04, solar=0.02, hydro=0.15 (NREL JEDI proxies)
+- `SITE_WORKFORCE_HALF_LIFE_YEARS = 5` (Carley et al. 2018)
+
+**New types (`types.ts` only):**
+- `AssetClass` extended to include `'site'`
+- `AssetInstance` extended with 16 new nullable fields (site mechanics + succession tracking)
+
+**New helpers:**
+- `_site_class_for_asset` / `siteClassForAsset`: maps asset type → site_class ('thermal'|'generator'|'mine'|null)
+- `_spawn_site_from_retired` / `spawnSiteFromRetired`: constructs fully-populated site AssetInstance
+- `_find_site_for_action` / `findSiteForAction`: searches registry for compatible operating site in county
+
+**`queue_action` / `queueAction` changes:**
+- `coal_to_smr` path: inherit TX waiver from live thermal site (or operating coal baseline if no site yet);
+  **no TTD/capex discount** — brownfield premium already in `cost_2024=$8,500,000/MW`; `convert_source_asset_id` recorded
+- Other actions: check for compatible live site → if found, apply TTD reduction + capex discount + TX waiver capped at `interconnection_mw`
+
+**`advance_year` / `advanceYear` changes:**
+- After retirement block: loop over newly-retired MW-based generator assets → `_spawn_site_from_retired` → extend registry
+- After housing block: workforce pool decay using `N(t) = N0 × 0.5^(t/t½)` (Carley et al. 2018 half-life=5yr)
+
+**`_materialize_existing_assets` / `materializeExistingAssets`:**
+- Added `if asset_class == 'site': continue` — site assets are not reported in existing_assets (keeps digest stable)
+
+**`_seed_asset_registry` / `seedAssetRegistry` (all 3 seeding paths + housing):**
+- All 16 new fields seeded as `None`/`null` for baseline assets
+
+**`engine.ts` header:** Updated from `v2.4` to `v4.1` (resolves known debt from Phase 1).
+
+### Design decisions
+
+**Why coal_to_smr gets TX waiver but no TTD/capex discount:**
+TerraPower Kemmerer/Naughton project uses `coal_to_smr` as the primary convert action.
+The `cost_2024=$8,500,000/MW` was deliberate re-priced in the action library to include a
+brownfield premium (vs `smr_advanced` at $7,500,000/MW). Stacking a 15% capex discount
+would reduce `coal_to_smr` below greenfield cost, inverting the brownfield signal. TX waiver
+is separate — it reflects inherited grid infrastructure, not construction cost.
+
+**Why sites are excluded from existing_assets but not invisible:**
+`existing_assets` is a player-facing materialized view of baseline MW capacity and production
+assets. Site assets are regime-transition objects (invisible before retirement fires, consumed
+when a successor is placed). Including them in `existing_assets` would pollute the county card
+display. They remain in `asset_registry` (source of truth) and are accessible via direct registry
+queries in tests.
+
+**Succession confidence flag:**
+SITE_COMPAT TTD reductions (1–2yr) and capex discounts (10–20%) are flagged `confidence: 'low'`.
+Literature anchors (DOE 2022 coal-to-nuclear siting, Gorman et al. 2022 LBNL) support the
+direction and rough order-of-magnitude, but site-specific variance is high. Kemmerer is the only
+US precedent at scale. The magnitudes are deliberate judgment calls, not empirical regressions.
+
+### Golden I fixture (`terra-app/tests/parity/fixtures/golden_i.json`)
+- Base: `loadInitialStateWithRetirements()`, advance to 2031 (Jim Bridger retires, site spawns)
+- Zero player actions — digests at 2031 are IDENTICAL to Golden G′ yr2031
+
+### Golden I key assertion values (both runtimes)
+
+| Test | Assertion | Computed | Pass |
+|---|---|---|---|
+| i-a | site_asset_id | `site_56037_jim_bridger_power_plant_2031` | ✓ |
+| i-a | site_class | `thermal` | ✓ |
+| i-a | interconnection_mw | 2120.0 | ✓ |
+| i-a | workforce_pool_initial | 593.6 FTE | ✓ |
+| i-b | on-site SMR operational_year | 2041 | ✓ |
+| i-b | ttd_reduction_applied | 2 | ✓ |
+| i-b | capex_discount_fraction | 0.15 | ✓ |
+| i-b | tx_waiver_mw | 345.0 | ✓ |
+| i-c | greenfield SMR operational_year | 2043 | ✓ |
+| i-d | TTD improvement (greenfield - on-site) | 2 years | ✓ |
+| i-e | TX waiver cap (magnitude=3000) | 2120.0 MW | ✓ |
+| i-f | coal_to_smr ttd_reduction | null | ✓ |
+| i-f | coal_to_smr tx_waiver_mw | 345.0 | ✓ |
+| i-f | coal_to_smr convert_source_asset_id | `baseline_56037_jim_bridger_power_plant` | ✓ |
+| i-f | coal_to_smr operational_year | 2044 | ✓ |
+| i-g | workforce_pool_current @ 2041 | 148.4 FTE | ✓ |
+
+**Note on operational years:** The HALEU supply chain throttle (5000 kg initial core / 900 kg·yr⁻¹
+pool capacity = ceil(4100/900)=5 extra years, using the loop accumulator) adds 5 years to the base
+TTD. Greenfield SMR: 2031+7+5=2043. On-site SMR: 2043-2=2041. coal_to_smr (TTD=8): 2031+8+5=2044.
+All three are supply-chain-throttled under zero-player initial pool state.
+
+### Golden I digest registry
+| Artifact | md5 |
+|---|---|
+| yr2031 state_digest (identical to Golden G′) | `a4619f25b45f7d006933de9efe83fbb2` |
+| yr2031 fiscal_digest (identical to Golden G′) | `ad9da9c73fda224a42f0d9c1e5c685e4` |
+| yr2031 existing_assets_digest (identical to Golden G′) | `509f39bec10746c8c751971b6e1146b2` |
+| yr2041 state_digest | `08a97354f047f0ed59e3ed52d99a1567` |
+| yr2041 fiscal_digest | `c251dce1f96ec87747160a75ed48fb64` |
+| yr2041 existing_assets_digest | `bafce40eb2e2e3d43846d18e87861283` |
+
+### Literature citations (succession discount parameters)
+- DOE (2022). "Investigating Benefits and Challenges of Converting Retiring Coal Plant Sites to Nuclear." U.S. DOE Office of Nuclear Energy. → Siting compatibility framework, thermal site class anchor.
+- Gorman, W., Mills, A., Wiser, R. (2022). "Improving Estimates of Transmission Capital Costs for Utility-Scale Wind and Solar Projects." LBNL. → TX waiver rationale (inherited interconnection reduces grid capital).
+- Carley, S., Konisky, D. M., Atiq, Z., & Land, N. (2018). "Energy transition risks and vulnerabilities: a review." *Energy Research & Social Science*. → Workforce half-life 5yr anchor.
+- TerraPower / PacifiCorp (2024). Naughton/Kemmerer brownfield conversion. → Kemmerer Naughton precedent: coal plant site reuse, interconnection inheritance.
+
+### Call-site audit (v4.1, both runtimes)
+Site spawning is triggered at exactly 2 call sites per runtime:
+
+**Python:**
+1. `advance_year` (~line 2180): retirement loop → `_spawn_site_from_retired` → `state["asset_registry"] += spawned_sites`
+2. `advance_year` (~line 2210): workforce pool decay loop over `asset_class == 'site'` assets
+
+**TypeScript:**
+1. `advanceYear`: retirement loop → `spawnSiteFromRetired` → `state.asset_registry.push(...)`
+2. `advanceYear`: workforce pool decay loop over `asset_class === 'site'` assets
+
+Succession discount is applied at exactly 1 call site per runtime:
+- Python: `queue_action` succession block (~line 2044–2110)
+- TypeScript: `queueAction` succession block (matching logic)
+
+Site exclusion from materialized views is applied at exactly 1 call site per runtime:
+- Python: `_materialize_existing_assets`: `if a.get('asset_class') == 'site': continue`
+- TypeScript: `materializeExistingAssets`: `if (a.asset_class === 'site') continue`
+
+### Final test count: 147 TS + 83 Python = 230 total
+| File / Class | TS | Python |
+|---|---|---|
+| golden-a.test.ts | 2 | — |
+| golden-b.test.ts | 10 | — |
+| golden-c.test.ts | 7 | — |
+| golden-d.test.ts | 11 | — |
+| golden-e.test.ts | 10 | — |
+| golden-f.test.ts | 9 | — |
+| retirement.test.ts | 14 | — |
+| golden-g.test.ts | 10 | — |
+| golden-g-prime.test.ts | 20 | — |
+| golden-h.test.ts | 15 | — |
+| replay-integrity.test.ts | 4 | — |
+| golden-j.test.ts | 18 | — |
+| golden-i.test.ts | **18** | — |
+| **TS total** | **147** | |
+| Retirement + EA digest | — | 15 |
+| Golden G | — | 10 |
+| Golden G′ | — | 10 |
+| Golden H | — | 15 |
+| TestReplayHistory | — | 6 |
+| TestGoldenJ | — | 10 |
+| TestGoldenI | — | **18** |
+| **Python total** | | **83** |
+
+### Known debt
+- 4 stub pool indicators (`capital_cost_usd`, `labor_years`, `steel_tons`, `transmission_row_miles`) return `None` pending budget pool machinery.
+- SITE_COMPAT parameters (TTD reductions + capex discounts) are flagged `confidence: 'low'` — pending empirical calibration against additional brownfield case studies.
+- `gas_combined_cycle` is in `thermal` compatible_actions but no matching action in action_library_v3.json; harmless (no site is found if action doesn't exist) but should be cleaned up when gas CC action is added.
+
+---
+
+## Parity Test Count History (updated)
+
+| After Phase | TS | Python | Total |
+|---|---|---|---|
+| Phase 1 | 19 | — | 19 |
+| Phase 2 | 19 | — | 19 |
+| Phase 3 | 23 | — | 23 |
+| Phase 4 | 23 | — | 23 |
+| Phase W3 | 33 | — | 33 |
+| Phase W5 | 41 | — | 41 |
+| Phase W5.1 | 43 | — | 43 |
+| Phase W5.2 | 52 | — | 52 |
+| Phase Z1 (v3.0) | 76 | 24 | 100 |
+| Phase Z1.1 (v3.1, Golden G′) | 96 | 34 | 130 |
+| Phase Z2 (v3.3, Golden H) | 111 | 49 | 160 |
+| Phase Z3 (v4.0, Golden J) | 129 | 65 | 194 |
+| Phase Z4 (v4.1, Golden I) | **147** | **83** | **230** |
+| Phase W6 (debrief + W5 session tests) | **174** | **83** | **257** |
+| V2 (v4.2, Golden J′) | **191** | **99** | **290** |
+| V4 (analyze-v4.test.ts) | **215** | **99** | **314** |
+
+---
+
+## Phase V2 — Engine v4.2: Dynamic Population + Migration (Golden J′)
+
+**Date:** 2026-07-05  
+**Engine version:** 4.2  
+**Baseline:** Post-W6 (174 TS / 83 Python = 257 total)
+
+### What changed
+
+- `county_ees[geoid].population` and `working_age_population` now advance per-year in both runtimes via `advanceYear` / `advance_year`
+- Migration adjustment added: `ops_jobs × HOUSEHOLD_FACTOR × AVG_HOUSEHOLD_SIZE × ECONOMIC_BASE_MULTIPLIER` added to each county annually when `population_config.migration_enabled = true`
+- `IndicatorSnapshot` gains `population` and `working_age_population` fields — denominators for per-capita fiscals are now live rather than static 2025 baseline
+- **Bug fix:** `countPlayerOpsJobs` (TS) now reads `magnitude` when `capacity_mw` is null (player-queued assets); previously silently returned zero, suppressing migration entirely
+
+### New files
+
+- `terra-app/src/data/county_population_projections.json` — 157-county projection file (v4.2); sources: WY EAD 2022, CO SDO 2022, ACS 2022 5-year constant-share proxy
+- `terra-app/src/data/county_housing_baseline.json` — ACS 2022 housing inventory (Z2, included here for completeness)
+- `scripts/generate_population_projections.py` — generates the projection file; replaces planned Notebook 22
+
+### Golden J′ (Amendment 4)
+
+| Field | Value |
+|---|---|
+| fixture_id | `golden_j_prime` |
+| engine_version | 4.2 |
+| history_digest_md5 | `7b05722c9b11c2b405faf953c729977d` |
+| prior digest (golden_j) | `b314878564e4118e7a60d6fc04d6a03d` |
+| history_n_years | 63 |
+| history_year_range | [2026, 2088] |
+
+Digest changed because: IndicatorSnapshot now records `population` + `working_age_population` fields, and per-capita denominators use advancing population rather than static 2025 baseline. Campbell `sfpc` is more negative (declining pop / same recapture); Laramie pop grows from data-center + SMR ops migration.
+
+### V2 test delta
+
+Pre-V2 baseline (post-W6): **174 TS / 83 Python = 257 total**  
+Post-V2: **191 TS / 99 Python = 290 total**  
+**V2 delta: +17 TS / +16 Python = +33 total**
+
+- `golden-j-prime.test.ts` — 17 TS (V2 deliverable)
+- `tests/test_terra_engine_v3.py` TestPopulationV2 class — +16 Python
+
+`analyze-v4.test.ts` (24 TS) is **V4's file**, confirmed in V4's own close-out. It is present in the working tree and counted by the live test runner (bringing the runner total to 215 TS), but its session attribution is V4, not V2. V4's independent delta: **+24 TS / +0 Python** (191→215 TS).
+
+### Final V2 per-file test count
+
+| File / Class | TS | Python |
+|---|---|---|
+| golden-a.test.ts | 2 | — |
+| golden-b.test.ts | 10 | — |
+| golden-c.test.ts | 7 | — |
+| golden-d.test.ts | 11 | — |
+| golden-e.test.ts | 10 | — |
+| golden-f.test.ts | 9 | — |
+| retirement.test.ts | 14 | — |
+| golden-g.test.ts | 10 | — |
+| golden-g-prime.test.ts | 20 | — |
+| golden-h.test.ts | 15 | — |
+| replay-integrity.test.ts | 4 | — |
+| golden-i.test.ts | 18 | — |
+| golden-j.test.ts | 18 | — |
+| session-w5.test.ts | 8 | — |
+| session-w6-debrief.test.ts | 19 | — |
+| golden-j-prime.test.ts | 17 | — |
+| *(analyze-v4.test.ts — V4, not V2)* | *(24)* | — |
+| **TS total (V2)** | **191** | |
+| Retirement + EA digest | — | 15 |
+| Golden G | — | 10 |
+| Golden G′ | — | 10 |
+| Golden H | — | 15 |
+| TestReplayHistory | — | 6 |
+| TestGoldenJ | — | 10 |
+| TestGoldenI | — | 18 |
+| TestPopulationV2 (new) | — | **15** |
+| **Python total** | | **99** |
+
+### Population honesty table
+
+Scenario: **Golden B — WY Nuclear-DC Buildout**  
+Horizon: 2026 → 2031 (5 years), hypothetical 50 ops jobs held constant  
+Migration formula: `50 × 0.65 × 2.51 × 1.5 = 122 heads/yr`  
+Source for all WY counties: WY EAD 2022 (confidence: medium)  
+Migration multiplier source: Headwaters Economics (2017), confidence: **low**
+
+| County | GEOID | 2026 baseline | 2031 no-mig | 2031 w/mig (+50 ops jobs) | Δ heads | Δ % |
+|---|---|---|---|---|---|---|
+| Campbell WY | 56005 | 45,375 | 43,589 | 44,190 | +601 | +1.4% |
+| Laramie WY | 56021 | 102,337 | 104,921 | 105,537 | +616 | +0.6% |
+| Lincoln WY | 56023 | 20,193 | 20,702 | 21,318 | +616 | +3.0% |
+| Teton WY | 56039 | 24,487 | 25,992 | 26,617 | +625 | +2.4% |
+| Natrona WY | 56025 | 80,464 | 81,678 | 82,292 | +614 | +0.8% |
+
+Campbell declines under its own trend (-0.8%/yr EAD projection) even with migration partially offsetting. Migration effect is largest in percentage terms for smaller counties (Lincoln, Teton). For real player scenarios, ops_jobs will vary by action and year; this table uses a fixed 50-job constant as a reference case.
+
+### Known debt carried forward
+
+- 4 stub pool indicators (`capital_cost_usd`, `labor_years`, `steel_tons`, `transmission_row_miles`) return `None` pending budget pool machinery.
+- `analyze-v4.test.ts` is untracked (not staged) at V2 close-out — stage before next session.
+- Migration multiplier (1.5) is `confidence: low` — flag in UI and debrief output when migration is a material contributor to a county's projected change.

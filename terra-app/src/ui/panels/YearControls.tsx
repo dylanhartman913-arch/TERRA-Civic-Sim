@@ -26,6 +26,13 @@ export function YearControls() {
 
   const year = engineState.year;
   const activeBuilds = engineState.build_queue.filter(b => !b.commissioned).length;
+  const pendingRetirements = engineState.asset_registry.filter(
+    a => a.scheduled_retirement_year !== null &&
+         a.scheduled_retirement_year > year &&
+         a.lifecycle === 'operating' &&
+         a.asset_class !== 'housing_stock' &&
+         a.asset_class !== 'site',
+  ).length;
   const blocked = !!placementMode || !!pendingAutoPause;
 
   const btnBase: React.CSSProperties = {
@@ -57,19 +64,33 @@ export function YearControls() {
         </div>
       </div>
 
-      {/* Build queue badge */}
-      {activeBuilds > 0 && (
-        <div style={{
-          background: 'var(--bg-elevated)',
-          border: '1px solid var(--construction)',
-          borderRadius: 4,
-          padding: '4px 10px',
-          fontSize: 11,
-          color: 'var(--construction)',
-        }}>
-          {activeBuilds} active build{activeBuilds > 1 ? 's' : ''}
-        </div>
-      )}
+      {/* Build queue + retirement badges */}
+      <div style={{ display: 'flex', gap: 8 }}>
+        {activeBuilds > 0 && (
+          <div style={{
+            background: 'var(--bg-elevated)',
+            border: '1px solid var(--construction)',
+            borderRadius: 4,
+            padding: '4px 10px',
+            fontSize: 11,
+            color: 'var(--construction)',
+          }}>
+            {activeBuilds} build{activeBuilds > 1 ? 's' : ''} ↑
+          </div>
+        )}
+        {pendingRetirements > 0 && (
+          <div style={{
+            background: 'var(--bg-elevated)',
+            border: '1px solid var(--deficit)',
+            borderRadius: 4,
+            padding: '4px 10px',
+            fontSize: 11,
+            color: 'var(--deficit)',
+          }}>
+            {pendingRetirements} retirement{pendingRetirements > 1 ? 's' : ''} ↓
+          </div>
+        )}
+      </div>
 
       {/* Controls */}
       <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>

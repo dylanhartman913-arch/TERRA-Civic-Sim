@@ -1,5 +1,6 @@
 import { useTerraStore } from '../../state/store.js';
 import { computeEesSummary } from '../../engine/engine.js';
+import { DecompositionView } from './DecompositionView.js';
 
 function CircularGauge({
   label,
@@ -7,12 +8,14 @@ function CircularGauge({
   bandWidth,
   color,
   lowConfCount,
+  onClick,
 }: {
   label: string;
   value: number;
   bandWidth: number;
   color: string;
   lowConfCount: number;
+  onClick?: () => void;
 }) {
   const size = 64;
   const stroke = 5;
@@ -33,8 +36,10 @@ function CircularGauge({
         alignItems: 'center',
         gap: 4,
         position: 'relative',
+        cursor: onClick ? 'pointer' : undefined,
       }}
-      title={`${label}: ${value.toFixed(3)}/10\nUncertainty reflects ${lowConfCount} low-confidence coefficients`}
+      title={`${label}: ${value.toFixed(3)}/10\nUncertainty reflects ${lowConfCount} low-confidence coefficients\nClick to decompose`}
+      onClick={onClick}
     >
       <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
         {/* Background track */}
@@ -93,6 +98,7 @@ function CircularGauge({
 
 export function EesGauges() {
   const engineState = useTerraStore(s => s.engineState);
+  const setDecompositionCapital = useTerraStore(s => s.setDecompositionCapital);
   const summary = computeEesSummary(engineState);
   const sa = summary.study_area;
 
@@ -133,10 +139,11 @@ export function EesGauges() {
         Study Area EES
       </div>
       <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-        <CircularGauge label="E" value={sa.E} bandWidth={bandWidth} color="var(--teal)" lowConfCount={lowConfCount} />
-        <CircularGauge label="Ec" value={sa.Ec} bandWidth={bandWidth} color="var(--purple)" lowConfCount={lowConfCount} />
-        <CircularGauge label="S" value={sa.S} bandWidth={bandWidth} color="var(--amber)" lowConfCount={lowConfCount} />
+        <CircularGauge label="E" value={sa.E} bandWidth={bandWidth} color="var(--teal)" lowConfCount={lowConfCount} onClick={() => setDecompositionCapital('E')} />
+        <CircularGauge label="Ec" value={sa.Ec} bandWidth={bandWidth} color="var(--purple)" lowConfCount={lowConfCount} onClick={() => setDecompositionCapital('Ec')} />
+        <CircularGauge label="S" value={sa.S} bandWidth={bandWidth} color="var(--amber)" lowConfCount={lowConfCount} onClick={() => setDecompositionCapital('S')} />
       </div>
+      <DecompositionView />
     </div>
   );
 }

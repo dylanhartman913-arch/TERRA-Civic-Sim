@@ -7,7 +7,7 @@
       "changes": [
         "All 46 existing actions: placement_scale overridden to 'county' (user-facing siting unit)",
         "All 46 existing actions: resolves_to field added (bus|tract|watershed|county by bucket)",
-        "All 46 existing actions: applicable_counties precomputed from crosswalk (ecoregion_area_share ≥ 0.15)",
+        "All 46 existing actions: applicable_counties precomputed from crosswalk (ecoregion_area_share \u2265 0.15)",
         "New bucket 'energy_demand' added with 3 new actions: data_center_hyperscale, data_center_campus_phase, industrial_load_flexible",
         "data_center_hyperscale: unit_scale 500 MW, time_to_deploy 2, bus_load_add, DC-BA applicable counties",
         "data_center_campus_phase: unit_scale 1000 MW, time_to_deploy 3, bus_load_add, same applicable counties",
@@ -35,8 +35,8 @@
       "aluminum",
       "lithium"
     ],
-    "ees_coefficient_source": "Session 3 mw_marginal_actions.csv — cross-ecoregion medians",
-    "atb_ec_recompute_note": "Attempted ATB-grounded Ec recomputation per spec. Formula (CAPEX × 1000 MW × 2.68x ACP multiplier / Mountain West labor market) yields units of $/worker, not a dimensionless EES coefficient. GDP-denominator alternative produces values below the [0.08, 0.25] guard range due to small regional investment fraction relative to ~$1.2T regional GDP. Session 3 Ec values retained for wind and solar per the spec guard clause. ATB data used to upgrade CAPEX trajectory confidence only.",
+    "ees_coefficient_source": "Session 3 mw_marginal_actions.csv \u2014 cross-ecoregion medians",
+    "atb_ec_recompute_note": "Attempted ATB-grounded Ec recomputation per spec. Formula (CAPEX \u00d7 1000 MW \u00d7 2.68x ACP multiplier / Mountain West labor market) yields units of $/worker, not a dimensionless EES coefficient. GDP-denominator alternative produces values below the [0.08, 0.25] guard range due to small regional investment fraction relative to ~$1.2T regional GDP. Session 3 Ec values retained for wind and solar per the spec guard clause. ATB data used to upgrade CAPEX trajectory confidence only.",
     "schema_version": "3.0",
     "last_updated": "2026-06-10",
     "county_pivot": true,
@@ -59,7 +59,7 @@
       "atb_fom_2035": 37,
       "atb_fom_2050": 30,
       "atb_cf": 0.35,
-      "atb_source": "NREL ATB 2024 v3.0 — Land-Based Wind, Moderate scenario, Class 4",
+      "atb_source": "NREL ATB 2024 v3.0 \u2014 Land-Based Wind, Moderate scenario, Class 4",
       "in_local_atb_file": false,
       "atb_note": "Land-Based Wind absent from local atb_2024_summary.csv; values from published ATB 2024 tables",
       "materials": {
@@ -290,7 +290,7 @@
       "atb_fom_2035": 16.76,
       "atb_fom_2050": 12.6,
       "atb_cf_wacm": 0.22,
-      "atb_source": "ATB 2024 local file — UtilityPV",
+      "atb_source": "ATB 2024 local file \u2014 UtilityPV",
       "in_local_atb_file": true,
       "atb_note": "2023 uses Base scenario (Moderate absent in file for base year); 2050 uses Advanced scenario",
       "materials": {
@@ -730,7 +730,7 @@
       ]
     },
     "coal_repowering": {
-      "label": "Coal Plant Repowering (Gas/H₂)",
+      "label": "Coal Plant Repowering (Gas/H\u2082)",
       "tier": "energy",
       "unit": "per coal plant repowered",
       "unit_scale": 1000,
@@ -766,7 +766,7 @@
       },
       "session3_note": "Coefficients are cross-ecoregion medians from Session 3 mw_marginal_actions.csv",
       "action_id": "coal_repowering",
-      "action_name": "Coal Plant Repowering (Gas/H₂)",
+      "action_name": "Coal Plant Repowering (Gas/H\u2082)",
       "bucket": "energy_generation",
       "category": "energy_infrastructure",
       "subcategory": "fossil_transition",
@@ -3163,7 +3163,7 @@
       "synergy_groups": [
         "nuclear_transition_cluster"
       ],
-      "dissertation_note": "CAPEX from DOE Advanced Reactor Demonstration Program estimates. Highly uncertain — TerraPower Kemmerer first-of-kind cost will be determinative. Coefficient to be updated when NRC licensing cost data available.",
+      "dissertation_note": "CAPEX from DOE Advanced Reactor Demonstration Program estimates. Highly uncertain \u2014 TerraPower Kemmerer first-of-kind cost will be determinative. Coefficient to be updated when NRC licensing cost data available.",
       "requires_review_by": "2026-12",
       "placement_scale": "county",
       "resolves_to": "bus",
@@ -3452,7 +3452,7 @@
       "synergy_groups": [
         "coal_transition_cluster"
       ],
-      "dissertation_note": "Siting on retired coal plant footprint avoids new land disturbance — E coefficient reflects brownfield co-benefit vs greenfield solar.",
+      "dissertation_note": "Siting on retired coal plant footprint avoids new land disturbance \u2014 E coefficient reflects brownfield co-benefit vs greenfield solar.",
       "requires_review_by": null,
       "placement_scale": "county",
       "resolves_to": "bus",
@@ -4018,7 +4018,7 @@
         "water_rights_af": 3.5
       },
       "synergy_groups": [],
-      "dissertation_note": "Water use coefficient critical for arid Mountain West — 3.5 AF/MW-year from DOE H2A default. High uncertainty for Wyoming Basin given water rights constraints.",
+      "dissertation_note": "Water use coefficient critical for arid Mountain West \u2014 3.5 AF/MW-year from DOE H2A default. High uncertainty for Wyoming Basin given water rights constraints.",
       "requires_review_by": "2026-12",
       "placement_scale": "county",
       "resolves_to": "bus",
@@ -4580,7 +4580,7 @@
         "nuclear_fuel_cycle_mw",
         "coal_transition_cluster"
       ],
-      "dissertation_note": "E coefficient reflects ISR groundwater restoration risk per NRC regulatory basis. Wyoming has 10 of 11 US operating ISR facilities — ecoregion applicability empirically grounded. CAPEX from NRC licensing cost study (NUREG-2206).",
+      "dissertation_note": "E coefficient reflects ISR groundwater restoration risk per NRC regulatory basis. Wyoming has 10 of 11 US operating ISR facilities \u2014 ecoregion applicability empirically grounded. CAPEX from NRC licensing cost study (NUREG-2206).",
       "requires_review_by": "2026-12",
       "placement_scale": "county",
       "resolves_to": "bus",
@@ -4719,7 +4719,7 @@
       "synergy_groups": [
         "nuclear_fuel_cycle_mw"
       ],
-      "dissertation_note": "Only one operating US conversion facility (Metropolis Works, IL). CAPEX is DOE estimate for new greenfield facility. Regional applicability based on proximity to uranium supply — Wyoming Basin is primary candidate.",
+      "dissertation_note": "Only one operating US conversion facility (Metropolis Works, IL). CAPEX is DOE estimate for new greenfield facility. Regional applicability based on proximity to uranium supply \u2014 Wyoming Basin is primary candidate.",
       "requires_review_by": "2027-05",
       "placement_scale": "county",
       "resolves_to": "bus",
@@ -4859,7 +4859,7 @@
       "synergy_groups": [
         "nuclear_fuel_cycle_mw"
       ],
-      "dissertation_note": "CAPEX from Urenco National Enrichment Facility (Eunice NM) cost basis adjusted for 2024$. Ec coefficient reflects high-skill employment density and supply chain multiplier. NRC Class B license required — 7yr deployment is optimistic.",
+      "dissertation_note": "CAPEX from Urenco National Enrichment Facility (Eunice NM) cost basis adjusted for 2024$. Ec coefficient reflects high-skill employment density and supply chain multiplier. NRC Class B license required \u2014 7yr deployment is optimistic.",
       "requires_review_by": "2027-05",
       "placement_scale": "county",
       "resolves_to": "bus",
@@ -4986,7 +4986,7 @@
         "nuclear_fuel_cycle_mw",
         "nuclear_transition_cluster"
       ],
-      "dissertation_note": "HALEU required for TerraPower Natrium and other advanced reactor designs. DOE HALEU Operations Contract (Centrus, Piketon OH) provides cost analog. Wyoming Basin siting hypothetical — no announced site.",
+      "dissertation_note": "HALEU required for TerraPower Natrium and other advanced reactor designs. DOE HALEU Operations Contract (Centrus, Piketon OH) provides cost analog. Wyoming Basin siting hypothetical \u2014 no announced site.",
       "requires_review_by": "2026-12",
       "placement_scale": "county",
       "resolves_to": "bus",
@@ -5239,7 +5239,7 @@
         "organic_water_battery",
         "carbon_sequestration"
       ],
-      "dissertation_note": "Highest E coefficient per dollar in the library. Based on Wheaton et al. (2019) low-tech process-based restoration. Beaver as keystone hydrological engineer — watershed-scale water table elevation, fire refugia, salmonid habitat.",
+      "dissertation_note": "Highest E coefficient per dollar in the library. Based on Wheaton et al. (2019) low-tech process-based restoration. Beaver as keystone hydrological engineer \u2014 watershed-scale water table elevation, fire refugia, salmonid habitat.",
       "requires_review_by": null,
       "placement_scale": "county",
       "resolves_to": "watershed",
@@ -5693,7 +5693,7 @@
       "synergy_groups": [
         "organic_water_battery"
       ],
-      "dissertation_note": "Disproportionately important in Wyoming Basin and Colorado Plateaus — springs support riparian corridors in otherwise xeric landscapes. Arid ecosystem equity principle applies.",
+      "dissertation_note": "Disproportionately important in Wyoming Basin and Colorado Plateaus \u2014 springs support riparian corridors in otherwise xeric landscapes. Arid ecosystem equity principle applies.",
       "requires_review_by": null,
       "placement_scale": "county",
       "resolves_to": "watershed",
@@ -6064,7 +6064,7 @@
       "synergy_groups": [
         "carbon_sequestration"
       ],
-      "dissertation_note": "Arid ecosystem equity action — sagebrush restoration is the Mountain West analog of forest restoration in montane ecoregions. Sage-grouse umbrella species provides biodiversity co-benefit.",
+      "dissertation_note": "Arid ecosystem equity action \u2014 sagebrush restoration is the Mountain West analog of forest restoration in montane ecoregions. Sage-grouse umbrella species provides biodiversity co-benefit.",
       "requires_review_by": null,
       "placement_scale": "county",
       "resolves_to": "county",
@@ -6426,7 +6426,7 @@
       "synergy_groups": [
         "carbon_sequestration"
       ],
-      "dissertation_note": "Keystone ecosystem engineer for Great Plains — analogous to beaver in riparian systems. TNC American Prairie Reserve provides cost analog. Ec includes agritourism and tribal economic co-benefits.",
+      "dissertation_note": "Keystone ecosystem engineer for Great Plains \u2014 analogous to beaver in riparian systems. TNC American Prairie Reserve provides cost analog. Ec includes agritourism and tribal economic co-benefits.",
       "requires_review_by": null,
       "placement_scale": "county",
       "resolves_to": "county",
@@ -7706,15 +7706,15 @@
         "grid_load_mw": {
           "value": 1.25,
           "unit": "MW grid per MW IT load",
-          "basis": "PUE midpoint 1.25 (range 1.2–1.3)",
+          "basis": "PUE midpoint 1.25 (range 1.2\u20131.3)",
           "source": "LBNL 2024 US Data Center Energy Usage Report (Shehabi et al.)",
           "year": 2024,
           "confidence": "medium"
         },
         "water_consumption_m3_per_mwh": {
           "value": 1.35,
-          "unit": "m³ per MWh IT energy consumed",
-          "basis": "Air-cooled hyperscale midpoint (range 0.9–1.8); liquid-cooled facilities substantially lower",
+          "unit": "m\u00b3 per MWh IT energy consumed",
+          "basis": "Air-cooled hyperscale midpoint (range 0.9\u20131.8); liquid-cooled facilities substantially lower",
           "source": "Siddik et al. (2021) The environmental footprint of data centers in the United States. Resources, Conservation and Recycling 165:105200",
           "year": 2021,
           "confidence": "low"
@@ -7722,31 +7722,31 @@
         "construction_jobs_per_mw": {
           "value": 4.0,
           "unit": "direct construction jobs per MW IT capacity",
-          "basis": "Industry midpoint 3–5 jobs/MW; varies by site complexity",
-          "source": "Uptime Institute (2023) Global Data Center Survey; engineering estimate — no peer-reviewed source available",
+          "basis": "Industry midpoint 3\u20135 jobs/MW; varies by site complexity",
+          "source": "Uptime Institute (2023) Global Data Center Survey; engineering estimate \u2014 no peer-reviewed source available",
           "year": 2023,
           "confidence": "low"
         },
         "operations_jobs_per_mw": {
           "value": 0.7,
           "unit": "direct FTE per MW IT capacity",
-          "basis": "Industry range 0.5–1.0 jobs/MW for hyperscale facilities",
-          "source": "Uptime Institute (2023) Global Data Center Survey; engineering estimate — no peer-reviewed source available",
+          "basis": "Industry range 0.5\u20131.0 jobs/MW for hyperscale facilities",
+          "source": "Uptime Institute (2023) Global Data Center Survey; engineering estimate \u2014 no peer-reviewed source available",
           "year": 2023,
           "confidence": "low"
         },
         "county_tax_revenue_usd_per_mw_yr": {
           "value": 100000,
           "unit": "USD per MW IT capacity per year",
-          "basis": "Midpoint of publicly disclosed economic impact agreements; range $50k–$250k/MW/yr depending on state incentive structure",
-          "source": "International Data Center Authority (IDA) economic impact disclosures; public incentive records — proxy figure",
+          "basis": "Midpoint of publicly disclosed economic impact agreements; range $50k\u2013$250k/MW/yr depending on state incentive structure",
+          "source": "International Data Center Authority (IDA) economic impact disclosures; public incentive records \u2014 proxy figure",
           "year": 2023,
           "confidence": "low"
         },
         "land_acres_per_mw": {
           "value": 1.0,
           "unit": "acres per MW IT capacity (direct footprint)",
-          "basis": "Modern hyperscale: 0.5–1.5 acres/MW; mid-range estimate",
+          "basis": "Modern hyperscale: 0.5\u20131.5 acres/MW; mid-range estimate",
           "source": "LBNL 2024 US Data Center Energy Usage Report",
           "year": 2024,
           "confidence": "low"
@@ -7754,7 +7754,7 @@
         "capex_usd_per_mw": {
           "value": 8000000,
           "unit": "USD per MW IT capacity",
-          "basis": "LBNL hyperscale construction cost midpoint (range $5M–$12M/MW); industry capex disclosures",
+          "basis": "LBNL hyperscale construction cost midpoint (range $5M\u2013$12M/MW); industry capex disclosures",
           "source": "Shehabi et al. (2024) US Data Center Energy Usage Report, LBNL-2001434; technology industry capital expenditure reports (Meta, Amazon 2024 10-K filings)",
           "year": 2024,
           "confidence": "low"
@@ -7770,11 +7770,11 @@
         "Ec": "low",
         "S": "low"
       },
-      "ees_notes": "E: minor land/water stress from facility footprint. Ec: significant employment and tax base effect; highly site-specific. S: broadband infrastructure co-investment often accompanies DC siting. All magnitudes are engineering estimates — flag confidence low.",
+      "ees_notes": "E: minor land/water stress from facility footprint. Ec: significant employment and tax base effect; highly site-specific. S: broadband infrastructure co-investment often accompanies DC siting. All magnitudes are engineering estimates \u2014 flag confidence low.",
       "synergy_groups": [
         "nuclear_dc_coupling"
       ],
-      "note": "LBNL-validated PUE range 1.2–1.3 for hyperscale facilities. Water figure from Siddik et al. 2021; liquid-cooled facilities may be substantially lower. County tax and job figures are engineering proxies — cite actual project agreements when available."
+      "note": "LBNL-validated PUE range 1.2\u20131.3 for hyperscale facilities. Water figure from Siddik et al. 2021; liquid-cooled facilities may be substantially lower. County tax and job figures are engineering proxies \u2014 cite actual project agreements when available."
     },
     "data_center_campus_phase": {
       "action_id": "data_center_campus_phase",
@@ -7918,7 +7918,7 @@
         },
         "water_consumption_m3_per_mwh": {
           "value": 1.35,
-          "unit": "m³ per MWh IT energy consumed",
+          "unit": "m\u00b3 per MWh IT energy consumed",
           "source": "Siddik et al. (2021) Resources, Conservation and Recycling 165:105200",
           "year": 2021,
           "confidence": "low"
@@ -7940,7 +7940,7 @@
         "county_tax_revenue_usd_per_mw_yr": {
           "value": 100000,
           "unit": "USD per MW IT capacity per year",
-          "source": "IDA economic impact disclosures — proxy",
+          "source": "IDA economic impact disclosures \u2014 proxy",
           "year": 2023,
           "confidence": "low"
         },
@@ -8154,14 +8154,14 @@
           "value": 2.0,
           "unit": "direct construction jobs per MW",
           "basis": "Electrolysis-style load; engineering estimate",
-          "source": "Engineering estimate — no peer-reviewed source; flag low confidence",
+          "source": "Engineering estimate \u2014 no peer-reviewed source; flag low confidence",
           "year": 2024,
           "confidence": "low"
         },
         "operations_jobs_per_mw": {
           "value": 0.3,
           "unit": "direct FTE per MW",
-          "source": "Engineering estimate — no peer-reviewed source",
+          "source": "Engineering estimate \u2014 no peer-reviewed source",
           "year": 2024,
           "confidence": "low"
         },
@@ -8169,7 +8169,7 @@
           "value": 800000,
           "unit": "USD per MW (electrolysis-class equipment)",
           "basis": "Green hydrogen electrolysis capex proxy; actual value highly technology-dependent",
-          "source": "IRENA (2023) Green Hydrogen Cost Reduction Roadmap — proxy",
+          "source": "IRENA (2023) Green Hydrogen Cost Reduction Roadmap \u2014 proxy",
           "year": 2023,
           "confidence": "low"
         }
@@ -8184,12 +8184,227 @@
         "Ec": "low",
         "S": "low"
       },
-      "note": "Electrolysis-style interruptible industrial load. The `flexibility: 0.4` attribute signals to the engine that up to 40% of this load may be shed during heat-wave or grid-stress disturbances. Applicable to any study county — load-following flexibility is geography-agnostic. Capex proxy from IRENA green hydrogen cost data; actual capex varies by technology."
+      "note": "Electrolysis-style interruptible industrial load. The `flexibility: 0.4` attribute signals to the engine that up to 40% of this load may be shed during heat-wave or grid-stress disturbances. Applicable to any study county \u2014 load-following flexibility is geography-agnostic. Capex proxy from IRENA green hydrogen cost data; actual capex varies by technology."
+    },
+    "housing_retrofit_affordable": {
+      "action_id": "housing_retrofit_affordable",
+      "action_name": "Affordable Housing Retrofit",
+      "label": "Affordable Housing Retrofit",
+      "bucket": "settlement_social",
+      "category": "settlement_social",
+      "subcategory": "housing",
+      "tier": "social",
+      "unit": "units",
+      "unit_label": "units",
+      "unit_scale": 500,
+      "time_to_deploy": 1,
+      "design_life": 20,
+      "maturation_years": null,
+      "placement_scale": "county",
+      "resolves_to": "county",
+      "cost_2024": 150000,
+      "cost_2035": 150000,
+      "cost_2050": 150000,
+      "cost_unit": "$/unit (rehabilitation cost basis)",
+      "cost_source": "Enterprise Community Partners 'Affordable Housing Finance' 2022; LIHTC average rehab cost (national); confidence: medium",
+      "materials": {
+        "unit": "per 500 units rehabilitated",
+        "steel_tonnes": 250,
+        "concrete_tonnes": 500,
+        "land_acres_per_unit": 0,
+        "primary_input": "labor",
+        "source": "NAHB 'Home Remodeling Activity Indicator' 2023; RS Means 2023 Residential; retrofit reuses existing structure \u2014 SEE NOTE"
+      },
+      "ees_effects": {
+        "E": 0.0,
+        "Ec": 0.0,
+        "S": 0.35
+      },
+      "ees_confidence": {
+        "E": "low",
+        "Ec": "low",
+        "S": "medium"
+      },
+      "ees_sources": {
+        "E": "Not applicable",
+        "Ec": "Not applicable",
+        "S": "NLIHC Out of Reach 2023; housing stability literature (Culhane & Metraux 2008); calibrated at 0.35 (vs 0.4079 new-build) to reflect smaller net unit addition"
+      },
+      "applicable_ecoregions": [
+        17,
+        18,
+        20,
+        21,
+        25,
+        43,
+        80
+      ],
+      "dissertation_note": "Retrofit converts existing 'other vacant' units (ACS B25004_008E \u00d7 rehab_feasible_share=0.65) to affordable housing. Engine effect: reduces housing_convertible_units, increases housing_affordable_added. Tradeoff vs affordable_housing new-build: faster (1 yr vs 3), lower capital ($150k vs $180k/unit), ~90% less steel/concrete, but capped by convertible stock. WY fiscal: adds to assessed_residential at 9.5% ratio (W.S. 39-13-103) using $150k/unit rehab FMV basis.",
+      "session3_note": "Z3 addition \u2014 housing_stock asset_class",
+      "applicable_counties": [
+        "08001",
+        "08005",
+        "08007",
+        "08009",
+        "08013",
+        "08014",
+        "08015",
+        "08017",
+        "08019",
+        "08027",
+        "08029",
+        "08031",
+        "08033",
+        "08037",
+        "08043",
+        "08045",
+        "08047",
+        "08049",
+        "08051",
+        "08053",
+        "08057",
+        "08059",
+        "08063",
+        "08065",
+        "08067",
+        "08069",
+        "08075",
+        "08077",
+        "08079",
+        "08081",
+        "08083",
+        "08085",
+        "08087",
+        "08091",
+        "08093",
+        "08095",
+        "08097",
+        "08103",
+        "08105",
+        "08107",
+        "08109",
+        "08111",
+        "08113",
+        "08115",
+        "08117",
+        "08119",
+        "08121",
+        "08123",
+        "08125",
+        "16007",
+        "16019",
+        "16023",
+        "16037",
+        "16043",
+        "16059",
+        "30001",
+        "30003",
+        "30007",
+        "30009",
+        "30011",
+        "30013",
+        "30017",
+        "30021",
+        "30023",
+        "30025",
+        "30027",
+        "30031",
+        "30033",
+        "30037",
+        "30039",
+        "30043",
+        "30045",
+        "30049",
+        "30055",
+        "30057",
+        "30059",
+        "30063",
+        "30065",
+        "30067",
+        "30069",
+        "30075",
+        "30077",
+        "30079",
+        "30081",
+        "30087",
+        "30093",
+        "30095",
+        "30097",
+        "30103",
+        "30107",
+        "30109",
+        "30111",
+        "31007",
+        "31013",
+        "31029",
+        "31033",
+        "31045",
+        "31049",
+        "31057",
+        "31101",
+        "31105",
+        "31123",
+        "31135",
+        "31157",
+        "31165",
+        "46007",
+        "46019",
+        "46031",
+        "46033",
+        "46041",
+        "46047",
+        "46055",
+        "46063",
+        "46071",
+        "46075",
+        "46081",
+        "46093",
+        "46095",
+        "46102",
+        "46103",
+        "46105",
+        "46117",
+        "46121",
+        "46137",
+        "49007",
+        "49013",
+        "49015",
+        "49017",
+        "49019",
+        "49025",
+        "49033",
+        "49037",
+        "49047",
+        "49055",
+        "56001",
+        "56003",
+        "56005",
+        "56007",
+        "56009",
+        "56011",
+        "56013",
+        "56015",
+        "56017",
+        "56019",
+        "56021",
+        "56023",
+        "56025",
+        "56027",
+        "56029",
+        "56031",
+        "56033",
+        "56035",
+        "56037",
+        "56039",
+        "56041",
+        "56043",
+        "56045"
+      ]
     }
   },
   "coupling_rules": {
     "nuclear_dc_coupling": {
-      "description": "Co-location coupling between an ENERGY_DEMAND action and a firm-clean supply action (smr_advanced, coal_to_smr, geothermal_utility, or pumped_hydro with magnitude ≥ 500 MWh) on the same primary_bus or one branch apart in the synthetic network.",
+      "description": "Co-location coupling between an ENERGY_DEMAND action and a firm-clean supply action (smr_advanced, coal_to_smr, geothermal_utility, or pumped_hydro with magnitude \u2265 500 MWh) on the same primary_bus or one branch apart in the synthetic network.",
       "trigger": {
         "demand_actions": [
           "data_center_hyperscale",
@@ -8215,7 +8430,7 @@
         },
         "reliability_credit": {
           "value": 0.2,
-          "unit": "0.0–1.0 scale; added to effective reliability index",
+          "unit": "0.0\u20131.0 scale; added to effective reliability index",
           "confidence": "low"
         },
         "time_to_deploy_pair": {
@@ -8225,15 +8440,15 @@
         }
       },
       "confidence": "low",
-      "reasoning": "A hyperscale data center anchored to a co-located nuclear plant can negotiate a direct interconnection, bypassing regional transmission constraints. Industry precedent (Microsoft–Constellation Three Mile Island PPA 2023; Amazon–Talen Energy nuclear DC agreement 2023) suggests transmission requirement reductions of 15–25% from direct interconnect; we use 20% as a conservative midpoint. The reliability credit of 0.20 reflects partial benefit: nuclear capacity credit is ~0.9 vs renewables ~0.3 in DOE grid studies, but co-location without full dedicated supply captures only a fraction of that benefit. Both values are judgment-based engineering estimates — confidence is explicitly low. The co-scheduling rule (time_to_deploy = max of the pair) reflects the practical reality that a DC built before its anchor supply is operational will draw from the grid anyway, so the coupling benefit only materializes when both assets are online simultaneously.",
+      "reasoning": "A hyperscale data center anchored to a co-located nuclear plant can negotiate a direct interconnection, bypassing regional transmission constraints. Industry precedent (Microsoft\u2013Constellation Three Mile Island PPA 2023; Amazon\u2013Talen Energy nuclear DC agreement 2023) suggests transmission requirement reductions of 15\u201325% from direct interconnect; we use 20% as a conservative midpoint. The reliability credit of 0.20 reflects partial benefit: nuclear capacity credit is ~0.9 vs renewables ~0.3 in DOE grid studies, but co-location without full dedicated supply captures only a fraction of that benefit. Both values are judgment-based engineering estimates \u2014 confidence is explicitly low. The co-scheduling rule (time_to_deploy = max of the pair) reflects the practical reality that a DC built before its anchor supply is operational will draw from the grid anyway, so the coupling benefit only materializes when both assets are online simultaneously.",
       "references": [
-        "Microsoft–Constellation Three Mile Island Power Purchase Agreement, Sep 2023",
-        "Amazon Web Services–Talen Energy Nuclear Data Center Agreement, Mar 2023",
+        "Microsoft\u2013Constellation Three Mile Island Power Purchase Agreement, Sep 2023",
+        "Amazon Web Services\u2013Talen Energy Nuclear Data Center Agreement, Mar 2023",
         "DOE Office of Electricity (2023) Nuclear Power Plant Capacity Credit Study"
       ]
     },
     "firm_supply_gap": {
-      "description": "Any ENERGY_DEMAND placement where the resolved bus has insufficient firm capacity: (county_firm_capacity_mw - existing_load_mw) < action_magnitude_mw. The engine computes and stores deficit_mw on the placed action. The action is NOT blocked — the tool shows consequences, it does not forbid choices. The UI must surface deficit_mw prominently.",
+      "description": "Any ENERGY_DEMAND placement where the resolved bus has insufficient firm capacity: (county_firm_capacity_mw - existing_load_mw) < action_magnitude_mw. The engine computes and stores deficit_mw on the placed action. The action is NOT blocked \u2014 the tool shows consequences, it does not forbid choices. The UI must surface deficit_mw prominently.",
       "trigger": {
         "condition": "(county_firm_capacity_mw - existing_load_mw) < action_magnitude_mw",
         "applies_to_buckets": [
@@ -8276,9 +8491,9 @@
         "source": "TerraPower Natrium design specifications (public); DOE Advanced Reactor Demonstration Program documentation",
         "year": 2023,
         "confidence": "low",
-        "note": "Annual reload ~1,000–2,000 kg/yr; initial core load ~5,000 kg"
+        "note": "Annual reload ~1,000\u20132,000 kg/yr; initial core load ~5,000 kg"
       },
-      "queue_behavior": "FIFO by decision_year — builds exceeding pool are queued to next available year, not rejected",
+      "queue_behavior": "FIFO by decision_year \u2014 builds exceeding pool are queued to next available year, not rejected",
       "smr_family_actions": [
         "smr_advanced",
         "coal_to_smr",
@@ -8322,7 +8537,7 @@
       },
       "sources": [
         "EPA Economic Analysis of Heat-Related Costs (2021)",
-        "CDC Heat Mortality Data — WONDER Database",
+        "CDC Heat Mortality Data \u2014 WONDER Database",
         "NOAA NCEI Billion-Dollar Weather Events"
       ],
       "disturbance_id": "heat_wave",
@@ -8398,7 +8613,7 @@
           "riparian_buffer",
           "prairie_restoration"
         ],
-        "notes": "Ecological recovery lags precipitation recovery by 1–2 years"
+        "notes": "Ecological recovery lags precipitation recovery by 1\u20132 years"
       },
       "sources": [
         "USDA Economic Research Service drought cost studies (2022)",
@@ -8452,14 +8667,14 @@
     },
     "plant_closure": {
       "label": "Mine or Power Plant Closure",
-      "description": "Retirement of a major fossil fuel facility — coal mine, coal plant, or large gas plant",
-      "spatial_unit": "bus_id (facility) → propagates to ecoregion via geographic assignment",
+      "description": "Retirement of a major fossil fuel facility \u2014 coal mine, coal plant, or large gas plant",
+      "spatial_unit": "bus_id (facility) \u2192 propagates to ecoregion via geographic assignment",
       "trigger": "Specific facility retirement event (MW capacity or employment removed)",
       "ees_effects": {
         "E": {
           "immediate": 0.0,
           "over_5yr": 0.1,
-          "mechanism": "Extraction footprint and fugitive emissions recovery — positive over medium term"
+          "mechanism": "Extraction footprint and fugitive emissions recovery \u2014 positive over medium term"
         },
         "Ec": {
           "immediate": -0.25,
@@ -8531,14 +8746,14 @@
     },
     "mine_closure": {
       "label": "Mine or Power Plant Closure (alias)",
-      "description": "Retirement of a major fossil fuel facility — coal mine, coal plant, or large gas plant",
-      "spatial_unit": "bus_id (facility) → propagates to ecoregion via geographic assignment",
+      "description": "Retirement of a major fossil fuel facility \u2014 coal mine, coal plant, or large gas plant",
+      "spatial_unit": "bus_id (facility) \u2192 propagates to ecoregion via geographic assignment",
       "trigger": "Specific facility retirement event (MW capacity or employment removed)",
       "ees_effects": {
         "E": {
           "immediate": 0.0,
           "over_5yr": 0.1,
-          "mechanism": "Extraction footprint and fugitive emissions recovery — positive over medium term"
+          "mechanism": "Extraction footprint and fugitive emissions recovery \u2014 positive over medium term"
         },
         "Ec": {
           "immediate": -0.25,
@@ -8612,7 +8827,7 @@
     "transmission_failure": {
       "label": "Transmission Line Failure",
       "description": "Outage of a major transmission branch causing LMP spikes and reliability degradation",
-      "spatial_unit": "branch_id (line) → propagates to downstream buses and ecoregion",
+      "spatial_unit": "branch_id (line) \u2192 propagates to downstream buses and ecoregion",
       "trigger": "Single-branch outage lasting >48 hours on 230kV+ line",
       "ees_effects": {
         "E": {
@@ -8621,7 +8836,7 @@
         },
         "Ec": {
           "per_affected_bus_per_week": -0.05,
-          "mechanism": "LMP spike proxy — higher power costs reduce industrial competitiveness and household discretionary income"
+          "mechanism": "LMP spike proxy \u2014 higher power costs reduce industrial competitiveness and household discretionary income"
         },
         "S": {
           "per_affected_ecoregion_per_week": -0.1,
@@ -8637,7 +8852,7 @@
         "accelerators": [
           "transmission_buildout (new redundant corridor)"
         ],
-        "notes": "Standard repair 2–4 weeks; major damage up to 8 weeks. NERC reliability event data."
+        "notes": "Standard repair 2\u20134 weeks; major damage up to 8 weeks. NERC reliability event data."
       },
       "sources": [
         "NERC Annual Reliability Assessment (2023)",
@@ -9107,7 +9322,7 @@
       "duration": "multi_year",
       "recovery_time": 5.0,
       "applicable_ecoregions": null,
-      "dissertation_note": "Captures political economy risk — IRA rollback, carbon price removal, federal lands policy shift. Coefficients are structural estimates; political science literature on policy reversal economic impacts is thin."
+      "dissertation_note": "Captures political economy risk \u2014 IRA rollback, carbon price removal, federal lands policy shift. Coefficients are structural estimates; political science literature on policy reversal economic impacts is thin."
     },
     "pipeline_disruption": {
       "disturbance_id": "pipeline_disruption",
@@ -9330,12 +9545,12 @@
       {
         "action_id": "smr_advanced",
         "requires_review_by": "2026-12",
-        "dissertation_note": "CAPEX from DOE Advanced Reactor Demonstration Program estimates. Highly uncertain — TerraPower Kemmerer first-of-kind co"
+        "dissertation_note": "CAPEX from DOE Advanced Reactor Demonstration Program estimates. Highly uncertain \u2014 TerraPower Kemmerer first-of-kind co"
       },
       {
         "action_id": "hydrogen_electrolysis",
         "requires_review_by": "2026-12",
-        "dissertation_note": "Water use coefficient critical for arid Mountain West — 3.5 AF/MW-year from DOE H2A default. High uncertainty for Wyomin"
+        "dissertation_note": "Water use coefficient critical for arid Mountain West \u2014 3.5 AF/MW-year from DOE H2A default. High uncertainty for Wyomin"
       },
       {
         "action_id": "uranium_mining_isr",

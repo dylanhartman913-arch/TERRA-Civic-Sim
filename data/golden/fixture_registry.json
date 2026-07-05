@@ -1,0 +1,110 @@
+{
+  "registry_version": "1.0",
+  "description": "Amendment log for TERRA Engine golden fixtures. Each entry records a fixture supersession and the engine change that drove it.",
+  "permitted_amendments": 4,
+  "amendments_used": 4,
+  "fixtures": [
+    {
+      "fixture_id": "golden_a",
+      "engine_version": "1.0",
+      "location": "data/golden/golden_a.json",
+      "superseded_by": null,
+      "status": "active"
+    },
+    {
+      "fixture_id": "golden_b",
+      "engine_version": "1.0",
+      "location": "data/golden/golden_b.json",
+      "superseded_by": null,
+      "status": "active"
+    },
+    {
+      "fixture_id": "golden_c",
+      "engine_version": "1.0",
+      "location": "data/golden/golden_c.json",
+      "superseded_by": null,
+      "status": "active"
+    },
+    {
+      "fixture_id": "golden_d",
+      "engine_version": "2.0",
+      "location": "data/golden/golden_d.json",
+      "superseded_by": null,
+      "status": "active"
+    },
+    {
+      "fixture_id": "golden_e",
+      "engine_version": "2.0",
+      "location": "data/golden/golden_e.json",
+      "superseded_by": null,
+      "status": "active"
+    },
+    {
+      "fixture_id": "golden_f",
+      "engine_version": "2.4",
+      "location": "data/golden/golden_f.json",
+      "superseded_by": null,
+      "status": "active"
+    },
+    {
+      "fixture_id": "golden_g",
+      "engine_version": "3.0",
+      "location": "terra-app/tests/parity/fixtures/golden_g.json",
+      "superseded_by": "golden_g_prime",
+      "superseded_date": "2026-07-03",
+      "status": "superseded",
+      "amendment_number": 1,
+      "amendment_reason": "Engine v3.1 activated autonomous PRB coal surface decline and reclamation obligation tracking. fiscal_digest and existing_assets_digest values changed; state_digest values are identical."
+    },
+    {
+      "fixture_id": "golden_g_prime",
+      "engine_version": "3.1",
+      "location": "terra-app/tests/parity/fixtures/golden_g_prime.json",
+      "superseded_by": null,
+      "status": "active",
+      "amendment_number": 2,
+      "amends": "golden_g",
+      "amendment_date": "2026-07-03",
+      "amendment_reason": "Engine v3.1: autonomous PRB coal surface decline (-2.0%/yr compound, geoid 56005) + reclamation obligation tracking (cohort log \u2192 active_reclamation_acres \u2192 reclamation_jobs_direct). state_digest stable. fiscal_digest and existing_assets_digest reflect annual production volume erosion."
+    },
+    {
+      "golden": "H",
+      "file": "golden_h.json",
+      "description": "Lincoln County Kemmerer boomtown 2026-2034",
+      "state_digest_md5_a": "a46c1dd9f9d23c467f300f918da931f0",
+      "state_digest_md5_b": "866d7317755340a8bf9d6a4a1f3e3af4"
+    },
+    {
+      "fixture_id": "golden_j",
+      "engine_version": "4.0",
+      "location": "terra-app/tests/parity/fixtures/golden_j.json",
+      "superseded_by": "golden_j_prime",
+      "superseded_date": "2026-07-05",
+      "status": "superseded",
+      "amendment_number": 3,
+      "amendment_reason": "Engine v4.2 adds dynamic population advancement (per-year county_ees.population and working_age_population). IndicatorSnapshot now records both fields; history_digest_md5 changed. service_funding_per_capita values changed because denominators now use live population instead of static 2025 baseline.",
+      "description": "60-year projection from Golden B 2028 end-state; indicator history, payback year, and labor utilization arcs",
+      "created": "2026-07-03",
+      "history_digest_md5": "b314878564e4118e7a60d6fc04d6a03d",
+      "history_n_years": 63,
+      "history_year_range": [2026, 2088],
+      "note": "v4.0 additive: history field does not affect Golden A-H digest values."
+    },
+    {
+      "fixture_id": "golden_j_prime",
+      "engine_version": "4.2",
+      "location": "terra-app/tests/parity/fixtures/golden_j_prime.json",
+      "superseded_by": null,
+      "status": "active",
+      "amendment_number": 4,
+      "amends": "golden_j",
+      "amendment_date": "2026-07-05",
+      "amendment_reason": "Engine v4.2: population advanced per-year in county_ees (working_age_population field added). IndicatorSnapshot gains population+working_age_population fields, changing history_digest_md5 from b314878564e4118e7a60d6fc04d6a03d to 7b05722c9b11c2b405faf953c729977d. Campbell sfpc more negative (declining pop / same recapture); Laramie pop grows strongly from data-center + SMR ops migration. Also fixed: countPlayerOpsJobs now reads magnitude when capacity_mw is null, so migration was silently zero before this amendment. EES, labor_utilization, payback_year unchanged.",
+      "description": "Golden J\u2019 \u2014 60-year projection from Golden B 2028 end-state with v4.2 dynamic population denominators",
+      "created": "2026-07-05",
+      "history_digest_md5": "7b05722c9b11c2b405faf953c729977d",
+      "history_n_years": 63,
+      "history_year_range": [2026, 2088]
+    }
+  ]
+}

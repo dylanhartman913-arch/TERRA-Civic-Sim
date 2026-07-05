@@ -1,0 +1,43 @@
+{
+  "fixture_id": "golden_j",
+  "schema_version": "4.0",
+  "engine_version": "4.0",
+  "created": "2026-07-03T00:00:00+00:00",
+  "description": "Golden J \u2014 60-year projection from Golden B 2028 end-state; indicator history, payback year, and labor utilization arcs",
+  "_meta": {
+    "base_scenario": "Golden B (WY Nuclear-DC Buildout)",
+    "base_year": 2028,
+    "projection_years": 60,
+    "end_year": 2088,
+    "note": "Projections are conditional forecasts under \"no further decisions,\" not predictions. The delta shows marginal impact of current action set vs. autonomous dynamics."
+  },
+  "history_digest_md5": "b314878564e4118e7a60d6fc04d6a03d",
+  "history_n_years": 63,
+  "history_year_range": [
+    2026,
+    2088
+  ],
+  "assertions": {
+    "laramie_payback_year": 2084,
+    "laramie_payback_year_range": [
+      2081,
+      2087
+    ],
+    "laramie_payback_year_note": "Property-tax-based payback for dual-SMR (2 x 345 MW) investment in Laramie County. Nuclear capital intensity means payback_year > 2070 for Wyoming mill-levy rates. Range of +/-3 years accounts for minor floating-point differences across runtimes.",
+    "laramie_labor_utilization_2030": 0.073443,
+    "laramie_labor_utilization_construction_peak": {
+      "year": 2030,
+      "min": 0.066099,
+      "max": 0.080787
+    },
+    "laramie_labor_utilization_2033": 0.0,
+    "laramie_labor_utilization_post_commission_max": 0.001,
+    "campbell_service_funding_per_capita_2028": -748.6988,
+    "campbell_service_funding_per_capita_2038": -654.0723,
+    "campbell_coal_recapture_burden_shrinks": true,
+    "campbell_service_funding_note": "school_finance_net is negative for Campbell (mineral recapture county). service_funding_per_capita is negative and becomes less negative as coal production declines \u2014 the recapture burden shrinks. Absolute value decreases 2028-2038.",
+    "laramie_history_spot_2032_E": 2.2391,
+    "laramie_history_spot_2032_Ec": 9.269313,
+    "laramie_history_spot_2032_S": 6.869765
+  }
+}

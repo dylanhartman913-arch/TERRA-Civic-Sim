@@ -1,15 +1,25 @@
 /**
- * TERRA Engine v2.4 — TypeScript port.
+ * TERRA Engine v4.1 — TypeScript port.
  * Pure functions only. No mutation of input state, no React imports, no side effects.
  * Uses structural sharing (deep-clone mutable stores, share immutable references).
  * v2.4 adds full three-ledger X2 support: Ledger A (advalorem) + Ledger C (school finance
  * recapture sensitivity) wired into reduceProductionAsset alongside Ledger B (severance).
+ * v3.0: unified asset_registry; v3.1: PRB coal decline + reclamation arc; v3.3: housing_stock.
+ * v4.0 (Z3): indicator catalog, per-year history snapshots, projection API, Golden J.
+ * v4.1 (Z4): site asset class, succession discounts in queueAction, workforce pool decay
+ * in advanceYear. coal_to_smr generalised as convert transition (TX waiver from site;
+ * TTD/capex NOT discounted — brownfield premium already in cost_2024). Golden I.
  */
 
+import { createHash } from 'crypto';
+import { snapshotIndicators } from './indicators.js';
 import type {
   EngineState,
+  IndicatorSnapshot,
   CountyEES,
   CountyEESBaseline,
+  PopulationProjection,
+  PopulationConfig,
   EcoregionEES,
   Bus,
   Branch,
@@ -123,6 +133,108 @@ const BUCKET_TO_TIER: Record<string, string> = {
   transport: 'social',
 };
 
+// ── Housing Stock Constants (v3.3) ──────────────────────────────────────────
+// Construction workforce per MW by asset type — for boomtown housing-pressure model.
+// Source: NREL JEDI model v2023; TerraPower Kemmerer Final EIS (nuclear: ~1,800 peak/345 MW ≈ 5.2)
+const HOUSING_CONSTRUCTION_JOBS_PER_MW: Record<string, number> = {
+  nuclear:     5.2,   // TerraPower Kemmerer EIS; NREL JEDI Nuclear
+  coal:        2.0,   // NREL JEDI Coal
+  gas:         1.4,   // NREL JEDI Natural Gas
+  wind:        0.4,   // NREL JEDI Wind
+  solar:       2.5,   // NREL JEDI Solar PV Utility
+  storage:     0.5,   // Proxy; NREL ATB battery storage
+  data_center: 3.0,   // Dodge Construction Network 2023; CBRE Data Center Report
+  hydro:       1.5,   // NREL JEDI Hydropower
+};
+const HOUSEHOLD_FACTOR = 0.65; // Share of incoming workers forming separate households
+                                // Source: NAHB "New Home Buyer Profile" 2023
+const HOUSING_PRESSURE_THRESHOLDS = {
+  mild:     1.05,
+  moderate: 1.15,
+  stressed: 1.25,
+  crisis:   1.40,
+};
+const WY_RESIDENTIAL_ASSESSMENT_RATIO = 0.095; // W.S. 39-13-103
+const HOUSING_UNIT_REHAB_VALUE_USD = 150_000;   // Enterprise Community Partners LIHTC 2022
+// S-capital penalty per 0.05 step of pressure above moderate threshold (confidence: low)
+const HOUSING_PRESSURE_S_PENALTY_PER_STEP = -0.005;
+
+// ── Site Spawning / Succession Constants (v4.1) ─────────────────────────────
+// Literature anchor — Kemmerer/Naughton brownfield precedent:
+//   DOE (2022) coal-to-nuclear siting study; Gorman et al. (2022) LBNL.
+//   Magnitudes are judgment-based (confidence: low throughout).
+export interface SiteCompatEntry {
+  compatible_actions: Set<string>;
+  ttd_reduction_years: number;
+  capex_discount_fraction: number;
+  confidence: string;
+}
+export const SITE_COMPAT: Record<string, SiteCompatEntry> = {
+  thermal: {
+    compatible_actions: new Set(['smr_advanced', 'gas_combined_cycle']),
+    ttd_reduction_years: 2,        // DOE (2022): 2-3 yr faster NRC permitting
+    capex_discount_fraction: 0.15, // Gorman et al. (2022): ~15% overnight cost saving
+    confidence: 'low',
+  },
+  generator: {
+    compatible_actions: new Set([
+      'battery_grid', 'pumped_hydro',
+      'data_center_hyperscale', 'data_center_campus_phase',
+    ]),
+    ttd_reduction_years: 1,
+    capex_discount_fraction: 0.10,
+    confidence: 'low',
+  },
+  mine: {
+    compatible_actions: new Set(['prairie_restoration', 'solar_utility', 'reclamation_tech']),
+    ttd_reduction_years: 1,
+    capex_discount_fraction: 0.20,
+    confidence: 'low',
+  },
+};
+
+// coal_to_smr: TX waiver only (no TTD/capex — brownfield premium in cost_2024=$8,500,000/MW)
+const COAL_TO_SMR_SITE_CLASS_COMPAT = 'thermal';
+
+// ── Population / Migration Constants (v4.2) ─────────────────────────────────
+// Employment-linked permanent in-migration from player-added operations jobs.
+// Literature: Headwaters Economics (2017) "Energy Development and the Economy
+//   in the West" — rural energy employment multipliers 1.4–2.0 for Mountain West.
+//   Power et al. (2013) "Economic Assessment of Fossil Fuel Development in the
+//   Mountain West" — household formation rates for energy-sector in-migrants.
+// ACS 2022 Table B25010: 2.51 persons per occupied housing unit (national).
+const AVG_HOUSEHOLD_SIZE = 2.51;        // ACS 2022 Table B25010
+const ECONOMIC_BASE_MULTIPLIER = 1.5;   // Headwaters Economics (2017); confidence: low
+const WORKING_AGE_SHARE_DEFAULT = 0.573; // ACS 2022 national; county overrides in projection file
+
+// Ops workforce per MW by asset type — extends SITE_OPS_JOBS_PER_MW for population model.
+// data_center added here (not in SITE_OPS_JOBS_PER_MW, which covers site-asset spawning).
+const MIGRATION_OPS_JOBS_PER_MW: Record<string, number> = {
+  coal: 0.28, gas: 0.10, nuclear: 0.38,
+  wind: 0.04, solar: 0.02, hydro: 0.15,
+  data_center: 3.0,  // CBRE Data Center Employment Trends Report (2023); O&M-only headcount
+  storage: 0.05,     // Proxy (minimal O&M staff); NREL ATB
+};
+
+// Map action_id → fuel-type key for MIGRATION_OPS_JOBS_PER_MW lookup
+const ACTION_ID_TO_MIGRATION_FUEL: Record<string, string> = {
+  smr_advanced: 'nuclear', coal_to_smr: 'nuclear', fusion_pilot: 'nuclear',
+  wind_utility: 'wind', offshore_wind_great_lakes: 'wind',
+  solar_utility: 'solar', coal_to_solar: 'solar',
+  gas_combined_cycle: 'gas',
+  battery_grid: 'storage', hydrogen_electrolysis: 'storage',
+  pumped_hydro: 'hydro', hydropower_small: 'hydro',
+  data_center_hyperscale: 'data_center', data_center_campus_phase: 'data_center',
+  industrial_load_flexible: 'data_center',
+};
+
+// Operations workforce proxy by asset type (NREL JEDI v2023, O&M only)
+const SITE_OPS_JOBS_PER_MW: Record<string, number> = {
+  coal: 0.28, gas: 0.10, nuclear: 0.38,
+  wind: 0.04, solar: 0.02, hydro: 0.15,
+};
+const SITE_WORKFORCE_HALF_LIFE_YEARS = 5; // Carley et al. (2018) ~5 yr median attrition
+
 // ── Existing Assets Seeding ─────────────────────────────────────────────────
 
 function seedExistingAssets(countyCards: Record<string, unknown>): Record<string, AnyExistingAsset[]> {
@@ -193,9 +305,10 @@ function slugify(name: string): string {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
 }
 
-function resolveAssetClass(assetType: string, assetKind?: string): 'generator' | 'demand' | 'production' | 'storage' {
+function resolveAssetClass(assetType: string, assetKind?: string): import('./types.js').AssetClass {
   if (assetKind === 'production_asset') return 'production';
   if (assetType === 'data_center') return 'demand';
+  if (assetType === 'site') return 'site';
   return 'generator';
 }
 
@@ -258,6 +371,30 @@ function seedAssetRegistry(
           throttle_reason: null,
           commissioned: null,
           scheduled_retirement_year: retirementYear,
+          // v3.1 reclamation tracking
+          reclamation_year_log: [],
+          active_reclamation_acres: 0.0,
+          reclamation_jobs_direct: 0.0,
+          // v3.2 decommissioning (null for production assets)
+          decommissioning_cost_usd: null,
+          decommissioning_labor_usd: null,
+          decommissioning_duration_years: null,
+          decommissioning_start_year: null,
+          // v3.3 housing (null for production assets)
+          housing_total_units: null, housing_occupied_units: null,
+          housing_convertible_units: null, housing_subsidized_units: null,
+          housing_permits_per_year: null, housing_affordable_added: null,
+          housing_pressure_ratio: null, housing_seasonal_excluded: null,
+          // v4.1 site mechanics (null for all non-site baseline assets)
+          site_origin_asset_id: null, site_origin_type: null, site_class: null,
+          interconnection_mw: null, water_rights_flag: null, acres: null,
+          workforce_pool_initial: null, workforce_pool_current: null,
+          workforce_pool_half_life_years: null, site_spawn_year: null,
+          restoration_eligibility: null,
+          // v4.1 succession discount tracking (null for baseline assets)
+          succession_site_id: null, ttd_reduction_applied: null,
+          capex_discount_fraction: null, tx_waiver_mw: null,
+          convert_source_asset_id: null,
         });
       } else if (cap == null) {
         // Excluded entry (no MW conversion)
@@ -289,6 +426,28 @@ function seedAssetRegistry(
           throttle_reason: null,
           commissioned: null,
           scheduled_retirement_year: retirementYear,
+          reclamation_year_log: null,
+          active_reclamation_acres: null,
+          reclamation_jobs_direct: null,
+          decommissioning_cost_usd: null,
+          decommissioning_labor_usd: null,
+          decommissioning_duration_years: null,
+          decommissioning_start_year: null,
+          // v3.3 housing (null for excluded assets)
+          housing_total_units: null, housing_occupied_units: null,
+          housing_convertible_units: null, housing_subsidized_units: null,
+          housing_permits_per_year: null, housing_affordable_added: null,
+          housing_pressure_ratio: null, housing_seasonal_excluded: null,
+          // v4.1 site mechanics (null for all non-site baseline assets)
+          site_origin_asset_id: null, site_origin_type: null, site_class: null,
+          interconnection_mw: null, water_rights_flag: null, acres: null,
+          workforce_pool_initial: null, workforce_pool_current: null,
+          workforce_pool_half_life_years: null, site_spawn_year: null,
+          restoration_eligibility: null,
+          // v4.1 succession discount tracking (null for baseline assets)
+          succession_site_id: null, ttd_reduction_applied: null,
+          capex_discount_fraction: null, tx_waiver_mw: null,
+          convert_source_asset_id: null,
         });
       } else {
         // MW-based asset
@@ -333,11 +492,236 @@ function seedAssetRegistry(
           throttle_reason: null,
           commissioned: null,
           scheduled_retirement_year: retirementYear,
+          reclamation_year_log: null,
+          active_reclamation_acres: null,
+          reclamation_jobs_direct: null,
+          decommissioning_cost_usd: null,
+          decommissioning_labor_usd: null,
+          decommissioning_duration_years: null,
+          decommissioning_start_year: null,
+          // v3.3 housing (null for MW-based generator assets)
+          housing_total_units: null, housing_occupied_units: null,
+          housing_convertible_units: null, housing_subsidized_units: null,
+          housing_permits_per_year: null, housing_affordable_added: null,
+          housing_pressure_ratio: null, housing_seasonal_excluded: null,
+          // v4.1 site mechanics (null for all non-site baseline assets)
+          site_origin_asset_id: null, site_origin_type: null, site_class: null,
+          interconnection_mw: null, water_rights_flag: null, acres: null,
+          workforce_pool_initial: null, workforce_pool_current: null,
+          workforce_pool_half_life_years: null, site_spawn_year: null,
+          restoration_eligibility: null,
+          // v4.1 succession discount tracking (null for baseline assets)
+          succession_site_id: null, ttd_reduction_applied: null,
+          capex_discount_fraction: null, tx_waiver_mw: null,
+          convert_source_asset_id: null,
         });
       }
     }
   }
   return registry;
+}
+
+// ── Housing Stock Seeding + Helpers (v3.3) ──────────────────────────────────
+
+/** Seed one housing_stock AssetInstance per study county from ACS baseline. */
+function seedHousingAssets(
+  countyCards: Record<string, unknown>,
+  housingBaseline: Record<string, unknown>,
+): AssetInstance[] {
+  const assets: AssetInstance[] = [];
+  for (const [geoid, card] of Object.entries(countyCards)) {
+    const cardObj = card as Record<string, unknown>;
+    const hb = (housingBaseline[geoid] ?? {}) as Record<string, Record<string, unknown>>;
+    const countyName = (cardObj.county_name as string) || geoid;
+    const stateCode  = (cardObj.state as string) || '';
+
+    const totalUnits   = (hb.total_units?.value   as number | null | undefined) ?? 0;
+    const occupied     = (hb.occupied_units?.value as number | null | undefined) ?? 0;
+    const convertible  = (hb.convertible_units?.value as number | null | undefined) ?? 0;
+    const subsidized   = (hb.subsidized_units?.value  as number | null | undefined) ?? 0;
+    const permitsVal   = (hb.permits_per_year?.value  as number | null | undefined) ?? 0;
+    const seasonal     = (hb.seasonal_recreational_vacant?.value as number | null | undefined) ?? 0;
+
+    assets.push({
+      asset_id: `housing_${geoid}`,
+      origin: 'baseline',
+      lifecycle: 'operating',
+      asset_class: 'housing_stock',
+      name: `${countyName} Housing Stock`,
+      geoid,
+      county_name: countyName,
+      state: stateCode,
+      type: 'housing_stock',
+      status: 'operating',
+      source_url: 'ACS 2022 5-year',
+      operational_year: null,
+      // Non-applicable standard fields
+      capacity_mw: null, coal_tons_yr: null, production_proxy: null,
+      fiscal_action_id: null, excluded: null,
+      commodity: null, production_volume: null, production_unit: null,
+      production_confidence: null, production_source: null, data_year: null,
+      effective_severance_rate_per_unit: null, county_distribution_share: null,
+      advalorem_rate_per_unit: null, assessed_delta_per_unit: null, employment_direct: null,
+      action_id: null, magnitude: null, decision_year: null,
+      throttle_reason: null, commissioned: null, scheduled_retirement_year: null,
+      reclamation_year_log: null, active_reclamation_acres: null, reclamation_jobs_direct: null,
+      decommissioning_cost_usd: null, decommissioning_labor_usd: null,
+      decommissioning_duration_years: null, decommissioning_start_year: null,
+      // v3.3 housing stock fields
+      housing_total_units:       Math.round(totalUnits),
+      housing_occupied_units:    Math.round(occupied),
+      housing_convertible_units: Math.round(convertible),
+      housing_subsidized_units:  Math.round(subsidized),
+      housing_permits_per_year:  permitsVal,
+      housing_affordable_added:  0,
+      housing_pressure_ratio:    null,
+      housing_seasonal_excluded: Math.round(seasonal),
+      // v4.1 site mechanics (null for housing_stock)
+      site_origin_asset_id: null, site_origin_type: null, site_class: null,
+      interconnection_mw: null, water_rights_flag: null, acres: null,
+      workforce_pool_initial: null, workforce_pool_current: null,
+      workforce_pool_half_life_years: null, site_spawn_year: null,
+      restoration_eligibility: null,
+      // v4.1 succession discount tracking (null for housing_stock)
+      succession_site_id: null, ttd_reduction_applied: null,
+      capex_discount_fraction: null, tx_waiver_mw: null,
+      convert_source_asset_id: null,
+    });
+  }
+  return assets;
+}
+
+/** Find housing_stock AssetInstance for a county, or null. */
+function findHousingAsset(state: EngineState, geoid: string): AssetInstance | null {
+  return state.asset_registry.find(
+    a => a.asset_class === 'housing_stock' && a.geoid === geoid
+  ) ?? null;
+}
+
+/** Compute demand/supply housing pressure ratio for a county.
+ *  demand = occupied + incoming_workforce × HOUSEHOLD_FACTOR
+ *  supply = occupied + convertible + affordable_added
+ */
+function computeHousingPressure(state: EngineState, geoid: string, currentYear: number): number | null {
+  const housing = findHousingAsset(state, geoid);
+  if (!housing) return null;
+
+  const occupied    = housing.housing_occupied_units    ?? 0;
+  const convertible = housing.housing_convertible_units ?? 0;
+  const affordable  = housing.housing_affordable_added  ?? 0;
+
+  let incomingWorkforce = 0;
+  for (const a of state.asset_registry) {
+    if (a.geoid !== geoid) continue;
+    if (a.asset_class === 'housing_stock' || a.asset_class === 'production') continue;
+    const opYear = a.operational_year;
+    const capMw  = a.capacity_mw ?? a.magnitude ?? 0;
+
+    const isUnderConstruction = (
+      a.origin === 'baseline' &&
+      a.status === 'under_construction' &&
+      opYear != null && opYear > currentYear
+    );
+    const isPlayerQueued = (
+      a.origin === 'player' &&
+      a.lifecycle !== 'retired' &&
+      a.commissioned === false &&
+      opYear != null && opYear > currentYear
+    );
+
+    if (isUnderConstruction || isPlayerQueued) {
+      const assetType = a.type ?? '';
+      const jobsPerMw = HOUSING_CONSTRUCTION_JOBS_PER_MW[assetType] ?? 0;
+      incomingWorkforce += capMw * jobsPerMw;
+    }
+  }
+
+  const demand = occupied + incomingWorkforce * HOUSEHOLD_FACTOR;
+  const supply = occupied + convertible + affordable;
+  if (supply <= 0) return null;
+  return Math.round((demand / supply) * 10000) / 10000;
+}
+
+// ── Site Spawning + Succession Helpers (v4.1) ────────────────────────────────
+
+function siteClassForAsset(a: AssetInstance): 'thermal' | 'generator' | 'mine' {
+  if (a.asset_class === 'production') return 'mine';
+  const t = (a.type ?? '').toLowerCase();
+  if (t === 'coal' || t === 'gas' || t === 'nuclear') return 'thermal';
+  return 'generator';
+}
+
+/** Create a site AssetInstance from a just-retired generator or production asset. */
+function spawnSiteFromRetired(retired: AssetInstance, spawnYear: number): AssetInstance {
+  const siteClass = siteClassForAsset(retired);
+  const capMw = retired.capacity_mw ?? 0;
+  const assetTypeLow = (retired.type ?? '').toLowerCase();
+  const opsJobsPerMw = SITE_OPS_JOBS_PER_MW[assetTypeLow] ?? 0.1;
+  const workforceInitial = Math.round(capMw * opsJobsPerMw * 10) / 10;
+  const assetId = `site_${retired.geoid}_${slugify(retired.name)}_${spawnYear}`;
+
+  return {
+    asset_id: assetId,
+    origin: 'baseline',
+    lifecycle: 'operating',
+    asset_class: 'site',
+    name: `${retired.name} Site`,
+    geoid: retired.geoid,
+    county_name: retired.county_name,
+    state: retired.state,
+    type: 'site',
+    status: 'available',
+    source_url: retired.source_url,
+    operational_year: null,
+    capacity_mw: null, coal_tons_yr: null, production_proxy: null,
+    fiscal_action_id: null, excluded: null,
+    commodity: null, production_volume: null, production_unit: null,
+    production_confidence: null, production_source: null, data_year: null,
+    effective_severance_rate_per_unit: null, county_distribution_share: null,
+    advalorem_rate_per_unit: null, assessed_delta_per_unit: null, employment_direct: null,
+    action_id: null, magnitude: null, decision_year: null,
+    throttle_reason: null, commissioned: null, scheduled_retirement_year: null,
+    reclamation_year_log: null, active_reclamation_acres: null, reclamation_jobs_direct: null,
+    decommissioning_cost_usd: null, decommissioning_labor_usd: null,
+    decommissioning_duration_years: null, decommissioning_start_year: null,
+    housing_total_units: null, housing_occupied_units: null,
+    housing_convertible_units: null, housing_subsidized_units: null,
+    housing_permits_per_year: null, housing_affordable_added: null,
+    housing_pressure_ratio: null, housing_seasonal_excluded: null,
+    // v4.1 site-specific fields
+    site_origin_asset_id: retired.asset_id,
+    site_origin_type: siteClass === 'mine' ? 'mine' : 'generator',
+    site_class: siteClass,
+    interconnection_mw: siteClass !== 'mine' ? capMw : null,
+    water_rights_flag: null,         // known debt: populate from county data
+    acres: null,                     // known debt: populate from county data
+    workforce_pool_initial: workforceInitial,
+    workforce_pool_current: workforceInitial,
+    workforce_pool_half_life_years: SITE_WORKFORCE_HALF_LIFE_YEARS,
+    site_spawn_year: spawnYear,
+    restoration_eligibility: siteClass === 'mine',
+    // succession fields (null on site itself)
+    succession_site_id: null, ttd_reduction_applied: null,
+    capex_discount_fraction: null, tx_waiver_mw: null,
+    convert_source_asset_id: null,
+  };
+}
+
+/** Return compatible site + compat entry for the given county+action, or null pair. */
+export function findSiteForAction(
+  state: EngineState,
+  geoid: string,
+  actionId: string,
+): [AssetInstance, SiteCompatEntry] | [null, null] {
+  for (const a of state.asset_registry) {
+    if (a.asset_class !== 'site') continue;
+    if (a.geoid !== geoid || a.lifecycle !== 'operating') continue;
+    const siteClass = a.site_class;
+    if (!siteClass) continue;
+    const compat = SITE_COMPAT[siteClass];
+    if (compat?.compatible_actions.has(actionId)) return [a, compat];
+  }
+  return [null, null];
 }
 
 /** Materialize build_queue view from asset_registry (player-origin assets only). */
@@ -355,11 +739,15 @@ function materializeBuildQueue(registry: AssetInstance[]): BuildQueueItem[] {
     }));
 }
 
-/** Materialize existing_assets view from asset_registry (baseline-origin assets only). */
+/** Materialize existing_assets view from asset_registry (baseline-origin assets only).
+ *  Housing stock assets are excluded so existing_assets_digest remains stable (v3.3).
+ *  Site assets are also excluded (v4.1) — they are a derived/ephemeral registry class. */
 function materializeExistingAssets(registry: AssetInstance[]): Record<string, AnyExistingAsset[]> {
   const result: Record<string, AnyExistingAsset[]> = {};
   for (const a of registry) {
     if (a.origin !== 'baseline') continue;
+    if (a.asset_class === 'housing_stock') continue; // v3.3: housing not in existing_assets view
+    if (a.asset_class === 'site') continue;          // v4.1: site assets not in existing_assets view
     if (!result[a.geoid]) result[a.geoid] = [];
     if (a.asset_class === 'production') {
       const pa: ProductionAsset = {
@@ -462,8 +850,11 @@ function shallowCopyState(state: EngineState): EngineState {
     (scPools as unknown as Record<string, ScPool>)[k] = { ...(state.sc_pools as unknown as Record<string, ScPool>)[k] };
   }
 
-  // v3.0: deep-copy registry (each entry is a flat object with only primitives/nulls)
-  const registry = state.asset_registry.map(a => ({ ...a }));
+  // v3.0/3.1: deep-copy registry; reclamation_year_log is an array and must be copied
+  const registry = state.asset_registry.map(a => ({
+    ...a,
+    reclamation_year_log: a.reclamation_year_log ? [...a.reclamation_year_log] : a.reclamation_year_log,
+  }));
 
   return {
     // Shallow-spread clone for flat-valued Records
@@ -497,6 +888,16 @@ function shallowCopyState(state: EngineState): EngineState {
     last_delta: state.last_delta,
     // v3.0 asset registry — source of truth
     asset_registry: registry,
+    // v3.1 lifecycle coefficients (shared by reference — read-only)
+    lifecycle_coefficients: state.lifecycle_coefficients,
+    // v3.3 housing baseline (shared by reference — read-only)
+    housing_baseline: state.housing_baseline,
+    // v4.2 population projections (shared by reference — read-only)
+    population_projections: state.population_projections,
+    // v4.2 population config (shallow copy — session-mutable off-switch)
+    population_config: state.population_config ? { ...state.population_config } : state.population_config,
+    // v4.0: history — shallow copy (snapshots are immutable; never mutated after creation)
+    history: [...(state.history ?? [])],
   };
 }
 
@@ -556,16 +957,24 @@ export function initializeState(
   fiscalBaseline?: FiscalBaseline,
   fiscalCoefficients?: FiscalCoefficients,
   baselineRetirements?: Record<string, Record<string, { scheduled_retirement_year: number }>>,
+  lifecycleCoefficients?: Record<string, unknown>,
+  housingBaselineData?: Record<string, unknown>,
+  populationProjections?: Record<string, PopulationProjection>,
+  populationConfig?: Partial<PopulationConfig>,
 ): EngineState {
+  const popProj = populationProjections ?? {};
   // County EES (primary capital store)
   const county_ees: Record<string, CountyEES> = {};
   for (const row of countyEesBaseline) {
     const geoid = row.geoid.padStart(5, '0');
+    const waShare = (popProj[geoid] as PopulationProjection | undefined)?.working_age_share
+      ?? WORKING_AGE_SHARE_DEFAULT;
     county_ees[geoid] = {
       E: row.E, Ec: row.Ec, S: row.S,
       E_baseline: row.E, Ec_baseline: row.Ec, S_baseline: row.S,
       county_name: row.county_name,
       population: row.population,
+      working_age_population: Math.round(row.population * waShare),
       load_mw: 0.0,
       added_firm_mw: 0.0,
       deficit_mw: 0.0,
@@ -697,6 +1106,13 @@ export function initializeState(
 
   // ── Asset registry (v3.0) — source of truth for all assets ─────────────────
   const asset_registry = seedAssetRegistry(countyCards, baselineRetirements);
+
+  // ── v3.3: Housing baseline + housing_stock assets ─────────────────────────
+  const housingBaseline = (housingBaselineData ?? {}) as Record<string, unknown>;
+  if (housingBaselineData) {
+    asset_registry.push(...seedHousingAssets(countyCards, housingBaseline));
+  }
+
   const existing_assets = materializeExistingAssets(asset_registry);
 
   return {
@@ -723,6 +1139,17 @@ export function initializeState(
     existing_assets,
     last_delta: null,
     asset_registry,
+    lifecycle_coefficients: lifecycleCoefficients ?? null,
+    housing_baseline: housingBaseline,
+    // v4.0: per-year indicator snapshots (appended by advanceYear; never in main digest)
+    history: [],
+    // v4.2: demographic denominators — one population state, no forks
+    population_projections: popProj,
+    population_config: {
+      migration_enabled: populationConfig?.migration_enabled ?? true,
+      labor_migration_multiplier: populationConfig?.labor_migration_multiplier ?? ECONOMIC_BASE_MULTIPLIER,
+      migration_confidence: 'low',
+    },
   };
 }
 
@@ -938,6 +1365,40 @@ export function applyAction(
     }
   }
 
+  // v3.3: housing_retrofit_affordable — consume convertible units, update fiscal
+  if (actionId === 'housing_retrofit_affordable' && geoid) {
+    const housingAsset = findHousingAsset(state, geoid);
+    if (housingAsset) {
+      const units = Math.round(magnitude);
+      const available = housingAsset.housing_convertible_units ?? 0;
+      if (units > available) {
+        throw new Error(
+          `housing_retrofit_affordable: requested ${units} units but only ${available} convertible available in ${geoid}`,
+        );
+      }
+      housingAsset.housing_convertible_units = available - units;
+      housingAsset.housing_affordable_added  = Math.round(((housingAsset.housing_affordable_added ?? 0) + units) * 100) / 100;
+      // WY fiscal: assessed_residential + property_tax (23 WY counties only)
+      if (geoid in (state.county_fiscal ?? {})) {
+        const fmvAdded = units * HOUSING_UNIT_REHAB_VALUE_USD;
+        const assessedAdded = Math.round(fmvAdded * WY_RESIDENTIAL_ASSESSMENT_RATIO * 100) / 100;
+        const mill = (state.county_fiscal![geoid].mill_levy_mills ?? 0);
+        state.county_fiscal![geoid].assessed_residential =
+          Math.round(((state.county_fiscal![geoid].assessed_residential ?? 0) + assessedAdded) * 100) / 100;
+        state.county_fiscal![geoid].property_tax =
+          Math.round(((state.county_fiscal![geoid].property_tax ?? 0) + assessedAdded * mill / 1000) * 100) / 100;
+      }
+    }
+  }
+  // v3.3: affordable_housing (generic new-build) — update housing_affordable_added
+  if (actionId === 'affordable_housing' && geoid) {
+    const housingAsset = findHousingAsset(state, geoid);
+    if (housingAsset) {
+      const units = Math.round(magnitude);
+      housingAsset.housing_affordable_added = Math.round(((housingAsset.housing_affordable_added ?? 0) + units) * 100) / 100;
+    }
+  }
+
   // Update material ledger
   const materials = action.materials || {};
   const materialConsumed: Record<string, { quantity: number; unit: string }> = {};
@@ -1119,8 +1580,53 @@ export function queueAction(
     }
   }
 
-  // v3.0: push to asset_registry, then re-materialize build_queue view
+  // v4.1: succession discounts — check for compatible site OR coal_to_smr convert
   const gid = String(geoid);
+  let successionSiteId: string | null = null;
+  let ttdReductionApplied: number | null = null;
+  let capexDiscountFractionVal: number | null = null;
+  let txWaiverMw: number | null = null;
+  let convertSourceAssetId: string | null = null;
+
+  if (actionId === 'coal_to_smr') {
+    // coal_to_smr TX waiver: look for a live thermal site, else operating coal plant.
+    // TTD/capex NOT discounted — brownfield premium already in cost_2024=$8,500,000/MW.
+    for (const a of state.asset_registry) {
+      if (a.asset_class === 'site' && a.geoid === gid &&
+          a.lifecycle === 'operating' && a.site_class === COAL_TO_SMR_SITE_CLASS_COMPAT) {
+        txWaiverMw = Math.min(a.interconnection_mw ?? 0, magnitude);
+        successionSiteId = a.asset_id;
+        convertSourceAssetId = a.site_origin_asset_id;
+        break;
+      }
+    }
+    if (successionSiteId === null) {
+      // No site yet — look for an operating coal baseline plant
+      for (const a of state.asset_registry) {
+        if (a.geoid === gid && a.asset_class === 'generator' &&
+            (a.type ?? '').toLowerCase() === 'coal' &&
+            a.lifecycle === 'operating' && a.origin === 'baseline') {
+          txWaiverMw = Math.min(a.capacity_mw ?? 0, magnitude);
+          convertSourceAssetId = a.asset_id;
+          break;
+        }
+      }
+    }
+  } else {
+    // Standard succession: find compatible site
+    const [siteAsset, compat] = findSiteForAction(state, gid, actionId);
+    if (siteAsset !== null && compat !== null) {
+      ttdReductionApplied = compat.ttd_reduction_years;
+      capexDiscountFractionVal = compat.capex_discount_fraction;
+      txWaiverMw = Math.min(siteAsset.interconnection_mw ?? 0, magnitude);
+      successionSiteId = siteAsset.asset_id;
+      if (overrideOperationalYear === undefined) {
+        operationalYear = Math.max(decisionYear + 1, operationalYear - compat.ttd_reduction_years);
+      }
+    }
+  }
+
+  // v3.0: push to asset_registry, then re-materialize build_queue view
   const registryEntry: AssetInstance = {
     asset_id: `player_${gid}_${slugify(actionId)}_${decisionYear}`,
     origin: 'player',
@@ -1156,11 +1662,107 @@ export function queueAction(
     throttle_reason: throttleReason,
     commissioned: false,
     scheduled_retirement_year: null,
+    reclamation_year_log: null,
+    active_reclamation_acres: null,
+    reclamation_jobs_direct: null,
+    decommissioning_cost_usd: null,
+    decommissioning_labor_usd: null,
+    decommissioning_duration_years: null,
+    decommissioning_start_year: null,
+    // v3.3 housing (null for player-queued assets)
+    housing_total_units: null, housing_occupied_units: null,
+    housing_convertible_units: null, housing_subsidized_units: null,
+    housing_permits_per_year: null, housing_affordable_added: null,
+    housing_pressure_ratio: null, housing_seasonal_excluded: null,
+    // v4.1 site mechanics (null for player-queued assets)
+    site_origin_asset_id: null, site_origin_type: null, site_class: null,
+    interconnection_mw: null, water_rights_flag: null, acres: null,
+    workforce_pool_initial: null, workforce_pool_current: null,
+    workforce_pool_half_life_years: null, site_spawn_year: null,
+    restoration_eligibility: null,
+    // v4.1 succession discount tracking
+    succession_site_id: successionSiteId,
+    ttd_reduction_applied: ttdReductionApplied,
+    capex_discount_fraction: capexDiscountFractionVal,
+    tx_waiver_mw: txWaiverMw,
+    convert_source_asset_id: convertSourceAssetId,
   };
   state.asset_registry.push(registryEntry);
   state.build_queue = materializeBuildQueue(state.asset_registry);
 
   return state;
+}
+
+// ── Population Advancement (v4.2) ──────────────────────────────────────────
+
+/**
+ * Count operations jobs from player-origin, operating (commissioned) assets at geoid.
+ * Uses MIGRATION_OPS_JOBS_PER_MW. Construction workers excluded — they are temporary
+ * (already modelled in housing pressure) and do not create permanent in-migration.
+ */
+function countPlayerOpsJobs(state: EngineState, geoid: string): number {
+  let total = 0.0;
+  const gid = geoid.padStart(5, '0');
+  for (const asset of state.asset_registry) {
+    if (asset.geoid !== gid) continue;
+    if (asset.origin !== 'player') continue;
+    if (asset.lifecycle !== 'operating') continue;
+    if (['housing_stock', 'production', 'site'].includes(asset.asset_class)) continue;
+    // Player queued assets store MW in `magnitude`; `capacity_mw` is null until commission
+    const capMw = (asset.capacity_mw ?? asset.magnitude ?? 0.0) as number;
+    if (capMw <= 0) continue;
+    const rawType = asset.type ?? '';
+    const fuelKey = MIGRATION_OPS_JOBS_PER_MW[rawType] !== undefined
+      ? rawType
+      : ACTION_ID_TO_MIGRATION_FUEL[rawType] ?? '';
+    const jobsPerMw = MIGRATION_OPS_JOBS_PER_MW[fuelKey] ?? 0.0;
+    total += capMw * jobsPerMw;
+  }
+  return total;
+}
+
+/**
+ * Advance county population by one year (mutates state in place).
+ *
+ * Step 1 — Baseline projection: apply annual_growth_rate from population_projections
+ *           (WY EAD 2022 / CO SDO 2022 / constant-share fallback).
+ * Step 2 — Migration adjustment (if migration_enabled):
+ *           permanent in-migrants from player-added ops jobs.
+ *           Formula: ops_jobs × HOUSEHOLD_FACTOR × AVG_HOUSEHOLD_SIZE × ECONOMIC_BASE_MULTIPLIER
+ *           Only player-origin, operating assets counted. Confidence: low.
+ * Step 3 — Update working_age_population proportionally from projection's working_age_share.
+ *
+ * Called by advanceYear BEFORE snapshotIndicators so history reflects end-of-year state.
+ */
+function advancePopulation(state: EngineState, _year: number): void {
+  const config = state.population_config;
+  const migrationEnabled = config?.migration_enabled !== false;
+  const laborMult = config?.labor_migration_multiplier ?? ECONOMIC_BASE_MULTIPLIER;
+  const projections = state.population_projections ?? {};
+
+  for (const [geoid, ees] of Object.entries(state.county_ees)) {
+    const proj = projections[geoid] as PopulationProjection | undefined;
+    const rate = proj?.annual_growth_rate ?? 0.0;
+    const waShare = proj?.working_age_share ?? WORKING_AGE_SHARE_DEFAULT;
+
+    // Step 1: baseline projection
+    let newPop = Math.round(ees.population * (1.0 + rate));
+
+    // Step 2: migration from player-added ops jobs
+    if (migrationEnabled) {
+      const opsJobs = countPlayerOpsJobs(state, geoid);
+      if (opsJobs > 0) {
+        const migrationHeads = Math.round(
+          opsJobs * HOUSEHOLD_FACTOR * AVG_HOUSEHOLD_SIZE * laborMult,
+        );
+        newPop = Math.max(0, newPop + migrationHeads);
+      }
+    }
+
+    // Step 3: advance population and working-age
+    ees.population = newPop;
+    ees.working_age_population = Math.round(newPop * waShare);
+  }
 }
 
 // ── Advance Year ────────────────────────────────────────────────────────────
@@ -1215,12 +1817,70 @@ export function advanceYear(inputState: EngineState): EngineState {
     }
   }
 
+  // v3.1: autonomous PRB coal surface decline
+  const lc = state.lifecycle_coefficients as Record<string, unknown> | null;
+  const adCfg = (lc?.autonomous_decline as Record<string, unknown> | undefined)
+    ?.coal_surface as Record<string, unknown> | undefined;
+  if (adCfg?.enabled === true) {
+    const annualRate = Math.abs((adCfg.annual_rate as number) ?? 0.02);
+    const geoidFilter = new Set<string>((adCfg.geoid_filter as string[]) ?? []);
+    for (const prodAsset of [...state.asset_registry]) {
+      if (
+        prodAsset.asset_class === 'production' &&
+        prodAsset.commodity === 'coal_surface' &&
+        geoidFilter.has(prodAsset.geoid) &&
+        prodAsset.lifecycle === 'operating' &&
+        prodAsset.production_volume !== null &&
+        prodAsset.production_volume > 0
+      ) {
+        const declineDelta = Math.round(prodAsset.production_volume * annualRate * 100) / 100;
+        if (declineDelta > 0) {
+          [state] = reduceProductionAsset(state, prodAsset.geoid, 'coal_surface', declineDelta, currentYear);
+        }
+      }
+    }
+  }
+
+  // v3.1: bond release expiry — recompute active_reclamation_acres for production assets
+  // (handles years where reduce_production_asset was NOT called for that asset)
+  const recCfg = (lc?.reclamation as Record<string, unknown> | undefined);
+  const bondReleaseYears = (recCfg?.bond_release_duration_years as number | undefined) ?? 10;
+  const jobsPer100Acres = (recCfg?.jobs_per_100_acres_yr as number | undefined) ?? 2.5;
+  for (const prodAsset of state.asset_registry) {
+    if (prodAsset.asset_class === 'production' && prodAsset.reclamation_year_log?.length) {
+      const activeAcres = prodAsset.reclamation_year_log.reduce(
+        (sum, e) => sum + (currentYear - e.year < bondReleaseYears ? e.acres : 0),
+        0,
+      );
+      prodAsset.active_reclamation_acres = Math.round(activeAcres * 10000) / 10000;
+      prodAsset.reclamation_jobs_direct = Math.round(activeAcres * jobsPer100Acres / 100 * 100) / 100;
+    }
+  }
+
   // v3.0: execute scheduled retirements
   let retiredAny = false;
   for (const asset of state.asset_registry) {
     if (asset.scheduled_retirement_year === currentYear && asset.lifecycle === 'operating') {
       asset.lifecycle = 'retired';
       retiredAny = true;
+      // v3.2: decommissioning cost draw — price from lifecycle_coefficients.decommissioning
+      if (asset.asset_class !== 'production' && asset.capacity_mw !== null && asset.capacity_mw > 0) {
+        const decomSection = (lc?.decommissioning as Record<string, unknown> | undefined);
+        const techKey = z1TechKey(asset.type);
+        const decomEntry = techKey && decomSection ? (decomSection[techKey] as Record<string, unknown> | undefined) : undefined;
+        if (decomEntry) {
+          const costPerMw = (decomEntry.cost_usd_per_mw as number | undefined) ?? 0;
+          const laborFrac = (decomEntry.labor_fraction as number | undefined) ?? 0;
+          const durationYrs = (decomEntry.duration_years_midpoint as number | undefined) ?? 1;
+          if (costPerMw > 0) {
+            const totalCost = Math.round(asset.capacity_mw * costPerMw * 100) / 100;
+            asset.decommissioning_cost_usd = totalCost;
+            asset.decommissioning_labor_usd = Math.round(totalCost * laborFrac * 100) / 100;
+            asset.decommissioning_duration_years = durationYrs;
+            asset.decommissioning_start_year = currentYear;
+          }
+        }
+      }
       // Reverse capacity through existing network heuristic
       if (asset.capacity_mw !== null && asset.capacity_mw > 0) {
         const busId = resolveGeoidToBus(state, asset.geoid);
@@ -1231,10 +1891,70 @@ export function advanceYear(inputState: EngineState): EngineState {
       }
     }
   }
+  // v4.1: spawn site assets from generator retirements that fired this year
+  const spawnedSites: AssetInstance[] = [];
+  for (const asset of state.asset_registry) {
+    if (
+      asset.scheduled_retirement_year === currentYear &&
+      ['generator', 'demand', 'storage'].includes(asset.asset_class) &&
+      (asset.capacity_mw ?? 0) > 0
+    ) {
+      spawnedSites.push(spawnSiteFromRetired(asset, currentYear));
+    }
+  }
+  if (spawnedSites.length > 0) {
+    state.asset_registry.push(...spawnedSites);
+    retiredAny = true;
+  }
+
   if (retiredAny) {
     state.build_queue = materializeBuildQueue(state.asset_registry);
     state.existing_assets = materializeExistingAssets(state.asset_registry);
   }
+
+  // v3.3: housing supply trend + pressure recompute
+  for (const housing of state.asset_registry) {
+    if (housing.asset_class !== 'housing_stock') continue;
+    if (housing.lifecycle !== 'operating') continue;
+    const gid = housing.geoid;
+    const permits = housing.housing_permits_per_year ?? 0;
+    if (permits > 0) {
+      housing.housing_total_units    = (housing.housing_total_units    ?? 0) + Math.round(permits);
+      housing.housing_occupied_units = (housing.housing_occupied_units ?? 0) + Math.round(permits);
+    }
+    const ratio = computeHousingPressure(state, gid, currentYear);
+    housing.housing_pressure_ratio = ratio;
+    if (ratio !== null && ratio >= HOUSING_PRESSURE_THRESHOLDS.stressed) {
+      if (gid in state.county_ees) {
+        const oldS = state.county_ees[gid].S;
+        const excess = ratio - HOUSING_PRESSURE_THRESHOLDS.moderate;
+        const steps = Math.max(0, excess / 0.05);
+        const sPenalty = HOUSING_PRESSURE_S_PENALTY_PER_STEP * steps;
+        state.county_ees[gid].S = Math.max(0, Math.round((oldS + sPenalty) * 1e6) / 1e6);
+      }
+    }
+  }
+
+  // v4.1: workforce pool decay for live site assets
+  // N(t) = N0 × (0.5)^(t / t½)  — Carley et al. (2018)
+  for (const siteAsset of state.asset_registry) {
+    if (siteAsset.asset_class !== 'site' || siteAsset.lifecycle !== 'operating') continue;
+    const spawnYear = siteAsset.site_spawn_year ?? currentYear;
+    const initial = siteAsset.workforce_pool_initial ?? 0;
+    const halfLife = siteAsset.workforce_pool_half_life_years ?? SITE_WORKFORCE_HALF_LIFE_YEARS;
+    const yearsElapsed = currentYear - spawnYear;
+    if (yearsElapsed > 0 && initial > 0 && halfLife > 0) {
+      const decayed = initial * Math.pow(0.5, yearsElapsed / halfLife);
+      siteAsset.workforce_pool_current = Math.round(decayed * 10) / 10;
+    }
+  }
+
+  // v4.2: advance population (baseline projection + migration adjustment)
+  // Must run BEFORE snapshotIndicators so history captures end-of-year demographic state.
+  advancePopulation(state, currentYear);
+
+  // v4.0: append indicator snapshot at end of year
+  state.history = [...(state.history ?? []), snapshotIndicators(state)];
 
   return state;
 }
@@ -1287,15 +2007,28 @@ export function accelerateRetirement(
   return state;
 }
 
+/** Map asset type string to lifecycle_coefficients.z1_hooks tech key. */
+function z1TechKey(assetType: string | null): string | null {
+  if (!assetType) return null;
+  const t = assetType.toLowerCase();
+  if (t.includes('coal')) return 'coal';
+  if (t.includes('gas') || t.includes('natural_gas')) return 'gas';
+  if (t.includes('wind')) return 'wind';
+  if (t.includes('solar') || t.includes('pv')) return 'solar';
+  if (t.includes('nuclear') || t.includes('smr')) return 'nuclear_smr';
+  return null;
+}
+
 /**
- * Push a scheduled retirement later. Returns [newState, { delay_cost_hook }].
- * delay_cost_hook is zeroed out (coefficient placeholder, confidence: low).
+ * Push a scheduled retirement later.
+ * Returns [newState, { delay_cost_hook, confidence }].
+ * Cost priced from lifecycle_coefficients.z1_hooks.delay_retirement (confidence: low).
  */
 export function delayRetirement(
   inputState: EngineState,
   asset_id: string,
   new_year: number,
-): [EngineState, { delay_cost_hook: number }] {
+): [EngineState, { delay_cost_hook: number; confidence: string }] {
   const state = shallowCopyState(inputState);
   const idx = state.asset_registry.findIndex(a => a.asset_id === asset_id);
   if (idx === -1) throw new Error(`Asset not found: ${asset_id}`);
@@ -1303,22 +2036,36 @@ export function delayRetirement(
   if (asset.scheduled_retirement_year === null) {
     throw new Error(`Asset ${asset_id} has no scheduled retirement to delay`);
   }
-  if (new_year <= asset.scheduled_retirement_year) {
-    throw new Error(`new_year ${new_year} must be later than current ${asset.scheduled_retirement_year}`);
+  const oldYear = asset.scheduled_retirement_year;
+  if (new_year <= oldYear) {
+    throw new Error(`new_year ${new_year} must be later than current ${oldYear}`);
   }
   state.asset_registry[idx].scheduled_retirement_year = new_year;
-  return [state, { delay_cost_hook: 0 }];
+
+  // Z1 hook pricing (confidence: low)
+  const lc = state.lifecycle_coefficients as Record<string, unknown> | null;
+  const delayRates = (lc?.z1_hooks as Record<string, unknown> | undefined)
+    ?.delay_retirement as Record<string, unknown> | undefined;
+  const techKey = z1TechKey(asset.type);
+  const costPerMwYr = techKey && delayRates?.[techKey]
+    ? ((delayRates[techKey] as Record<string, unknown>).cost_usd_per_mw_yr as number) ?? 0
+    : 0;
+  const capacityMw = asset.capacity_mw ?? 0;
+  const yearsExtended = new_year - oldYear;
+  const delayCost = Math.round(costPerMwYr * capacityMw * yearsExtended * 100) / 100;
+
+  return [state, { delay_cost_hook: delayCost, confidence: 'low' }];
 }
 
 /**
  * Cancel a player-queued asset before commissioning.
- * Returns [newState, { sunk_cost_fraction }].
- * sunk_cost_fraction is zeroed out (price hook for Z2).
+ * Returns [newState, { sunk_cost_fraction, sunk_cost_usd, confidence }].
+ * Sunk cost priced from lifecycle_coefficients.z1_hooks.cancellation_sunk_cost (confidence: low).
  */
 export function cancelQueued(
   inputState: EngineState,
   asset_id: string,
-): [EngineState, { sunk_cost_fraction: number }] {
+): [EngineState, { sunk_cost_fraction: number; sunk_cost_usd: number; confidence: string }] {
   const state = shallowCopyState(inputState);
   const idx = state.asset_registry.findIndex(a => a.asset_id === asset_id);
   if (idx === -1) throw new Error(`Asset not found: ${asset_id}`);
@@ -1326,12 +2073,25 @@ export function cancelQueued(
   if (asset.origin !== 'player') {
     throw new Error(`cancelQueued only applies to player-origin assets, got '${asset.origin}'`);
   }
-  if (asset.lifecycle !== 'queued' && asset.lifecycle !== 'under_construction') {
-    throw new Error(`Cannot cancel asset in lifecycle '${asset.lifecycle}'`);
+  const lifecycleStage = asset.lifecycle;
+  if (lifecycleStage !== 'queued' && lifecycleStage !== 'under_construction') {
+    throw new Error(`Cannot cancel asset in lifecycle '${lifecycleStage}'`);
   }
   state.asset_registry[idx].lifecycle = 'retired';
   state.build_queue = materializeBuildQueue(state.asset_registry);
-  return [state, { sunk_cost_fraction: 0 }];
+
+  // Z1 hook pricing (confidence: low)
+  const lc = state.lifecycle_coefficients as Record<string, unknown> | null;
+  const stages = ((lc?.z1_hooks as Record<string, unknown> | undefined)
+    ?.cancellation_sunk_cost as Record<string, unknown> | undefined)
+    ?.stages as Record<string, unknown> | undefined;
+  const stageCfg = stages?.[lifecycleStage] as Record<string, unknown> | undefined;
+  const sunkCostFraction = (stageCfg?.sunk_cost_fraction as number | undefined) ?? 0;
+  const capexPerMw = (asset as unknown as Record<string, unknown>).capex_per_mw as number | undefined ?? 0;
+  const magnitude = asset.magnitude ?? 0;
+  const sunkCostUsd = Math.round(sunkCostFraction * capexPerMw * magnitude * 100) / 100;
+
+  return [state, { sunk_cost_fraction: sunkCostFraction, sunk_cost_usd: sunkCostUsd, confidence: 'low' }];
 }
 
 // ── Inject Disturbance ──────────────────────────────────────────────────────
@@ -2062,7 +2822,8 @@ export function reduceProductionAsset(
       cf.advalorem_production += ledger_a_delta;
       cf.ledger_a_cumulative_delta += ledger_a_delta;
       if (mineral_av_change !== 0) {
-        cf.assessed_mineral += mineral_av_change;
+        // Round to 2dp after each accumulation to match Python's round() behavior
+        cf.assessed_mineral = Math.round((cf.assessed_mineral + mineral_av_change) * 100) / 100;
       }
     }
 
@@ -2087,6 +2848,32 @@ export function reduceProductionAsset(
       sales_use_delta: 0,
     };
     cf.fiscal_actions.push(fiscalAction);
+  }
+
+  // v3.1: reclamation obligation tracking
+  const lcState = state.lifecycle_coefficients as Record<string, unknown> | null;
+  const recCfgState = (lcState?.reclamation as Record<string, unknown> | undefined);
+  const tonsPerAcre = (recCfgState?.tons_per_acre as number | undefined) ?? 10000;
+  const jobsPer100 = (recCfgState?.jobs_per_100_acres_yr as number | undefined) ?? 2.5;
+  const bondYears = (recCfgState?.bond_release_duration_years as number | undefined) ?? 10;
+  const effectiveYear = year ?? state.year;
+  const newAcres = tonsPerAcre > 0 ? Math.round((actual_delta / tonsPerAcre) * 10000) / 10000 : 0;
+
+  if (regIdx !== -1) {
+    const regAsset = state.asset_registry[regIdx];
+    const log: Array<{ year: number; acres: number }> = regAsset.reclamation_year_log
+      ? [...regAsset.reclamation_year_log]
+      : [];
+    if (newAcres > 0) {
+      log.push({ year: effectiveYear, acres: newAcres });
+    }
+    regAsset.reclamation_year_log = log;
+    const activeAcres = log.reduce(
+      (sum, e) => sum + (effectiveYear - e.year < bondYears ? e.acres : 0),
+      0,
+    );
+    regAsset.active_reclamation_acres = Math.round(activeAcres * 10000) / 10000;
+    regAsset.reclamation_jobs_direct = Math.round(activeAcres * jobsPer100 / 100 * 100) / 100;
   }
 
   const delta_summary: Record<string, unknown> = {
@@ -2156,4 +2943,111 @@ export function previewProductionReduction(
   }
 
   return { actual_delta, new_volume, ledger_a_delta, ledger_b_delta, ledger_c_delta };
+}
+
+// ── History Digest + Projection API (v4.0) ───────────────────────────────────
+
+/**
+ * Serialize history with sorted keys matching Python's json.dumps(sort_keys=True, separators=(',',':')).
+ *
+ * Key type rule:
+ *   - "year" field (integer concept): no decimal point → 2027
+ *   - All other numbers: Python float serialization → whole numbers get ".0" suffix
+ *   - null → "null"
+ *
+ * This matches Python's behavior: integer values serialize as "2027", float values
+ * as "0.0", "47401088.09", etc.
+ */
+function serializeHistoryCanonical(history: IndicatorSnapshot[]): string {
+  const INTEGER_KEYS = new Set(['year']);
+
+  function ser(val: unknown, key?: string): string {
+    if (val === null || val === undefined) return 'null';
+    if (typeof val === 'boolean') return val ? 'true' : 'false';
+    if (typeof val === 'number') {
+      if (key && INTEGER_KEYS.has(key)) {
+        // Python int serialization — no decimal
+        return String(Math.round(val));
+      }
+      // Python float serialization — integers get ".0" suffix
+      if (Number.isInteger(val) && Math.abs(val) < Number.MAX_SAFE_INTEGER) {
+        return val.toFixed(1);
+      }
+      return JSON.stringify(val);
+    }
+    if (typeof val === 'string') return JSON.stringify(val);
+    if (Array.isArray(val)) return '[' + val.map(v => ser(v)).join(',') + ']';
+    const keys = Object.keys(val as Record<string, unknown>).sort();
+    const pairs = keys.map(k => JSON.stringify(k) + ':' + ser((val as Record<string, unknown>)[k], k));
+    return '{' + pairs.join(',') + '}';
+  }
+
+  return '[' + history.map(snap => ser(snap)).join(',') + ']';
+}
+
+/**
+ * Create a digest of state.history.
+ *
+ * Separate from stateDigest / fiscalDigest / existingAssetsDigest — those three
+ * are the main digest set (Golden A–H contract). historyDigest is additive:
+ * adding history to state does not change any of A–H's md5 values.
+ *
+ * The phrasing for UI: projections are "conditional forecasts under 'no further
+ * decisions,' not predictions" — this exact phrasing ships to the UI verbatim.
+ */
+export function historyDigest(state: EngineState): { n_years: number; year_range: number[]; md5: string } {
+  const history = state.history ?? [];
+  if (history.length === 0) {
+    const md5 = createHash('md5').update('[]').digest('hex');
+    return { n_years: 0, year_range: [], md5 };
+  }
+  const canonical = serializeHistoryCanonical(history);
+  const md5 = createHash('md5').update(canonical).digest('hex');
+  return {
+    n_years: history.length,
+    year_range: [history[0].year, history[history.length - 1].year],
+    md5,
+  };
+}
+
+/**
+ * Project state forward n_years with no further decisions.
+ *
+ * This is a CONDITIONAL FORECAST under 'no further decisions,' not a prediction.
+ * The distinction matters for UI display: projections show likely trajectories
+ * given the current action set and autonomous dynamics (coal decline, depreciation,
+ * housing permits). They are NOT predictions of what will happen — player decisions,
+ * market shifts, and policy changes not captured in the model will alter outcomes.
+ */
+export function project(state: EngineState, nYears: number): EngineState[] {
+  const states: EngineState[] = [];
+  let s = state;
+  for (let i = 0; i < nYears; i++) {
+    s = advanceYear(s);
+    states.push(s);
+  }
+  return states;
+}
+
+/**
+ * Project n_years forward with one action applied, returning both the action
+ * trajectory and the baseline trajectory.
+ *
+ * This is a CONDITIONAL FORECAST under 'no further decisions,' not a prediction.
+ * The delta shows the marginal impact of a single action vs. the do-nothing baseline
+ * under the same autonomous dynamics.
+ *
+ * Returns [actionStates, baselineStates] — both length-nYears arrays.
+ */
+export function projectDelta(
+  state: EngineState,
+  actionId: string,
+  geoid: string,
+  magnitude: number,
+  nYears: number,
+): [EngineState[], EngineState[]] {
+  const [stateWithAction] = applyAction(state, actionId, geoid, magnitude);
+  const baselineStates = project(state, nYears);
+  const actionStates = project(stateWithAction, nYears);
+  return [actionStates, baselineStates];
 }

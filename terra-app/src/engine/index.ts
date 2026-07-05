@@ -21,6 +21,7 @@ export type {
   CountyCard,
   PathwayConditions,
   ScenarioProfile,
+  IndicatorSnapshot,
 } from './types.js';
 
 export {
@@ -33,4 +34,17 @@ export {
   getCountyCard,
   getMaterialLedger,
   getPathwayConditions,
+  // v4.0 history + projection
+  historyDigest,
+  project,
+  projectDelta,
 } from './engine.js';
+
+export {
+  INDICATOR_CATALOG,
+  POOL_UTILIZATION_IDS,
+  computeIndicator,
+  snapshotIndicators,
+} from './indicators.js';
+
+export { EES_DECOMPOSITION } from './decomposition.js';

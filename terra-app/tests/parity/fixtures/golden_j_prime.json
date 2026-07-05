@@ -1,0 +1,47 @@
+{
+  "fixture_id": "golden_j_prime",
+  "schema_version": "4.2",
+  "engine_version": "4.2",
+  "created": "2026-07-05T00:00:00+00:00",
+  "description": "Golden J\u2019 \u2014 Amendment 4. Re-run of Golden J with v4.2 dynamic population advancement. Static-denominator values superseded; service_funding_per_capita now reflects declining Campbell population and migration-driven Laramie growth.",
+  "_meta": {
+    "amends": "golden_j",
+    "amendment_number": 4,
+    "amendment_reason": "Engine v4.2 wires population as a per-year advancing state field. Registry denominators now use live population instead of static 2025 baseline. Campbell per-capita burden increases (fewer residents, same recapture); Laramie shows strong growth from data-center + SMR ops migration. history_digest_md5 changed because IndicatorSnapshot now records population and working_age_population, AND because per-capita denominators changed. migration_capacity_fix: countPlayerOpsJobs now reads magnitude when capacity_mw is null (player queued assets); this caused migration to be silently zero before this fix.",
+    "base_scenario": "Golden B (WY Nuclear-DC Buildout)",
+    "base_year": 2028,
+    "projection_years": 60,
+    "end_year": 2088,
+    "note": "Projections are conditional forecasts under 'no further decisions,' not predictions. Python runtime uses _round_pop() (floor(n+0.5)) to match JS Math.round() semantics on .5 cases."
+  },
+  "history_digest_md5": "7b05722c9b11c2b405faf953c729977d",
+  "history_n_years": 63,
+  "history_year_range": [2026, 2088],
+  "assertions": {
+    "laramie_payback_year_range": [2081, 2087],
+    "laramie_payback_year_range_note": "Same range as Golden J — payback_year uses raw cumulative_net (not per-capita), unaffected by population dynamics.",
+    "laramie_labor_utilization_2030": 0.073443,
+    "laramie_labor_utilization_construction_peak": {
+      "year": 2030,
+      "min": 0.066099,
+      "max": 0.080787
+    },
+    "laramie_labor_utilization_2033": 0.0,
+    "laramie_labor_utilization_post_commission_max": 0.001,
+    "campbell_service_funding_per_capita_2028": -766.9657,
+    "campbell_service_funding_per_capita_2028_note": "More negative than Golden J (-748.70) because Campbell population is declining; same recapture burden / fewer residents.",
+    "campbell_service_funding_per_capita_2038": -726.0635,
+    "campbell_coal_recapture_burden_shrinks": true,
+    "campbell_population_2028": 45741,
+    "campbell_working_age_population_2028": 28405,
+    "laramie_population_2028": 104769,
+    "laramie_population_2028_note": "Elevated above baseline (101829) due to data-center hyperscale+campus ops migration: 300 MW \u00d7 3.0 ops/MW = 900 jobs \u00d7 household multiplier \u2248 +2940 people over 3 years.",
+    "laramie_working_age_population_2028": 60871,
+    "laramie_population_2038": 138341,
+    "laramie_working_age_population_2038": 80376,
+    "laramie_population_monotone_2028_2038": true,
+    "laramie_history_spot_2032_E": 2.2391,
+    "laramie_history_spot_2032_Ec": 9.269313,
+    "laramie_history_spot_2032_S": 6.869765
+  }
+}

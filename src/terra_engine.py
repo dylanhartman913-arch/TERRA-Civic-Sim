@@ -1,5 +1,5 @@
 """
-terra_engine.py — TERRA Engine v3.0
+terra_engine.py — TERRA Engine v4.1
 County-keyed state with build queue, coupling evaluation, supply-chain throttling,
 and county fiscal layer (ad valorem / severance / school finance three-ledger model).
 Phase W5 adds an existing_assets inventory layer seeded from county_cards flagship_assets.
@@ -8,6 +8,15 @@ reduce_production_asset() with full three-ledger support (A=advalorem, B=severan
 C=school-finance recapture sensitivity).
 v3.0 adds unified asset_registry (source of truth); build_queue and existing_assets
 become materialized views. Retirement transition family for EIA-860 scheduled retirements.
+v3.1 adds lifecycle_coefficients.json consumption: autonomous PRB coal decline in
+advance_year (player-overridable, off-switch in session_config), reclamation jobs arc
+on production assets after any volume reduction, and priced Z1 hooks for delay_retirement
+and cancel_queued (confidence: low, flagged). Golden G′ amends digests accordingly.
+v3.3 (Z2): housing_stock asset class, housing pressure model, Golden H.
+v4.0 (Z3): indicator catalog, per-year history snapshots, projection API, Golden J.
+v4.1 (Z4): site asset class, succession discounts in queue_action, workforce pool decay
+in advance_year. coal_to_smr generalised as convert transition (TX waiver from site;
+TTD/capex NOT discounted — brownfield premium already in cost_2024). Golden I.
 
 Public API
 ----------
@@ -29,10 +38,10 @@ existing_assets_digest(state) -> dict
 reduce_production_asset(state, geoid, commodity, delta_volume, year=None) -> (state, delta_summary)
 schedule_retirement(state, asset_id, year) -> state
 accelerate_retirement(state, asset_id, new_year) -> state
-delay_retirement(state, asset_id, new_year) -> (state, {'delay_cost_hook': 0})
-cancel_queued(state, asset_id) -> (state, {'sunk_cost_fraction': 0})
+delay_retirement(state, asset_id, new_year) -> (state, {'delay_cost_hook': int, 'delay_cost_confidence': str})
+cancel_queued(state, asset_id) -> (state, {'sunk_cost_fraction': float, 'sunk_cost_usd': int})
 
-Engine version: 3.0
+Engine version: 3.1
 """
 
 import copy
@@ -40,6 +49,13 @@ import json
 import hashlib
 from pathlib import Path
 from datetime import datetime, timezone
+
+# v4.0: optional indicators module for per-year history snapshots
+try:
+    from indicators import snapshot_indicators as _snapshot_indicators
+    _HAS_INDICATORS = True
+except ImportError:
+    _HAS_INDICATORS = False
 
 import numpy as np
 import pandas as pd
@@ -95,6 +111,41 @@ DISTURBANCE_COEFFICIENTS = {
 # Firm fuel types for supply gap calculations
 FIRM_FUEL_TYPES = frozenset({'nuclear', 'gas', 'coal', 'hydro', 'geothermal', 'storage'})
 
+# ── Housing stock constants (v3.3) ────────────────────────────────────────────
+# Construction workforce per MW by asset type — for boomtown housing-pressure model.
+# Source: NREL JEDI model v2023; TerraPower Kemmerer Final EIS (nuclear, 1,800 peak/345 MW ≈ 5.2)
+HOUSING_CONSTRUCTION_JOBS_PER_MW = {
+    'nuclear': 5.2,      # TerraPower Kemmerer EIS; NREL JEDI Nuclear
+    'coal': 2.0,         # NREL JEDI Coal
+    'gas': 1.4,          # NREL JEDI Natural Gas
+    'wind': 0.4,         # NREL JEDI Wind
+    'solar': 2.5,        # NREL JEDI Solar PV Utility
+    'storage': 0.5,      # Proxy; NREL ATB battery storage
+    'data_center': 3.0,  # Dodge Construction Network 2023; CBRE Data Center Report
+    'hydro': 1.5,        # NREL JEDI Hydropower
+}
+# Share of incoming construction workers who form separate households (transient workforce).
+# Source: NAHB "New Home Buyer Profile" 2023; workforce housing literature (70% transient,
+# ~65% form distinct household units distinct from bunkhouse/camp arrangements).
+HOUSEHOLD_FACTOR = 0.65
+# S-capital pressure thresholds (demand/supply ratio).
+HOUSING_PRESSURE_THRESHOLDS = {
+    'mild': 1.05,      # Watch — incoming demand 5% above supply capacity
+    'moderate': 1.15,  # 🏠 chip triggered — action recommended
+    'stressed': 1.25,  # S-capital penalty begins (-0.005/step above moderate)
+    'crisis': 1.40,    # Escalating S-capital penalty
+}
+WY_RESIDENTIAL_ASSESSMENT_RATIO = 0.095  # W.S. 39-13-103: residential property at 9.5%
+# Per-unit rehabilitation cost basis for fiscal valuation of affordable conversions.
+# Source: Enterprise Community Partners, "Affordable Housing Finance" 2022 edition;
+# LIHTC Average Rehabilitation Cost (national) ≈ $150k/unit. Confidence: medium.
+HOUSING_UNIT_REHAB_VALUE_USD = 150_000
+# S-capital EES penalty per 0.05 step of housing pressure above the 'moderate' threshold.
+# Applied annually in advance_year when pressure_ratio >= 'stressed' (1.25).
+# Rationale: housing stress correlates with community quality-of-life decline
+# (NLIHC 2023; Culhane & Metraux 2008). Magnitude is judgment-based; confidence: low.
+HOUSING_PRESSURE_S_PENALTY_PER_STEP = -0.005
+
 PRB_COAL_TONS_PER_MW_YR = 3743.4  # EIA Form 923 × PRB HHV × 0.70 CF (W2 proxy)
 
 # ── EIA-7A / MSHA production data (X2 production_asset seeds) ─────────────────
@@ -103,6 +154,110 @@ EIA_7A_CAMPBELL_COAL_2024 = 170_045_000.0   # short tons/yr (surface, 11 mines)
 EIA_7A_WY_COAL_2024       = 190_731_000.0   # short tons/yr WY state total
 # W2 proxy comparison: 0.70606 × 233M = ~164.5M tons → EIA actual +3.4% higher
 # Proxy errors cancel: county share 70.6% vs actual 89.2% offsets 2023 vs 2024 statewide
+
+# ── Site spawning / succession mechanics (v4.1) ───────────────────────────────
+# Compatibility table: retired-asset site_class → eligible successor action_ids
+# with associated discounts.
+#
+# Literature anchor — Kemmerer/Naughton precedent:
+#   • DOE (2022). "Investigating Benefits and Challenges of Converting Retiring Coal
+#     Plants to Nuclear." DOE-NE-0000. Sites with existing interconnection and cooling
+#     infrastructure cut projected siting timelines by 2–3 yr vs. greenfield.
+#   • Gorman et al. (2022). "An Assessment of the Potential to Repurpose Nuclear Plant
+#     Sites." LBNL 2022. Brownfield capex premium avoidance ~10–20% of overnight cost.
+#   • TerraPower/PacifiCorp Kemmerer Unit 1: brownfield at retired Naughton gas plant;
+#     existing 345 kV interconnection inherited — confirmed TX waiver precedent.
+#
+# Magnitudes are judgment-based. confidence: "low" throughout.
+SITE_COMPAT = {
+    'thermal': {
+        # Coal, gas, nuclear plant sites — good for high-density firm-power successors
+        'compatible_actions': frozenset([
+            'smr_advanced', 'gas_combined_cycle',
+        ]),
+        'ttd_reduction_years': 2,           # DOE (2022): 2-3 yr faster permitting on brownfield
+        'capex_discount_fraction': 0.15,    # Gorman et al. (2022): ~15% overnight cost saving
+        'confidence': 'low',
+    },
+    'generator': {
+        # Any retired MW-based generator — good for storage and demand assets
+        'compatible_actions': frozenset([
+            'battery_grid', 'pumped_hydro',
+            'data_center_hyperscale', 'data_center_campus_phase',
+        ]),
+        'ttd_reduction_years': 1,
+        'capex_discount_fraction': 0.10,
+        'confidence': 'low',
+    },
+    'mine': {
+        # Retired surface mine — graded/leveled land, dust control already done
+        'compatible_actions': frozenset([
+            'prairie_restoration', 'solar_utility', 'reclamation_tech',
+        ]),
+        'ttd_reduction_years': 1,
+        'capex_discount_fraction': 0.20,    # cleared land; no site prep costs
+        'confidence': 'low',
+    },
+}
+
+# coal_to_smr is a convert transition: TX waiver from existing coal interconnection;
+# TTD and capex discounts do NOT apply (cost_2024=$8,500,000/MW already includes
+# brownfield siting premium per dissertation_note). Stacking a 15% succession
+# discount on top would double-count the premium. Deliberate re-pricing decision.
+COAL_TO_SMR_SITE_CLASS_COMPAT = 'thermal'  # site_class a coal_to_smr can draw TX waiver from
+
+# Operations workforce proxy by asset type (for workforce_pool_initial on spawned site).
+# Source: NREL JEDI v2023 operations/maintenance employment factors.
+# Half-life source: Carley et al. (2018) "A just transition?" Energy Research & Social
+# Science — workforce attrition after plant closure, ~5 yr median departure horizon.
+SITE_OPS_JOBS_PER_MW = {
+    'coal':    0.28,    # NREL JEDI Coal (O&M only; NOT construction)
+    'gas':     0.10,
+    'nuclear': 0.38,
+    'wind':    0.04,
+    'solar':   0.02,
+    'hydro':   0.15,
+}
+SITE_WORKFORCE_HALF_LIFE_YEARS = 5  # judgment; Carley et al. (2018) ~5 yr median
+
+# ── Population / Migration Constants (v4.2) ──────────────────────────────────
+# Employment-linked permanent in-migration from player-added operations jobs.
+# Literature: Headwaters Economics (2017) "Energy Development and the Economy
+#   in the West" — rural energy employment multipliers 1.4–2.0 for Mountain West.
+#   Power et al. (2013) "Economic Assessment of Fossil Fuel Development in the
+#   Mountain West" — household formation rates for energy-sector in-migrants.
+# ACS 2022 Table B25010: 2.51 persons per occupied housing unit (national).
+AVG_HOUSEHOLD_SIZE = 2.51          # ACS 2022 Table B25010
+ECONOMIC_BASE_MULTIPLIER = 1.5     # Headwaters Economics (2017); confidence: low
+WORKING_AGE_SHARE_DEFAULT = 0.573  # ACS 2022 national; county overrides in projection file
+
+def _round_pop(n: float) -> int:
+    """Round population like JS Math.round: .5 always rounds UP (matching TS runtime parity)."""
+    return int(n + 0.5)
+
+# Ops workforce per MW for the population migration model.
+# Extends SITE_OPS_JOBS_PER_MW with data_center (not in site-spawning lookup).
+_MIGRATION_OPS_JOBS_PER_MW = {
+    'coal':        0.28,
+    'gas':         0.10,
+    'nuclear':     0.38,
+    'wind':        0.04,
+    'solar':       0.02,
+    'hydro':       0.15,
+    'data_center': 3.0,   # CBRE Data Center Employment Trends Report (2023)
+    'storage':     0.05,  # Proxy (minimal O&M)
+}
+
+_ACTION_ID_TO_MIGRATION_FUEL = {
+    'smr_advanced': 'nuclear', 'coal_to_smr': 'nuclear', 'fusion_pilot': 'nuclear',
+    'wind_utility': 'wind', 'offshore_wind_great_lakes': 'wind',
+    'solar_utility': 'solar', 'coal_to_solar': 'solar',
+    'gas_combined_cycle': 'gas',
+    'battery_grid': 'storage', 'hydrogen_electrolysis': 'storage',
+    'pumped_hydro': 'hydro', 'hydropower_small': 'hydro',
+    'data_center_hyperscale': 'data_center', 'data_center_campus_phase': 'data_center',
+    'industrial_load_flexible': 'data_center',
+}
 
 # Static production_asset data keyed by (geoid, name).
 # Only entries with confirmed EIA-7A / MSHA figures are listed here.
@@ -129,6 +284,10 @@ _PRODUCTION_ASSET_DATA = {
         # = -($3,797,719,892 × 0.90) / 170,045,000 = -$20.100255/ton
         # Used for Ledger C school-finance recapture sensitivity.
         'assessed_delta_per_unit': -20.100255,
+        # Direct mining employment: BLS QCEW 2022, NAICS 2121, Campbell County WY.
+        # 11 surface mines; consistent with EIA-7A productivity ratios.
+        # Confidence: medium (BLS QCEW establishment-level suppression may affect total).
+        'employment_direct': 4200,
     },
 }
 
@@ -467,13 +626,273 @@ def _slugify(name):
     return s.strip('_')
 
 
+# ── v4.1 Site Mechanics Helpers ───────────────────────────────────────────────
+
+def _site_class_for_asset(asset):
+    """
+    Return site_class ('thermal' | 'generator' | 'mine') for a retiring asset.
+    Used when spawning a site from a retirement event.
+    """
+    asset_class = asset.get('asset_class', '')
+    if asset_class == 'production':
+        return 'mine'
+    asset_type = (asset.get('type') or '').lower()
+    if asset_type in ('coal', 'gas', 'nuclear'):
+        return 'thermal'
+    return 'generator'
+
+
+def _spawn_site_from_retired(retired_asset, spawn_year):
+    """
+    Create a site AssetInstance from a just-retired generator or production asset.
+    Pure function — returns a new dict; does NOT modify input.
+
+    site_class:
+      'thermal'   — coal/gas/nuclear plant (high-density firm-power site)
+      'generator' — other MW-based generator
+      'mine'      — production (surface mine) asset
+    workforce_pool:
+      Ops jobs at retirement, decayed by half-life each year (Carley et al. 2018).
+      Seeded from SITE_OPS_JOBS_PER_MW × capacity_mw.
+      confidence: low — proxy only.
+    water_rights_flag / acres:
+      Both null at spawn; populated from county data in a future session.
+      Documented as known debt.
+    """
+    geoid = retired_asset['geoid']
+    cap_mw = retired_asset.get('capacity_mw') or 0.0
+    asset_type = (retired_asset.get('type') or '').lower()
+    site_class = _site_class_for_asset(retired_asset)
+
+    ops_jobs_per_mw = SITE_OPS_JOBS_PER_MW.get(asset_type, 0.1)
+    workforce_initial = round(cap_mw * ops_jobs_per_mw, 1)
+
+    asset_id = f'site_{geoid}_{_slugify(retired_asset["name"])}_{spawn_year}'
+
+    # Standard null block shared by all asset types
+    _null_block = {
+        'capacity_mw': None, 'coal_tons_yr': None, 'production_proxy': None,
+        'fiscal_action_id': None, 'excluded': None,
+        'commodity': None, 'production_volume': None, 'production_unit': None,
+        'production_confidence': None, 'production_source': None, 'data_year': None,
+        'effective_severance_rate_per_unit': None, 'county_distribution_share': None,
+        'advalorem_rate_per_unit': None, 'assessed_delta_per_unit': None,
+        'employment_direct': None,
+        'action_id': None, 'magnitude': None, 'decision_year': None,
+        'throttle_reason': None, 'commissioned': None,
+        'scheduled_retirement_year': None,
+        'reclamation_year_log': None, 'active_reclamation_acres': None,
+        'reclamation_jobs_direct': None,
+        'decommissioning_cost_usd': None, 'decommissioning_labor_usd': None,
+        'decommissioning_duration_years': None, 'decommissioning_start_year': None,
+        'housing_total_units': None, 'housing_occupied_units': None,
+        'housing_convertible_units': None, 'housing_subsidized_units': None,
+        'housing_permits_per_year': None, 'housing_affordable_added': None,
+        'housing_pressure_ratio': None, 'housing_seasonal_excluded': None,
+        # v4.1 succession fields (null on site itself; populated on queued assets)
+        'succession_site_id': None, 'ttd_reduction_applied': None,
+        'capex_discount_fraction': None, 'tx_waiver_mw': None,
+        'convert_source_asset_id': None,
+    }
+    return {
+        'asset_id': asset_id,
+        'origin': 'baseline',
+        'lifecycle': 'operating',
+        'asset_class': 'site',
+        'name': f'{retired_asset["name"]} Site',
+        'geoid': geoid,
+        'county_name': retired_asset.get('county_name', ''),
+        'state': retired_asset.get('state', ''),
+        'type': 'site',
+        'status': 'available',
+        'source_url': retired_asset.get('source_url', ''),
+        'operational_year': None,
+        **_null_block,
+        # v4.1 site-specific fields
+        'site_origin_asset_id': retired_asset['asset_id'],
+        'site_origin_type': 'mine' if site_class == 'mine' else 'generator',
+        'site_class': site_class,
+        'interconnection_mw': cap_mw if site_class != 'mine' else None,
+        'water_rights_flag': None,   # known debt: populate from county data
+        'acres': None,               # known debt: populate from county data
+        'workforce_pool_initial': workforce_initial,
+        'workforce_pool_current': workforce_initial,
+        'workforce_pool_half_life_years': SITE_WORKFORCE_HALF_LIFE_YEARS,
+        'site_spawn_year': spawn_year,
+        'restoration_eligibility': site_class == 'mine',
+    }
+
+
+def _find_site_for_action(state, geoid, action_id):
+    """
+    Return (site_asset, compat_dict) if a live compatible site exists in geoid
+    for the given action_id, else (None, None).
+
+    coal_to_smr is NOT in SITE_COMPAT (handled separately — TX waiver only).
+    """
+    geoid_str = str(geoid)
+    for a in state.get('asset_registry', []):
+        if (a.get('asset_class') == 'site'
+                and a.get('geoid') == geoid_str
+                and a.get('lifecycle') == 'operating'):
+            sc = a.get('site_class')
+            compat = SITE_COMPAT.get(sc)
+            if compat and action_id in compat['compatible_actions']:
+                return a, compat
+    return None, None
+
+
 def _resolve_asset_class(asset_type, asset_kind=None):
     """Resolve asset_class from type/kind (mirrors TS resolveAssetClass)."""
     if asset_kind == 'production_asset':
         return 'production'
     if asset_type == 'data_center':
         return 'demand'
+    if asset_type == 'site':
+        return 'site'
     return 'generator'
+
+
+def _seed_housing_assets(county_cards, housing_baseline):
+    """
+    Seed one housing_stock AssetInstance per study county from the ACS housing baseline.
+    Called from initialize_state after _seed_asset_registry.
+
+    Housing assets do NOT appear in the existing_assets materialized view
+    (_materialize_existing_assets skips them), so existing_assets_digest is unaffected.
+    """
+    assets = []
+    for geoid, card in county_cards.items():
+        hb = housing_baseline.get(geoid, {})
+        county_name = card.get('county_name', geoid)
+        state_code = card.get('state', '')
+
+        total_units        = hb.get('total_units', {}).get('value') or 0
+        occupied           = hb.get('occupied_units', {}).get('value') or 0
+        convertible        = hb.get('convertible_units', {}).get('value') or 0
+        subsidized         = hb.get('subsidized_units', {}).get('value') or 0
+        permits_val        = hb.get('permits_per_year', {}).get('value') or 0.0
+        seasonal_excluded  = hb.get('seasonal_recreational_vacant', {}).get('value') or 0
+
+        assets.append({
+            'asset_id':   f'housing_{geoid}',
+            'origin':     'baseline',
+            'lifecycle':  'operating',
+            'asset_class': 'housing_stock',
+            'name':       f'{county_name} Housing Stock',
+            'geoid':      geoid,
+            'county_name': county_name,
+            'state':      state_code,
+            'type':       'housing_stock',
+            'status':     'operating',
+            'source_url': 'ACS 2022 5-year',
+            'operational_year': None,
+            # Non-applicable standard fields — null for housing_stock
+            'capacity_mw': None, 'coal_tons_yr': None, 'production_proxy': None,
+            'fiscal_action_id': None, 'excluded': None,
+            'commodity': None, 'production_volume': None, 'production_unit': None,
+            'production_confidence': None, 'production_source': None, 'data_year': None,
+            'effective_severance_rate_per_unit': None, 'county_distribution_share': None,
+            'advalorem_rate_per_unit': None, 'assessed_delta_per_unit': None,
+            'employment_direct': None,
+            'action_id': None, 'magnitude': None, 'decision_year': None,
+            'throttle_reason': None, 'commissioned': None,
+            'scheduled_retirement_year': None,
+            # v3.1 reclamation (null for housing)
+            'reclamation_year_log': None,
+            'active_reclamation_acres': None,
+            'reclamation_jobs_direct': None,
+            # v3.2 decommissioning (null for housing)
+            'decommissioning_cost_usd': None, 'decommissioning_labor_usd': None,
+            'decommissioning_duration_years': None, 'decommissioning_start_year': None,
+            # v3.3 housing stock fields
+            'housing_total_units':       int(total_units),
+            'housing_occupied_units':    int(occupied),
+            'housing_convertible_units': int(convertible),
+            'housing_subsidized_units':  int(subsidized),
+            'housing_permits_per_year':  float(permits_val),
+            'housing_affordable_added':  0.0,
+            'housing_pressure_ratio':    None,  # computed on first advance_year
+            'housing_seasonal_excluded': int(seasonal_excluded),
+            # v4.1 site mechanics (null for housing_stock)
+            'site_origin_asset_id': None, 'site_origin_type': None,
+            'site_class': None, 'interconnection_mw': None,
+            'water_rights_flag': None, 'acres': None,
+            'workforce_pool_initial': None, 'workforce_pool_current': None,
+            'workforce_pool_half_life_years': None, 'site_spawn_year': None,
+            'restoration_eligibility': None,
+            # v4.1 succession discount tracking (null for housing_stock)
+            'succession_site_id': None, 'ttd_reduction_applied': None,
+            'capex_discount_fraction': None, 'tx_waiver_mw': None,
+            'convert_source_asset_id': None,
+        })
+    return assets
+
+
+def _find_housing_asset(state, geoid):
+    """Return the housing_stock AssetInstance for geoid, or None."""
+    for a in state.get('asset_registry', []):
+        if a.get('asset_class') == 'housing_stock' and a.get('geoid') == geoid:
+            return a
+    return None
+
+
+def _compute_housing_pressure(state, geoid, current_year):
+    """
+    Compute housing demand/supply pressure ratio for a county.
+
+    demand = occupied_units + incoming_workforce × HOUSEHOLD_FACTOR
+    supply = occupied_units + convertible_units + affordable_added
+
+    Returns float pressure_ratio or None if housing asset not found.
+
+    Incoming workforce = sum of construction workers from:
+      - Baseline 'under_construction' assets (operational_year > current_year)
+      - Player-queued assets not yet commissioned
+    Workers estimated from capacity_mw × HOUSING_CONSTRUCTION_JOBS_PER_MW[type].
+    """
+    housing = _find_housing_asset(state, geoid)
+    if housing is None:
+        return None
+
+    occupied     = housing.get('housing_occupied_units') or 0
+    convertible  = housing.get('housing_convertible_units') or 0
+    affordable   = housing.get('housing_affordable_added') or 0.0
+
+    # Sum construction workforce from all active construction in this county
+    incoming_workforce = 0.0
+    for a in state.get('asset_registry', []):
+        if a.get('geoid') != geoid:
+            continue
+        if a.get('asset_class') in ('housing_stock', 'production'):
+            continue
+        op_year = a.get('operational_year')
+        cap_mw  = a.get('capacity_mw') or a.get('magnitude') or 0.0
+
+        # Under-construction baseline asset (e.g. Kemmerer)
+        is_under_construction = (
+            a.get('origin') == 'baseline'
+            and a.get('status') == 'under_construction'
+            and op_year is not None and op_year > current_year
+        )
+        # Player-queued (not yet commissioned)
+        is_player_queued = (
+            a.get('origin') == 'player'
+            and a.get('lifecycle') != 'retired'
+            and a.get('commissioned') is False
+            and op_year is not None and op_year > current_year
+        )
+
+        if is_under_construction or is_player_queued:
+            asset_type = a.get('type', '')
+            jobs_per_mw = HOUSING_CONSTRUCTION_JOBS_PER_MW.get(asset_type, 0.0)
+            incoming_workforce += cap_mw * jobs_per_mw
+
+    demand = occupied + incoming_workforce * HOUSEHOLD_FACTOR
+    supply = occupied + convertible + affordable
+    if supply <= 0:
+        return None
+    return round(demand / supply, 4)
 
 
 def _seed_asset_registry(county_cards, retirements=None):
@@ -541,6 +960,31 @@ def _seed_asset_registry(county_cards, retirements=None):
                     'throttle_reason': None,
                     'commissioned': None,
                     'scheduled_retirement_year': retirement_year,
+                    # v3.1 reclamation tracking (production assets only)
+                    'reclamation_year_log': [],
+                    'active_reclamation_acres': 0.0,
+                    'reclamation_jobs_direct': 0.0,
+                    # v3.2 decommissioning (null for production)
+                    'decommissioning_cost_usd': None,
+                    'decommissioning_labor_usd': None,
+                    'decommissioning_duration_years': None,
+                    'decommissioning_start_year': None,
+                    # v3.3 housing (null for production)
+                    'housing_total_units': None, 'housing_occupied_units': None,
+                    'housing_convertible_units': None, 'housing_subsidized_units': None,
+                    'housing_permits_per_year': None, 'housing_affordable_added': None,
+                    'housing_pressure_ratio': None, 'housing_seasonal_excluded': None,
+                    # v4.1 site mechanics (null for all non-site baseline assets)
+                    'site_origin_asset_id': None, 'site_origin_type': None,
+                    'site_class': None, 'interconnection_mw': None,
+                    'water_rights_flag': None, 'acres': None,
+                    'workforce_pool_initial': None, 'workforce_pool_current': None,
+                    'workforce_pool_half_life_years': None, 'site_spawn_year': None,
+                    'restoration_eligibility': None,
+                    # v4.1 succession discount tracking (null for baseline assets)
+                    'succession_site_id': None, 'ttd_reduction_applied': None,
+                    'capex_discount_fraction': None, 'tx_waiver_mw': None,
+                    'convert_source_asset_id': None,
                 })
             elif cap is None:
                 # Excluded entry (no MW conversion)
@@ -572,6 +1016,29 @@ def _seed_asset_registry(county_cards, retirements=None):
                     'throttle_reason': None,
                     'commissioned': None,
                     'scheduled_retirement_year': retirement_year,
+                    # v3.1 reclamation (null for excluded)
+                    'reclamation_year_log': None,
+                    'active_reclamation_acres': None,
+                    'reclamation_jobs_direct': None,
+                    # v3.2 decommissioning (null for excluded)
+                    'decommissioning_cost_usd': None, 'decommissioning_labor_usd': None,
+                    'decommissioning_duration_years': None, 'decommissioning_start_year': None,
+                    # v3.3 housing (null for excluded)
+                    'housing_total_units': None, 'housing_occupied_units': None,
+                    'housing_convertible_units': None, 'housing_subsidized_units': None,
+                    'housing_permits_per_year': None, 'housing_affordable_added': None,
+                    'housing_pressure_ratio': None, 'housing_seasonal_excluded': None,
+                    # v4.1 site mechanics (null for all non-site baseline assets)
+                    'site_origin_asset_id': None, 'site_origin_type': None,
+                    'site_class': None, 'interconnection_mw': None,
+                    'water_rights_flag': None, 'acres': None,
+                    'workforce_pool_initial': None, 'workforce_pool_current': None,
+                    'workforce_pool_half_life_years': None, 'site_spawn_year': None,
+                    'restoration_eligibility': None,
+                    # v4.1 succession discount tracking (null for baseline assets)
+                    'succession_site_id': None, 'ttd_reduction_applied': None,
+                    'capex_discount_fraction': None, 'tx_waiver_mw': None,
+                    'convert_source_asset_id': None,
                 })
             else:
                 # MW-based asset
@@ -616,6 +1083,27 @@ def _seed_asset_registry(county_cards, retirements=None):
                     'throttle_reason': None,
                     'commissioned': None,
                     'scheduled_retirement_year': retirement_year,
+                    # v3.2 decommissioning cost draw (null until retirement fires)
+                    'decommissioning_cost_usd': None,
+                    'decommissioning_labor_usd': None,
+                    'decommissioning_duration_years': None,
+                    'decommissioning_start_year': None,
+                    # v3.3 housing (null for MW-based generator assets)
+                    'housing_total_units': None, 'housing_occupied_units': None,
+                    'housing_convertible_units': None, 'housing_subsidized_units': None,
+                    'housing_permits_per_year': None, 'housing_affordable_added': None,
+                    'housing_pressure_ratio': None, 'housing_seasonal_excluded': None,
+                    # v4.1 site mechanics (null for all non-site baseline assets)
+                    'site_origin_asset_id': None, 'site_origin_type': None,
+                    'site_class': None, 'interconnection_mw': None,
+                    'water_rights_flag': None, 'acres': None,
+                    'workforce_pool_initial': None, 'workforce_pool_current': None,
+                    'workforce_pool_half_life_years': None, 'site_spawn_year': None,
+                    'restoration_eligibility': None,
+                    # v4.1 succession discount tracking (null for baseline assets)
+                    'succession_site_id': None, 'ttd_reduction_applied': None,
+                    'capex_discount_fraction': None, 'tx_waiver_mw': None,
+                    'convert_source_asset_id': None,
                 })
     return registry
 
@@ -638,11 +1126,18 @@ def _materialize_build_queue(registry):
 
 
 def _materialize_existing_assets(registry):
-    """Materialize existing_assets view from asset_registry (baseline-origin)."""
+    """Materialize existing_assets view from asset_registry (baseline-origin).
+    Housing stock assets are excluded from this view so existing_assets_digest is stable.
+    Site assets (v4.1) are also excluded — they are a derived/ephemeral registry class.
+    """
     result = {}
     for a in registry:
         if a['origin'] != 'baseline':
             continue
+        if a.get('asset_class') == 'housing_stock':
+            continue  # v3.3: housing assets not in existing_assets view
+        if a.get('asset_class') == 'site':
+            continue  # v4.1: site assets not in existing_assets view
         geoid = a['geoid']
         if geoid not in result:
             result[geoid] = []
@@ -813,15 +1308,31 @@ def initialize_state(data_dir=None, county_ees_path=None, crosswalk_path=None,
     if 'GEOID' in county_ees_df.columns:
         county_ees_df = county_ees_df.rename(columns={'GEOID': 'geoid'})
 
+    # ── v4.2: load population projections ────────────────────────────────────
+    pop_projections = {}
+    pop_proj_path = (
+        Path(__file__).parent.parent
+        / "terra-app" / "src" / "data" / "county_population_projections.json"
+    )
+    if pop_proj_path.exists():
+        with open(pop_proj_path) as f:
+            _pp_raw = json.load(f)
+        pop_projections = _pp_raw.get("counties", {})
+
     county_ees = {}
     for _, row in county_ees_df.iterrows():
         geoid = str(row['geoid']).zfill(5)
+        wa_share = pop_projections.get(geoid, {}).get(
+            'working_age_share', WORKING_AGE_SHARE_DEFAULT
+        )
+        pop = int(row.get('population', 0))
         county_ees[geoid] = {
             "E": float(row['E']), "Ec": float(row['Ec']), "S": float(row['S']),
             "E_baseline": float(row['E']), "Ec_baseline": float(row['Ec']),
             "S_baseline": float(row['S']),
             "county_name": str(row.get('county_name', '')),
-            "population": int(row.get('population', 0)),
+            "population": pop,
+            "working_age_population": _round_pop(pop * wa_share),
             "load_mw": 0.0,          # county-attributed NEW load (from bus_load_add)
             "added_firm_mw": 0.0,    # firm capacity explicitly added via actions
             "deficit_mw": 0.0,       # load - added_firm (new load vs new supply)
@@ -844,6 +1355,17 @@ def initialize_state(data_dir=None, county_ees_path=None, crosswalk_path=None,
 
     # ── v3.0: Asset registry (source of truth) ────────────────────────────────
     asset_registry = _seed_asset_registry(county_cards, baseline_retirements)
+
+    # ── v3.3: Housing baseline + housing_stock assets ─────────────────────────
+    housing_baseline = {}
+    housing_baseline_path = data_dir / "county_housing_baseline.json"
+    if housing_baseline_path.exists():
+        with open(housing_baseline_path) as f:
+            _hb_raw = json.load(f)
+        housing_baseline = _hb_raw.get("counties", {})
+        # Append housing_stock assets to registry (one per county)
+        asset_registry.extend(_seed_housing_assets(county_cards, housing_baseline))
+
     # Materialize existing_assets from registry (overrides the _seed_existing_assets above)
     existing_assets = _materialize_existing_assets(asset_registry)
 
@@ -988,6 +1510,13 @@ def initialize_state(data_dir=None, county_ees_path=None, crosswalk_path=None,
                 "fiscal_actions": [],
             }
 
+    # ── Lifecycle coefficients (v3.1) ────────────────────────────────────────
+    lifecycle_coefficients = {}
+    lifecycle_coefficients_path = data_dir / "lifecycle_coefficients.json"
+    if lifecycle_coefficients_path.exists():
+        with open(lifecycle_coefficients_path) as f:
+            lifecycle_coefficients = json.load(f)
+
     # ── Assemble state ────────────────────────────────────────────────────────
     state = {
         # v2 primary stores
@@ -1000,6 +1529,8 @@ def initialize_state(data_dir=None, county_ees_path=None, crosswalk_path=None,
         # v2.1 fiscal layer
         "county_fiscal":        county_fiscal,
         "fiscal_coefficients":  fiscal_coefficients,
+        # v3.1 lifecycle coefficients
+        "lifecycle_coefficients": lifecycle_coefficients,
         # Retained from v1
         "buses":                buses,
         "branches":             branches,
@@ -1022,8 +1553,19 @@ def initialize_state(data_dir=None, county_ees_path=None, crosswalk_path=None,
         "existing_assets":      existing_assets,
         # v3.0 asset registry — source of truth
         "asset_registry":       asset_registry,
+        # v3.3 housing baseline (read-only reference; indexed by geoid)
+        "housing_baseline":     housing_baseline,
         # Tracking
         "last_delta":           None,
+        # v4.0: per-year indicator snapshots (appended by advance_year; never in main digest)
+        "history":              [],
+        # v4.2: demographic denominators — one population state shared by housing and indicators
+        "population_projections": pop_projections,
+        "population_config": {
+            "migration_enabled": True,
+            "labor_migration_multiplier": ECONOMIC_BASE_MULTIPLIER,
+            "migration_confidence": "low",
+        },
     }
 
     # ── Spatial hierarchy (read-only reference) ──────────────────────────────
@@ -1276,6 +1818,48 @@ def apply_action(state, action_id, location, magnitude, _skip_coupling=False):
                 bs["capacity_mw"] = bus["generation_mw"]
                 state["bus_state"][bus_id] = bs
 
+    # ── v3.3: housing retrofit / new-build — update housing_stock asset ────────
+    if action_id == 'housing_retrofit_affordable' and geoid:
+        housing = _find_housing_asset(state, geoid)
+        if housing is None:
+            raise ValueError(
+                f"housing_retrofit_affordable: no housing_stock asset found for geoid={geoid}"
+            )
+        available = housing.get('housing_convertible_units') or 0
+        units = int(magnitude)
+        if units > available:
+            raise ValueError(
+                f"housing_retrofit_affordable: requested {units} units exceeds "
+                f"convertible_units={available} for geoid={geoid}"
+            )
+        housing['housing_convertible_units'] = available - units
+        housing['housing_affordable_added'] = round(
+            (housing.get('housing_affordable_added') or 0.0) + units, 2
+        )
+        # WY fiscal: residential assessed value delta at 9.5% assessment ratio
+        # unit value = HOUSING_UNIT_REHAB_VALUE_USD (post-rehab FMV basis)
+        # Only applied for WY counties (fiscal tier doctrine)
+        if geoid in state.get('county_fiscal', {}):
+            fmv_added = units * HOUSING_UNIT_REHAB_VALUE_USD
+            assessed_added = round(fmv_added * WY_RESIDENTIAL_ASSESSMENT_RATIO, 2)
+            state['county_fiscal'][geoid]['assessed_residential'] = round(
+                state['county_fiscal'][geoid].get('assessed_residential', 0.0) + assessed_added, 2
+            )
+            mill = state['county_fiscal'][geoid].get('mill_levy_mills', 0.0)
+            prop_tax_delta = round(assessed_added * mill / 1000.0, 2)
+            state['county_fiscal'][geoid]['property_tax'] = round(
+                state['county_fiscal'][geoid].get('property_tax', 0.0) + prop_tax_delta, 2
+            )
+
+    elif action_id == 'affordable_housing' and geoid:
+        # New-build affordable housing: track affordable_added on housing_stock
+        housing = _find_housing_asset(state, geoid)
+        if housing is not None:
+            units = int(magnitude)
+            housing['housing_affordable_added'] = round(
+                (housing.get('housing_affordable_added') or 0.0) + units, 2
+            )
+
     # ── Update material ledger ───────────────────────────────────────────────
     materials = action.get("materials", {})
     material_consumed = {}
@@ -1339,8 +1923,14 @@ def _shallow_copy_state(state):
     """
     new = {}
 
-    # v3.0: deep-copy asset_registry (each entry is a flat dict with only primitives/None)
-    registry = [dict(a) for a in state.get("asset_registry", [])]
+    # v3.0/v3.1: copy asset_registry; also copy reclamation_year_log lists so
+    # mutations in one branch don't bleed into another (list is not a primitive).
+    registry = []
+    for a in state.get("asset_registry", []):
+        entry = dict(a)
+        log = a.get("reclamation_year_log")
+        entry["reclamation_year_log"] = list(log) if log is not None else []
+        registry.append(entry)
     new["asset_registry"] = registry
 
     # Deep copy mutable stores (build_queue + existing_assets now materialized from registry)
@@ -1362,13 +1952,26 @@ def _shallow_copy_state(state):
                 "last_calibration_mw", "drift_pct", "recompute_recommended",
                 "study_area_buses", "action_library", "scenario_profiles",
                 "crosswalk", "county_cards", "spatial_hierarchy",
-                "fiscal_coefficients"):
+                "fiscal_coefficients", "lifecycle_coefficients",
+                "housing_baseline",
+                "population_projections"):  # v4.2: read-only projection table
         new[key] = state.get(key)
+
+    # v4.2: population_config is a small mutable dict; shallow copy so session-level
+    # overrides in one branch don't bleed across branches.
+    new["population_config"] = dict(state.get("population_config", {
+        "migration_enabled": True,
+        "labor_migration_multiplier": ECONOMIC_BASE_MULTIPLIER,
+        "migration_confidence": "low",
+    }))
 
     # Copy scalars
     new["year"] = state.get("year", 2025)
     new["timestamp"] = state.get("timestamp", 0)
     new["last_delta"] = state.get("last_delta")
+
+    # v4.0: history — shallow copy (snapshots are immutable dicts; never mutated after creation)
+    new["history"] = list(state.get("history", []))
 
     return new
 
@@ -1509,8 +2112,55 @@ def queue_action(state, action_id, geoid, magnitude, decision_year,
             pool["used_this_year"] = pool_used + haleu_per_build
             state["sc_pools"]["HALEU_kg_per_year"] = pool
 
-    # v3.0: push to asset_registry, then re-materialize build_queue view
+    # v4.1: succession discounts — check for compatible site OR coal_to_smr convert
     gid = str(geoid)
+    succession_site_id = None
+    ttd_reduction_applied = 0
+    capex_discount_fraction_val = 0.0
+    tx_waiver_mw = 0.0
+    convert_source_asset_id = None
+
+    if action_id == 'coal_to_smr':
+        # coal_to_smr is a convert transition: inherit TX waiver from a live thermal site
+        # (the coal plant already retired and spawned the site), OR from an operating coal
+        # plant in the county if no site yet exists.
+        # TTD and capex discounts do NOT apply — brownfield siting premium already in
+        # cost_2024 = $8,500,000/MW. Stacking a 15% discount would double-count it.
+        # Deliberate re-pricing note: EES coefficients are unchanged (E:+0.02,Ec:+0.40,S:+0.15).
+        for a in state['asset_registry']:
+            if (a.get('asset_class') == 'site'
+                    and a.get('geoid') == gid
+                    and a.get('lifecycle') == 'operating'
+                    and a.get('site_class') == COAL_TO_SMR_SITE_CLASS_COMPAT):
+                tx_waiver_mw = min(a.get('interconnection_mw') or 0.0, float(magnitude))
+                succession_site_id = a['asset_id']
+                convert_source_asset_id = a.get('site_origin_asset_id')
+                break
+        if succession_site_id is None:
+            # No site yet — look for an operating coal baseline plant in this county
+            for a in state['asset_registry']:
+                if (a.get('geoid') == gid
+                        and a.get('asset_class') == 'generator'
+                        and (a.get('type') or '').lower() == 'coal'
+                        and a['lifecycle'] == 'operating'
+                        and a['origin'] == 'baseline'):
+                    tx_waiver_mw = min(a.get('capacity_mw') or 0.0, float(magnitude))
+                    convert_source_asset_id = a['asset_id']
+                    break
+    else:
+        # Standard succession: check for a live compatible site in this county
+        site_asset, compat = _find_site_for_action(state, gid, action_id)
+        if site_asset is not None:
+            ttd_reduction_applied = compat['ttd_reduction_years']
+            capex_discount_fraction_val = compat['capex_discount_fraction']
+            tx_waiver_mw = min(site_asset.get('interconnection_mw') or 0.0, float(magnitude))
+            succession_site_id = site_asset['asset_id']
+            # Apply TTD reduction to operational_year (floor: decision_year + 1)
+            if override_operational_year is None:
+                operational_year = max(decision_year + 1,
+                                       operational_year - ttd_reduction_applied)
+
+    # v3.0: push to asset_registry, then re-materialize build_queue view
     action = actions[action_id]
     registry_entry = {
         'asset_id': f'player_{gid}_{_slugify(action_id)}_{decision_year}',
@@ -1549,11 +2199,106 @@ def queue_action(state, action_id, geoid, magnitude, decision_year,
         'throttle_reason': throttle_reason,
         'commissioned': False,
         'scheduled_retirement_year': None,
+        # v3.1 reclamation (null for player actions)
+        'reclamation_year_log': None,
+        'active_reclamation_acres': None,
+        'reclamation_jobs_direct': None,
+        # v3.2 decommissioning (null for player actions)
+        'decommissioning_cost_usd': None, 'decommissioning_labor_usd': None,
+        'decommissioning_duration_years': None, 'decommissioning_start_year': None,
+        # v3.3 housing (null for player action queue entries)
+        'housing_total_units': None, 'housing_occupied_units': None,
+        'housing_convertible_units': None, 'housing_subsidized_units': None,
+        'housing_permits_per_year': None, 'housing_affordable_added': None,
+        'housing_pressure_ratio': None, 'housing_seasonal_excluded': None,
+        # v4.1 site mechanics (null for player-queued assets)
+        'site_origin_asset_id': None, 'site_origin_type': None,
+        'site_class': None, 'interconnection_mw': None,
+        'water_rights_flag': None, 'acres': None,
+        'workforce_pool_initial': None, 'workforce_pool_current': None,
+        'workforce_pool_half_life_years': None, 'site_spawn_year': None,
+        'restoration_eligibility': None,
+        # v4.1 succession discount tracking (populated when a compatible site is used)
+        'succession_site_id': succession_site_id,
+        'ttd_reduction_applied': ttd_reduction_applied if ttd_reduction_applied else None,
+        'capex_discount_fraction': capex_discount_fraction_val if capex_discount_fraction_val else None,
+        'tx_waiver_mw': tx_waiver_mw if tx_waiver_mw else None,
+        'convert_source_asset_id': convert_source_asset_id,
     }
     state["asset_registry"].append(registry_entry)
     state["build_queue"] = _materialize_build_queue(state["asset_registry"])
 
     return state
+
+
+def _count_player_ops_jobs(state, geoid):
+    """
+    Count operations jobs from player-origin, operating (commissioned) assets at geoid.
+    Uses _MIGRATION_OPS_JOBS_PER_MW. Construction workers excluded — they are temporary
+    (already modelled in housing pressure) and do not create permanent in-migration.
+    """
+    geoid_str = str(geoid).zfill(5)
+    total = 0.0
+    for asset in state.get('asset_registry', []):
+        if asset.get('geoid') != geoid_str:
+            continue
+        if asset.get('origin') != 'player':
+            continue
+        if asset.get('lifecycle') != 'operating':
+            continue
+        if asset.get('asset_class') in ('housing_stock', 'production', 'site'):
+            continue
+        # Player queued assets store MW in `magnitude`; `capacity_mw` is None until commission
+        cap_mw = asset.get('capacity_mw') or asset.get('magnitude') or 0.0
+        if cap_mw <= 0:
+            continue
+        raw_type = asset.get('type', '')
+        fuel_key = raw_type if raw_type in _MIGRATION_OPS_JOBS_PER_MW else \
+            _ACTION_ID_TO_MIGRATION_FUEL.get(raw_type, '')
+        jobs_per_mw = _MIGRATION_OPS_JOBS_PER_MW.get(fuel_key, 0.0)
+        total += cap_mw * jobs_per_mw
+    return total
+
+
+def _advance_population(state, year):
+    """
+    Advance county population by one year (mutates state in place).
+
+    Step 1 — Baseline projection: apply annual_growth_rate from population_projections
+              (WY EAD 2022 / CO SDO 2022 / constant-share fallback).
+    Step 2 — Migration adjustment (if migration_enabled):
+              permanent in-migrants from player-added ops jobs.
+              Formula: ops_jobs × HOUSEHOLD_FACTOR × AVG_HOUSEHOLD_SIZE × ECONOMIC_BASE_MULTIPLIER
+              Confidence: low.
+    Step 3 — Update working_age_population proportionally from projection working_age_share.
+
+    Called by advance_year BEFORE snapshot_indicators so history reflects end-of-year state.
+    """
+    pop_config = state.get('population_config', {})
+    migration_enabled = pop_config.get('migration_enabled', True)
+    labor_mult = pop_config.get('labor_migration_multiplier', ECONOMIC_BASE_MULTIPLIER)
+    projections = state.get('population_projections', {})
+
+    for geoid, ees in state.get('county_ees', {}).items():
+        proj = projections.get(geoid, {})
+        rate = proj.get('annual_growth_rate', 0.0)
+        wa_share = proj.get('working_age_share', WORKING_AGE_SHARE_DEFAULT)
+
+        # Step 1: baseline projection
+        new_pop = _round_pop(ees['population'] * (1.0 + rate))
+
+        # Step 2: migration from player-added ops jobs
+        if migration_enabled:
+            ops_jobs = _count_player_ops_jobs(state, geoid)
+            if ops_jobs > 0:
+                migration_heads = _round_pop(
+                    ops_jobs * HOUSEHOLD_FACTOR * AVG_HOUSEHOLD_SIZE * labor_mult
+                )
+                new_pop = max(0, new_pop + migration_heads)
+
+        # Step 3: advance population and working-age
+        ees['population'] = new_pop
+        ees['working_age_population'] = _round_pop(new_pop * wa_share)
 
 
 def advance_year(state):
@@ -1629,13 +2374,65 @@ def advance_year(state):
                         depreciation_factor = max(0.0, 1.0 - 0.05 * years_since)
                         fa["property_tax_current"] = fa["property_tax_delta"] * depreciation_factor
 
+    # v3.1: autonomous PRB coal surface decline
+    lc = state.get('lifecycle_coefficients', {})
+    ad_cfg = lc.get('autonomous_decline', {}).get('coal_surface', {})
+    if ad_cfg.get('enabled', False):
+        annual_rate = abs(ad_cfg.get('annual_rate', 0.02))
+        geoid_filter = set(ad_cfg.get('geoid_filter', []))
+        for prod_asset in list(state['asset_registry']):
+            if (prod_asset.get('asset_class') == 'production'
+                    and prod_asset.get('commodity') == 'coal_surface'
+                    and prod_asset.get('geoid') in geoid_filter
+                    and prod_asset.get('lifecycle') == 'operating'):
+                current_vol = prod_asset.get('production_volume', 0.0)
+                decline_delta = round(current_vol * annual_rate, 2)
+                if decline_delta > 0:
+                    state, _ = reduce_production_asset(
+                        state, prod_asset['geoid'], 'coal_surface',
+                        decline_delta, year=current_year,
+                    )
+
+    # v3.1: bond release expiry — recompute active_reclamation_acres for assets
+    # that had NO new decline this year (ensures expiry still fires each year).
+    lc = state.get('lifecycle_coefficients', {})
+    rec_cfg = lc.get('reclamation', {})
+    bond_release_years = rec_cfg.get('bond_release_duration_years', 10)
+    jobs_per_100_acres = rec_cfg.get('jobs_per_100_acres_yr', 2.5)
+    for prod_asset in state['asset_registry']:
+        if prod_asset.get('asset_class') == 'production' and prod_asset.get('reclamation_year_log'):
+            log = prod_asset['reclamation_year_log']
+            active_acres = sum(
+                e['acres'] for e in log
+                if current_year - e['year'] < bond_release_years
+            )
+            prod_asset['active_reclamation_acres'] = round(active_acres, 4)
+            prod_asset['reclamation_jobs_direct'] = round(
+                active_acres * jobs_per_100_acres / 100.0, 2
+            )
+
     # v3.0: execute scheduled retirements
+    # v3.2: decommissioning cost draw priced from lifecycle_coefficients.decommissioning
+    lc_decom = (state.get('lifecycle_coefficients') or {}).get('decommissioning', {})
     retired_any = False
     for asset in state["asset_registry"]:
         if (asset.get("scheduled_retirement_year") == current_year
                 and asset["lifecycle"] == "operating"):
             asset["lifecycle"] = "retired"
             retired_any = True
+            # v3.2: decommissioning cost draw (MW-based generator assets only)
+            if asset.get('asset_class') != 'production':
+                cap_mw = asset.get('capacity_mw') or 0
+                tech_key = _z1_tech_key(asset.get('type'))
+                decom_entry = lc_decom.get(tech_key, {}) if tech_key else {}
+                cost_per_mw = decom_entry.get('cost_usd_per_mw', 0)
+                if cap_mw > 0 and cost_per_mw > 0:
+                    total_cost = round(cap_mw * cost_per_mw, 2)
+                    labor_frac = decom_entry.get('labor_fraction', 0)
+                    asset['decommissioning_cost_usd'] = total_cost
+                    asset['decommissioning_labor_usd'] = round(total_cost * labor_frac, 2)
+                    asset['decommissioning_duration_years'] = decom_entry.get('duration_years_midpoint', 1)
+                    asset['decommissioning_start_year'] = current_year
             # Reverse capacity through existing network heuristic
             cap = asset.get("capacity_mw")
             if cap is not None and cap > 0:
@@ -1643,9 +2440,81 @@ def advance_year(state):
                 if bus_id and bus_id in state["bus_state"]:
                     state["bus_state"][bus_id]["capacity_mw"] -= cap
                     state["bus_state"][bus_id]["firm_capacity_mw"] -= cap
+    # v4.1: spawn site assets from retirements that just fired this year.
+    # Spawns for: MW-based generators (generator/demand/storage asset_class) only.
+    # Production (mine) asset retirement via scheduled_retirement_year is not yet
+    # wired — mine sites spawn via reduce_production_asset reaching zero (future).
+    # Side-effect: appends new 'site' AssetInstances to asset_registry.
+    spawned_sites = []
+    for asset in state["asset_registry"]:
+        if (asset.get('scheduled_retirement_year') == current_year
+                and asset.get('asset_class') in ('generator', 'demand', 'storage')
+                and asset.get('capacity_mw', 0) and asset['capacity_mw'] > 0):
+            site = _spawn_site_from_retired(asset, current_year)
+            spawned_sites.append(site)
+    if spawned_sites:
+        state["asset_registry"].extend(spawned_sites)
+        retired_any = True  # ensure rematerialisation below
+
     if retired_any:
         state["build_queue"] = _materialize_build_queue(state["asset_registry"])
         state["existing_assets"] = _materialize_existing_assets(state["asset_registry"])
+
+    # v3.3: housing supply trend (autonomous permits) + pressure recompute
+    # Runs every year for all counties that have a housing_stock asset.
+    for housing in state["asset_registry"]:
+        if housing.get('asset_class') != 'housing_stock':
+            continue
+        if housing.get('lifecycle') != 'operating':
+            continue
+
+        geoid = housing['geoid']
+
+        # Autonomous supply: permits add to total and occupied units each year
+        permits = housing.get('housing_permits_per_year') or 0.0
+        if permits > 0:
+            housing['housing_total_units'] = (housing.get('housing_total_units') or 0) + round(permits)
+            housing['housing_occupied_units'] = (housing.get('housing_occupied_units') or 0) + round(permits)
+
+        # Recompute housing pressure ratio
+        ratio = _compute_housing_pressure(state, geoid, current_year)
+        housing['housing_pressure_ratio'] = ratio
+
+        # S-capital penalty for stressed/crisis pressure (WY counties only by doctrine,
+        # but pressure itself is tracked for all 157 counties)
+        if ratio is not None and ratio >= HOUSING_PRESSURE_THRESHOLDS['stressed']:
+            if geoid in state.get('county_ees', {}):
+                excess = ratio - HOUSING_PRESSURE_THRESHOLDS['moderate']
+                steps  = max(0.0, excess / 0.05)
+                s_penalty = HOUSING_PRESSURE_S_PENALTY_PER_STEP * steps
+                old_s = state['county_ees'][geoid]['S']
+                # Cap penalty so S doesn't drop below 0
+                state['county_ees'][geoid]['S'] = max(0.0, round(old_s + s_penalty, 6))
+
+    # v4.1: workforce pool decay for live site assets
+    # Exponential half-life decay: N(t) = N0 × (0.5)^(t / t½)
+    # Runs every year regardless of whether the site is used.
+    import math as _math
+    for site_asset in state["asset_registry"]:
+        if site_asset.get('asset_class') != 'site':
+            continue
+        if site_asset.get('lifecycle') != 'operating':
+            continue
+        spawn_year = site_asset.get('site_spawn_year') or current_year
+        initial = site_asset.get('workforce_pool_initial') or 0.0
+        half_life = site_asset.get('workforce_pool_half_life_years') or SITE_WORKFORCE_HALF_LIFE_YEARS
+        years_elapsed = current_year - spawn_year
+        if years_elapsed > 0 and initial > 0 and half_life > 0:
+            decayed = initial * (0.5 ** (years_elapsed / half_life))
+            site_asset['workforce_pool_current'] = round(decayed, 1)
+
+    # v4.2: advance population (baseline projection + migration adjustment)
+    # Must run BEFORE snapshot_indicators so history captures end-of-year demographic state.
+    _advance_population(state, current_year)
+
+    # v4.0: append indicator snapshot at end of year
+    if _HAS_INDICATORS:
+        state["history"] = state.get("history", []) + [_snapshot_indicators(state)]
 
     return state
 
@@ -2609,6 +3478,97 @@ def existing_assets_digest(state):
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# PART 14b — History Digest + Projection API (v4.0)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def history_digest(state):
+    """
+    Create a JSON-serializable digest of state['history'].
+
+    Covers the compact per-year indicator snapshots appended by advance_year.
+    Separate from state_digest / fiscal_digest / existing_assets_digest —
+    those three are the MAIN digest set (A–H contract); history_digest is
+    additive and does not affect existing golden fixtures.
+
+    Returns dict with keys: n_years, year_range, md5.
+    md5 is the MD5 of the canonical JSON of the history list.
+    """
+    history = state.get("history", [])
+    if not history:
+        return {"n_years": 0, "year_range": [], "md5": hashlib.md5(b"[]").hexdigest()}
+    canonical = json.dumps(history, sort_keys=True, separators=(',', ':'))
+    md5 = hashlib.md5(canonical.encode()).hexdigest()
+    return {
+        "n_years": len(history),
+        "year_range": [history[0]["year"], history[-1]["year"]],
+        "md5": md5,
+    }
+
+
+def project(state, n_years):
+    """
+    Project state forward n_years with no further decisions.
+
+    This is a CONDITIONAL FORECAST under 'no further decisions,' not a prediction.
+    The distinction matters for UI display: projections show likely trajectories
+    given the current action set and autonomous dynamics (coal decline, depreciation,
+    housing permits). They are NOT predictions of what will happen — player decisions,
+    market shifts, and policy changes not captured in the model will alter outcomes.
+
+    Determinism: advance_year is deterministic (no stochastic draws); each call
+    with the same input state produces identical output. Projection uses the
+    current year as the start and advances sequentially.
+
+    Parameters
+    ----------
+    state : dict — current engine state (starting point for projection)
+    n_years : int — number of years to project forward
+
+    Returns
+    -------
+    list[dict] — list of n_years engine states, one per projected year.
+                 Each state has history appended through its year.
+                 The projection does NOT modify the input state.
+    """
+    states = []
+    s = state
+    for _ in range(n_years):
+        s = advance_year(s)
+        states.append(s)
+    return states
+
+
+def project_delta(state, action_id, geoid, magnitude, n_years):
+    """
+    Project n_years forward with one action applied, returning both the
+    action trajectory and the baseline trajectory.
+
+    This is a CONDITIONAL FORECAST under 'no further decisions,' not a prediction.
+    The delta shows the marginal impact of a single action vs. the do-nothing baseline
+    under the same autonomous dynamics.
+
+    Parameters
+    ----------
+    state : dict — current engine state
+    action_id : str — action to apply at the start
+    geoid : str — county GEOID for the action
+    magnitude : float — action magnitude
+    n_years : int — projection horizon
+
+    Returns
+    -------
+    (action_states, baseline_states) : tuple[list[dict], list[dict]]
+        Both are length-n_years lists of states. The delta for any indicator
+        at year t is: compute_indicator(action_states[t], ...) - compute_indicator(baseline_states[t], ...).
+        Input state is NOT mutated.
+    """
+    state_with_action, _ = apply_action(state, action_id, geoid, magnitude)
+    baseline_states = project(state, n_years)
+    action_states = project(state_with_action, n_years)
+    return action_states, baseline_states
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # PART 15 — Production Asset Reduction API (Phase X2)
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -2762,6 +3722,33 @@ def reduce_production_asset(state, geoid, commodity, delta_volume, year=None):
         new_state['county_fiscal'] = dict(new_state['county_fiscal'])
         new_state['county_fiscal'][geoid] = cf
 
+    # ── v3.1: reclamation obligation tracking ────────────────────────────────
+    lc = new_state.get('lifecycle_coefficients', {})
+    rec_cfg = lc.get('reclamation', {})
+    tons_per_acre = rec_cfg.get('tons_per_acre', 10000)
+    jobs_per_100_acres = rec_cfg.get('jobs_per_100_acres_yr', 2.5)
+    bond_release_years = rec_cfg.get('bond_release_duration_years', 10)
+    new_acres = round(actual_delta / tons_per_acre, 4) if tons_per_acre > 0 else 0.0
+
+    for reg_a in new_state.get('asset_registry', []):
+        if (reg_a.get('origin') == 'baseline'
+                and reg_a.get('asset_class') == 'production'
+                and reg_a.get('geoid') == geoid
+                and reg_a.get('commodity') == commodity):
+            log = list(reg_a.get('reclamation_year_log') or [])
+            log.append({'year': year, 'acres': new_acres})
+            reg_a['reclamation_year_log'] = log
+            # Active acres: unexpired cohorts within bond_release_duration_years window
+            active_acres = sum(
+                e['acres'] for e in log
+                if year - e['year'] < bond_release_years
+            )
+            reg_a['active_reclamation_acres'] = round(active_acres, 4)
+            reg_a['reclamation_jobs_direct'] = round(
+                active_acres * jobs_per_100_acres / 100.0, 2
+            )
+            break
+
     delta_summary = {
         'action': 'reduce_production_asset',
         'geoid': geoid,
@@ -2820,10 +3807,29 @@ def accelerate_retirement(state, asset_id, new_year):
     return state
 
 
+def _z1_tech_key(asset_type):
+    """Map asset type string to lifecycle_coefficients.z1_hooks tech key."""
+    if asset_type is None:
+        return None
+    t = str(asset_type).lower()
+    if 'coal' in t:
+        return 'coal'
+    if 'gas' in t or 'natural_gas' in t:
+        return 'gas'
+    if 'wind' in t:
+        return 'wind'
+    if 'solar' in t or 'pv' in t:
+        return 'solar'
+    if 'nuclear' in t or 'smr' in t:
+        return 'nuclear_smr'
+    return None
+
+
 def delay_retirement(state, asset_id, new_year):
     """
-    Push a scheduled retirement later. Returns (new_state, {'delay_cost_hook': 0}).
-    delay_cost_hook is zeroed out (coefficient placeholder, confidence: low).
+    Push a scheduled retirement later.
+    Returns (new_state, {'delay_cost_hook': <usd>, 'confidence': 'low'}).
+    Cost priced from lifecycle_coefficients.z1_hooks.delay_retirement (confidence: low).
     """
     state = _shallow_copy_state(state)
     idx = next((i for i, a in enumerate(state["asset_registry"])
@@ -2833,19 +3839,32 @@ def delay_retirement(state, asset_id, new_year):
     asset = state["asset_registry"][idx]
     if asset["scheduled_retirement_year"] is None:
         raise ValueError(f"Asset {asset_id} has no scheduled retirement to delay")
-    if new_year <= asset["scheduled_retirement_year"]:
+    old_year = asset["scheduled_retirement_year"]
+    if new_year <= old_year:
         raise ValueError(
-            f"new_year {new_year} must be later than current {asset['scheduled_retirement_year']}"
+            f"new_year {new_year} must be later than current {old_year}"
         )
     state["asset_registry"][idx]["scheduled_retirement_year"] = new_year
-    return state, {"delay_cost_hook": 0}
+
+    # Z1 hook pricing (confidence: low)
+    lc = state.get('lifecycle_coefficients', {})
+    delay_rates = lc.get('z1_hooks', {}).get('delay_retirement', {})
+    tech_key = _z1_tech_key(asset.get('type'))
+    cost_per_mw_yr = 0.0
+    if tech_key and tech_key in delay_rates:
+        cost_per_mw_yr = delay_rates[tech_key].get('cost_usd_per_mw_yr', 0.0)
+    capacity_mw = asset.get('capacity_mw') or 0.0
+    years_extended = new_year - old_year
+    delay_cost = round(cost_per_mw_yr * capacity_mw * years_extended, 2)
+
+    return state, {"delay_cost_hook": delay_cost, "confidence": "low"}
 
 
 def cancel_queued(state, asset_id):
     """
     Cancel a player-queued asset before commissioning.
-    Returns (new_state, {'sunk_cost_fraction': 0}).
-    sunk_cost_fraction is zeroed out (price hook for Z2).
+    Returns (new_state, {'sunk_cost_fraction': <float>, 'sunk_cost_usd': <float>, 'confidence': 'low'}).
+    Sunk cost priced from lifecycle_coefficients.z1_hooks.cancellation_sunk_cost (confidence: low).
     """
     state = _shallow_copy_state(state)
     idx = next((i for i, a in enumerate(state["asset_registry"])
@@ -2855,8 +3874,25 @@ def cancel_queued(state, asset_id):
     asset = state["asset_registry"][idx]
     if asset["origin"] != "player":
         raise ValueError(f"cancel_queued only applies to player-origin assets, got '{asset['origin']}'")
-    if asset["lifecycle"] not in ("queued", "under_construction"):
-        raise ValueError(f"Cannot cancel asset in lifecycle '{asset['lifecycle']}'")
+    lifecycle_stage = asset["lifecycle"]
+    if lifecycle_stage not in ("queued", "under_construction"):
+        raise ValueError(f"Cannot cancel asset in lifecycle '{lifecycle_stage}'")
     state["asset_registry"][idx]["lifecycle"] = "retired"
     state["build_queue"] = _materialize_build_queue(state["asset_registry"])
-    return state, {"sunk_cost_fraction": 0}
+
+    # Z1 hook pricing (confidence: low)
+    lc = state.get('lifecycle_coefficients', {})
+    stages = lc.get('z1_hooks', {}).get('cancellation_sunk_cost', {}).get('stages', {})
+    stage_cfg = stages.get(lifecycle_stage, {})
+    sunk_cost_fraction = stage_cfg.get('sunk_cost_fraction', 0.0)
+    # Estimate total project cost as capex_per_mw × magnitude (both stored on player asset)
+    capex_per_mw = asset.get('capex_per_mw') or 0.0
+    magnitude = asset.get('magnitude') or 0.0
+    total_capex = capex_per_mw * magnitude
+    sunk_cost_usd = round(sunk_cost_fraction * total_capex, 2)
+
+    return state, {
+        "sunk_cost_fraction": sunk_cost_fraction,
+        "sunk_cost_usd": sunk_cost_usd,
+        "confidence": "low",
+    }

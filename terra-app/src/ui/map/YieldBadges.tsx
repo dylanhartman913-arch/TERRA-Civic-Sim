@@ -11,6 +11,7 @@ import type maplibregl from 'maplibre-gl';
 import { useTerraStore } from '../../state/store.js';
 import type { EngineState } from '../../engine/types.js';
 import { JOBS_PER_MW, HOUSING_PRESSURE_THRESHOLD } from '../panels/CountyYields.js';
+import { computeFiscalNetDelta } from '../../state/selectors.js';
 
 interface BadgeData {
   geoid: string;
@@ -58,9 +59,7 @@ function computeBadges(engineState: EngineState): Map<string, { icon: string; co
       const geoidPadded = geoid.padStart(5, '0');
       const cf = engineState.county_fiscal[geoidPadded];
       if (cf) {
-        const ptDelta = cf.fiscal_actions.reduce((s, fa) => s + fa.property_tax_delta, 0);
-        const suDelta = cf.fiscal_actions.reduce((s, fa) => s + fa.sales_use_delta, 0);
-        const netDelta = ptDelta + suDelta + cf.ledger_a_cumulative_delta + cf.ledger_b_cumulative_delta + cf.ledger_c_cumulative_delta;
+        const netDelta = computeFiscalNetDelta(cf);
         if (netDelta > 0) {
           badges.push({
             icon: '💰',

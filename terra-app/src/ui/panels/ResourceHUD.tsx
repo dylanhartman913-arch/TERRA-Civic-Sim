@@ -1,6 +1,7 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { useTerraStore } from '../../state/store.js';
 import { computeConsumption, getEraForYear } from '../../engine/budgets.js';
+import { usePoolHistory } from '../../state/selectors.js';
 
 // Pool definitions — order matches EraBudget field order
 interface PoolDef {
@@ -86,6 +87,40 @@ interface ItemizedEntry {
   share: number; // integer percentage
 }
 
+// Pool utilization sparkline — mini 80x20 SVG
+const POOL_INDICATOR_MAP: Record<string, string> = {
+  HALEU: 'pool_utilization_HALEU_kg_per_year',
+  fuel_fab: 'pool_utilization_fuel_fabrication_units_per_year',
+};
+
+function PoolSparkline({ poolKey }: { poolKey: string }) {
+  const indicatorId = POOL_INDICATOR_MAP[poolKey];
+  const poolData = usePoolHistory(indicatorId ?? '');
+
+  const svgContent = useMemo(() => {
+    if (poolData.length < 2) return null;
+    const values = poolData.filter(d => d.value != null).map(d => d.value as number);
+    if (values.length < 2) return null;
+    const w = 80, h = 20;
+    const minV = 0;
+    const maxV = Math.max(...values, 0.01);
+    const xStep = w / (values.length - 1);
+    const points = values.map((v, i) => `${(i * xStep).toFixed(1)},${(h - ((v - minV) / (maxV - minV || 1)) * h).toFixed(1)}`).join(' ');
+    return points;
+  }, [poolData]);
+
+  if (!indicatorId || !svgContent) return null;
+
+  return (
+    <div style={{ marginTop: 6, paddingTop: 6, borderTop: '1px solid var(--border)' }}>
+      <div style={{ fontSize: 8, color: 'var(--text-muted)', marginBottom: 2, textTransform: 'uppercase' }}>Utilization history</div>
+      <svg width={80} height={20} style={{ display: 'block' }}>
+        <polyline points={svgContent} fill="none" stroke="var(--teal)" strokeWidth={1} opacity={0.7} />
+      </svg>
+    </div>
+  );
+}
+
 interface PopoverProps {
   pool: PoolDef;
   consumed: number;
@@ -148,6 +183,8 @@ function PoolPopover({ pool, consumed, items, onClose, anchorRef }: PopoverProps
           </div>
         ))
       )}
+      {/* Pool utilization sparkline */}
+      <PoolSparkline poolKey={pool.key} />
     </div>
   );
 }

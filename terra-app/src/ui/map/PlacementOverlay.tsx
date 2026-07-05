@@ -6,6 +6,7 @@ import { Tooltip } from './Tooltip.js';
 import { computeConsumption, getBudgetShareString, isEraOverflow, getEraForYear } from '../../engine/budgets.js';
 import { computeFiscalDelta } from '../../engine/engine.js';
 import { JOBS_PER_MW, HOUSING_PRESSURE_THRESHOLD } from '../panels/CountyYields.js';
+import { DeltaProjectionStrip } from './DeltaProjectionStrip.js';
 
 const ERA_NAMES: Record<number, string> = {
   2025: 'Foundation Era (2025–2035)',
@@ -551,6 +552,15 @@ export function PlacementOverlay({ map }: PlacementOverlayProps) {
                   </div>
                 );
               })()}
+
+              {/* Delta-projection strip: 3 mini trajectories */}
+              {showModal && (
+                <DeltaProjectionStrip
+                  actionId={action.action_id ?? ''}
+                  geoid={showModal.geoid}
+                  magnitude={modalMagnitude}
+                />
+              )}
 
               {/* Overflow banner */}
               {overflow.overflows && bindingResource && (
