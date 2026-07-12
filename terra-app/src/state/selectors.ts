@@ -261,7 +261,7 @@ export function usePaybackChartData(
     const actionsLib = engineState.action_library.actions;
     let capex = 0;
     for (const record of engineState.action_history) {
-      const recGeoid = String((record as Record<string, unknown>).geoid ?? record.location ?? '').padStart(5, '0');
+      const recGeoid = String(record.geoid ?? record.location ?? '').padStart(5, '0');
       if (recGeoid !== geoidStr) continue;
       const action = actionsLib[record.action_id] || {};
       if ((action as Record<string, unknown>).atb_capex_2025)

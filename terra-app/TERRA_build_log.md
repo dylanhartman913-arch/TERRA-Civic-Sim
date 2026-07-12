@@ -77,6 +77,7 @@ a fixture bug.
 | Phase W6 (debrief + W5 session tests) | **174** | **83** | **257** |
 | V2 (v4.2, Golden J′) | **191** | **99** | **290** |
 | V4 (analyze-v4.test.ts) | **215** | **99** | **314** |
+| C0 (climate lens scaffold + gate) | **269** | **99** | **368** |
 
 ---
 
@@ -1353,6 +1354,7 @@ Site exclusion from materialized views is applied at exactly 1 call site per run
 | Phase W6 (debrief + W5 session tests) | **174** | **83** | **257** |
 | V2 (v4.2, Golden J′) | **191** | **99** | **290** |
 | V4 (analyze-v4.test.ts) | **215** | **99** | **314** |
+| C0 (climate lens scaffold + gate) | **269** | **99** | **368** |
 
 ---
 
@@ -1454,3 +1456,373 @@ Campbell declines under its own trend (-0.8%/yr EAD projection) even with migrat
 - 4 stub pool indicators (`capital_cost_usd`, `labor_years`, `steel_tons`, `transmission_row_miles`) return `None` pending budget pool machinery.
 - `analyze-v4.test.ts` is untracked (not staged) at V2 close-out — stage before next session.
 - Migration multiplier (1.5) is `confidence: low` — flag in UI and debrief output when migration is a material contributor to a county's projected change.
+
+## Phase C0 — Climate Lens Scaffold + Exogeneity Gate
+**Date:** 2026-07-11
+**Engine version:** 4.2 (unchanged — zero behavioral change)
+**Baseline:** Post-V4 (215 TS / 99 Python = 314 total)
+**Amendments consumed:** 0
+
+### What was built
+
+**1. Schema bump + migration (3.0 → 3.1)**
+- `ScenarioFile.climate_lens?: ClimateLens` added (`"historical" | "ssp245" | "ssp370"`)
+- `schema_version` union type widened to `'3.0' | '3.1'`; new files emit `'3.1'`
+- `persistence.ts`: migration function — legacy 3.0 files import as 3.1 with `climate_lens: "historical"`
+- `ACCEPTED_VERSIONS` set accepts both 3.0 and 3.1 on import; `STORAGE_VERSION` = `'3.1'`
+
+**2. ClimateContext type + engine plumbing**
+- `ClimateContext` interface: `{ lens: ClimateLens; tables: Record<variable, Record<geoid, Record<epoch, number>>> }`
+- `EMPTY_CLIMATE_CONTEXT`: frozen sentinel (`lens: "historical"`, `tables: {}`)
+- Added as optional trailing parameter to `applyAction`, `queueAction`, `advanceYear`
+- Default: `EMPTY_CLIMATE_CONTEXT`; under historical lens every coupling hook is a documented no-op
+- Design note: read-only and stateless — C3 demand modulation (CDD/HDD × population) will live entirely in coupling functions, not in engine state
+
+**3. Digest computation**
+- `computeReplayDigest(state, climateLens?)`: lens contributes to digest object **only when non-historical**
+- Historical lens (or absent): digest object is structurally identical to pre-C0 — byte-identity preserved
+- Non-historical lens: `climate_lens` key added to digest object → different MD5
+- Store `loadFromSlot`, `validateImport`, DebriefView updated to pass `file.climate_lens`
+
+**4. Exogeneity test (permanent — assert in every C-track session)**
+- `climate-exogeneity.test.ts`: 6 tests
+  - EX-1: `EMPTY_CLIMATE_CONTEXT` is frozen
+  - EX-2/3/4: context unchanged after `applyAction` / `queueAction` / `advanceYear`
+  - EX-5: divergent action logs produce bit-identical climate contexts
+  - EX-6: non-historical context with synthetic tables also exogenous
+- `climate-c0.test.ts`: 9 tests
+  - C0-1: STORAGE_VERSION is 3.1
+  - C0-2: legacy 3.0 migration
+  - C0-3: round-trip export/import
+  - C0-4: unknown schema rejected
+  - C0-5/6/7: computeReplayDigest matches computeDigestMd5 (parity)
+  - C0-8: non-historical lens produces different digests
+  - C0-9: EMPTY_CLIMATE_CONTEXT shape
+
+### Digest verification table
+
+All four digest contracts byte-identical on every frozen golden with `climate_lens: "historical"`:
+
+| Golden | state_digest | fiscal_digest | existing_assets_digest | history_digest |
+|---|---|---|---|---|
+| A | `4a838c70...` ✓ | — | — | — |
+| B (no events) | `716b189a...` ✓ | — | — | — |
+| B (replay) | `a63401e3...` ✓ | — | — | — |
+| C | `997753927...` ✓ | — | — | — |
+| D | `775dce2e...` ✓ | `225c5bdd...` ✓ | — | — |
+| E | — | — | `a881df20...` ✓ | — |
+| F (pre-X2) | — | `af67c87f...` ✓ | `a881df20...` ✓ | — |
+| F (post-X2) | — | `b2a9567a...` ✓ | `80f48310...` ✓ | — |
+| G′ yr2027 | `316fe412...` ✓ | `63ecffeb...` ✓ | `3a6f5ab4...` ✓ | — |
+| G′ yr2031 | `a4619f25...` ✓ | `ad9da9c7...` ✓ | `509f3fbe...` ✓ | — |
+| G′ yr2045 | `f81d3317...` ✓ | `045f30e4...` ✓ | `d4fcd3d2...` ✓ | — |
+| H Player A | `a46c1dd9...` ✓ | `4fb3eb1b...` ✓ | `906ad682...` ✓ | — |
+| H Player B | `866d7317...` ✓ | `736e5343...` ✓ | `906ad682...` ✓ | — |
+| I yr2031 | `a4619f25...` ✓ | `ad9da9c7...` ✓ | `509f3fbe...` ✓ | — |
+| I yr2041 | `08a97354...` ✓ | `c251dce1...` ✓ | `bafce40e...` ✓ | — |
+| J′ | — | — | — | `7b05722c...` ✓ |
+
+Tested with migration enabled (3.0 → 3.1) and disabled (native 3.1): identical results.
+
+### Call-site audit
+
+| Function | src/ calls | tests/ calls |
+|---|---|---|
+| `computeReplayDigest` | 5 | 14 |
+| `computeDigestMd5` | 0 | 21 |
+| `computeFiscalDigestMd5` | 0 | 11 |
+| `computeExistingAssetsDigestMd5` | 0 | 14 |
+| `historyDigest` | 0 | 7 |
+| `importFromJson` | 6 | 6 |
+| `exportToJson` | 1 | 2 |
+| `saveToSlot` / `persistenceSaveToSlot` | 3 | 0 |
+| `loadFromSlot` / `persistenceLoadFromSlot` | 3 | 0 |
+| `replayScenario` | 2 | 8 |
+| `validateImport` / `engineValidateImport` | 1 | 0 |
+
+All `computeReplayDigest` call sites in `src/` updated to pass `climateLens` where file context is available (store.ts:890, DebriefView.tsx:261, replay.ts:300). Save-side calls (store.ts:865, :928) emit `climate_lens: "historical"` so omitting the lens arg is correct (defaults to historical, which does not alter the digest structure).
+
+### Test count delta
+
+Pre-C0: **215 TS / 99 Python = 314 total**
+Post-C0: **230 TS / 99 Python = 329 total**
+**C0 delta: +15 TS / +0 Python**
+
+| File | Tests |
+|---|---|
+| `climate-exogeneity.test.ts` (new) | 6 |
+| `climate-c0.test.ts` (new) | 9 |
+| **C0 total** | **15** |
+
+### Files modified (blast-radius)
+- `src/engine/types.ts` — `ClimateLens`, `ClimateContext`, `EMPTY_CLIMATE_CONTEXT`, `ScenarioFile.climate_lens`
+- `src/engine/engine.ts` — `_climateContext` optional param on `applyAction`, `queueAction`, `advanceYear`
+- `src/engine/replay.ts` — `computeReplayDigest` lens param; `validateImport` passes lens
+- `src/engine/persistence.ts` — migration function, `ACCEPTED_VERSIONS`, `STORAGE_VERSION` bump
+- `src/engine/index.ts` — re-exports `ClimateLens`, `ClimateContext`, `EMPTY_CLIMATE_CONTEXT`
+- `src/state/store.ts` — `schema_version: '3.1'`, `climate_lens: 'historical'` in save/export; lens-aware load
+- `src/ui/panels/DebriefView.tsx` — pass `parsed.climate_lens` to `computeReplayDigest`
+- `tests/parity/session-w5.test.ts` — updated backward-compat assertion for 3.0→3.1 migration
+- `tests/parity/climate-exogeneity.test.ts` (new)
+- `tests/parity/climate-c0.test.ts` (new)
+
+### Migration-toggle digest check (explicit gate evidence)
+
+All four digest contracts checked against frozen golden values with
+`population_config.migration_enabled` toggled `true` and `false`.
+Test file: `c0-gate-verify.test.ts` (39 assertions).
+
+**migration=ON (default):**
+
+| Golden | state_digest | fiscal_digest | existing_assets_digest | history_digest |
+|---|---|---|---|---|
+| A | `4a838c70…` ✓ | — | — | — |
+| B (no events) | `716b189a…` ✓ | — | — | — |
+| E | — | — | `a881df20…` ✓ | — |
+| G′ yr2027 | `316fe412…` ✓ | `63ecffeb…` ✓ | `3a6f5ab4…` ✓ | — |
+| G′ yr2031 | `a4619f25…` ✓ | `ad9da9c7…` ✓ | `509f39be…` ✓ | — |
+| G′ yr2045 | `f81d3317…` ✓ | `045f30e4…` ✓ | `d4fcd3d2…` ✓ | — |
+| I yr2031 | `a4619f25…` ✓ | `ad9da9c7…` ✓ | `509f39be…` ✓ | — |
+| I yr2041 | `08a97354…` ✓ | `c251dce1…` ✓ | `bafce40e…` ✓ | — |
+| J′ (Golden B seq + project 60) | — | — | — | `7b05722c…` ✓ |
+
+**migration=OFF:**
+
+| Golden | state_digest | fiscal_digest | existing_assets_digest | history_digest |
+|---|---|---|---|---|
+| A | `4a838c70…` ✓ | — | — | — |
+| B (no events) | `716b189a…` ✓ | — | — | — |
+| E | — | — | `a881df20…` ✓ | — |
+| G′ yr2027 | `316fe412…` ✓ | `63ecffeb…` ✓ | `3a6f5ab4…` ✓ | — |
+| G′ yr2031 | `a4619f25…` ✓ | `ad9da9c7…` ✓ | `509f39be…` ✓ | — |
+| G′ yr2045 | `f81d3317…` ✓ | `045f30e4…` ✓ | `d4fcd3d2…` ✓ | — |
+| I yr2031 | `a4619f25…` ✓ | `ad9da9c7…` ✓ | `509f39be…` ✓ | — |
+| I yr2041 | `08a97354…` ✓ | `c251dce1…` ✓ | `bafce40e…` ✓ | — |
+| J′ (Golden B seq + project 60) | — | — | — | differs (expected) |
+
+**Why history_digest differs with migration=OFF:** Golden J′ was frozen with
+`migration_enabled=true` (the V2 default). The history digest includes
+`population` and `working_age_population` fields in each `IndicatorSnapshot`,
+which change when migration is disabled. The state/fiscal/existing_assets
+digests are unaffected because population is not in those digest surfaces.
+All three non-history contracts are byte-identical under both settings.
+
+### Legacy 3.0 round-trip (explicit gate evidence)
+
+**Fixture used:** Synthetic pre-C0 ScenarioFile constructed from Golden A
+steps (13 apply-only actions). Written as `schema_version: "3.0"` with no
+`climate_lens` field — identical to what the pre-C0 code would have produced.
+
+**Procedure:**
+1. Constructed 3.0 file with Golden A action log, computed replay_digest directly
+2. Imported through `importFromJson()` — migration path engaged
+3. Re-exported through `exportToJson()`
+4. Compared digests
+
+**Results:**
+- (a) Re-exported file's `climate_lens` field: **`"historical"`** ✓
+- (b) Re-exported file's `replay_digest`: **`4a838c7070d55d3487d8f3ecbc529220`** (Golden A frozen value)
+- (c) Direct-compute digest vs legacy-load-path digest: **identical** ✓
+- (d) `computeReplayDigest(state, "historical")` === `computeReplayDigest(state)` ✓
+- Schema version after migration: **`"3.1"`** ✓
+
+### Updated test count
+
+Pre-C0: **215 TS / 99 Python = 314 total**
+Post-C0 (with gate): **269 TS / 99 Python = 368 total**
+**C0 total delta: +54 TS / +0 Python**
+
+| File | Tests |
+|---|---|
+| `climate-exogeneity.test.ts` (new) | 6 |
+| `climate-c0.test.ts` (new) | 9 |
+| `c0-gate-verify.test.ts` (new) | 39 |
+| **C0 total** | **54** |
+
+### Known debt
+- ClimateContext tables are empty under historical lens. C1/C2 will populate them with CMIP6/LOCA2 downscaled projections.
+- C3 will implement demand modulation coupling functions (CDD/HDD × dynamic population from V2).
+- Python runtime does not yet have ClimateContext plumbing — add in C3 or C4 when coupling functions are implemented.
+
+---
+
+## Phase F0 → F0.4 — Anchor Facilities, Economic Drivers, and WY Gap Closure
+**Date:** 2026-07-11
+**Status:** Closed; data/notebook work only, with no engine or digest-surface changes.
+
+### What was built
+
+Notebook 22 produced the 404-feature anchor registry
+`data/processed/mw_anchor_facilities.geojson`, the 157-record
+`mw_county_cards.json` update, and `anchor_sector_taxonomy.json`. The
+registry combines EIA-860 generators, EPA GHGRP facilities, MSHA mines,
+curated institutional anchors, and the associated economic-driver rankings.
+Every county card records its `driver_source`; source, confidence, and
+coordinate flags are retained on anchor records.
+
+### Gates
+
+- **WY Tier 2 coverage:** passed — **23/23 Wyoming counties** have at least
+  one Tier 2 anchor after the deterministic gap-fill promotion pass.
+- **Ten-county credibility table:** passed — expected top-LQ identities held
+  for Campbell (mining/extraction), Teton (tourism/recreation), Sweetwater
+  (mining/extraction), Albany (education), Goshen (agriculture), Laramie
+  (government/military), Lincoln and Converse (utilities/power), Moffat CO
+  (mining/extraction), and Rosebud MT (utilities/power). Each row also had a
+  named Tier 2 anchor.
+
+### Economic-driver fallback log
+
+The intended hierarchy was BEA CAGDP2/CAINC6N, then Census CBP, then ACS
+industry-of-worker shares. BEA credentials were unavailable. The CBP bulk
+state-archive attempt returned 404 for WY and MT, so the recovery sequence
+was **CBP bulk → Census CBP API → ACS fallback**, with QCEW used to identify
+government ownership where needed. The final per-county `driver_source` is
+preserved in `mw_county_cards.json` rather than inferred at render time; the
+current 157 records are `CBP_establishment_counts+QCEW_government_ownership`.
+The source tag is evidence of the fallback path, not a claim that a
+location-quotient result is a GDP ranking.
+
+### F0.4 WY gap-fill promotions
+
+The four previously blocked GHGRP gap-fill facilities now carry
+facility-specific, low-confidence MW values derived from the resolved
+fallback chain: Goshen / Western Sugar Cooperative **1.380 MW**; Johnson /
+Bolster Compressor Station **0.648 MW**; Niobrara / Salt Creek CO2 Supplier
+**0.250 MW**; and Sublette / Big Piney Compressor Station **1.488 MW**.
+
+The economic-driver refresh affected all 130 study counties. **77 counties**
+now have `government/military` as their top LQ driver. This was adjudicated
+as the expected shape of a location-quotient ranking for many small rural
+counties—government employment is locally concentrated—not as a claim that
+government is their largest absolute economic sector. The ten-county
+credibility gate above remains the control against implausible canonical
+identities.
+
+### Known debt
+
+- Driver rankings remain a fallback hierarchy rather than BEA GDP/income
+  rankings until a reproducible BEA pull is available.
+- CBP state-archive availability and Census/ACS API-key access should be
+  rechecked on the next data refresh; retain the existing per-county
+  `driver_source` rather than silently upgrading confidence.
+- The four MW values are low-confidence estimates and should be replaced by
+  documented facility load/nameplate evidence when available.
+
+---
+
+Phase S0 — F-Track / C-Track Reconciliation (orchestration, no code)
+Date: 2026-07-11
+Status: Binding for all F- and C-track sessions. Read this entry before
+TERRA_anchors_roadmap.md or TERRA_climate_roadmap.md — where they conflict,
+this entry wins.
+Baseline at track start
+
+Engine v4.2 (both runtimes), 215 TS + 99 Python = 314 tests
+Goldens frozen: A, B, C, D, E, F, G (superseded), G′, H, I, J, J′
+Four digest contracts: state_digest, fiscal_digest,
+existing_assets_digest, history_digest
+fixture_registry.json amendments_used: 4 (latest: J→J′, Amendment 4)
+Z4 sites/succession live (v4.1); W5/W6 session tooling live; V2 dynamic
+population + migration live (v4.2)
+Z5 lifecycle UI: status unconfirmed in this log — F2 and C5 must check
+the repo for the asset-registry card section / site-marker component and
+record what they find here
+
+Golden letter assignments (supersedes both roadmaps' internal references)
+FixtureSessionRoadmap called itGolden KF1 — anchor lifecycle"Golden K" (anchors roadmap)Golden LC3 — demand fork"Golden J" (climate roadmap)Golden MC4 — resilience fork"Golden K" (climate roadmap)
+J and J′ are consumed (Z3 indicators, V2 population). Any session that finds
+a letter collision stops and logs it here before freezing anything.
+Notebook number assignments (provisional — confirm against ls notebooks/)
+NotebookSession22_anchor_facilities.ipynbF023_climate_projection_pull.ipynbC124_hazard_exposure_baseline.ipynbC2
+V2 replaced "planned Notebook 22" with scripts/generate_population_projections.py,
+so 22 is believed free. Each data session's first cell lists notebooks/ and
+bumps to the next free number if taken, recording the actual number here.
+Amendment doctrine for these tracks
+
+C0 is not an amendment. All four digests must remain byte-identical with
+climate_lens: "historical". Any digest change in C0 is a bug.
+F1 attempts zero-amendment seeding first, following the established
+pattern (Z2 housing_stock, Z4 sites): anchors enter asset_registry but are
+excluded from the existing_assets materialized view; history snapshots do
+not enumerate the registry. If all four digests stay byte-identical, no
+amendment is consumed. Only if an anchor field must enter a digest surface
+does F1 log Amendment 5, with the full inertness proof attached.
+F1's inertness proof covers all four digest contracts and runs with
+population_config.migration_enabled both true and false — a seeded
+anchor that leaks jobs at initialization will surface through the V2
+migration path in the history digest.
+Total new amendments budgeted across both tracks: at most one (F1,
+only if the zero-amendment path fails).
+
+Serialization rule
+Only one live session at a time may modify: terra_engine.py, engine.ts,
+indicators.py/indicators.ts, initializeState/initialize_state,
+replay.ts, persistence.ts, or any digest computation. The engine-lock
+order for these tracks: C0 → F1 → C3 → C4. Data notebooks and UI-only
+sessions run in parallel freely. F3 branches from post-C0 main; rebases and
+reruns npm run parity after F1 merges (its inertness test is relative —
+pinned vs unpinned run — so it survives any F1 regeneration).
+Wave plan
+WaveSessions (executor)1F0 (Codex) ∥ C1 (Codex) ∥ C0 (Opus, engine lock)2F1 (Opus, engine lock) ∥ C2 data-half (Codex) ∥ F3 (Sonnet, branch)3C3 (Opus, engine lock) ∥ F2 (Codex + Sonnet review)4C4 (Opus, engine lock) ∥ C5a components (Codex)5C5b integration + final sweep (Sonnet build, Opus verify)
+C2 is split: data pulls + tagging doc in Wave 2 (Codex, parallel-safe);
+the registry-merge step is applied as a small post-F1 patch so exposure tags
+cover the new anchor asset classes (mine, industrial_load,
+commercial_anchor_load) in one pass.
+Codex verification protocol (every Codex deliverable, before merge)
+
+Fresh execution — restart kernel, run top to bottom, no hidden state.
+Gate tables re-derived by the verifier from cached raw pulls, then diffed
+against the printed versions — not re-read.
+Schema audit — every output value carries required attribution fields
+(confidence, source, and for climate {scenario, epoch, percentile, source, method}); grep for hardcoded hex/values and silent nulls.
+Blast-radius diff — git diff --stat shows zero changes outside the
+session's allowed paths.
+Handoff conditions checked one by one as written; "close enough" fails.
+
+### Wave 2 gate decision — C-track held pending real climate data (2026-07-11)
+
+C1's Wave 1 output (data/processed/county_climate_projections.json) is
+100% literature-scaled proxy data — CarbonPlan CMIP6 hit chunk-transfer
+constraints, MACA publishes CMIP5/RCP not CMIP6/SSP and no scenario
+conversion was attempted (correctly). Decision: C2, C3, and C4 do not
+start until a dedicated acquisition session (C1.2) delivers real
+downscaled values for at least the core variable set, OR a second
+project-level decision explicitly accepts literature-scaled data as
+final.
+
+F-track is unaffected — F1 (engine lock) and F3 (branch) proceed on the
+Wave 2 schedule as planned; neither depends on climate_context contents.
+
+### C1.3/C1.4/C1.5 — MACA back-cast resolution (2026-07-11)
+
+C1.3's original back-cast "fail" was against a fallback climatology
+proxy mislabeled as "observed" in the Wave 1 build log — not a real
+station or gridded record. C1.4 confirmed MACA's extraction pipeline
+was correct (right grid cells, right variables, right units) and the
+proxy reference was invalid. C1.5 re-ran the comparison against PRISM
+4km observed gridded normals (1981-2005): all 6 checks came within
+~1F / ~1in of observed, though a strict range-bracketing rule marked
+them "fail" due to MACA's tight reported range rather than any real
+disagreement. MACA's 15,072-value real-data portion is validated.
+7,536 values (annual_mean_temp_f, annual_precip_total_in) carry a
+conservative low-confidence flag from the strict rule; this can be
+revisited if a tolerance-based check is preferred over strict
+bracketing.
+
+Wave 2 replan (2026-07-11, supersedes the S0 wave table for Wave 2 only)
+
+LaneSessionExecutorDepends onEngine lockF1 — anchor seeding + Golden KOpusF0.4 geojson, C0BranchF3 — pin placement + inertness paritySonnetPost-C0 main; rebase after F1Repair AC1.2 — real CMIP6/SSP acquisitionSonnet— (unblocks C2/C3/C4)Repair BF0 — WY/MT drivers + MW estimatesCodex✅ CLOSED (2026-07-11)
+
+
+C2 data-half moves to Wave 3 (runs parallel with C3 if C1.2 passes;
+parallel with F2 if it does not). The Wave-1 gate hold on C2/C3/C4 stands
+until C1.2's handoff condition is met or a logged project decision accepts
+literature-scaled data as final.
+F1 is not blocked by F0: Golden K uses Sweetwater and Campbell, which are
+unaffected by the four low-confidence gap-fill estimates. F0 remains a
+data-only change with no digest impact because the registry is excluded from
+all four digest surfaces. Housekeeping owed: the C1 phase close-out and the
+truncated final line of the C1.3/C1.4/C1.5 entry.
+C0 known debt inherited forward: Python runtime ClimateContext plumbing
+ships in C3.

@@ -22,7 +22,11 @@ export type {
   PathwayConditions,
   ScenarioProfile,
   IndicatorSnapshot,
+  ClimateLens,
+  ClimateContext,
 } from './types.js';
+
+export { EMPTY_CLIMATE_CONTEXT } from './types.js';
 
 export {
   initializeState,

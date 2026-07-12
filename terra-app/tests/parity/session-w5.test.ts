@@ -213,7 +213,8 @@ describe('Backward compatibility (item 3)', () => {
 
     // Must parse successfully
     expect(imported).not.toBeNull();
-    expect(imported?.schema_version).toBe('3.0');
+    expect(imported?.schema_version).toBe('3.1'); // C0: migration bumps 3.0 → 3.1
+    expect(imported?.climate_lens).toBe('historical'); // C0: absent field defaults to historical
     // Optional fields absent — no errors, no undefined explosion
     expect(imported?.session_meta).toBeUndefined();
     expect(imported?.annotations).toBeUndefined();

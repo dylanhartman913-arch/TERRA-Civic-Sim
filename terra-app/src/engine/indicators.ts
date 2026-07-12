@@ -17,8 +17,6 @@ const HOUSING_CONSTRUCTION_JOBS_PER_MW: Record<string, number> = {
   data_center: 3.0,
   hydro: 1.5,
 };
-const HOUSEHOLD_FACTOR = 0.65;
-
 // ── Pool utilization indicator IDs ────────────────────────────────────────────
 export const POOL_UTILIZATION_IDS: string[] = [
   'pool_utilization_HALEU_kg_per_year',

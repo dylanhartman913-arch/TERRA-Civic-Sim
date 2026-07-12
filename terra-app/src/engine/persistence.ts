@@ -14,7 +14,21 @@ export interface StorageAdapter {
 
 export const SLOT_PREFIX = 'terra_save_';
 export const MAX_SLOTS = 5;
-export const STORAGE_VERSION = '3.0';
+export const STORAGE_VERSION = '3.1';
+/** Schema versions accepted on import (migrated to current on load). */
+const ACCEPTED_VERSIONS = new Set(['3.0', '3.1']);
+
+/** Migrate a legacy 3.0 file to 3.1 (adds climate_lens: "historical"). */
+function migrateScenarioFile(file: ScenarioFile): ScenarioFile {
+  if (file.schema_version === '3.0') {
+    return { ...file, schema_version: '3.1', climate_lens: 'historical' };
+  }
+  // Ensure climate_lens is present even on 3.1 files missing it
+  if (!file.climate_lens) {
+    return { ...file, climate_lens: 'historical' };
+  }
+  return file;
+}
 
 export function listSlots(storage: StorageAdapter): SaveSlotMeta[] {
   const slots: SaveSlotMeta[] = [];
@@ -24,7 +38,7 @@ export function listSlots(storage: StorageAdapter): SaveSlotMeta[] {
     if (!raw) continue;
     try {
       const file = JSON.parse(raw) as ScenarioFile;
-      if (file.schema_version !== STORAGE_VERSION) continue;
+      if (!ACCEPTED_VERSIONS.has(file.schema_version)) continue;
       slots.push({
         slot_id: key.slice(SLOT_PREFIX.length),
         name: file.name,
@@ -68,8 +82,8 @@ export function exportToJson(file: ScenarioFile): string {
 export function importFromJson(json: string): ScenarioFile | null {
   try {
     const obj = JSON.parse(json) as ScenarioFile;
-    if (obj.schema_version !== STORAGE_VERSION) return null;
-    return obj;
+    if (!ACCEPTED_VERSIONS.has(obj.schema_version)) return null;
+    return migrateScenarioFile(obj);
   } catch {
     return null;
   }

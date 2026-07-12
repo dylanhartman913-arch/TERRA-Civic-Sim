@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTerraStore } from '../../state/store.js';
 import type { EngineState, AssetInstance, ProductionAsset } from '../../engine/types.js';
 import {
-  getExistingAssets, previewProductionReduction, findSiteForAction, SITE_COMPAT,
+  getExistingAssets, previewProductionReduction, SITE_COMPAT,
   delayRetirement as engineDelayRetirementPreview,
   cancelQueued as engineCancelQueuedPreview,
 } from '../../engine/engine.js';
@@ -239,10 +239,6 @@ interface CancelModalState {
   magnitude: number;
 }
 
-interface SiteInfoState {
-  siteAsset: AssetInstance;
-}
-
 // ── Asset detail helpers ──────────────────────────────────────────────────
 
 function assetDisplayName(a: AssetInstance): string {
@@ -253,7 +249,7 @@ function assetDisplayName(a: AssetInstance): string {
   return a.name;
 }
 
-function assetSubtitle(a: AssetInstance, year: number): string {
+function assetSubtitle(a: AssetInstance, _year: number): string {
   const parts: string[] = [];
   if (a.capacity_mw != null && a.capacity_mw > 0) parts.push(`${a.capacity_mw} MW`);
   if (a.magnitude != null && a.origin === 'player') parts.push(`${a.magnitude} units`);

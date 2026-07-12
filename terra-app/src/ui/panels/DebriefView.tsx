@@ -258,7 +258,7 @@ export function DebriefView({ onClose }: { onClose: () => void }) {
           }
           try {
             const state = replaySessionFile(parsed);
-            const digest = computeReplayDigest(state);
+            const digest = computeReplayDigest(state, parsed.climate_lens);
             const session: LoadedSession = {
               file: parsed,
               label,

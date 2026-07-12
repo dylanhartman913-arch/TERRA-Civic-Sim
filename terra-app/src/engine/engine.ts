@@ -11,8 +11,48 @@
  * TTD/capex NOT discounted — brownfield premium already in cost_2024). Golden I.
  */
 
-import { createHash } from 'crypto';
 import { snapshotIndicators } from './indicators.js';
+
+// ── Pure-JS MD5 (RFC 1321) — browser + Node compatible ─────────────────────
+// Produces byte-identical output to Node's createHash('md5').update(s).digest('hex').
+function computeMd5Hex(message: string): string {
+  const bytes = new TextEncoder().encode(message);
+  const msgLen = bytes.length;
+  const paddedLen = Math.ceil((msgLen + 9) / 64) * 64;
+  const padded = new Uint8Array(paddedLen);
+  padded.set(bytes);
+  padded[msgLen] = 0x80;
+  const bitLen = msgLen * 8;
+  padded[paddedLen - 8] = bitLen & 0xff;
+  padded[paddedLen - 7] = (bitLen >>> 8) & 0xff;
+  padded[paddedLen - 6] = (bitLen >>> 16) & 0xff;
+  padded[paddedLen - 5] = (bitLen >>> 24) & 0xff;
+  const T = Array.from({ length: 64 }, (_, i) => (Math.floor(Math.abs(Math.sin(i + 1)) * 0x100000000)) | 0);
+  const S = [7,12,17,22,7,12,17,22,7,12,17,22,7,12,17,22,5,9,14,20,5,9,14,20,5,9,14,20,5,9,14,20,4,11,16,23,4,11,16,23,4,11,16,23,4,11,16,23,6,10,15,21,6,10,15,21,6,10,15,21,6,10,15,21];
+  let a0 = 0x67452301 | 0, b0 = 0xefcdab89 | 0, c0 = 0x98badcfe | 0, d0 = 0x10325476 | 0;
+  const view = new DataView(padded.buffer);
+  for (let offset = 0; offset < padded.length; offset += 64) {
+    const M: number[] = [];
+    for (let j = 0; j < 16; j++) M.push(view.getUint32(offset + j * 4, true) | 0);
+    let a = a0, b = b0, c = c0, d = d0;
+    for (let i = 0; i < 64; i++) {
+      let f: number, g: number;
+      if (i < 16) { f = (b & c) | (~b & d); g = i; }
+      else if (i < 32) { f = (d & b) | (~d & c); g = (5 * i + 1) % 16; }
+      else if (i < 48) { f = b ^ c ^ d; g = (3 * i + 5) % 16; }
+      else { f = c ^ (b | ~d); g = (7 * i) % 16; }
+      const temp = (f + a + T[i] + M[g]) | 0;
+      const s = S[i];
+      a = d; d = c; c = b;
+      b = (b + ((temp << s) | (temp >>> (32 - s)))) | 0;
+    }
+    a0 = (a0 + a) | 0; b0 = (b0 + b) | 0; c0 = (c0 + c) | 0; d0 = (d0 + d) | 0;
+  }
+  return [a0, b0, c0, d0].map(x => {
+    const bs = [(x) & 0xff, (x >>> 8) & 0xff, (x >>> 16) & 0xff, (x >>> 24) & 0xff];
+    return bs.map(n => (n & 0xff).toString(16).padStart(2, '0')).join('');
+  }).join('');
+}
 import type {
   EngineState,
   IndicatorSnapshot,
@@ -20,6 +60,7 @@ import type {
   CountyEESBaseline,
   PopulationProjection,
   PopulationConfig,
+  ClimateContext,
   EcoregionEES,
   Bus,
   Branch,
@@ -58,6 +99,7 @@ import type {
   AnyExistingAsset,
   AssetInstance,
 } from './types.js';
+import { EMPTY_CLIMATE_CONTEXT } from './types.js';
 
 // ── Constants ───────────────────────────────────────────────────────────────
 
@@ -234,70 +276,6 @@ const SITE_OPS_JOBS_PER_MW: Record<string, number> = {
   wind: 0.04, solar: 0.02, hydro: 0.15,
 };
 const SITE_WORKFORCE_HALF_LIFE_YEARS = 5; // Carley et al. (2018) ~5 yr median attrition
-
-// ── Existing Assets Seeding ─────────────────────────────────────────────────
-
-function seedExistingAssets(countyCards: Record<string, unknown>): Record<string, AnyExistingAsset[]> {
-  const existing: Record<string, AnyExistingAsset[]> = {};
-  for (const [geoid, card] of Object.entries(countyCards)) {
-    const cardObj = card as Record<string, unknown>;
-    const flagships = (cardObj.flagship_assets as unknown[]) || [];
-    if (!flagships.length) continue;
-    const entries: AnyExistingAsset[] = [];
-    for (const rawAsset of flagships) {
-      const asset = rawAsset as Record<string, unknown>;
-      const cap = asset.capacity_or_load_mw as number | null | undefined;
-      const assetType = (asset.type as string) || 'unknown';
-      const name = (asset.name as string) || '';
-      const base = {
-        name,
-        geoid,
-        county_name: (asset.county_name as string) || '',
-        state: (asset.state as string) || '',
-        type: assetType,
-        status: (asset.status as string) || '',
-        source_url: (asset.source_url as string) || '',
-        operational_year: (asset.operational_year as number | null) ?? null,
-      };
-
-      // Check production_asset data first (EIA-7A/MSHA sourced; MW conversion not applicable)
-      const prodData = PRODUCTION_ASSET_DATA[`${geoid}|${name}`];
-      if (prodData !== undefined) {
-        const pa: ProductionAsset = {
-          ...base,
-          asset_kind: 'production_asset',
-          capacity_mw: null,
-          coal_tons_yr: null,
-          production_proxy: null,
-          fiscal_action_id: null,
-          excluded: null,
-          employment_direct: null,
-          ...prodData,
-        };
-        entries.push(pa);
-      } else if (cap == null) {
-        entries.push({ ...base, capacity_mw: null, coal_tons_yr: null, production_proxy: null, fiscal_action_id: null, excluded: 'no_mw_conversion' });
-      } else {
-        const capacity_mw = Number(cap);
-        let coal_tons_yr: number | null = null;
-        let production_proxy: number | null = null;
-        if (assetType === 'coal') {
-          coal_tons_yr = Math.round(capacity_mw * PRB_COAL_TONS_PER_MW_YR * 100) / 100;
-          production_proxy = coal_tons_yr;
-        }
-        let fiscal_action_id: string | null = null;
-        if (assetType === 'data_center') {
-          fiscal_action_id = capacity_mw >= 150 ? 'data_center_campus_phase' : 'data_center_hyperscale';
-        } else {
-          fiscal_action_id = ASSET_TYPE_TO_FISCAL_ACTION[assetType] ?? null;
-        }
-        entries.push({ ...base, asset_kind: 'mw_asset', capacity_mw, coal_tons_yr, production_proxy, fiscal_action_id, excluded: null });
-      }
-    }
-    if (entries.length > 0) existing[geoid] = entries;
-  }
-  return existing;
-}
 
 // ── Asset Registry (v3.0) ──────────────────────────────────────────────────
 
@@ -1161,6 +1139,9 @@ export function applyAction(
   location: string | number,
   magnitude: number,
   _skipCoupling: boolean = false,
+  _climateContext: ClimateContext = EMPTY_CLIMATE_CONTEXT,
+  // C0: climate_context accepted but unused under historical lens.
+  // C3 will add demand modulation coupling here (CDD/HDD × population).
 ): [EngineState, DeltaSummary] {
   const state = shallowCopyState(inputState);
 
@@ -1539,6 +1520,8 @@ export function queueAction(
   magnitude: number,
   decisionYear: number,
   overrideOperationalYear?: number,
+  _climateContext: ClimateContext = EMPTY_CLIMATE_CONTEXT,
+  // C0: climate_context accepted but unused under historical lens.
 ): EngineState {
   const state = shallowCopyState(inputState);
 
@@ -1767,7 +1750,12 @@ function advancePopulation(state: EngineState, _year: number): void {
 
 // ── Advance Year ────────────────────────────────────────────────────────────
 
-export function advanceYear(inputState: EngineState): EngineState {
+export function advanceYear(
+  inputState: EngineState,
+  _climateContext: ClimateContext = EMPTY_CLIMATE_CONTEXT,
+  // C0: climate_context accepted but unused under historical lens.
+  // C3 will add CDD/HDD demand modulation and climate-linked hazard injection here.
+): EngineState {
   let state = shallowCopyState(inputState);
   state.year += 1;
   const currentYear = state.year;
@@ -2998,11 +2986,11 @@ function serializeHistoryCanonical(history: IndicatorSnapshot[]): string {
 export function historyDigest(state: EngineState): { n_years: number; year_range: number[]; md5: string } {
   const history = state.history ?? [];
   if (history.length === 0) {
-    const md5 = createHash('md5').update('[]').digest('hex');
+    const md5 = computeMd5Hex('[]');
     return { n_years: 0, year_range: [], md5 };
   }
   const canonical = serializeHistoryCanonical(history);
-  const md5 = createHash('md5').update(canonical).digest('hex');
+  const md5 = computeMd5Hex(canonical);
   return {
     n_years: history.length,
     year_range: [history[0].year, history[history.length - 1].year],

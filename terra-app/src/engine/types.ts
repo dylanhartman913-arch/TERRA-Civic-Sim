@@ -203,6 +203,7 @@ export interface ActionRecord {
   cost_2024?: number;
   cost_2035?: number;
   cost_2050?: number;
+  capex_per_mw?: number;
   cost_source?: string;
   cost_unit?: string;
   confidence?: string;
@@ -880,10 +881,40 @@ export interface ActionLogEntry {
   timestamp: number;
 }
 
+// ── Climate Lens (C0) ──────────────────────────────────────────────────────
+
+/** Climate forcing scenario lens. "historical" = no climate modulation (baseline). */
+export type ClimateLens = 'historical' | 'ssp245' | 'ssp370';
+
+/**
+ * Read-only, stateless climate context passed alongside engine state.
+ * Under "historical" lens this is EMPTY_CLIMATE_CONTEXT (no tables, no modulation).
+ *
+ * Design note (C0→C3 interaction): C3 demand modulation will layer CDD/HDD on
+ * top of V2's dynamic population (demand baseline × climate factor × migrating
+ * population). The context is read-only and stateless so that interaction lives
+ * entirely in C3's coupling functions — the engine never writes to this object.
+ *
+ * Table schema (populated in C1/C2): tables[variable][geoid][epoch] = value
+ * where variable ∈ {"cdd_delta_pct", "hdd_delta_pct", "precip_delta_pct", ...},
+ * geoid is 5-digit FIPS, epoch is e.g. "2040" or "2050" (decadal midpoint).
+ */
+export interface ClimateContext {
+  readonly lens: ClimateLens;
+  /** County × epoch × variable lookup tables. Empty under "historical". */
+  readonly tables: Readonly<Record<string, Readonly<Record<string, Readonly<Record<string, number>>>>>>;
+}
+
+/** Sentinel: no climate modulation. All coupling hooks are no-ops with this context. */
+export const EMPTY_CLIMATE_CONTEXT: ClimateContext = Object.freeze({
+  lens: 'historical' as const,
+  tables: Object.freeze({}),
+});
+
 // ── Scenario File (export / import / localStorage format) ──────────────────
 
 export interface ScenarioFile {
-  schema_version: '3.0';
+  schema_version: '3.0' | '3.1';
   terra_version: '1.0';
   exported_at: string;
   name: string;
@@ -894,6 +925,8 @@ export interface ScenarioFile {
   eventHistory: GameEvent[];   // display only — events re-drawn from seed on replay
   year_reached: number;
   replay_digest: string;       // md5 of canonical final state
+  /** Climate lens (C0). Absent in legacy files → defaults to "historical". */
+  climate_lens?: ClimateLens;
   // Session mode (optional — only present in workshop sessions)
   session_meta?: SessionMeta;
   annotations?: Annotation[];

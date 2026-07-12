@@ -32,7 +32,7 @@ import { RatioBandPanel } from '../charts/RatioBandPanel.js';
 import { PaybackPanel } from '../charts/PaybackPanel.js';
 import { ScatterView, type ScatterPoint } from '../charts/ScatterView.js';
 import { SmallMultiples, type SmallSeries } from '../charts/SmallMultiples.js';
-import type { EngineState, IndicatorSnapshot } from '../../engine/types.js';
+import type { EngineState } from '../../engine/types.js';
 import type { ChartConfig, ChartDatum } from '../charts/types.js';
 
 // ── WY county name lookup ─────────────────────────────────────────────────────

@@ -6,7 +6,8 @@
  * using the same PyFloat-aware canonical JSON and MD5 algorithm.
  */
 
-import type { EngineState, ScenarioFile } from './types.js';
+import type { EngineState, ScenarioFile, ClimateContext } from './types.js';
+import { EMPTY_CLIMATE_CONTEXT } from './types.js';
 import {
   initializeState,
   applyAction as engineApplyAction,
@@ -148,8 +149,14 @@ function md5(message: string): string {
 /**
  * Compute the canonical state digest, matching helpers.ts computeDigestMd5 exactly.
  * Digest structure: county_ees, bus_state_summary, active_couplings, sc_pools, year.
+ *
+ * C0 lens incorporation: when climateLens is non-historical, the lens string is
+ * included in the digest object so that different climate forcings produce
+ * different digests. When climateLens is "historical" (or omitted), the lens
+ * does NOT appear in the digest — preserving byte-identity with all existing
+ * frozen goldens.
  */
-export function computeReplayDigest(state: EngineState): string {
+export function computeReplayDigest(state: EngineState, climateLens?: string): string {
   // County EES (rounded to 6 decimal places, PyFloat-formatted)
   const countyEes: Record<string, { E: PyFloat; Ec: PyFloat; S: PyFloat }> = {};
   for (const [geoid, ees] of Object.entries(state.county_ees)) {
@@ -184,13 +191,20 @@ export function computeReplayDigest(state: EngineState): string {
     };
   }
 
-  const digestObj = {
+  const digestObj: Record<string, unknown> = {
     county_ees: countyEes,
     bus_state_summary: busSummary,
     active_couplings: state.active_couplings,
     sc_pools: scPools,
     year: state.year,
   };
+
+  // C0: lens contributes to digest ONLY when non-historical.
+  // This ensures historical-lens digests are byte-identical to pre-C0 digests.
+  const effectiveLens = climateLens ?? 'historical';
+  if (effectiveLens !== 'historical') {
+    digestObj.climate_lens = effectiveLens;
+  }
 
   return md5(canonicalJson(digestObj));
 }
@@ -283,7 +297,7 @@ export function validateImport(
     const finalState = replayScenario(
       file, baseline, crosswalk, actionLibrary, initialNetwork, countyCards,
     );
-    const computed_digest = computeReplayDigest(finalState);
+    const computed_digest = computeReplayDigest(finalState, file.climate_lens);
     const expected_digest = file.replay_digest;
     return {
       valid: true,
