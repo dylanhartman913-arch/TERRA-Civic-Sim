@@ -10,6 +10,7 @@ import { CouplingLinks } from './CouplingLinks.js';
 import { Tooltip } from './Tooltip.js';
 import { YieldBadges } from './YieldBadges.js';
 import { SiteMarkers } from './SiteMarkers.js';
+import { QueuedBuildMarkers } from './QueuedBuildMarkers.js';
 
 export function MapView() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -88,6 +89,7 @@ export function MapView() {
           <CouplingLinks map={mapRef.current} engineState={engineState} />
           <YieldBadges map={mapRef.current} />
           <SiteMarkers map={mapRef.current} />
+          <QueuedBuildMarkers map={mapRef.current} />
         </>
       )}
       {tooltipState && (

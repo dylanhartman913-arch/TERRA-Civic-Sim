@@ -37,3 +37,10 @@
   --choro-4:       #2dd4bf;
   --choro-5:       #99f6e4;
 }
+
+/* F3: nudge toast fade-out */
+@keyframes nudge-fade {
+  0%   { opacity: 1; transform: translateX(-50%) translateY(0); }
+  70%  { opacity: 1; transform: translateX(-50%) translateY(0); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-4px); }
+}

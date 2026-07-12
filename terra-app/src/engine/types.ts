@@ -886,6 +886,9 @@ export interface ActionLogEntry {
   decisionYear?: number;
   overrideOp?: number;
   timestamp: number;
+  /** F3: Sub-county pin coordinates [lon, lat]. UI-only — excluded from replay digest
+   *  and invisible to all engine functions. Resolution remains county → primary_bus. */
+  site_coords?: [number, number];
 }
 
 // ── Climate Lens (C0) ──────────────────────────────────────────────────────
