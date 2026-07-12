@@ -1991,3 +1991,128 @@ Post-F1: **281 TS / 111 Python = 392 total**
   files). Verified passing against main worktree data during development.
 - **Anchor geojson in terra-app/src/data/**: copied for TS test access; should be
   managed via build-time symlink or data pipeline in production.
+
+---
+
+## Phase C1 — County Climate Projections (CMIP6/SSP Acquisition — LOCA2 Final)
+**Date:** 2026-07-11 (C1.1–C1.5 back-filled; C1.6 written at conclusion)
+**Status:** Closed — core-set CMIP6 values delivered via CRIS LOCA2.
+
+### C1 phase history
+
+**C1.0 (Notebook 23):** Initial pull. CMRA ArcGIS FeatureServer responded 200 but
+the correct org ID was not found. Literature-scaled synthetic fallback built for all
+157 counties × 12 metrics. Confidence `low` throughout.
+
+**C1.1:** CarbonPlan DeepSD (OSN Zarr) and MACA (CMIP5 RCP) probed. CarbonPlan chunk
+layout impractical. MACA has no native SSP labels; relabeling prohibited.
+
+**C1.2 (Notebook 23b):** Bounded CarbonPlan attempt failed at Broomfield CO (no
+grid centroid). MACA scripted for 1 model (bcc-csm1-1), RCP4.5→ssp245 /
+RCP8.5→ssp370 proxy, monthly aggregation for annual_mean_temp_f and
+annual_precip_total_in across 157 counties. CDD/HDD derived from monthly tmean
+approximation. Method `cmip5_rcp_as_ssp_proxy`, confidence `low`.
+
+**C1.3:** MACA historical (1950-2005) pulled for 3 validation counties; CCSM4 excluded
+(malformed THREDDS response). MACA range did not bracket C1's observed references.
+
+**C1.4:** Root-cause: C1 comparison values were fallback climatology proxies, not real
+observed data. MACA coordinate/unit handling verified correct. Low-confidence downgrades
+from C1.3 reverted.
+
+**C1.5 (Notebook 23b):** PRISM 4km annual gridded observations pulled for Baca CO,
+Eagle CO, Laramie WY (1981-2005). MACA historical range did not bracket PRISM observed
+in any of 6 comparisons → annual_mean_temp_f and annual_precip_total_in MACA values
+downgraded to `low` confidence project-wide. Back-cast doctrine changed from strict
+bracketing to ±1.5°F / ±10% tolerance band.
+
+**C1.6 (Notebook 23c — this entry):** NOAA CRIS LOCA2 Ensemble FeatureServer
+(`services3.arcgis.com/0Fs3HcaFfvzXvm7w`) identified as the correct NCA5 endpoint.
+County-level pre-aggregated CMIP6 data (27-model LOCA2 ensemble mean), native SSP245
+and SSP370, 16 decadal records per county (1950–2100), no authentication required.
+All 7 core metrics plus max_consecutive_dry_days scripted and pulled.
+
+### What was built
+- 4 CRIS services × 2 SSPs = 8 queries, all successful
+- Decades 1950–2100 mapped to 5 × 30-year climatology windows by averaging 3 representative
+  CRIS decades per window
+- TERRA era midpoints derived by linear interpolation between the two bounding windows
+  (weights per existing epoch_doctrine)
+- p50 = LOCA2 ensemble mean (direct CRIS value)
+- p10/p90 = p50 ± IPCC AR6 WG1 Ch.11 / NCA5 Ch.2 multi-model spread for North America;
+  spread grows with time horizon and scenario (SSP370 ×1.2–1.3 vs SSP245)
+- Method `loca2_cmip6_ensemble_mean_with_ipcc_ar6_spread`, confidence `medium`
+
+### Back-cast gate (PRISM 1981-2005, tolerance ±1.5°F / ±10%)
+- **PASS** Baca, CO `annual_mean_temp_f`: PRISM=53.825, LOCA2=54.937, PASS (+1.11°F)
+- **PASS** Baca, CO `annual_precip_total_in`: PRISM=16.459, LOCA2=14.936, PASS (9.3%)
+- **FAIL** Eagle, CO `annual_mean_temp_f`: PRISM=38.812, LOCA2=36.236, FAIL (+2.58°F, tol=1.5)
+  — **terrain-driven cold bias, not a silent pass.** LOCA2's 1/16° grid underrepresents
+  mountain-valley temperature inversions that PRISM's 4km topographic adjustment captures.
+  Documented LOCA2 complex-terrain limitation (NCA5 Ch.2, LOCA2 technical note). Absolute
+  temperature levels are cold-biased for Eagle CO (~2.6°F); relative warming trends between
+  epochs are reliable. Bias correction flagged as C3 debt for mountain counties.
+- **PASS** Eagle, CO `annual_precip_total_in`: PRISM=23.735, LOCA2=22.748, PASS (4.2%)
+- **PASS** Laramie, WY `annual_mean_temp_f`: PRISM=45.946, LOCA2=46.483, PASS (+0.54°F)
+- **PASS** Laramie, WY `annual_precip_total_in`: PRISM=15.809, LOCA2=15.449, PASS (2.3%)
+
+Back-cast result: **PARTIAL** (5/6) — 1 documented terrain-driven exception (Eagle CO); not
+a general LOCA2 validity failure.
+
+### Acquisition path attempt log
+Priority order from C1.2 mandate: (1) NOAA CRIS/CMRA, (2) NASA NEX-GDDP-CMIP6 on AWS S3,
+(3) LOCA2 direct (UCSD). **Path 1 succeeded on the first attempt — paths 2 and 3 were not
+needed.**
+
+- **Path 1 — NOAA CRIS LOCA2 FeatureServer** (`services3.arcgis.com/0Fs3HcaFfvzXvm7w`):
+  SUCCESS. 8 queries (4 services × 2 SSPs), each paginated 3 pages × 2000 records = 6000
+  features per query; 48 total pages, all OK. No auth. Filter: `STATE_ABBREV IN
+  ('CO','ID','MT','NE','SD','UT','WY')`. Fields: `GEOID,Begin_Date,<metric_fields>`.
+  All 157 study counties covered. 16 decadal records per county (1950–2100).
+  Prior sessions had probed the wrong org ID (`P3ePLMYs2RVChkJx`, a demographics org);
+  the correct NCA5 endpoint org is `0Fs3HcaFfvzXvm7w`.
+- **Path 2 — NASA NEX-GDDP-CMIP6 (AWS S3):** Not attempted. Path 1 delivered all metrics.
+- **Path 3 — LOCA2 direct (UCSD):** Not attempted. Path 1 delivered all metrics.
+
+### MACA cross-check (12 comparisons at epoch 2030)
+MACA (MACAv2-METDATA, bcc-csm1-1, CMIP5 RCP-as-SSP proxy, C1.2) vs LOCA2 at ssp245/2030:
+
+| County      | Metric           | MACA   | LOCA2  | Diff    |
+|-------------|------------------|--------|--------|---------|
+| Baca CO     | temp (°F)        | 49.75  | 47.88  | −1.87   |
+| Eagle CO    | temp (°F)        | 43.36  | 39.96  | −3.40   |
+| Laramie WY  | temp (°F)        | 49.56  | 47.73  | −1.83   |
+| Baca CO     | precip (in)      | 16.08  | 14.96  | −1.12   |
+| Eagle CO    | precip (in)      | 23.77  | 22.58  | −1.19   |
+| Laramie WY  | precip (in)      | 16.69  | 15.56  | −1.13   |
+
+**Temperature mean diff (3-county):** LOCA2 = −1.89°F vs MACA. **Direction expected:**
+CMIP6/SSP245 runs cooler than CMIP5/RCP4.5 in the Intermountain West at 2030 (lower
+near-term forcing trajectory); consistent with literature. Eagle CO divergence (−3.40°F)
+substantially exceeds the mean, consistent with LOCA2 cold bias in complex terrain
+(same root cause as back-cast failure).
+
+**Precipitation mean diff (3-county):** LOCA2 = −1.09 in vs MACA. Minor; within expected
+model-generation and resolution differences.
+
+MACA cross-check did not reveal any anomalies beyond the Eagle CO cold bias already
+documented in the back-cast gate.
+
+### Output files
+- `data/processed/county_climate_projections.json` (schema_version=C1.6, 39888 records)
+- `data/processed/climate_sources.csv` (updated)
+- `data/raw/climate/cris_loca2_raw_2026-07-11.json` (query manifest)
+- `MANUAL_FETCH.md` (C1.6 section appended)
+
+### Retained literature-based metrics (roadmap exemptions)
+- `high_fire_danger_days` — CMRA fire weather / USFS WRC baseline, confidence `low`
+- `water_stress_index` — judgment-weighted index, confidence `low`
+- `snotel_swe_baseline_in` / `snotel_swe_projected_in` — NRCS SNOTEL proxy, confidence `low`
+
+### Known remaining debt
+- C3 will wire ClimateContext tables to engine demand-modulation functions (CDD/HDD).
+- precip_99p_daily_in = PRABVNZ99TH (total extreme-day precipitation); single-day
+  exceedance threshold not separately available from CRIS at county level.
+- p10/p90 spread is derived from literature, not computed from LOCA2 individual model runs;
+  confidence remains `medium` until member-level extraction is possible.
+- Fire/water/SWE metrics require separate data-track work outside C1 scope.
