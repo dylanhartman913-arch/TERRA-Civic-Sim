@@ -1,0 +1,166 @@
+{
+  "fixture_id": "golden_k",
+  "schema_version": "4.3",
+  "engine_version": "4.3",
+  "created": "2026-07-12T19:08:19.835780+00:00",
+  "description": "Golden K \u2014 anchor lifecycle (F1 Session). Retire WE Soda trona anchor (Sweetwater, 722 emp) in 2030; retire Black Thunder coal anchor (Campbell, 808 emp) in 2028, queue solar_utility on mine site; place SMR on JB thermal site in 2035. Employment-sized by geojson employment_est field (derived, not MW-based). Tests anchor retirement \u2192 site spawn \u2192 succession discount chain.",
+  "scenario": {
+    "steps": [
+      {
+        "action": "schedule_retirement",
+        "asset_id": "anchor_56037_we_soda_westvaco",
+        "year": 2030,
+        "note": "Largest Sweetwater trona anchor by employment (722)"
+      },
+      {
+        "action": "schedule_retirement",
+        "asset_id": "anchor_56005_black_thunder",
+        "year": 2028,
+        "note": "Largest Campbell coal mine by employment (808)"
+      },
+      {
+        "action": "advance_year",
+        "to_year": 2029,
+        "note": "Black Thunder retires in 2028, mine site spawns"
+      },
+      {
+        "action": "queue_action",
+        "action_id": "solar_utility",
+        "geoid": "56005",
+        "magnitude": 100,
+        "decision_year": 2029,
+        "note": "Solar on retired mine site \u2014 mine SITE_COMPAT allows solar_utility"
+      },
+      {
+        "action": "advance_year",
+        "to_year": 2031,
+        "note": "WE Soda retires in 2030, trona mine site spawns"
+      },
+      {
+        "action": "advance_year",
+        "to_year": 2035
+      },
+      {
+        "action": "queue_action",
+        "action_id": "smr_advanced",
+        "geoid": "56037",
+        "magnitude": 345,
+        "decision_year": 2035,
+        "note": "SMR on JB thermal site (mine site compat doesn't include smr_advanced)"
+      },
+      {
+        "action": "advance_year",
+        "to_year": 2040
+      }
+    ]
+  },
+  "assertions": {
+    "bt_site_class": "mine",
+    "bt_workforce_pool_initial": 808,
+    "bt_site_origin_asset_id": "anchor_56005_black_thunder",
+    "solar_succession_site_id": "site_56005_black_thunder_2028",
+    "solar_ttd_reduction_applied": 1,
+    "solar_capex_discount_fraction": 0.2,
+    "ws_site_class": "mine",
+    "ws_workforce_pool_initial": 722,
+    "ws_interconnection_mw": null,
+    "ws_site_origin_asset_id": "anchor_56037_we_soda_westvaco",
+    "ws_y_track_commodity": "trona",
+    "ws_y_track_price": 0,
+    "ws_y_track_confidence": "flagged",
+    "smr_succession_site_id": null,
+    "smr_ttd_reduction_applied": null,
+    "smr_capex_discount_fraction": null,
+    "smr_tx_waiver_mw": null,
+    "deterministic": true,
+    "largest_trona_anchor_by": "employment_est (722; geojson has no MW/tonnage for mines)"
+  },
+  "digests_yr2040": {
+    "state_digest_md5": "457b215ab9efb0891fe4376984249ba0",
+    "fiscal_digest_md5": "469ae713294c18fc2fe06797e6cabbed",
+    "existing_assets_digest_md5": "f8117a24bfa8ef77495a6ca24c38d518",
+    "history_digest_md5": "f9f716e177fb7bc37bd5f61eaa79057f",
+    "history_n_years": 15,
+    "history_year_range": [
+      2026,
+      2040
+    ]
+  },
+  "population_trace_sweetwater": [
+    {
+      "year": 2026,
+      "population": 41869.0,
+      "working_age": 24786.0
+    },
+    {
+      "year": 2027,
+      "population": 41660.0,
+      "working_age": 24663.0
+    },
+    {
+      "year": 2028,
+      "population": 41452.0,
+      "working_age": 24540.0
+    },
+    {
+      "year": 2029,
+      "population": 41245.0,
+      "working_age": 24417.0
+    },
+    {
+      "year": 2030,
+      "population": 41039.0,
+      "working_age": 24295.0
+    },
+    {
+      "year": 2031,
+      "population": 40834.0,
+      "working_age": 24174.0
+    },
+    {
+      "year": 2032,
+      "population": 40630.0,
+      "working_age": 24053.0
+    },
+    {
+      "year": 2033,
+      "population": 40427.0,
+      "working_age": 23933.0
+    },
+    {
+      "year": 2034,
+      "population": 40225.0,
+      "working_age": 23813.0
+    },
+    {
+      "year": 2035,
+      "population": 40024.0,
+      "working_age": 23694.0
+    },
+    {
+      "year": 2036,
+      "population": 39824.0,
+      "working_age": 23576.0
+    },
+    {
+      "year": 2037,
+      "population": 39625.0,
+      "working_age": 23458.0
+    },
+    {
+      "year": 2038,
+      "population": 39427.0,
+      "working_age": 23341.0
+    },
+    {
+      "year": 2039,
+      "population": 39230.0,
+      "working_age": 23224.0
+    },
+    {
+      "year": 2040,
+      "population": 39034.0,
+      "working_age": 23108.0
+    }
+  ]
+}

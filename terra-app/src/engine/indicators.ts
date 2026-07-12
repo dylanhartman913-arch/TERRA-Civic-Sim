@@ -222,7 +222,8 @@ function incomingConstructionWorkforce(state: EngineState, geoid: string): numbe
   let total = 0.0;
   for (const a of state.asset_registry) {
     if (a.geoid !== geoid) continue;
-    if (a.asset_class === 'housing_stock' || a.asset_class === 'production') continue;
+    if (['housing_stock', 'production',
+         'mine', 'industrial_load', 'commercial_anchor_load'].includes(a.asset_class)) continue;
     const opYear = a.operational_year;
     const capMw = a.capacity_mw ?? (a as unknown as Record<string, number>).magnitude ?? 0.0;
 

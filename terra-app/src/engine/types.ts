@@ -471,7 +471,8 @@ export type AnyExistingAsset = ExistingAsset | ProductionAsset;
 
 export type AssetOrigin = 'baseline' | 'player';
 export type AssetLifecycle = 'operating' | 'queued' | 'under_construction' | 'retired';
-export type AssetClass = 'generator' | 'demand' | 'production' | 'storage' | 'housing_stock' | 'site';
+export type AssetClass = 'generator' | 'demand' | 'production' | 'storage' | 'housing_stock' | 'site'
+  | 'mine' | 'industrial_load' | 'commercial_anchor_load';  // v4.3 (F1) anchor classes
 
 /** Unified asset instance — replaces BuildQueueItem + AnyExistingAsset as source of truth. */
 export interface AssetInstance {
@@ -545,8 +546,8 @@ export interface AssetInstance {
   // Literature: DOE (2022) coal-to-nuclear siting study; Gorman et al. (2022) LBNL;
   // Kemmerer/Naughton brownfield reuse as validation anchor.
   site_origin_asset_id: string | null;          // asset_id of the retired asset that spawned this site
-  site_origin_type: 'generator' | 'mine' | null;
-  site_class: 'thermal' | 'generator' | 'mine' | null;  // for SITE_COMPAT lookup
+  site_origin_type: 'generator' | 'mine' | 'anchor' | null;
+  site_class: 'thermal' | 'generator' | 'mine' | 'industrial' | 'commercial' | null;  // for SITE_COMPAT lookup
   interconnection_mw: number | null;            // inherited nameplate from retired generator
   water_rights_flag: boolean | null;            // known debt: populate from county data
   acres: number | null;                         // known debt: populate from county data
@@ -562,6 +563,12 @@ export interface AssetInstance {
   capex_discount_fraction: number | null;       // fraction of overnight cost saved (confidence: low)
   tx_waiver_mw: number | null;                  // MW waived up to site.interconnection_mw
   convert_source_asset_id: string | null;       // coal_to_smr: the coal asset being converted
+
+  // v4.3 (F1) anchor facility fields (anchor classes + generators with anchor_id attached)
+  anchor_id?: string | null;                    // MSHA mine ID or EIA-860 plant code
+  co2e_tpy?: number | null;                     // CO2-equivalent emissions (tons/yr)
+  display_sector?: string | null;               // 'mining/extraction', 'utilities/power', etc.
+  confidence?: string | null;                   // 'high' | 'low' | 'medium' | 'curated'
 }
 
 // ── Engine State ────────────────────────────────────────────────────────────

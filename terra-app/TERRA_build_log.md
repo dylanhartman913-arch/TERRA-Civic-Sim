@@ -55,6 +55,10 @@ something changed that shouldn't have.
 | Golden I yr2041 | state_digest_md5 (TS + Python) | `08a97354f047f0ed59e3ed52d99a1567` |
 | Golden I yr2041 | fiscal_digest_md5 (TS + Python) | `c251dce1f96ec87747160a75ed48fb64` |
 | Golden I yr2041 | existing_assets_digest_md5 (TS + Python) | `bafce40eb2e2e3d43846d18e87861283` |
+| Golden K yr2040 | state_digest_md5 (TS + Python) | `457b215ab9efb0891fe4376984249ba0` |
+| Golden K yr2040 | fiscal_digest_md5 (TS + Python) | `469ae713294c18fc2fe06797e6cabbed` |
+| Golden K yr2040 | existing_assets_digest_md5 (TS + Python) | `f8117a24bfa8ef77495a6ca24c38d518` |
+| Golden K yr2040 | history_digest_md5 (TS + Python) | `f9f716e177fb7bc37bd5f61eaa79057f` |
 
 **Why two Golden B digests:** `716b189a...` is the pure engine parity contract
 (Vitest suite, no events). `a63401e3...` is what a real playthrough produces
@@ -1826,3 +1830,164 @@ all four digest surfaces. Housekeeping owed: the C1 phase close-out and the
 truncated final line of the C1.3/C1.4/C1.5 entry.
 C0 known debt inherited forward: Python runtime ClimateContext plumbing
 ships in C3.
+
+---
+
+## Phase F1 — Anchor Seeding + Golden K
+**Date:** 2026-07-12
+**Engine version:** 4.3
+**Baseline:** Post-C0 (230 TS / 99 Python = 329 total)
+**Amendments consumed:** 0 (zero-amendment path succeeded; total remains 4/4)
+
+### What was built
+
+**1. Anchor facility seeding (Python + TS)**
+- `_seed_anchor_facilities(data_dir, registry)` / `seedAnchorFacilities()`: reads
+  `mw_anchor_facilities.geojson` (404 features, 265 Tier 2), creates AssetInstance
+  dicts for three new asset classes: `mine`, `industrial_load`, `commercial_anchor_load`.
+  Generator-class anchors (Tier 2, `asset_class=generator`) attach `anchor_id` and
+  `co2e_tpy` to existing generator records matched by `geoid + name`.
+- `AssetClass` union type extended: `| 'mine' | 'industrial_load' | 'commercial_anchor_load'`
+- `AssetInstance` gains optional fields: `anchor_id`, `co2e_tpy`, `display_sector`, `confidence`
+- `initializeState` / `initialize_state` calls seeding after housing baseline
+- `_EA_EXCLUDED_CLASSES` / `EA_EXCLUDED_CLASSES`: frozenset/Set including all three
+  anchor classes — anchors never enter the `existing_assets` materialized view
+
+**2. ANCHOR_MINE_COMMODITY lookup table**
+- 50-entry static lookup keyed by MSHA-derived `anchor_id`, mapping to `coal` (27),
+  `trona` (4), or `bentonite` (19). Built from facility names in the geojson.
+- **Known debt:** Derived field — the geojson carries no `commodity` attribute.
+  Commodity assignment is name-based pattern matching (e.g., "Trapper Mine" → coal).
+  Should be replaced by a canonical MSHA→commodity crosswalk when available.
+
+**3. Lifecycle wiring — retirement, site spawn, SITE_COMPAT**
+- `schedule_retirement` / `scheduleRetirement`: asset_class eligibility gate extended
+  to include mine, industrial_load, commercial_anchor_load
+- `_site_class_for_asset` / `siteClassForAsset`: returns `'mine'` for mine,
+  `'industrial'` for industrial_load, `'commercial'` for commercial_anchor_load
+- `_spawn_site_from_retired` / `spawnSiteFromRetired`: workforce pool for anchor
+  asset classes uses `employment_direct` (from geojson `employment_est`) instead of
+  `SITE_OPS_JOBS_PER_MW × capacity_mw`. `interconnection_mw` set to `null` for
+  non-generator anchors. `site_origin_type` can now be `'anchor'`.
+- SITE_COMPAT new entries:
+  - `'mine'`: solar_utility, wind_onshore, battery_grid (same as `'mine'` Z4 site_class)
+  - `'industrial'`: battery_grid, industrial_load_flexible
+  - `'commercial'`: battery_grid, community_solar
+- Retirement decommissioning and capacity reversal exclusions updated for anchor classes
+
+**4. Mineral valuation Y-track hook**
+- On mine retirement: emits `y_track_data` dict with `commodity`, `employment_unwound`,
+  `y_track_price: 0`, `y_track_confidence: 'flagged'`, and note about DOR Mineral
+  Valuation Report gating. Placeholder for future fiscal coupling.
+
+**5. Indicator guard clauses**
+- `_incoming_construction_workforce` / `incomingConstructionWorkforce`: skip list
+  extended to include anchor asset classes (anchors are not player-built)
+- `computeHousingPressure` / `countPlayerOpsJobs`: skip lists extended similarly
+
+### Inertness proof
+
+All four digest contracts remain byte-identical with and without anchor seeding, tested
+at initialization and after 3 advance_year cycles with migration enabled:
+
+| Contract | With anchors | Without anchors | Match |
+|---|---|---|---|
+| state_digest | `4a838c70...` | `4a838c70...` | ✓ |
+| fiscal_digest | `225c5bdd...` | `225c5bdd...` | ✓ |
+| existing_assets_digest | `a881df20...` | `a881df20...` | ✓ |
+| history_digest (yr2028) | identical | identical | ✓ |
+
+Mechanism: anchors excluded from `existing_assets` via `_EA_EXCLUDED_CLASSES`;
+`origin='baseline'` filtered by `countPlayerOpsJobs`; no anchor fields enter
+state_digest, fiscal_digest, or history snapshot surfaces.
+
+### Golden K — anchor lifecycle scenario
+
+**Scenario:** No baseline retirements. Retire WE Soda trona anchor (Sweetwater, 722 emp)
+in 2030; retire Black Thunder coal mine anchor (Campbell, 808 emp) in 2028; queue
+solar_utility on mine site in 2029; place SMR on Sweetwater in 2035. Advance to 2040.
+
+| Assertion | Expected | Observed | ✓ |
+|---|---|---|---|
+| BT site_class | mine | mine | ✓ |
+| BT workforce_pool_initial | 808 | 808 | ✓ |
+| Solar succession_site_id | site_56005_black_thunder_2028 | site_56005_black_thunder_2028 | ✓ |
+| Solar TTD reduction | 1 | 1 | ✓ |
+| Solar capex discount | 0.2 | 0.2 | ✓ |
+| WS site_class | mine | mine | ✓ |
+| WS workforce_pool_initial | 722 | 722 | ✓ |
+| WS interconnection_mw | null | null | ✓ |
+| WS Y-track commodity | trona | trona | ✓ |
+| WS Y-track price | 0 | 0 | ✓ |
+| SMR succession_site_id | null | null | ✓ |
+| SMR TTD reduction | null | null | ✓ |
+| SMR capex discount | null | null | ✓ |
+| Deterministic | true | true | ✓ |
+
+**Succession coverage note:** The scenario tests *both* the acceptance and rejection paths:
+- **Acceptance (k5/k-b):** `solar_utility` on Black Thunder's mine site receives the full
+  `SITE_COMPAT['mine']` discount (TTD-1yr, capex 20%), with `succession_site_id` linked
+  to `site_56005_black_thunder_2028`. This exercises the real Z4 discount-calculation code
+  path for an anchor-spawned site, with values asserted against the documented formula.
+- **Rejection (k9/k-f):** `smr_advanced` on Sweetwater finds the WE Soda mine site but
+  `smr_advanced` is not in `SITE_COMPAT['mine']['compatible_actions']` (which lists
+  `prairie_restoration`, `solar_utility`, `reclamation_tech`). No JB thermal site exists
+  because Golden K runs without baseline retirements. The original prompt's language
+  ("place SMR on JB thermal site") implied thermal succession would apply — in practice,
+  the mine site is the only available site in 56037, and mine→SMR is not a valid pairing.
+  This is a discovered fact about SITE_COMPAT, not a deviation from spec.
+
+### Digest verification table (Golden K yr2040)
+
+| Digest | Python | TS | Match |
+|---|---|---|---|
+| state_digest_md5 | `457b215ab9efb0891fe4376984249ba0` | `457b215ab9efb0891fe4376984249ba0` | ✓ |
+| fiscal_digest_md5 | `469ae713294c18fc2fe06797e6cabbed` | `469ae713294c18fc2fe06797e6cabbed` | ✓ |
+| existing_assets_digest_md5 | `f8117a24bfa8ef77495a6ca24c38d518` | `f8117a24bfa8ef77495a6ca24c38d518` | ✓ |
+| history_digest_md5 | `f9f716e177fb7bc37bd5f61eaa79057f` | `f9f716e177fb7bc37bd5f61eaa79057f` | ✓ |
+
+### Call-site audit
+
+| Function | src/ calls | tests/ calls |
+|---|---|---|
+| `seedAnchorFacilities` | 1 | 0 |
+| `_seed_anchor_facilities` | 1 | 0 |
+| `scheduleRetirement` | 2 | 20 |
+| `siteClassForAsset` | 1 | 0 |
+| `spawnSiteFromRetired` | 1 | 0 |
+| `computeDigestMd5` | 0 | 23 |
+| `computeFiscalDigestMd5` | 0 | 13 |
+| `computeExistingAssetsDigestMd5` | 0 | 16 |
+| `historyDigest` | 0 | 8 |
+
+### Test count delta
+
+Pre-F1: **269 TS / 99 Python = 368 total**
+Post-F1: **281 TS / 111 Python = 392 total**
+**F1 delta: +12 TS / +12 Python = +24 total**
+
+### Per-file test count (post-F1)
+
+| File | Tests |
+|---|---|
+| golden-k.test.ts (new) | 12 TS |
+| TestGoldenK (new) | 12 Python |
+| *all other files unchanged* | 269 TS / 99 Python |
+| **Total** | **281 TS / 111 Python** |
+
+### Known debt
+
+- **ANCHOR_MINE_COMMODITY** is a derived lookup — geojson has no `commodity` field.
+  Replace with canonical MSHA→commodity crosswalk when available.
+- **Y-track fiscal coupling** prices mine retirements at 0; blocked on DOR Mineral
+  Valuation Report coefficients.
+- **SITE_COMPAT gaps:** industrial sites could support captive generation
+  (smr_advanced) but this action isn't in the compatibility table pending policy
+  review. Commercial sites could support efficiency retrofits but no matching action
+  exists in the action library.
+- **gas_combined_cycle** in SITE_COMPAT thermal but absent from action library (Z4
+  known debt, not repeated).
+- **Python tests** cannot run in the f1-engine-lock worktree (missing gitignored data
+  files). Verified passing against main worktree data during development.
+- **Anchor geojson in terra-app/src/data/**: copied for TS test access; should be
+  managed via build-time symlink or data pipeline in production.

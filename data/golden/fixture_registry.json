@@ -105,6 +105,22 @@
       "history_digest_md5": "7b05722c9b11c2b405faf953c729977d",
       "history_n_years": 63,
       "history_year_range": [2026, 2088]
+    },
+    {
+      "fixture_id": "golden_k",
+      "engine_version": "4.3",
+      "location": "terra-app/tests/parity/fixtures/golden_k.json",
+      "superseded_by": null,
+      "status": "active",
+      "description": "Golden K — anchor lifecycle (F1 Session). Retire WE Soda trona anchor (Sweetwater, 722 emp) in 2030; retire Black Thunder coal anchor (Campbell, 808 emp) in 2028; queue solar_utility on mine site; place SMR on Sweetwater in 2035. Tests anchor retirement → site spawn → succession discount chain. Employment-sized workforce pools (not MW-based).",
+      "created": "2026-07-12",
+      "state_digest_md5": "457b215ab9efb0891fe4376984249ba0",
+      "fiscal_digest_md5": "469ae713294c18fc2fe06797e6cabbed",
+      "existing_assets_digest_md5": "f8117a24bfa8ef77495a6ca24c38d518",
+      "history_digest_md5": "f9f716e177fb7bc37bd5f61eaa79057f",
+      "history_n_years": 15,
+      "history_year_range": [2026, 2040],
+      "note": "New fixture — no amendment consumed. Four-contract parity confirmed (Python ↔ TS, 12 tests)."
     }
   ]
 }
