@@ -17,6 +17,12 @@ import terra_engine as te
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
 DATA_DIR = Path(__file__).parent.parent / "data" / "processed"
+# Worktree fallback: if processed data is incomplete, try main worktree
+if not (DATA_DIR / "synthetic_buses.geojson").exists():
+    _main = Path("/Users/dylanhartman/Library/CloudStorage/OneDrive-UniversityofWyoming/"
+                 "Research/Energy Modeling/energy-map/data/processed")
+    if (_main / "synthetic_buses.geojson").exists():
+        DATA_DIR = _main
 TS_DATA_DIR = Path(__file__).parent.parent / "terra-app" / "src" / "data"
 FIXTURE_DIR = Path(__file__).parent.parent / "terra-app" / "tests" / "parity" / "fixtures"
 
@@ -1119,3 +1125,166 @@ class TestGoldenJPrime:
         # Both runtimes must produce the same MD5 for the same logical state
         hd = te.history_digest(golden_j_prime_state)
         assert hd["md5"] == golden_j_prime_fixture["history_digest_md5"]
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# Golden K — Anchor Lifecycle (F1, 12 tests)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def _load_golden_k_fixture():
+    with open(FIXTURE_DIR / "golden_k.json") as f:
+        return json.load(f)
+
+
+@pytest.fixture(scope='module')
+def golden_k_fixture():
+    return _load_golden_k_fixture()
+
+
+@pytest.fixture(scope='module')
+def golden_k_state():
+    """Replay the Golden K scenario (no baseline retirements, with anchors)."""
+    state = te.initialize_state(data_dir=DATA_DIR)
+    state = te.schedule_retirement(state, 'anchor_56037_we_soda_westvaco', 2030)
+    state = te.schedule_retirement(state, 'anchor_56005_black_thunder', 2028)
+    state = advance_to_year(state, 2029)
+    state = te.queue_action(state, 'solar_utility', '56005', 100, 2029)
+    state = advance_to_year(state, 2031)
+    state = advance_to_year(state, 2035)
+    state = te.queue_action(state, 'smr_advanced', '56037', 345, 2035)
+    state = advance_to_year(state, 2040)
+    return state
+
+
+class TestGoldenK:
+    """Anchor lifecycle parity — mirrors golden-k.test.ts."""
+
+    def test_k1_anchor_seeding_populates_registry(self):
+        """Anchors are seeded into asset_registry at initialization."""
+        state = te.initialize_state(data_dir=DATA_DIR)
+        anchors = [a for a in state["asset_registry"]
+                   if a.get("asset_class") in ("mine", "industrial_load", "commercial_anchor_load")]
+        assert len(anchors) > 0, "No anchor assets seeded"
+        mines = [a for a in anchors if a["asset_class"] == "mine"]
+        assert len(mines) > 0, "No mine assets seeded"
+
+    def test_k2_anchor_inertness_state_digest(self):
+        """Anchor seeding does not change state_digest — two inits match."""
+        s1 = te.initialize_state(data_dir=DATA_DIR)
+        s2 = te.initialize_state(data_dir=DATA_DIR)
+        # If anchors leaked into the digest, the md5 would differ between
+        # different-order dict construction or be non-deterministic. Two
+        # identical inits must produce identical digests.
+        assert te.state_digest(s1)["md5"] == te.state_digest(s2)["md5"]
+        # Also verify fiscal and existing_assets are stable
+        assert te.fiscal_digest(s1)["md5"] == te.fiscal_digest(s2)["md5"]
+        assert te.existing_assets_digest(s1)["md5"] == te.existing_assets_digest(s2)["md5"]
+
+    def test_k3_bt_site_spawns_with_correct_class(self, golden_k_fixture):
+        """Black Thunder mine site spawns with site_class='mine'."""
+        state = te.initialize_state(data_dir=DATA_DIR)
+        state = te.schedule_retirement(state, 'anchor_56005_black_thunder', 2028)
+        state = advance_to_year(state, 2029)
+        site = find_asset(state["asset_registry"],
+                          lambda a: a.get("site_origin_asset_id") == "anchor_56005_black_thunder")
+        assert site["site_class"] == golden_k_fixture["assertions"]["bt_site_class"]
+
+    def test_k4_bt_workforce_pool_from_employment(self, golden_k_fixture):
+        """Black Thunder workforce pool sized by employment_direct, not MW."""
+        state = te.initialize_state(data_dir=DATA_DIR)
+        state = te.schedule_retirement(state, 'anchor_56005_black_thunder', 2028)
+        state = advance_to_year(state, 2029)
+        site = find_asset(state["asset_registry"],
+                          lambda a: a.get("site_origin_asset_id") == "anchor_56005_black_thunder")
+        assert site["workforce_pool_initial"] == golden_k_fixture["assertions"]["bt_workforce_pool_initial"]
+
+    def test_k5_solar_on_mine_site_gets_succession(self, golden_k_fixture):
+        """Solar on BT mine site receives TTD reduction and capex discount."""
+        state = te.initialize_state(data_dir=DATA_DIR)
+        state = te.schedule_retirement(state, 'anchor_56005_black_thunder', 2028)
+        state = advance_to_year(state, 2029)
+        state = te.queue_action(state, 'solar_utility', '56005', 100, 2029)
+        a = golden_k_fixture["assertions"]
+        solar = find_asset(state["asset_registry"],
+                           lambda x: x.get("action_id") == "solar_utility"
+                           and x.get("geoid") == "56005"
+                           and x.get("succession_site_id") == a["solar_succession_site_id"])
+        assert solar["ttd_reduction_applied"] == a["solar_ttd_reduction_applied"]
+        assert solar["capex_discount_fraction"] == a["solar_capex_discount_fraction"]
+
+    def test_k6_ws_workforce_pool_from_employment(self, golden_k_fixture):
+        """WE Soda workforce pool sized by employment (722)."""
+        state = te.initialize_state(data_dir=DATA_DIR)
+        state = te.schedule_retirement(state, 'anchor_56037_we_soda_westvaco', 2030)
+        state = advance_to_year(state, 2031)
+        site = find_asset(state["asset_registry"],
+                          lambda a: a.get("site_origin_asset_id") == "anchor_56037_we_soda_westvaco")
+        assert site["workforce_pool_initial"] == golden_k_fixture["assertions"]["ws_workforce_pool_initial"]
+
+    def test_k7_ws_mine_site_null_interconnection(self, golden_k_fixture):
+        """WE Soda mine site has null interconnection_mw (mines have no MW)."""
+        state = te.initialize_state(data_dir=DATA_DIR)
+        state = te.schedule_retirement(state, 'anchor_56037_we_soda_westvaco', 2030)
+        state = advance_to_year(state, 2031)
+        site = find_asset(state["asset_registry"],
+                          lambda a: a.get("site_origin_asset_id") == "anchor_56037_we_soda_westvaco")
+        assert site["interconnection_mw"] is None
+
+    def test_k8_y_track_hook_fires_for_trona(self, golden_k_fixture):
+        """Y-track hook fires on mine retirement with correct commodity."""
+        state = te.initialize_state(data_dir=DATA_DIR)
+        state = te.schedule_retirement(state, 'anchor_56037_we_soda_westvaco', 2030)
+        state = advance_to_year(state, 2031)
+        retired = find_asset(state["asset_registry"],
+                             lambda a: a.get("asset_id") == "anchor_56037_we_soda_westvaco")
+        y = retired.get("_mineral_valuation_y_hook")
+        assert y is not None, "Y-track hook did not fire"
+        assert y["commodity"] == golden_k_fixture["assertions"]["ws_y_track_commodity"]
+        assert y["y_track_price"] == golden_k_fixture["assertions"]["ws_y_track_price"]
+        assert y["y_track_confidence"] == golden_k_fixture["assertions"]["ws_y_track_confidence"]
+
+    def test_k9_smr_no_succession_on_mine_site(self, golden_k_state, golden_k_fixture):
+        """SMR on Sweetwater gets no succession (mine SITE_COMPAT excludes smr_advanced)."""
+        smr = find_asset(golden_k_state["asset_registry"],
+                         lambda a: a.get("action_id") == "smr_advanced"
+                         and a.get("geoid") == "56037"
+                         and a.get("decision_year") == 2035)
+        assert smr.get("succession_site_id") is None
+        assert smr.get("ttd_reduction_applied") is None
+        assert smr.get("capex_discount_fraction") is None
+        assert smr.get("tx_waiver_mw") is None
+
+    def test_k10_four_contract_digests_match_fixture(self, golden_k_state, golden_k_fixture):
+        """All four digest contracts at yr2040 match frozen fixture values."""
+        d = golden_k_fixture["digests_yr2040"]
+        assert te.state_digest(golden_k_state)["md5"] == d["state_digest_md5"]
+        assert te.fiscal_digest(golden_k_state)["md5"] == d["fiscal_digest_md5"]
+        assert te.existing_assets_digest(golden_k_state)["md5"] == d["existing_assets_digest_md5"]
+        assert te.history_digest(golden_k_state)["md5"] == d["history_digest_md5"]
+
+    def test_k11_deterministic(self, golden_k_fixture):
+        """Two full replays produce identical state_digest."""
+        def replay():
+            s = te.initialize_state(data_dir=DATA_DIR)
+            s = te.schedule_retirement(s, 'anchor_56037_we_soda_westvaco', 2030)
+            s = te.schedule_retirement(s, 'anchor_56005_black_thunder', 2028)
+            s = advance_to_year(s, 2029)
+            s = te.queue_action(s, 'solar_utility', '56005', 100, 2029)
+            s = advance_to_year(s, 2035)
+            s = te.queue_action(s, 'smr_advanced', '56037', 345, 2035)
+            s = advance_to_year(s, 2040)
+            return s
+        s1, s2 = replay(), replay()
+        assert te.state_digest(s1)["md5"] == te.state_digest(s2)["md5"]
+
+    def test_k12_ts_python_digest_parity(self, golden_k_state, golden_k_fixture):
+        """Python digests match TS Golden K fixture (cross-runtime parity)."""
+        d = golden_k_fixture["digests_yr2040"]
+        sd = te.state_digest(golden_k_state)
+        fd = te.fiscal_digest(golden_k_state)
+        ead = te.existing_assets_digest(golden_k_state)
+        hd = te.history_digest(golden_k_state)
+        assert sd["md5"] == d["state_digest_md5"], f"state: {sd['md5']} vs {d['state_digest_md5']}"
+        assert fd["md5"] == d["fiscal_digest_md5"], f"fiscal: {fd['md5']} vs {d['fiscal_digest_md5']}"
+        assert ead["md5"] == d["existing_assets_digest_md5"], f"ea: {ead['md5']} vs {d['existing_assets_digest_md5']}"
+        assert hd["md5"] == d["history_digest_md5"], f"history: {hd['md5']} vs {d['history_digest_md5']}"

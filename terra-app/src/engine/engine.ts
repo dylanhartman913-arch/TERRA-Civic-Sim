@@ -233,6 +233,23 @@ export const SITE_COMPAT: Record<string, SiteCompatEntry> = {
     capex_discount_fraction: 0.20,
     confidence: 'low',
   },
+  // v4.3 (F1): anchor-derived site classes
+  industrial: {
+    // Retired industrial_load anchor — DOE (2022); Gorman et al. (2022) brownfield analogues
+    // NOTE: captive generation (smr_advanced) flagged but not listed — no precedent
+    compatible_actions: new Set(['battery_grid', 'industrial_load_flexible']),
+    ttd_reduction_years: 1,
+    capex_discount_fraction: 0.10,
+    confidence: 'low',
+  },
+  commercial: {
+    // Retired commercial_anchor_load — DOE (2022); Carley et al. (2018)
+    // NOTE: efficiency retrofit action not in library — flagged as known debt
+    compatible_actions: new Set(['battery_grid', 'community_solar']),
+    ttd_reduction_years: 1,
+    capex_discount_fraction: 0.05,
+    confidence: 'low',
+  },
 };
 
 // coal_to_smr: TX waiver only (no TTD/capex — brownfield premium in cost_2024=$8,500,000/MW)
@@ -569,6 +586,169 @@ function seedHousingAssets(
   return assets;
 }
 
+// ── v4.3 (F1): Anchor Facility Commodity Lookup ─────────────────────────────
+// DERIVED FIELD — inferred from facility name, NOT sourced from the geojson
+// (mw_anchor_facilities.geojson has no 'commodity' field). If NB 22 is ever
+// regenerated with different mine names or new mines added, this table must
+// be reviewed by a human.
+// Key: MSHA mine ID (anchor_id in geojson). Value: commodity string.
+// See Python ANCHOR_MINE_COMMODITY for full citation block.
+const ANCHOR_MINE_COMMODITY: Record<string, string> = {
+  // Coal: Colorado (6)
+  msha_0502838: 'coal', msha_0502962: 'coal', msha_0503505: 'coal',
+  msha_0503672: 'coal', msha_0503836: 'coal', msha_0504864: 'coal',
+  // Coal: Montana (6)
+  msha_2400839: 'coal', msha_2400910: 'coal', msha_2401457: 'coal',
+  msha_2401747: 'coal', msha_2401950: 'coal', msha_2402703: 'coal',
+  // Coal: Wyoming Campbell (11)
+  msha_4800083: 'coal', msha_4800732: 'coal', msha_4800977: 'coal',
+  msha_4800992: 'coal', msha_4800993: 'coal', msha_4801034: 'coal',
+  msha_4801078: 'coal', msha_4801200: 'coal', msha_4801215: 'coal',
+  msha_4801337: 'coal', msha_4801353: 'coal', msha_4801429: 'coal',
+  // Coal: Wyoming other (3)
+  msha_4800086: 'coal', msha_4800677: 'coal', msha_4801180: 'coal',
+  // Trona: Sweetwater (4)
+  msha_4800152: 'trona', msha_4800154: 'trona', msha_4800155: 'trona', msha_4801295: 'trona',
+  // Bentonite: Big Horn (9)
+  msha_4800057: 'bentonite', msha_4800602: 'bentonite', msha_4800603: 'bentonite',
+  msha_4800607: 'bentonite', msha_4800611: 'bentonite', msha_4800612: 'bentonite',
+  msha_4800974: 'bentonite', msha_4801016: 'bentonite', msha_4801405: 'bentonite',
+  // Bentonite: Crook (4)
+  msha_4800070: 'bentonite', msha_4800245: 'bentonite', msha_4800594: 'bentonite', msha_4800888: 'bentonite',
+  // Bentonite: Hot Springs, Natrona, Washakie (6)
+  msha_4801191: 'bentonite', msha_4800243: 'bentonite', msha_4800617: 'bentonite',
+  msha_4801539: 'bentonite', msha_4800954: 'bentonite', msha_4800987: 'bentonite',
+};
+
+// Asset classes excluded from the existing_assets materialized view.
+const EA_EXCLUDED_CLASSES = new Set<string>([
+  'housing_stock',           // v3.3
+  'site',                    // v4.1
+  'mine',                    // v4.3 (F1)
+  'industrial_load',         // v4.3 (F1)
+  'commercial_anchor_load',  // v4.3 (F1)
+]);
+
+// Namespace note: asset_class 'mine' (operating mine anchor from F1 geojson) is
+// a DIFFERENT concept from site_class 'mine' (Z4 reclaimed-mine successor site).
+// asset_class is the type of asset in the registry; site_class is a field on
+// spawned site assets that drives SITE_COMPAT lookup for succession actions.
+
+interface AnchorFeatureProps {
+  anchor_id?: string;
+  name?: string;
+  geoid?: string;
+  tier?: number;
+  asset_class?: string | null;
+  capacity_or_load_mw?: number | null;
+  employment_est?: number | null;
+  co2e_tpy?: number | null;
+  source?: string;
+  display_sector?: string;
+  confidence?: string;
+}
+
+/**
+ * Seed Tier 2 anchor facilities into the asset registry.
+ * Generators get anchor_id + co2e_tpy attached (not re-seeded).
+ * New asset_classes: mine, industrial_load, commercial_anchor_load.
+ * Zero flow deltas — anchors carry marginal handles only.
+ */
+function seedAnchorFacilities(
+  anchorData: { features: Array<{ properties: AnchorFeatureProps }> } | null,
+  registry: AssetInstance[],
+): AssetInstance[] {
+  if (!anchorData) return [];
+  const newAssets: AssetInstance[] = [];
+
+  for (const feat of anchorData.features) {
+    const props = feat.properties;
+    if (props.tier !== 2) continue;
+    const ac = props.asset_class;
+    if (ac == null) continue;
+
+    const anchorId = props.anchor_id ?? '';
+    const geoid = String(props.geoid ?? '').padStart(5, '0');
+    const name = props.name ?? '';
+
+    if (ac === 'generator') {
+      for (const a of registry) {
+        if (a.geoid === geoid && a.name === name && a.origin === 'baseline'
+            && (a.asset_class === 'generator' || a.asset_class === 'demand')) {
+          a.anchor_id = anchorId;
+          a.co2e_tpy = props.co2e_tpy ?? null;
+          break;
+        }
+      }
+      continue;
+    }
+
+    if (ac === 'data_center') {
+      for (const a of registry) {
+        if (a.geoid === geoid && a.name === name && a.origin === 'baseline') {
+          a.anchor_id = anchorId;
+          a.co2e_tpy = props.co2e_tpy ?? null;
+          break;
+        }
+      }
+      continue;
+    }
+
+    // New asset classes: mine, industrial_load, commercial_anchor_load
+    const capacityOrLoad = props.capacity_or_load_mw ?? null;
+    const employment = props.employment_est ?? null;
+    const commodity = ac === 'mine' ? (ANCHOR_MINE_COMMODITY[anchorId] ?? null) : null;
+
+    newAssets.push({
+      asset_id: `anchor_${geoid}_${slugify(name)}`,
+      origin: 'baseline',
+      lifecycle: 'operating',
+      asset_class: ac as AssetInstance['asset_class'],
+      name,
+      geoid,
+      county_name: '',
+      state: '',
+      type: ac,
+      status: 'operating',
+      source_url: props.source ?? '',
+      operational_year: null,
+      capacity_mw: capacityOrLoad != null ? Number(capacityOrLoad) : null,
+      coal_tons_yr: null, production_proxy: null,
+      fiscal_action_id: null, excluded: null,
+      commodity,
+      production_volume: null, production_unit: null,
+      production_confidence: null, production_source: null, data_year: null,
+      effective_severance_rate_per_unit: null, county_distribution_share: null,
+      advalorem_rate_per_unit: null, assessed_delta_per_unit: null,
+      employment_direct: employment != null ? Math.round(employment) : null,
+      action_id: null, magnitude: null, decision_year: null,
+      throttle_reason: null, commissioned: null, scheduled_retirement_year: null,
+      reclamation_year_log: null, active_reclamation_acres: null, reclamation_jobs_direct: null,
+      decommissioning_cost_usd: null, decommissioning_labor_usd: null,
+      decommissioning_duration_years: null, decommissioning_start_year: null,
+      housing_total_units: null, housing_occupied_units: null,
+      housing_convertible_units: null, housing_subsidized_units: null,
+      housing_permits_per_year: null, housing_affordable_added: null,
+      housing_pressure_ratio: null, housing_seasonal_excluded: null,
+      site_origin_asset_id: null, site_origin_type: null, site_class: null,
+      interconnection_mw: null, water_rights_flag: null, acres: null,
+      workforce_pool_initial: null, workforce_pool_current: null,
+      workforce_pool_half_life_years: null, site_spawn_year: null,
+      restoration_eligibility: null,
+      succession_site_id: null, ttd_reduction_applied: null,
+      capex_discount_fraction: null, tx_waiver_mw: null,
+      convert_source_asset_id: null,
+      // v4.3 (F1) anchor-specific fields
+      anchor_id: anchorId,
+      co2e_tpy: props.co2e_tpy ?? null,
+      display_sector: props.display_sector ?? null,
+      confidence: props.confidence ?? 'high',
+    });
+  }
+
+  return newAssets;
+}
+
 /** Find housing_stock AssetInstance for a county, or null. */
 function findHousingAsset(state: EngineState, geoid: string): AssetInstance | null {
   return state.asset_registry.find(
@@ -591,7 +771,7 @@ function computeHousingPressure(state: EngineState, geoid: string, currentYear: 
   let incomingWorkforce = 0;
   for (const a of state.asset_registry) {
     if (a.geoid !== geoid) continue;
-    if (a.asset_class === 'housing_stock' || a.asset_class === 'production') continue;
+    if (['housing_stock', 'production', 'mine', 'industrial_load', 'commercial_anchor_load'].includes(a.asset_class)) continue;
     const opYear = a.operational_year;
     const capMw  = a.capacity_mw ?? a.magnitude ?? 0;
 
@@ -622,20 +802,32 @@ function computeHousingPressure(state: EngineState, geoid: string, currentYear: 
 
 // ── Site Spawning + Succession Helpers (v4.1) ────────────────────────────────
 
-function siteClassForAsset(a: AssetInstance): 'thermal' | 'generator' | 'mine' {
+function siteClassForAsset(a: AssetInstance): 'thermal' | 'generator' | 'mine' | 'industrial' | 'commercial' {
   if (a.asset_class === 'production') return 'mine';
+  // v4.3 (F1) anchor classes → distinct site classes
+  if (a.asset_class === 'mine') return 'mine';
+  if (a.asset_class === 'industrial_load') return 'industrial';
+  if (a.asset_class === 'commercial_anchor_load') return 'commercial';
   const t = (a.type ?? '').toLowerCase();
   if (t === 'coal' || t === 'gas' || t === 'nuclear') return 'thermal';
   return 'generator';
 }
 
-/** Create a site AssetInstance from a just-retired generator or production asset. */
+/** Create a site AssetInstance from a just-retired generator, production, or anchor asset. */
 function spawnSiteFromRetired(retired: AssetInstance, spawnYear: number): AssetInstance {
+  const ANCHOR_CLASSES = new Set(['mine', 'industrial_load', 'commercial_anchor_load']);
   const siteClass = siteClassForAsset(retired);
   const capMw = retired.capacity_mw ?? 0;
-  const assetTypeLow = (retired.type ?? '').toLowerCase();
-  const opsJobsPerMw = SITE_OPS_JOBS_PER_MW[assetTypeLow] ?? 0.1;
-  const workforceInitial = Math.round(capMw * opsJobsPerMw * 10) / 10;
+
+  // v4.3 (F1): anchor assets use employment_direct directly for workforce pool
+  let workforceInitial: number;
+  if (ANCHOR_CLASSES.has(retired.asset_class)) {
+    workforceInitial = retired.employment_direct ?? 0;
+  } else {
+    const assetTypeLow = (retired.type ?? '').toLowerCase();
+    const opsJobsPerMw = SITE_OPS_JOBS_PER_MW[assetTypeLow] ?? 0.1;
+    workforceInitial = Math.round(capMw * opsJobsPerMw * 10) / 10;
+  }
   const assetId = `site_${retired.geoid}_${slugify(retired.name)}_${spawnYear}`;
 
   return {
@@ -668,9 +860,10 @@ function spawnSiteFromRetired(retired: AssetInstance, spawnYear: number): AssetI
     housing_pressure_ratio: null, housing_seasonal_excluded: null,
     // v4.1 site-specific fields
     site_origin_asset_id: retired.asset_id,
-    site_origin_type: siteClass === 'mine' ? 'mine' : 'generator',
+    site_origin_type: siteClass === 'mine' ? 'mine'
+      : (siteClass === 'industrial' || siteClass === 'commercial') ? 'anchor' : 'generator',
     site_class: siteClass,
-    interconnection_mw: siteClass !== 'mine' ? capMw : null,
+    interconnection_mw: capMw > 0 && siteClass !== 'mine' ? capMw : null,
     water_rights_flag: null,         // known debt: populate from county data
     acres: null,                     // known debt: populate from county data
     workforce_pool_initial: workforceInitial,
@@ -724,8 +917,7 @@ function materializeExistingAssets(registry: AssetInstance[]): Record<string, An
   const result: Record<string, AnyExistingAsset[]> = {};
   for (const a of registry) {
     if (a.origin !== 'baseline') continue;
-    if (a.asset_class === 'housing_stock') continue; // v3.3: housing not in existing_assets view
-    if (a.asset_class === 'site') continue;          // v4.1: site assets not in existing_assets view
+    if (EA_EXCLUDED_CLASSES.has(a.asset_class)) continue; // v3.3/v4.1/v4.3: excluded from digest
     if (!result[a.geoid]) result[a.geoid] = [];
     if (a.asset_class === 'production') {
       const pa: ProductionAsset = {
@@ -939,6 +1131,7 @@ export function initializeState(
   housingBaselineData?: Record<string, unknown>,
   populationProjections?: Record<string, PopulationProjection>,
   populationConfig?: Partial<PopulationConfig>,
+  anchorFacilities?: { features: Array<{ properties: AnchorFeatureProps }> } | null,
 ): EngineState {
   const popProj = populationProjections ?? {};
   // County EES (primary capital store)
@@ -1090,6 +1283,12 @@ export function initializeState(
   if (housingBaselineData) {
     asset_registry.push(...seedHousingAssets(countyCards, housingBaseline));
   }
+
+  // ── v4.3 (F1): Seed Tier 2 anchor facilities ─────────────────────────────
+  // New asset_classes: mine, industrial_load, commercial_anchor_load.
+  // Generators get anchor_id + co2e_tpy attached (not re-seeded).
+  // Anchors excluded from existing_assets view → digest-stable.
+  asset_registry.push(...seedAnchorFacilities(anchorFacilities ?? null, asset_registry));
 
   const existing_assets = materializeExistingAssets(asset_registry);
 
@@ -1690,7 +1889,8 @@ function countPlayerOpsJobs(state: EngineState, geoid: string): number {
     if (asset.geoid !== gid) continue;
     if (asset.origin !== 'player') continue;
     if (asset.lifecycle !== 'operating') continue;
-    if (['housing_stock', 'production', 'site'].includes(asset.asset_class)) continue;
+    if (['housing_stock', 'production', 'site',
+         'mine', 'industrial_load', 'commercial_anchor_load'].includes(asset.asset_class)) continue;
     // Player queued assets store MW in `magnitude`; `capacity_mw` is null until commission
     const capMw = (asset.capacity_mw ?? asset.magnitude ?? 0.0) as number;
     if (capMw <= 0) continue;
@@ -1852,7 +2052,9 @@ export function advanceYear(
       asset.lifecycle = 'retired';
       retiredAny = true;
       // v3.2: decommissioning cost draw — price from lifecycle_coefficients.decommissioning
-      if (asset.asset_class !== 'production' && asset.capacity_mw !== null && asset.capacity_mw > 0) {
+      // v4.3: anchor classes excluded — no MW-based decommissioning cost model
+      const DECOM_EXCLUDED: Set<string> = new Set(['production', 'mine', 'industrial_load', 'commercial_anchor_load']);
+      if (!DECOM_EXCLUDED.has(asset.asset_class) && asset.capacity_mw !== null && asset.capacity_mw > 0) {
         const decomSection = (lc?.decommissioning as Record<string, unknown> | undefined);
         const techKey = z1TechKey(asset.type);
         const decomEntry = techKey && decomSection ? (decomSection[techKey] as Record<string, unknown> | undefined) : undefined;
@@ -1870,7 +2072,10 @@ export function advanceYear(
         }
       }
       // Reverse capacity through existing network heuristic
-      if (asset.capacity_mw !== null && asset.capacity_mw > 0) {
+      // v4.3: anchor loads are demand, not generation — do NOT reverse bus capacity
+      const ANCHOR_LOAD_CLASSES = new Set(['mine', 'industrial_load', 'commercial_anchor_load']);
+      if (asset.capacity_mw !== null && asset.capacity_mw > 0
+          && !ANCHOR_LOAD_CLASSES.has(asset.asset_class)) {
         const busId = resolveGeoidToBus(state, asset.geoid);
         if (busId && state.bus_state[busId]) {
           state.bus_state[busId].capacity_mw -= asset.capacity_mw;
@@ -1879,14 +2084,17 @@ export function advanceYear(
       }
     }
   }
-  // v4.1: spawn site assets from generator retirements that fired this year
+  // v4.1+v4.3: spawn site assets from retirements that fired this year
+  // MW-based: generator/demand/storage with capacity_mw > 0
+  // Anchor (F1): mine/industrial_load/commercial_anchor_load (may have no MW)
+  const ANCHOR_SPAWN_CLASSES = new Set(['mine', 'industrial_load', 'commercial_anchor_load']);
   const spawnedSites: AssetInstance[] = [];
   for (const asset of state.asset_registry) {
-    if (
-      asset.scheduled_retirement_year === currentYear &&
-      ['generator', 'demand', 'storage'].includes(asset.asset_class) &&
-      (asset.capacity_mw ?? 0) > 0
-    ) {
+    if (asset.scheduled_retirement_year !== currentYear) continue;
+    const ac = asset.asset_class;
+    if (['generator', 'demand', 'storage'].includes(ac) && (asset.capacity_mw ?? 0) > 0) {
+      spawnedSites.push(spawnSiteFromRetired(asset, currentYear));
+    } else if (ANCHOR_SPAWN_CLASSES.has(ac)) {
       spawnedSites.push(spawnSiteFromRetired(asset, currentYear));
     }
   }
@@ -1965,7 +2173,7 @@ export function scheduleRetirement(
   if (asset.lifecycle !== 'operating') {
     throw new Error(`Cannot schedule retirement for asset in lifecycle '${asset.lifecycle}'`);
   }
-  if (!['generator', 'demand', 'storage'].includes(asset.asset_class)) {
+  if (!['generator', 'demand', 'storage', 'mine', 'industrial_load', 'commercial_anchor_load'].includes(asset.asset_class)) {
     throw new Error(`Cannot schedule retirement for asset_class '${asset.asset_class}'`);
   }
   state.asset_registry[idx].scheduled_retirement_year = year;

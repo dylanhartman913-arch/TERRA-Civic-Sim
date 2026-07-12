@@ -198,6 +198,34 @@ SITE_COMPAT = {
         'capex_discount_fraction': 0.20,    # cleared land; no site prep costs
         'confidence': 'low',
     },
+    # v4.3 (F1): anchor-derived site classes
+    'industrial': {
+        # Retired industrial_load anchor — existing power connection, concrete pads.
+        # Citation: DOE (2022) industrial repurposing guidance; Gorman et al. (2022)
+        # LBNL brownfield industrial reuse analogues.
+        # NOTE: captive generation (smr_advanced) compatibility flagged but not listed —
+        # no precedent for industrial-to-nuclear site succession outside thermal class.
+        'compatible_actions': frozenset([
+            'battery_grid',              # storage on existing industrial interconnection
+            'industrial_load_flexible',  # expansion-of-same-class
+        ]),
+        'ttd_reduction_years': 1,
+        'capex_discount_fraction': 0.10,    # Gorman et al. (2022): general brownfield analogue
+        'confidence': 'low',
+    },
+    'commercial': {
+        # Retired commercial_anchor_load — cleared commercial land, utility connections.
+        # Citation: DOE (2022) commercial facility reuse; Carley et al. (2018) community
+        # transition precedents.
+        # NOTE: efficiency retrofit action not in library — flagged as known debt.
+        'compatible_actions': frozenset([
+            'battery_grid',    # storage on commercial site
+            'community_solar', # distributed generation on cleared commercial land
+        ]),
+        'ttd_reduction_years': 1,
+        'capex_discount_fraction': 0.05,    # minimal — commercial sites less infrastructure-dense
+        'confidence': 'low',
+    },
 }
 
 # coal_to_smr is a convert transition: TX waiver from existing coal interconnection;
@@ -257,6 +285,94 @@ _ACTION_ID_TO_MIGRATION_FUEL = {
     'pumped_hydro': 'hydro', 'hydropower_small': 'hydro',
     'data_center_hyperscale': 'data_center', 'data_center_campus_phase': 'data_center',
     'industrial_load_flexible': 'data_center',
+}
+
+# ── v4.3 (F1): Anchor Facility Commodity Lookup ─────────────────────────────
+# DERIVED FIELD — inferred from facility name, NOT sourced from the geojson
+# (mw_anchor_facilities.geojson has no 'commodity' field). If NB 22 is ever
+# regenerated with different mine names or new mines added, this table must
+# be reviewed by a human.
+#
+# Key: MSHA mine ID (anchor_id in geojson). Value: commodity string.
+# Sources cited per group:
+#   Coal (27 mines):
+#     Colorado (6): EIA-923 coal mine production data; all 6 are active coal mines.
+#     Montana (6): EIA-923 + MSHA mine-type classification; all surface/underground coal.
+#     Campbell County WY (11): PRB coal basin — all surface coal mines (EIA-7A Table 2, 2024).
+#     Sweetwater WY (2): Jim Bridger Mine (coal, co-located with Jim Bridger plant);
+#       Black Butte And Leucite Hills Mines (coal, MSHA mine type 'Surface').
+#     Lincoln WY (1): Kemmerer Mine — underground coal (MSHA; co-located with Naughton/Kemmerer plant).
+#     Converse WY (1): Antelope Coal Mine — name unambiguous; MSHA mine type 'Surface'.
+#   Trona (4 mines):
+#     All Sweetwater County WY. Genesis Alkali (WE Soda/WESTVACO), Ciner Resources
+#     (Big Island), Tata Chemicals, Solvay (American Soda) — MSHA commodity code 'Soda Ash';
+#     Green River Basin trona district.
+#   Bentonite (19 mines/mills):
+#     Big Horn (56003, 9): BPM = Bentonite Performance Minerals; Magnet Cove, Yellowtail,
+#       Stucco, Sage Creek are well-known WY bentonite districts.
+#     Crook (56011, 4): Colony/Belle Fourche bentonite district.
+#     Hot Springs (56017, 1): Lucerne Mill — bentonite processing.
+#     Natrona (56025, 3): Casper/Mills/HT — bentonite processing plants.
+#     Washakie (56043, 2): Tensleep Mine, Worland Plant — bentonite/gypsum extraction.
+ANCHOR_MINE_COMMODITY = {
+    # ── Coal: Colorado ───────────────────────────────────────────────────────
+    'msha_0502838': 'coal',   # Trapper Mine (08081)
+    'msha_0502962': 'coal',   # Colowyo Mine (08081)
+    'msha_0503505': 'coal',   # Deserado Mine (08103)
+    'msha_0503672': 'coal',   # West Elk Mine (08051)
+    'msha_0503836': 'coal',   # FOIDEL CREEK MINE (08107)
+    'msha_0504864': 'coal',   # King II (08067)
+    # ── Coal: Montana ────────────────────────────────────────────────────────
+    'msha_2400839': 'coal',   # Decker Mine (30003)
+    'msha_2400910': 'coal',   # Absaloka Mine (30003)
+    'msha_2401457': 'coal',   # Spring Creek Mine (30003)
+    'msha_2401747': 'coal',   # Rosebud Mine & Crusher/Conveyor (30087)
+    'msha_2401950': 'coal',   # Bull Mountains Mine No 1 (30065)
+    'msha_2402703': 'coal',   # Wolf Mountain Coal-Spring Creek (30003)
+    # ── Coal: Wyoming (Campbell 56005) ───────────────────────────────────────
+    'msha_4800083': 'coal',   # Wyodak Mine
+    'msha_4800732': 'coal',   # Belle Ayr Mine
+    'msha_4800977': 'coal',   # Black Thunder
+    'msha_4800992': 'coal',   # Cordero Rojo Mine
+    'msha_4800993': 'coal',   # Rawhide Mine
+    'msha_4801034': 'coal',   # Caballo Mine
+    'msha_4801078': 'coal',   # Eagle Butte Mine
+    'msha_4801200': 'coal',   # Buckskin Mine
+    'msha_4801215': 'coal',   # Coal Creek Mine
+    'msha_4801337': 'coal',   # Antelope Coal Mine (56009)
+    'msha_4801353': 'coal',   # North Antelope Rochelle Mine
+    'msha_4801429': 'coal',   # Dry Fork Mine
+    # ── Coal: Wyoming (other) ────────────────────────────────────────────────
+    'msha_4800086': 'coal',   # Kemmerer Mine (56023)
+    'msha_4800677': 'coal',   # Jim Bridger Mine (56037)
+    'msha_4801180': 'coal',   # Black Butte And Leucite Hills Mines (56037)
+    # ── Trona: Sweetwater County (56037) ─────────────────────────────────────
+    'msha_4800152': 'trona',  # WE Soda @ WESTVACO (Genesis Alkali)
+    'msha_4800154': 'trona',  # Big Island Mine & Refinery (Ciner Resources)
+    'msha_4800155': 'trona',  # Tata Chemicals Mine
+    'msha_4801295': 'trona',  # American Soda LLC (Solvay)
+    # ── Bentonite: Big Horn County (56003) ───────────────────────────────────
+    'msha_4800057': 'bentonite',  # Lovell Mill
+    'msha_4800602': 'bentonite',  # Magnet Cove Mill
+    'msha_4800603': 'bentonite',  # Magnet Cove Mine
+    'msha_4800607': 'bentonite',  # Yellowtail Mine
+    'msha_4800611': 'bentonite',  # Stucco Mill
+    'msha_4800612': 'bentonite',  # Sage Creek Mill
+    'msha_4800974': 'bentonite',  # Big Horn Basin Mines
+    'msha_4801016': 'bentonite',  # BPM Lovell Mine
+    'msha_4801405': 'bentonite',  # BPM Lovell Mill
+    # ── Bentonite: Crook County (56011) ──────────────────────────────────────
+    'msha_4800070': 'bentonite',  # BPM Colony Mill
+    'msha_4800245': 'bentonite',  # COLONY WEST MILL
+    'msha_4800594': 'bentonite',  # COLONY EAST MILL
+    'msha_4800888': 'bentonite',  # Belle/Colony Mine
+    # ── Bentonite: Hot Springs (56017), Natrona (56025), Washakie (56043) ────
+    'msha_4801191': 'bentonite',  # Lucerne Mill (56017)
+    'msha_4800243': 'bentonite',  # Casper Plant (56025)
+    'msha_4800617': 'bentonite',  # Mills Plant (56025)
+    'msha_4801539': 'bentonite',  # HT Plant (56025)
+    'msha_4800954': 'bentonite',  # TENSLEEP MINE (56043)
+    'msha_4800987': 'bentonite',  # WORLAND PLANT (56043)
 }
 
 # Static production_asset data keyed by (geoid, name).
@@ -630,12 +746,25 @@ def _slugify(name):
 
 def _site_class_for_asset(asset):
     """
-    Return site_class ('thermal' | 'generator' | 'mine') for a retiring asset.
-    Used when spawning a site from a retirement event.
+    Return site_class for a retiring asset. Used when spawning a site.
+
+    Returns:
+      'thermal'    — coal/gas/nuclear plant (high-density firm-power site)
+      'generator'  — other MW-based generator
+      'mine'       — production or mine-class anchor (surface mine)
+      'industrial' — industrial_load anchor (v4.3/F1)
+      'commercial' — commercial_anchor_load anchor (v4.3/F1)
     """
     asset_class = asset.get('asset_class', '')
     if asset_class == 'production':
         return 'mine'
+    # v4.3 (F1) anchor classes → distinct site classes
+    if asset_class == 'mine':
+        return 'mine'
+    if asset_class == 'industrial_load':
+        return 'industrial'
+    if asset_class == 'commercial_anchor_load':
+        return 'commercial'
     asset_type = (asset.get('type') or '').lower()
     if asset_type in ('coal', 'gas', 'nuclear'):
         return 'thermal'
@@ -644,17 +773,19 @@ def _site_class_for_asset(asset):
 
 def _spawn_site_from_retired(retired_asset, spawn_year):
     """
-    Create a site AssetInstance from a just-retired generator or production asset.
+    Create a site AssetInstance from a just-retired generator, production, or anchor asset.
     Pure function — returns a new dict; does NOT modify input.
 
     site_class:
-      'thermal'   — coal/gas/nuclear plant (high-density firm-power site)
-      'generator' — other MW-based generator
-      'mine'      — production (surface mine) asset
+      'thermal'    — coal/gas/nuclear plant (high-density firm-power site)
+      'generator'  — other MW-based generator
+      'mine'       — production or mine-class anchor (surface mine)
+      'industrial' — industrial_load anchor (v4.3/F1)
+      'commercial' — commercial_anchor_load anchor (v4.3/F1)
     workforce_pool:
-      Ops jobs at retirement, decayed by half-life each year (Carley et al. 2018).
-      Seeded from SITE_OPS_JOBS_PER_MW × capacity_mw.
-      confidence: low — proxy only.
+      MW-based assets: SITE_OPS_JOBS_PER_MW × capacity_mw.
+      Anchor assets (mine/industrial/commercial): employment_direct from geojson.
+      Decayed by half-life each year (Carley et al. 2018). confidence: low.
     water_rights_flag / acres:
       Both null at spawn; populated from county data in a future session.
       Documented as known debt.
@@ -664,8 +795,13 @@ def _spawn_site_from_retired(retired_asset, spawn_year):
     asset_type = (retired_asset.get('type') or '').lower()
     site_class = _site_class_for_asset(retired_asset)
 
-    ops_jobs_per_mw = SITE_OPS_JOBS_PER_MW.get(asset_type, 0.1)
-    workforce_initial = round(cap_mw * ops_jobs_per_mw, 1)
+    # v4.3 (F1): anchor assets use employment_direct directly for workforce pool
+    # (they have no MW-based ops jobs proxy — their employment IS the workforce)
+    if retired_asset.get('asset_class') in ('mine', 'industrial_load', 'commercial_anchor_load'):
+        workforce_initial = float(retired_asset.get('employment_direct') or 0)
+    else:
+        ops_jobs_per_mw = SITE_OPS_JOBS_PER_MW.get(asset_type, 0.1)
+        workforce_initial = round(cap_mw * ops_jobs_per_mw, 1)
 
     asset_id = f'site_{geoid}_{_slugify(retired_asset["name"])}_{spawn_year}'
 
@@ -710,9 +846,12 @@ def _spawn_site_from_retired(retired_asset, spawn_year):
         **_null_block,
         # v4.1 site-specific fields
         'site_origin_asset_id': retired_asset['asset_id'],
-        'site_origin_type': 'mine' if site_class == 'mine' else 'generator',
+        'site_origin_type': 'mine' if site_class == 'mine' else (
+            'anchor' if site_class in ('industrial', 'commercial') else 'generator'),
         'site_class': site_class,
-        'interconnection_mw': cap_mw if site_class != 'mine' else None,
+        # Interconnection: MW-based assets inherit nameplate; mines/anchors inherit
+        # capacity_mw if present (industrial_load has MW), else None
+        'interconnection_mw': cap_mw if cap_mw > 0 and site_class != 'mine' else None,
         'water_rights_flag': None,   # known debt: populate from county data
         'acres': None,               # known debt: populate from county data
         'workforce_pool_initial': workforce_initial,
@@ -827,6 +966,130 @@ def _seed_housing_assets(county_cards, housing_baseline):
             'convert_source_asset_id': None,
         })
     return assets
+
+
+# ── v4.3 (F1): Anchor facility seeding ──────────────────────────────────────
+# Namespace note: asset_class 'mine' (operating mine anchor from F1 geojson) is
+# a DIFFERENT concept from site_class 'mine' (Z4 reclaimed-mine successor site).
+# asset_class is the type of asset in the registry; site_class is a field on
+# spawned site assets that drives SITE_COMPAT lookup for succession actions.
+
+def _seed_anchor_facilities(data_dir, registry):
+    """
+    Seed Tier 2 anchor facilities from mw_anchor_facilities.geojson into asset_registry.
+
+    New asset_classes: mine, industrial_load, commercial_anchor_load.
+    Generators are already seeded from EIA-860/county_cards — this function
+    attaches anchor_id and co2e_tpy to existing generator rows by name+geoid match.
+
+    Zero flow deltas: anchors carry marginal handles only. Their jobs, output, and
+    valuation are already embedded in observed county baselines. Seeded anchors
+    contribute no jobs, no valuation, no demand, no migration at seeding.
+
+    Returns: list of new AssetInstance dicts (mine/industrial_load/commercial_anchor_load).
+    Generator rows are mutated in-place (anchor_id + co2e_tpy attached).
+    """
+    anchor_path = data_dir / "mw_anchor_facilities.geojson"
+    if not anchor_path.exists():
+        return []
+
+    with open(anchor_path) as f:
+        anchor_gj = json.load(f)
+
+    new_assets = []
+    for feat in anchor_gj['features']:
+        props = feat['properties']
+        if props.get('tier') != 2:
+            continue
+        ac = props.get('asset_class')
+        if ac is None:
+            continue  # Tier 1 sub-threshold — skip
+
+        anchor_id = props.get('anchor_id', '')
+        geoid = str(props.get('geoid', '')).zfill(5)
+        name = props.get('name', '')
+
+        if ac == 'generator':
+            # Attach anchor_id + co2e_tpy to existing registry row (do not re-seed)
+            for a in registry:
+                if (a.get('geoid') == geoid
+                        and a.get('name') == name
+                        and a.get('origin') == 'baseline'
+                        and a.get('asset_class') in ('generator', 'demand')):
+                    a['anchor_id'] = anchor_id
+                    a['co2e_tpy'] = props.get('co2e_tpy')
+                    break
+            continue
+
+        if ac == 'data_center':
+            # Data centers already seeded from county_cards; attach anchor_id only
+            for a in registry:
+                if (a.get('geoid') == geoid
+                        and a.get('name') == name
+                        and a.get('origin') == 'baseline'):
+                    a['anchor_id'] = anchor_id
+                    a['co2e_tpy'] = props.get('co2e_tpy')
+                    break
+            continue
+
+        # New asset classes: mine, industrial_load, commercial_anchor_load
+        capacity_or_load = props.get('capacity_or_load_mw')
+        employment = props.get('employment_est')
+        commodity = ANCHOR_MINE_COMMODITY.get(anchor_id) if ac == 'mine' else None
+
+        # Standard null block (all non-applicable fields)
+        _null_block = {
+            'coal_tons_yr': None, 'production_proxy': None,
+            'fiscal_action_id': None, 'excluded': None,
+            'production_volume': None, 'production_unit': None,
+            'production_confidence': None, 'production_source': None, 'data_year': None,
+            'effective_severance_rate_per_unit': None, 'county_distribution_share': None,
+            'advalorem_rate_per_unit': None, 'assessed_delta_per_unit': None,
+            'action_id': None, 'magnitude': None, 'decision_year': None,
+            'throttle_reason': None, 'commissioned': None,
+            'scheduled_retirement_year': None,
+            'reclamation_year_log': None, 'active_reclamation_acres': None,
+            'reclamation_jobs_direct': None,
+            'decommissioning_cost_usd': None, 'decommissioning_labor_usd': None,
+            'decommissioning_duration_years': None, 'decommissioning_start_year': None,
+            'housing_total_units': None, 'housing_occupied_units': None,
+            'housing_convertible_units': None, 'housing_subsidized_units': None,
+            'housing_permits_per_year': None, 'housing_affordable_added': None,
+            'housing_pressure_ratio': None, 'housing_seasonal_excluded': None,
+            'site_origin_asset_id': None, 'site_origin_type': None,
+            'site_class': None, 'interconnection_mw': None,
+            'water_rights_flag': None, 'acres': None,
+            'workforce_pool_initial': None, 'workforce_pool_current': None,
+            'workforce_pool_half_life_years': None, 'site_spawn_year': None,
+            'restoration_eligibility': None,
+            'succession_site_id': None, 'ttd_reduction_applied': None,
+            'capex_discount_fraction': None, 'tx_waiver_mw': None,
+            'convert_source_asset_id': None,
+        }
+        new_assets.append({
+            'asset_id': f'anchor_{geoid}_{_slugify(name)}',
+            'origin': 'baseline',
+            'lifecycle': 'operating',
+            'asset_class': ac,  # 'mine' | 'industrial_load' | 'commercial_anchor_load'
+            'name': name,
+            'geoid': geoid,
+            'county_name': '',
+            'state': '',
+            'type': ac,
+            'status': 'operating',
+            'source_url': props.get('source', ''),
+            'operational_year': None,
+            'capacity_mw': float(capacity_or_load) if capacity_or_load is not None else None,
+            'anchor_id': anchor_id,
+            'co2e_tpy': props.get('co2e_tpy'),
+            'commodity': commodity,
+            'employment_direct': int(employment) if employment is not None else None,
+            'display_sector': props.get('display_sector'),
+            'confidence': props.get('confidence', 'high'),
+            **_null_block,
+        })
+
+    return new_assets
 
 
 def _find_housing_asset(state, geoid):
@@ -1129,15 +1392,24 @@ def _materialize_existing_assets(registry):
     """Materialize existing_assets view from asset_registry (baseline-origin).
     Housing stock assets are excluded from this view so existing_assets_digest is stable.
     Site assets (v4.1) are also excluded — they are a derived/ephemeral registry class.
+    Anchor assets (v4.3/F1: mine, industrial_load, commercial_anchor_load) are excluded —
+    their economic contribution is already in observed county baselines.
     """
+    # Asset classes excluded from the existing_assets materialized view.
+    # Each exclusion preserves existing_assets_digest stability.
+    _EA_EXCLUDED_CLASSES = frozenset({
+        'housing_stock',           # v3.3
+        'site',                    # v4.1
+        'mine',                    # v4.3 (F1) — operating mine anchor
+        'industrial_load',         # v4.3 (F1) — industrial load anchor
+        'commercial_anchor_load',  # v4.3 (F1) — commercial anchor
+    })
     result = {}
     for a in registry:
         if a['origin'] != 'baseline':
             continue
-        if a.get('asset_class') == 'housing_stock':
-            continue  # v3.3: housing assets not in existing_assets view
-        if a.get('asset_class') == 'site':
-            continue  # v4.1: site assets not in existing_assets view
+        if a.get('asset_class') in _EA_EXCLUDED_CLASSES:
+            continue
         geoid = a['geoid']
         if geoid not in result:
             result[geoid] = []
@@ -1365,6 +1637,12 @@ def initialize_state(data_dir=None, county_ees_path=None, crosswalk_path=None,
         housing_baseline = _hb_raw.get("counties", {})
         # Append housing_stock assets to registry (one per county)
         asset_registry.extend(_seed_housing_assets(county_cards, housing_baseline))
+
+    # ── v4.3 (F1): Seed Tier 2 anchor facilities from geojson ────────────────
+    # New asset_classes: mine, industrial_load, commercial_anchor_load.
+    # Generators get anchor_id + co2e_tpy attached (not re-seeded).
+    # Anchors are excluded from existing_assets view → digest-stable.
+    asset_registry.extend(_seed_anchor_facilities(data_dir, asset_registry))
 
     # Materialize existing_assets from registry (overrides the _seed_existing_assets above)
     existing_assets = _materialize_existing_assets(asset_registry)
@@ -2421,7 +2699,12 @@ def advance_year(state):
             asset["lifecycle"] = "retired"
             retired_any = True
             # v3.2: decommissioning cost draw (MW-based generator assets only)
-            if asset.get('asset_class') != 'production':
+            # v4.3: anchor classes (mine/industrial_load/commercial_anchor_load) are
+            # excluded — they have no MW-based decommissioning cost model.
+            _DECOM_EXCLUDED_CLASSES = frozenset({
+                'production', 'mine', 'industrial_load', 'commercial_anchor_load',
+            })
+            if asset.get('asset_class') not in _DECOM_EXCLUDED_CLASSES:
                 cap_mw = asset.get('capacity_mw') or 0
                 tech_key = _z1_tech_key(asset.get('type'))
                 decom_entry = lc_decom.get(tech_key, {}) if tech_key else {}
@@ -2433,25 +2716,53 @@ def advance_year(state):
                     asset['decommissioning_labor_usd'] = round(total_cost * labor_frac, 2)
                     asset['decommissioning_duration_years'] = decom_entry.get('duration_years_midpoint', 1)
                     asset['decommissioning_start_year'] = current_year
+            # v4.3 (F1): anchor retirement — unwind MSHA/QCEW employment.
+            # The employment unwind feeds V2 migration through _count_player_ops_jobs
+            # → _advance_population → population trace. For anchor retirements,
+            # employment_direct is already in the observed county baseline, so no
+            # _count_player_ops_jobs contribution (anchors are origin=baseline, already
+            # filtered). The migration chain only activates for player-placed successors
+            # on the spawned site.
+            #
+            # Mines: mineral-valuation ledger Y-track hook — priced at 0, flagged.
+            # Full Y-track coefficients require DOR Mineral Valuation Report (MANUAL_FETCH).
+            if asset.get('asset_class') == 'mine':
+                asset['_mineral_valuation_y_hook'] = {
+                    'commodity': asset.get('commodity'),
+                    'employment_unwound': asset.get('employment_direct', 0),
+                    'y_track_price': 0,
+                    'y_track_confidence': 'flagged',
+                    'note': 'Y-track coefficients gated on DOR Mineral Valuation Report; priced at 0 until available.',
+                }
             # Reverse capacity through existing network heuristic
+            # v4.3: anchor loads are demand, not generation — do NOT reverse bus capacity
+            # for industrial_load/commercial_anchor_load. Mine anchors have no MW.
             cap = asset.get("capacity_mw")
-            if cap is not None and cap > 0:
+            ac = asset.get('asset_class', '')
+            if (cap is not None and cap > 0
+                    and ac not in ('mine', 'industrial_load', 'commercial_anchor_load')):
                 bus_id = _resolve_geoid_to_bus(state, asset["geoid"])
                 if bus_id and bus_id in state["bus_state"]:
                     state["bus_state"][bus_id]["capacity_mw"] -= cap
                     state["bus_state"][bus_id]["firm_capacity_mw"] -= cap
-    # v4.1: spawn site assets from retirements that just fired this year.
-    # Spawns for: MW-based generators (generator/demand/storage asset_class) only.
-    # Production (mine) asset retirement via scheduled_retirement_year is not yet
-    # wired — mine sites spawn via reduce_production_asset reaching zero (future).
-    # Side-effect: appends new 'site' AssetInstances to asset_registry.
+    # v4.1+v4.3: spawn site assets from retirements that just fired this year.
+    # Spawns for:
+    #   - MW-based generators (generator/demand/storage) with capacity_mw > 0
+    #   - v4.3 (F1) anchor assets (mine/industrial_load/commercial_anchor_load) —
+    #     these may have no MW but carry employment_direct for workforce pool seeding
+    # Production (county_cards production_asset) retirement via scheduled_retirement_year
+    # is not yet wired — mine sites spawn via reduce_production_asset reaching zero (future).
+    _ANCHOR_SPAWN_CLASSES = frozenset({'mine', 'industrial_load', 'commercial_anchor_load'})
     spawned_sites = []
     for asset in state["asset_registry"]:
-        if (asset.get('scheduled_retirement_year') == current_year
-                and asset.get('asset_class') in ('generator', 'demand', 'storage')
-                and asset.get('capacity_mw', 0) and asset['capacity_mw'] > 0):
-            site = _spawn_site_from_retired(asset, current_year)
-            spawned_sites.append(site)
+        if asset.get('scheduled_retirement_year') != current_year:
+            continue
+        ac = asset.get('asset_class', '')
+        if ac in ('generator', 'demand', 'storage'):
+            if asset.get('capacity_mw', 0) and asset['capacity_mw'] > 0:
+                spawned_sites.append(_spawn_site_from_retired(asset, current_year))
+        elif ac in _ANCHOR_SPAWN_CLASSES:
+            spawned_sites.append(_spawn_site_from_retired(asset, current_year))
     if spawned_sites:
         state["asset_registry"].extend(spawned_sites)
         retired_any = True  # ensure rematerialisation below
@@ -3780,7 +4091,8 @@ def schedule_retirement(state, asset_id, year):
     asset = state["asset_registry"][idx]
     if asset["lifecycle"] != "operating":
         raise ValueError(f"Cannot schedule retirement for asset in lifecycle '{asset['lifecycle']}'")
-    if asset["asset_class"] not in ("generator", "demand", "storage"):
+    if asset["asset_class"] not in ("generator", "demand", "storage",
+                                      "mine", "industrial_load", "commercial_anchor_load"):
         raise ValueError(f"Cannot schedule retirement for asset_class '{asset['asset_class']}'")
     state["asset_registry"][idx]["scheduled_retirement_year"] = year
     return state

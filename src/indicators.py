@@ -262,7 +262,10 @@ def _incoming_construction_workforce(state, geoid):
     for a in state.get('asset_registry', []):
         if a.get('geoid') != geoid:
             continue
-        if a.get('asset_class') in ('housing_stock', 'production'):
+        if a.get('asset_class') in (
+            'housing_stock', 'production',
+            'mine', 'industrial_load', 'commercial_anchor_load',  # v4.3 (F1) anchors
+        ):
             continue
         op_year = a.get('operational_year')
         cap_mw = a.get('capacity_mw') or a.get('magnitude') or 0.0
