@@ -1981,10 +1981,14 @@ Post-F1: **281 TS / 111 Python = 392 total**
   Replace with canonical MSHA→commodity crosswalk when available.
 - **Y-track fiscal coupling** prices mine retirements at 0; blocked on DOR Mineral
   Valuation Report coefficients.
-- **SITE_COMPAT gaps:** industrial sites could support captive generation
-  (smr_advanced) but this action isn't in the compatibility table pending policy
-  review. Commercial sites could support efficiency retrofits but no matching action
-  exists in the action library.
+- **SITE_COMPAT gaps:** two distinct root causes. For industrial anchor sites,
+  captive generation maps to the existing `smr_advanced` action, but it is
+  intentionally **not wired** into `SITE_COMPAT['industrial']` pending policy /
+  precedent review; current wired actions are `battery_grid` and
+  `industrial_load_flexible`. For commercial anchor sites, storage is wired via
+  `battery_grid`, but there is **no suitable commercial efficiency-retrofit
+  action** in `action_library_v3.json` under another name; `community_solar` is
+  the other current wired commercial action.
 - **gas_combined_cycle** in SITE_COMPAT thermal but absent from action library (Z4
   known debt, not repeated).
 - **Python tests** cannot run in the f1-engine-lock worktree (missing gitignored data
@@ -2116,3 +2120,85 @@ documented in the back-cast gate.
 - p10/p90 spread is derived from literature, not computed from LOCA2 individual model runs;
   confidence remains `medium` until member-level extraction is possible.
 - Fire/water/SWE metrics require separate data-track work outside C1 scope.
+
+---
+
+## Wave 2 Close-Out
+**Date:** 2026-07-12
+**Verifier:** Gate V2 independent pass from `main`
+(`ddaa868db1d858678c0f69cd902a2ecd4268f9f4`).
+
+### What shipped
+- **F1 anchors + Golden K:** Engine v4.3 seeds Tier 2 anchors into
+  `asset_registry`, adds anchor asset classes (`mine`, `industrial_load`,
+  `commercial_anchor_load`), excludes those classes from `existing_assets`,
+  and freezes Golden K with four digest contracts at 2040.
+- **F3 pin placement:** not present in this checked-out `main` snapshot. No
+  Phase F3 build-log entry was found during Gate V2 verification.
+- **C1.2/C1.6 climate data:** C1.2 delivered MACA/PRISM validation work; C1.6
+  delivered real county-level CMIP6/SSP data via NOAA CRIS LOCA2 for the core
+  climate metrics, with Eagle CO cold bias documented rather than silently
+  passed.
+- **F0.2 driver fix:** Notebook 22 moved economic-driver rankings to the
+  CBP bulk/API fallback plus QCEW government ownership path, preserved
+  per-county `driver_source`, passed the ten-county credibility gate, and
+  populated low-confidence MW values for the four formerly blocked WY gap-fill
+  promotions.
+
+### Consolidated known debt
+- **Commodity crosswalk:** F1's `ANCHOR_MINE_COMMODITY` lookup is derived from
+  facility names because `mw_anchor_facilities.geojson` has no canonical
+  `commodity` field. Replace with MSHA-to-commodity crosswalk when available.
+- **Y-track zero-pricing:** mine-retirement Y-track hooks emit
+  `y_track_price: 0` and `y_track_confidence: flagged`; fiscal coupling remains
+  blocked on mineral valuation coefficients.
+- **SITE_COMPAT gaps:** `gas_combined_cycle` remains referenced by thermal
+  SITE_COMPAT but absent from `action_library_v3.json`. Industrial/commercial
+  anchor-site compatibility is intentionally narrow and should be reviewed as
+  policy/action-library coverage expands.
+- **Eagle CO bias:** LOCA2 annual mean temperature is cold-biased for Eagle CO
+  relative to PRISM by about 2.6 F; relative warming trends remain usable, but
+  mountain-county bias correction is C3 debt.
+- **CDD/HDD engine coupling:** ClimateContext data are populated, but CDD/HDD
+  demand-modulation functions and Python runtime ClimateContext plumbing are
+  not wired; C3 inherits this C0 debt.
+
+### Gate V2 disposition
+
+Independent verification found the core F1 and C1.6 claims substantially
+supported, but Wave 2 does **not** pass Gate V2 cleanly from this checkout:
+
+- F1 replay passed the local parity suite (`284` tests with the temporary
+  independent probe; `281` tests in the committed suite) and Golden K matched
+  all four 2040 digest contracts. A temporary anchor-neutrality probe also
+  confirmed pre-existing frozen replay digests were unchanged with anchors on
+  vs off under migration on and off for the probed frozen set.
+- `fixture_registry.json` still reports `amendments_used: 4`; F1 consumed no
+  amendment.
+- Direct materialization inspection corrects F1's wording: the accurate claim
+  is **no anchor-derived field enters `existing_assets`, proven by digest
+  identity**. `anchor_id` and `co2e_tpy` do not enter `existing_assets`; the
+  pre-existing production-asset materialization still contains `commodity`,
+  unrelated to anchors and unchanged by F1 because anchor classes are excluded
+  before materialization.
+- SITE_COMPAT/action-library join is clean for the current F1 anchor additions:
+  `battery_grid`, `industrial_load_flexible`, and `community_solar` are present
+  in `action_library_v3.json`; `gas_combined_cycle` remains the known Z4 gap.
+- The four formerly blocked WY promotions are present with real numeric values,
+  not null or blocked: Goshen 1.380 MW, Johnson 0.648 MW, Niobrara 0.250 MW,
+  Sublette 1.488 MW.
+- F0 residual before/after top-3 LQ spot-check is only partially reproducible
+  from local artifacts: current top-3 rankings are present, but the pre-F0.2
+  top-3 table for the reported 130 shifted counties is not persisted in the
+  checked-in artifacts. The notebook captured prior top-1 in memory during
+  execution, not as a reusable verification artifact.
+- Build-log completeness is not clean: F0 is consolidated and C1 appears as a
+  single canonical phase entry, but the F3 entry is absent from this `main`
+  snapshot.
+
+Because C1.6 delivered real CMIP6/SSP LOCA2 data, the roadmap's branch (a)
+applies once the orchestrator accepts the above discrepancies: **C2 data-half**
+may open in Wave 3 as the Codex registry/data merge unified with F1's anchor
+classes, and **C3 engine-lock** may open to ship the C0-inherited
+ClimateContext plumbing and CDD/HDD coupling debt, pending orchestrator
+sign-off.
