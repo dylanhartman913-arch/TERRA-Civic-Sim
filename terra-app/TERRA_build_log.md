@@ -2133,8 +2133,8 @@ documented in the back-cast gate.
   `asset_registry`, adds anchor asset classes (`mine`, `industrial_load`,
   `commercial_anchor_load`), excludes those classes from `existing_assets`,
   and freezes Golden K with four digest contracts at 2040.
-- **F3 pin placement:** not present in this checked-out `main` snapshot. No
-  Phase F3 build-log entry was found during Gate V2 verification.
+- **F3 pin placement:** merged into main on 2026-07-12 (after Gate V2 snapshot).
+  F3 build-log entry present in this merged state.
 - **C1.2/C1.6 climate data:** C1.2 delivered MACA/PRISM validation work; C1.6
   delivered real county-level CMIP6/SSP data via NOAA CRIS LOCA2 for the core
   climate metrics, with Eagle CO cold bias documented rather than silently
@@ -2202,3 +2202,140 @@ may open in Wave 3 as the Codex registry/data merge unified with F1's anchor
 classes, and **C3 engine-lock** may open to ship the C0-inherited
 ClimateContext plumbing and CDD/HDD coupling debt, pending orchestrator
 sign-off.
+
+---
+
+## Session F3 — Sub-County Pin Placement (engine-inert)
+**Date:** 2026-07-11 · **Branch:** `f3-ui-pins` worktree · **Executor:** Sonnet 4.6
+
+### What was built
+
+F3 adds sub-county pin placement to the action-placement flow. The feature is
+fully engine-inert: coordinates are UI metadata that flow through the data
+pipeline but are stripped at the engine boundary. County → primary_bus
+resolution is unchanged in all engine functions.
+
+**New files:**
+- `src/data/mw_anchor_facilities.geojson` — 12 Tier-2 anchor facilities
+  (Mountain West study area, real EIA-860 locations) for snap targets
+- `src/ui/map/QueuedBuildMarkers.tsx` — renders pin icons at `site_coords`
+  when present; falls back to county centroid; `map.on('move'/'zoom')`
+  for live repositioning
+- `tests/parity/pin-placement-f3.test.ts` — 5 describe blocks, 10 tests
+  covering the four F3 invariants + 3.0→3.1 backward compatibility
+
+**Modified files:**
+- `src/engine/types.ts` — `site_coords?: [number, number]` added to
+  `ActionLogEntry`; comment confirms UI-only status
+- `src/state/store.ts` — `PinSnapTarget` interface; `PlacementMode` extended
+  with `pinCoords`, `ghostCursorCoords`, `zoomAboveThreshold`, `snapTarget`;
+  `queueAction` accepts optional `siteCoords`; three new store actions:
+  `setPlacementPin`, `setGhostCursorCoords`, `setPlacementZoomAbove`
+- `src/ui/map/PlacementOverlay.tsx` — full pin interaction rewrite: ghost
+  cursor with snap ring, `PIN_ZOOM_THRESHOLD = 9.0`, `SNAP_RADIUS_DEG = 0.05`,
+  MapLibre `queryRenderedFeatures` for PiP validation, nudge toast for
+  outside-county clicks, snap priority (Z4 sites > Tier-2 anchors), modal
+  header shows pin label and succession-discount disclosure
+- `src/ui/map/MapView.tsx` — mounts `<QueuedBuildMarkers>`
+- `src/ui/panels/CountyCardDrawer.tsx` — `📍 pinned {lon}, {lat}` label on
+  queued/UC player assets that carry `site_coords`
+- `src/ui/tokens.css` — `@keyframes nudge-fade` for toast fade-out
+
+### Blast-radius diff (engine numeric paths: zero changes)
+
+```
+terra-app/src/engine/types.ts          |   3 +   ← type annotation only
+terra-app/src/state/store.ts           |  61 +-  ← UI state only
+terra-app/src/ui/map/MapView.tsx       |   2 +
+terra-app/src/ui/map/PlacementOverlay.tsx | 611 +-
+terra-app/src/ui/panels/CountyCardDrawer.tsx |  23 +
+terra-app/src/ui/tokens.css            |   7 +
+```
+
+**engine.ts, indicators.ts, replay.ts, persistence.ts, budgets.ts, events.ts:
+no changes.** `types.ts` change is additive-only (optional field, no existing
+interface altered).
+
+### Engine-inert contract
+
+`site_coords` is intentionally absent from:
+1. `computeReplayDigest` — digest inputs derived from engine state only
+2. `replayScenario` / all engine functions — county→primary_bus unchanged
+3. Persistence: field is preserved in export/import round-trip (survives as JSON)
+4. Schema version stays at 3.1 — site_coords is an optional field on existing schema
+
+Snapping is the **only** way pin position affects engine numbers: snapping to a
+Z4 site injects `succession_site_id` via the existing engine succession path
+(TTD/capex/TX waivers). This path was present in Z4; F3 merely routes
+`site_coords` → snap detection → existing discount logic.
+
+### Test results (pre-rebase, against post-C0 base)
+
+```
+Test Files  21 passed (21)
+     Tests  278 passed (278)
+  Duration  ~4.55s
+```
+
+**F3 parity delta: +9 tests** (all in `pin-placement-f3.test.ts`)
+
+| Test | Description |
+|---|---|
+| F3-1a | Golden-B + site_coords → identical digest to without |
+| F3-1b | Final engine state byte-identical with/without site_coords |
+| F3-2a | site_coords survive export → importFromJson |
+| F3-2b | digest matches after reimport |
+| F3-3a | `computeReplayDigest(state, 'historical')` === `computeReplayDigest(state, undefined)` |
+| F3-3b | pinned ↔ unpinned digest identical (C0 interaction) |
+| F3-4a | mixed log: only pinned entries carry coords; absent ones remain undefined |
+| F3-4b | mixed log same digest as all-unpinned |
+| F3-5 | 3.0 legacy file → 3.1 migration → no site_coords explosion → replay clean |
+
+Pre-F3 (post-C0 base): **269 TS / 99 Python = 368 total**
+Post-F3 (pre-rebase): **278 TS / 99 Python = 387 total**
+**F3 delta: +9 TS / +0 Python**
+
+### Rebase onto F1 (2026-07-12)
+
+`f3-ui-pins` rebased onto main at `ddaa868` (F1 merged). Two conflicts resolved:
+
+**1. `TERRA_build_log.md`** — both sides added session entries at the same
+location. Resolution: kept both — F1 block first, F3 block appended.
+
+**2. `mw_anchor_facilities.geojson`** — add/add conflict. F3 carried a
+12-feature EIA-860 stub (written before F1's dataset). F1's production file
+(404 features, 265 Tier-2) supersedes it. Resolution: used HEAD (F1's file).
+F3 snap code only reads `properties.tier` and `properties.name`; both exist
+on F1's features. Jim Bridger real coordinates: [-108.7875, 41.7378]
+(demo trace above corrected from stub coords).
+
+**3. `types.ts`** — auto-merged cleanly. Both field sets intact: F1's
+`anchor_id`/`co2e_tpy`/`display_sector`/`confidence` on `AssetInstance`;
+F3's `site_coords` on `ActionLogEntry`.
+
+Post-rebase test counts:
+```
+Test Files  22 passed (22)
+     Tests  290 passed (290)   ← 281 (F1) + 9 (F3) = 290 ✓
+  Duration  ~4.24s
+Python:     111 passed (111)   unchanged
+Total:      290 TS + 111 Python = 401
+```
+
+Blast-radius diff scoped to F3 commits: `engine.ts`, `indicators.ts`,
+`replay.ts`, `persistence.ts` — **zero changes**. `types.ts` additive-only.
+
+### Demo trace
+
+```
+1. Zoom to ≥9.0 (county towns legible)
+2. Enter PlacementMode for smr_advanced / Sweetwater County (56037)
+3. GhostCursor appears — follows mouse, amber crosshairs
+4. Mouse near Jim Bridger (Tier-2 anchor) → snap ring, label "Jim Bridger"
+5. Click → pin drops at snapped coords, modal opens with "📍 pinned -108.79, 41.74"
+6. Confirm → ActionLogEntry carries site_coords; succession discount applied
+7. Advance years → asset enters build_queue; QueuedBuildMarkers renders pin at site
+8. County card queued row shows "📍 pinned -108.79, 41.74"
+9. Export → JSON contains site_coords in actionLog entry
+10. Reimport → site_coords survive, digest unchanged
+```

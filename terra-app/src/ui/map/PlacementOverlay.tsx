@@ -1,12 +1,94 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import type maplibregl from 'maplibre-gl';
 import { useTerraStore } from '../../state/store.js';
-import type { ActionRecord, CrosswalkRow, CountyFiscal } from '../../engine/types.js';
+import type { PinSnapTarget } from '../../state/store.js';
+import type { ActionRecord, CrosswalkRow, CountyFiscal, AssetInstance, EngineState } from '../../engine/types.js';
 import { Tooltip } from './Tooltip.js';
 import { computeConsumption, getBudgetShareString, isEraOverflow, getEraForYear } from '../../engine/budgets.js';
 import { computeFiscalDelta } from '../../engine/engine.js';
 import { JOBS_PER_MW, HOUSING_PRESSURE_THRESHOLD } from '../panels/CountyYields.js';
 import { DeltaProjectionStrip } from './DeltaProjectionStrip.js';
+import anchorFacilitiesData from '../../data/mw_anchor_facilities.geojson';
+
+// ── F3 constants ─────────────────────────────────────────────────────────────
+
+/** MapLibre zoom at which basemap towns become legible on Stadia Alidade Dark. */
+const PIN_ZOOM_THRESHOLD = 9.0;
+
+/** Snap radius in geographic degrees (~5.5 km at 43°N). Configurable here. */
+const SNAP_RADIUS_DEG = 0.05;
+
+// ── Anchor facility types ─────────────────────────────────────────────────────
+
+interface AnchorFeature {
+  geometry: { coordinates: [number, number] };
+  properties: { name: string; geoid: string; tier: number; type: string; capacity_mw: number };
+}
+
+const TIER2_ANCHORS: AnchorFeature[] = (
+  (anchorFacilitiesData as { features: AnchorFeature[] }).features ?? []
+).filter(f => f.properties.tier === 2);
+
+// ── Snap detection ────────────────────────────────────────────────────────────
+
+function getCountyCentroid(
+  geoid: string,
+  engineState: EngineState,
+): [number, number] | null {
+  const row = engineState.crosswalk.find(r => r.geoid === geoid && r.primary_bus);
+  if (!row) return null;
+  const bus = engineState.buses[String(row.bus_id)];
+  if (!bus) return null;
+  return [bus.lon, bus.lat];
+}
+
+function findSnapTarget(
+  lngLat: [number, number],
+  engineState: EngineState,
+): PinSnapTarget | null {
+  const [lon, lat] = lngLat;
+
+  // Sites first (higher priority — succession discount)
+  const sites = engineState.asset_registry.filter(
+    a => a.asset_class === 'site' && a.lifecycle === 'operating',
+  );
+  for (const site of sites) {
+    const centroid = getCountyCentroid(site.geoid, engineState);
+    if (!centroid) continue;
+    const dist = Math.sqrt(
+      Math.pow(lon - centroid[0], 2) + Math.pow(lat - centroid[1], 2),
+    );
+    if (dist < SNAP_RADIUS_DEG) {
+      return {
+        type: 'site',
+        id: site.asset_id,
+        name: site.name,
+        coords: centroid,
+        siteAssetId: site.asset_id,
+      };
+    }
+  }
+
+  // Tier-2 anchor facilities
+  for (const anchor of TIER2_ANCHORS) {
+    const [aLon, aLat] = anchor.geometry.coordinates;
+    const dist = Math.sqrt(
+      Math.pow(lon - aLon, 2) + Math.pow(lat - aLat, 2),
+    );
+    if (dist < SNAP_RADIUS_DEG) {
+      return {
+        type: 'anchor',
+        id: anchor.properties.name,
+        name: anchor.properties.name,
+        coords: [aLon, aLat],
+      };
+    }
+  }
+
+  return null;
+}
+
+// ── Existing layer IDs ────────────────────────────────────────────────────────
 
 const ERA_NAMES: Record<number, string> = {
   2025: 'Foundation Era (2025–2035)',
@@ -15,7 +97,6 @@ const ERA_NAMES: Record<number, string> = {
   2055: 'Steady State Era (2055–2075)',
 };
 
-// Maps overflow resource string → HUD chip key
 const RESOURCE_TO_CHIP: Record<string, string> = {
   capital: 'capital',
   labor: 'labor',
@@ -29,8 +110,8 @@ const ELIGIBLE_FILL = 'placement-eligible-fill';
 const ELIGIBLE_BORDER = 'placement-eligible-border';
 const INELIGIBLE_FILL = 'placement-ineligible-fill';
 const GHOST_FILL = 'placement-ghost-fill';
+const FILL_LAYER = 'county-fill';  // underlying county fill for queryRenderedFeatures
 
-// EPA Level III ecoregion code → human-readable name (codes present in study area)
 const ECOREGION_NAMES: Record<number, string> = {
   12: 'Snake River Plain',
   13: 'Central Basin and Range',
@@ -59,35 +140,114 @@ function deriveIneligibleReason(
   action: ActionRecord,
   crosswalk: CrosswalkRow[],
 ): string {
-  // 1. County's ecoregion codes where area share > 0.15
   const countyEcoregionCodes = [
     ...new Set(
       crosswalk
         .filter(r => r.geoid === geoid && r.ecoregion_area_share > 0.15)
-        .map(r => Number(r.ecoregion_code))
+        .map(r => Number(r.ecoregion_code)),
     ),
   ];
-
-  // 2. Check ecoregion mismatch
   const applicable = (action.applicable_ecoregions ?? []).map(Number);
   if (applicable.length > 0) {
     const hasMatch = countyEcoregionCodes.some(code => applicable.includes(code));
     if (!hasMatch) {
-      const names = applicable.map(
-        (code: number) => ECOREGION_NAMES[code] ?? `Ecoregion ${code}`
-      );
+      const names = applicable.map((code: number) => ECOREGION_NAMES[code] ?? `Ecoregion ${code}`);
       return `Outside ${names.join(', ')}`;
     }
   }
-
-  // 3. BA mismatch for energy_demand actions
-  if (action.bucket === 'energy_demand') {
-    return 'BA not served by this action type';
-  }
-
-  // 4. Fallback
+  if (action.bucket === 'energy_demand') return 'BA not served by this action type';
   return 'Not eligible for this action';
 }
+
+// ── Ghost cursor icon ─────────────────────────────────────────────────────────
+
+interface GhostCursorProps {
+  x: number;
+  y: number;
+  snapping: boolean;
+  snapName?: string;
+}
+
+function GhostCursor({ x, y, snapping, snapName }: GhostCursorProps) {
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        left: x,
+        top: y,
+        transform: 'translate(-50%, -50%)',
+        pointerEvents: 'none',
+        zIndex: 80,
+      }}
+    >
+      {/* Outer ring */}
+      <div style={{
+        width: snapping ? 28 : 18,
+        height: snapping ? 28 : 18,
+        borderRadius: '50%',
+        border: `2px solid ${snapping ? 'var(--amber)' : 'var(--teal)'}`,
+        background: snapping ? 'rgba(245,158,11,0.15)' : 'rgba(45,212,191,0.15)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        transition: 'all 0.15s ease',
+        boxShadow: snapping
+          ? '0 0 12px rgba(245,158,11,0.6)'
+          : '0 0 8px rgba(45,212,191,0.4)',
+      }}>
+        {/* Center dot */}
+        <div style={{
+          width: 4, height: 4, borderRadius: '50%',
+          background: snapping ? 'var(--amber)' : 'var(--teal)',
+        }} />
+      </div>
+      {/* Crosshair lines */}
+      <div style={{
+        position: 'absolute', top: '50%', left: -8,
+        width: snapping ? 44 : 34, height: 1,
+        background: snapping ? 'var(--amber)' : 'var(--teal)',
+        opacity: 0.6, transform: 'translateY(-50%)',
+      }} />
+      <div style={{
+        position: 'absolute', left: '50%', top: -8,
+        width: 1, height: snapping ? 44 : 34,
+        background: snapping ? 'var(--amber)' : 'var(--teal)',
+        opacity: 0.6, transform: 'translateX(-50%)',
+      }} />
+      {/* Snap label */}
+      {snapping && snapName && (
+        <div style={{
+          position: 'absolute', top: 22, left: '50%', transform: 'translateX(-50%)',
+          background: 'rgba(245,158,11,0.9)', color: '#0d1117',
+          fontSize: 9, padding: '2px 6px', borderRadius: 3, whiteSpace: 'nowrap',
+          fontFamily: 'var(--font-mono)', fontWeight: 600,
+        }}>
+          ⬡ {snapName}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Nudge toast ───────────────────────────────────────────────────────────────
+
+interface NudgeToastProps { message: string }
+
+function NudgeToast({ message }: NudgeToastProps) {
+  return (
+    <div style={{
+      position: 'absolute', top: 16, left: '50%', transform: 'translateX(-50%)',
+      background: 'rgba(248,113,113,0.9)', color: '#fff',
+      fontSize: 11, padding: '6px 14px', borderRadius: 4,
+      fontFamily: 'var(--font-mono)', fontWeight: 500,
+      boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
+      pointerEvents: 'none', zIndex: 200,
+      animation: 'nudge-fade 3s ease forwards',
+    }}>
+      {message}
+    </div>
+  );
+}
+
+// ── Main component ─────────────────────────────────────────────────────────────
 
 interface PlacementOverlayProps {
   map: maplibregl.Map;
@@ -101,67 +261,43 @@ export function PlacementOverlay({ map }: PlacementOverlayProps) {
   const confirmPlacement = useTerraStore(s => s.confirmPlacement);
   const remainingBudget = useTerraStore(s => s.remainingBudget);
   const setHudOpenChip = useTerraStore(s => s.setHudOpenChip);
+  const setPlacementPin = useTerraStore(s => s.setPlacementPin);
+  const setGhostCursorCoords = useTerraStore(s => s.setGhostCursorCoords);
+  const setPlacementZoomAbove = useTerraStore(s => s.setPlacementZoomAbove);
 
   const [showModal, setShowModal] = useState<{ geoid: string } | null>(null);
   const [modalMagnitude, setModalMagnitude] = useState(100);
-  const [ineligibleHover, setIneligibleHover] = useState<{
-    x: number; y: number; geoid: string;
-  } | null>(null);
+  const [ineligibleHover, setIneligibleHover] = useState<{ x: number; y: number; geoid: string } | null>(null);
+  const [nudgeMessage, setNudgeMessage] = useState<string | null>(null);
+  const [ghostScreenPos, setGhostScreenPos] = useState<{ x: number; y: number } | null>(null);
 
   const initialized = useRef(false);
   const ghostRef = useRef<string | null>(null);
+  const nudgeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Counters tracked via ref to avoid stale closures in map event handlers
+  // Refs to avoid stale closures
   const placementModeRef = useRef(placementMode);
   placementModeRef.current = placementMode;
+  const engineStateRef = useRef(engineState);
+  engineStateRef.current = engineState;
+
+  // ── Layer setup ────────────────────────────────────────────────────────────
 
   useEffect(() => {
     if (initialized.current || !map.getSource('counties')) return;
     initialized.current = true;
 
-    map.addLayer({
-      id: INELIGIBLE_FILL,
-      type: 'fill',
-      source: 'counties',
-      paint: {
-        'fill-color': '#0d1117',
-        'fill-opacity': 0.6,
-      },
-    });
-
-    map.addLayer({
-      id: ELIGIBLE_FILL,
-      type: 'fill',
-      source: 'counties',
-      paint: {
-        'fill-color': '#2dd4bf',
-        'fill-opacity': 0.2,
-      },
-      filter: ['==', ['get', 'GEOID'], ''],
-    });
-
-    map.addLayer({
-      id: ELIGIBLE_BORDER,
-      type: 'line',
-      source: 'counties',
-      paint: {
-        'line-color': '#2dd4bf',
-        'line-width': 1.5,
-      },
-      filter: ['==', ['get', 'GEOID'], ''],
-    });
-
-    map.addLayer({
-      id: GHOST_FILL,
-      type: 'fill',
-      source: 'counties',
-      paint: {
-        'fill-color': '#2dd4bf',
-        'fill-opacity': 0.4,
-        'fill-outline-color': '#2dd4bf',
-      },
-      filter: ['==', ['get', 'GEOID'], ''],
-    });
+    map.addLayer({ id: INELIGIBLE_FILL, type: 'fill', source: 'counties',
+      paint: { 'fill-color': '#0d1117', 'fill-opacity': 0.6 } });
+    map.addLayer({ id: ELIGIBLE_FILL, type: 'fill', source: 'counties',
+      paint: { 'fill-color': '#2dd4bf', 'fill-opacity': 0.2 },
+      filter: ['==', ['get', 'GEOID'], ''] });
+    map.addLayer({ id: ELIGIBLE_BORDER, type: 'line', source: 'counties',
+      paint: { 'line-color': '#2dd4bf', 'line-width': 1.5 },
+      filter: ['==', ['get', 'GEOID'], ''] });
+    map.addLayer({ id: GHOST_FILL, type: 'fill', source: 'counties',
+      paint: { 'fill-color': '#2dd4bf', 'fill-opacity': 0.4, 'fill-outline-color': '#2dd4bf' },
+      filter: ['==', ['get', 'GEOID'], ''] });
 
     return () => {
       [GHOST_FILL, ELIGIBLE_BORDER, ELIGIBLE_FILL, INELIGIBLE_FILL].forEach(id => {
@@ -171,33 +307,96 @@ export function PlacementOverlay({ map }: PlacementOverlayProps) {
     };
   }, [map]);
 
-  // Ineligible county hover — always active during placement, no placementMode dependency
+  // ── Zoom threshold tracking ────────────────────────────────────────────────
+
+  useEffect(() => {
+    const onZoom = () => {
+      const above = map.getZoom() >= PIN_ZOOM_THRESHOLD;
+      setPlacementZoomAbove(above);
+    };
+    map.on('zoom', onZoom);
+    // Initialise immediately
+    onZoom();
+    return () => { map.off('zoom', onZoom); };
+  }, [map, setPlacementZoomAbove]);
+
+  // ── Ghost cursor + snap (above zoom threshold) ────────────────────────────
+
+  useEffect(() => {
+    if (!placementMode) {
+      setGhostScreenPos(null);
+      return;
+    }
+
+    const handleMouseMove = (e: maplibregl.MapMouseEvent) => {
+      const pm = placementModeRef.current;
+      if (!pm || !pm.zoomAboveThreshold) {
+        setGhostScreenPos(null);
+        return;
+      }
+
+      const lngLat: [number, number] = [e.lngLat.lng, e.lngLat.lat];
+      const snap = findSnapTarget(lngLat, engineStateRef.current);
+
+      if (snap) {
+        // Project snap target coords to screen
+        const pt = map.project(snap.coords as maplibregl.LngLatLike);
+        setGhostScreenPos({ x: pt.x, y: pt.y });
+        setPlacementPin(snap.coords, snap);
+        setGhostCursorCoords(snap.coords);
+      } else {
+        setGhostScreenPos({ x: e.point.x, y: e.point.y });
+        setPlacementPin(null, null);
+        setGhostCursorCoords(lngLat);
+      }
+    };
+
+    const handleMouseLeave = () => {
+      setGhostScreenPos(null);
+      setGhostCursorCoords(null);
+    };
+
+    map.on('mousemove', handleMouseMove);
+    map.on('mouseout', handleMouseLeave);
+    return () => {
+      map.off('mousemove', handleMouseMove);
+      map.off('mouseout', handleMouseLeave);
+    };
+  }, [map, placementMode, setPlacementPin, setGhostCursorCoords]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ── Nudge helper ───────────────────────────────────────────────────────────
+
+  const showNudge = useCallback((msg: string) => {
+    setNudgeMessage(msg);
+    if (nudgeTimer.current) clearTimeout(nudgeTimer.current);
+    nudgeTimer.current = setTimeout(() => setNudgeMessage(null), 3000);
+  }, []);
+
+  // ── Ineligible county hover ────────────────────────────────────────────────
+
   useEffect(() => {
     const handleIneligibleMove = (
-      e: maplibregl.MapMouseEvent & { features?: maplibregl.MapGeoJSONFeature[] }
+      e: maplibregl.MapMouseEvent & { features?: maplibregl.MapGeoJSONFeature[] },
     ) => {
       const pm = placementModeRef.current;
       if (!pm || !e.features?.length) return;
       const geoid = String(e.features[0].properties?.GEOID ?? '');
-      if (pm.eligibleGeoids.has(geoid)) return; // eligible — handled by ELIGIBLE_FILL handler
+      if (pm.eligibleGeoids.has(geoid)) return;
       setIneligibleHover({ x: e.point.x, y: e.point.y, geoid });
     };
-
     const handleIneligibleLeave = () => setIneligibleHover(null);
-
     map.on('mousemove', INELIGIBLE_FILL, handleIneligibleMove);
     map.on('mouseleave', INELIGIBLE_FILL, handleIneligibleLeave);
-
     return () => {
       map.off('mousemove', INELIGIBLE_FILL, handleIneligibleMove);
       map.off('mouseleave', INELIGIBLE_FILL, handleIneligibleLeave);
     };
   }, [map]);
 
-  // Update filters and eligible event handlers when placementMode changes
+  // ── Click handling (zoom-aware) ────────────────────────────────────────────
+
   useEffect(() => {
     setIneligibleHover(null);
-
     if (!placementMode) {
       [GHOST_FILL, ELIGIBLE_BORDER, ELIGIBLE_FILL, INELIGIBLE_FILL].forEach(id => {
         if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', 'none');
@@ -226,60 +425,111 @@ export function PlacementOverlay({ map }: PlacementOverlayProps) {
     if (map.getLayer(ELIGIBLE_BORDER)) map.setFilter(ELIGIBLE_BORDER, eligibleFilter);
     if (map.getLayer(INELIGIBLE_FILL)) map.setFilter(INELIGIBLE_FILL, ineligibleFilter);
 
-    const handleClick = (
-      e: maplibregl.MapMouseEvent & { features?: maplibregl.MapGeoJSONFeature[] }
+    // ── Above-threshold click: exact coords + PiP ──────────────────────────
+    const handlePreciseClick = (e: maplibregl.MapMouseEvent) => {
+      const pm = placementModeRef.current;
+      if (!pm || !pm.zoomAboveThreshold) return;
+
+      // Determine county via rendered features (MapLibre spatial index)
+      const features = map.queryRenderedFeatures(e.point, { layers: [FILL_LAYER] });
+      const clickedGeoid = features[0]?.properties?.GEOID
+        ? String(features[0].properties.GEOID)
+        : null;
+
+      if (!clickedGeoid || !pm.eligibleGeoids.has(clickedGeoid)) {
+        // Outside eligible county — nudge
+        const countyCards = engineStateRef.current.county_cards as Record<string, { county_name?: string }>;
+        const nearestEligible = eligible[0];
+        const nearestName = nearestEligible
+          ? (countyCards[nearestEligible]?.county_name ?? nearestEligible)
+          : 'an eligible county';
+        showNudge(`outside ${clickedGeoid
+          ? (countyCards[clickedGeoid]?.county_name ?? clickedGeoid)
+          : 'county boundary'} — pin must be in ${nearestName}`);
+        return;
+      }
+
+      // Determine pin coords: snap if active, otherwise exact click
+      const lngLat: [number, number] = [e.lngLat.lng, e.lngLat.lat];
+      const snap = findSnapTarget(lngLat, engineStateRef.current);
+      const pinCoords = snap ? snap.coords : lngLat;
+      setPlacementPin(pinCoords, snap ?? null);
+      setShowModal({ geoid: clickedGeoid });
+    };
+
+    // ── Below-threshold click: county-level (existing behaviour) ──────────
+    const handleCountyClick = (
+      e: maplibregl.MapMouseEvent & { features?: maplibregl.MapGeoJSONFeature[] },
     ) => {
+      const pm = placementModeRef.current;
+      if (!pm || pm.zoomAboveThreshold) return; // precise handler takes over above threshold
       if (!e.features?.length) return;
       const geoid = String(e.features[0].properties?.GEOID ?? '');
-      if (!placementMode.eligibleGeoids.has(geoid)) return;
+      if (!pm.eligibleGeoids.has(geoid)) return;
+      // No pin coords at county level — existing flow
+      setPlacementPin(null, null);
       setShowModal({ geoid });
     };
 
     const handleEligibleHover = (
-      e: maplibregl.MapMouseEvent & { features?: maplibregl.MapGeoJSONFeature[] }
+      e: maplibregl.MapMouseEvent & { features?: maplibregl.MapGeoJSONFeature[] },
     ) => {
+      const pm = placementModeRef.current;
       if (!e.features?.length) return;
       const geoid = String(e.features[0].properties?.GEOID ?? '');
-      if (!placementMode.eligibleGeoids.has(geoid)) {
+      if (!pm || !pm.eligibleGeoids.has(geoid)) {
         ghostRef.current = null;
-        if (map.getLayer(GHOST_FILL)) {
-          map.setFilter(GHOST_FILL, ['==', ['get', 'GEOID'], '']);
-        }
+        if (map.getLayer(GHOST_FILL)) map.setFilter(GHOST_FILL, ['==', ['get', 'GEOID'], '']);
         return;
       }
-      setIneligibleHover(null); // clear ineligible tooltip when over eligible county
-      if (ghostRef.current !== geoid) {
+      setIneligibleHover(null);
+      if (!pm.zoomAboveThreshold && ghostRef.current !== geoid) {
         ghostRef.current = geoid;
-        if (map.getLayer(GHOST_FILL)) {
-          map.setFilter(GHOST_FILL, ['==', ['get', 'GEOID'], geoid]);
-        }
+        if (map.getLayer(GHOST_FILL)) map.setFilter(GHOST_FILL, ['==', ['get', 'GEOID'], geoid]);
       }
     };
 
-    map.on('click', ELIGIBLE_FILL, handleClick);
+    // Precise click fires on the whole map canvas
+    map.on('click', handlePreciseClick);
+    // County-level click fires on ELIGIBLE_FILL only (below threshold)
+    map.on('click', ELIGIBLE_FILL, handleCountyClick);
     map.on('mousemove', ELIGIBLE_FILL, handleEligibleHover);
 
     return () => {
-      map.off('click', ELIGIBLE_FILL, handleClick);
+      map.off('click', handlePreciseClick);
+      map.off('click', ELIGIBLE_FILL, handleCountyClick);
       map.off('mousemove', ELIGIBLE_FILL, handleEligibleHover);
     };
-  }, [map, placementMode]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [map, placementMode, showNudge, setPlacementPin]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Derive reason for currently-hovered ineligible county
+  // ── Derive helpers ─────────────────────────────────────────────────────────
+
   const ineligibleReason =
     ineligibleHover && placementMode
-      ? deriveIneligibleReason(
-          ineligibleHover.geoid,
-          placementMode.action,
-          engineState.crosswalk,
-        )
+      ? deriveIneligibleReason(ineligibleHover.geoid, placementMode.action, engineState.crosswalk)
       : null;
 
   const countyCards = engineState.county_cards as Record<string, { county_name?: string; state?: string }>;
 
+  const isSnapping = !!placementMode?.snapTarget;
+  const snapName = placementMode?.snapTarget?.name ?? undefined;
+
   return (
     <>
-      {/* Ineligible county reason tooltip */}
+      {/* ── Nudge toast ── */}
+      {nudgeMessage && <NudgeToast message={nudgeMessage} />}
+
+      {/* ── Ghost cursor (above zoom threshold only) ── */}
+      {placementMode?.zoomAboveThreshold && ghostScreenPos && !showModal && (
+        <GhostCursor
+          x={ghostScreenPos.x}
+          y={ghostScreenPos.y}
+          snapping={isSnapping}
+          snapName={isSnapping ? snapName : undefined}
+        />
+      )}
+
+      {/* ── Ineligible county reason tooltip ── */}
       {ineligibleHover && ineligibleReason && (
         <Tooltip
           x={ineligibleHover.x}
@@ -292,7 +542,7 @@ export function PlacementOverlay({ map }: PlacementOverlayProps) {
         />
       )}
 
-      {/* Placement modal */}
+      {/* ── Placement modal ── */}
       {placementMode && showModal && (() => {
         const { action } = placementMode;
         const unitScale = action.unit_scale ?? 100;
@@ -303,9 +553,8 @@ export function PlacementOverlay({ map }: PlacementOverlayProps) {
         const overflow = isEraOverflow(consumption, remainingBudget);
         const currentEra = getEraForYear(gameYear);
         const currentEraName = ERA_NAMES[currentEra.era_start] ?? `Era ${currentEra.era_start}–${currentEra.era_end}`;
-        const nextEraStart = currentEra.era_end; // first year of the next era
+        const nextEraStart = currentEra.era_end;
 
-        // Binding constraint: pool with largest overage as % of remaining
         const bindingResource = overflow.resources.reduce((worst, res) => {
           const budgetMap: Record<string, { c: number; r: number }> = {
             capital: { c: consumption.capital_cost_usd, r: remainingBudget.capital_cost_usd },
@@ -323,27 +572,26 @@ export function PlacementOverlay({ map }: PlacementOverlayProps) {
           return curPct > prevPct ? { res, pct: curPct } : worst;
         }, null as { res: string; pct: number } | null);
 
+        // F3: pin info for snap disclosure in modal header
+        const pinLabel = placementMode.pinCoords
+          ? placementMode.snapTarget
+            ? `pinned → ${placementMode.snapTarget.name}`
+            : `pinned ${placementMode.pinCoords[0].toFixed(2)}, ${placementMode.pinCoords[1].toFixed(2)}`
+          : null;
+
         return (
           <div
             style={{
-              position: 'absolute',
-              inset: 0,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              background: 'rgba(13, 17, 23, 0.6)',
-              zIndex: 100,
+              position: 'absolute', inset: 0,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              background: 'rgba(13, 17, 23, 0.6)', zIndex: 100,
             }}
             onClick={(e) => { if (e.target === e.currentTarget) setShowModal(null); }}
           >
             <div style={{
-              background: 'var(--bg-elevated)',
-              border: '1px solid var(--border)',
-              borderRadius: 8,
-              padding: 24,
-              width: 340,
-              fontFamily: 'var(--font-mono)',
-              color: 'var(--text-primary)',
+              background: 'var(--bg-elevated)', border: '1px solid var(--border)',
+              borderRadius: 8, padding: 24, width: 340,
+              fontFamily: 'var(--font-mono)', color: 'var(--text-primary)',
             }}>
               <div style={{ marginBottom: 16 }}>
                 <div style={{ fontSize: 12, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 1 }}>
@@ -355,6 +603,28 @@ export function PlacementOverlay({ map }: PlacementOverlayProps) {
                 <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 4 }}>
                   County: {showModal.geoid}
                 </div>
+                {/* F3: pin / snap disclosure */}
+                {pinLabel && (
+                  <div style={{
+                    fontSize: 10, marginTop: 4,
+                    color: placementMode.snapTarget ? 'var(--amber)' : 'var(--teal)',
+                  }}>
+                    {placementMode.snapTarget
+                      ? `⬡ snapped to ${placementMode.snapTarget.type === 'site' ? 'site' : 'anchor'}`
+                      : '📍'} {pinLabel}
+                  </div>
+                )}
+                {/* Snap succession discount reminder */}
+                {placementMode.snapTarget?.type === 'site' && (
+                  <div style={{
+                    marginTop: 4, padding: '4px 8px',
+                    background: 'rgba(45,212,191,0.05)',
+                    border: '1px solid var(--teal-dim)',
+                    borderRadius: 3, fontSize: 9, color: 'var(--teal)',
+                  }}>
+                    Site succession discount applies — TTD, capex, TX waiver itemized below.
+                  </div>
+                )}
               </div>
 
               <div style={{ marginBottom: 16 }}>
@@ -363,9 +633,7 @@ export function PlacementOverlay({ map }: PlacementOverlayProps) {
                 </label>
                 <input
                   type="range"
-                  min={unitScale / 10}
-                  max={unitScale * 5}
-                  step={unitScale / 10}
+                  min={unitScale / 10} max={unitScale * 5} step={unitScale / 10}
                   value={modalMagnitude}
                   onChange={(e) => setModalMagnitude(Number(e.target.value))}
                   style={{ width: '100%', accentColor: 'var(--teal)' }}
@@ -378,7 +646,6 @@ export function PlacementOverlay({ map }: PlacementOverlayProps) {
                 </div>
               </div>
 
-              {/* Budget consumption */}
               {budgetStrings.length > 0 && (
                 <div style={{ marginBottom: 16, fontSize: 11 }}>
                   <div style={{ color: 'var(--text-muted)', marginBottom: 4 }}>ERA RESOURCE USAGE</div>
@@ -400,10 +667,10 @@ export function PlacementOverlay({ map }: PlacementOverlayProps) {
 
                 const rates = JOBS_PER_MW[action.action_id ?? ''];
                 const constructionJobs = rates ? rates.c * modalMagnitude : 0;
-                const operationsJobs   = rates ? rates.o * modalMagnitude : 0;
-                const laborForce       = card?.employment ?? 0;
-                const jobsPctLF        = laborForce > 0 ? constructionJobs / laborForce : 0;
-                const housingFlag      = jobsPctLF >= HOUSING_PRESSURE_THRESHOLD;
+                const operationsJobs = rates ? rates.o * modalMagnitude : 0;
+                const laborForce = card?.employment ?? 0;
+                const jobsPctLF = laborForce > 0 ? constructionJobs / laborForce : 0;
+                const housingFlag = jobsPctLF >= HOUSING_PRESSURE_THRESHOLD;
 
                 const fiscalDelta = cf ? computeFiscalDelta(engineState, action.action_id ?? '', geoid, modalMagnitude) : null;
                 const propTaxDelta = fiscalDelta?.property_tax_delta ?? null;
@@ -415,7 +682,7 @@ export function PlacementOverlay({ map }: PlacementOverlayProps) {
                   : null;
 
                 const showFiscal = isWY && (netFiscalDelta != null && netFiscalDelta !== 0);
-                const hasFirmMw  = (action.bucket ?? action.category) === 'energy_generation';
+                const hasFirmMw = (action.bucket ?? action.category) === 'energy_generation';
 
                 const era = getEraForYear(gameYear);
                 const eraPoolShares: { label: string; pct: number }[] = [];
@@ -438,35 +705,16 @@ export function PlacementOverlay({ map }: PlacementOverlayProps) {
 
                 if (constructionJobs === 0 && !showFiscal) return null;
 
-                const cellLabel: React.CSSProperties = {
-                  fontSize: 10, color: 'var(--text-muted)', marginBottom: 2,
-                  textTransform: 'uppercase', letterSpacing: 0.5,
-                };
-                const row: React.CSSProperties = {
-                  display: 'flex', justifyContent: 'space-between',
-                  padding: '2px 0', borderTop: '1px solid var(--border)', fontSize: 11,
-                };
+                const cellLabel: React.CSSProperties = { fontSize: 10, color: 'var(--text-muted)', marginBottom: 2, textTransform: 'uppercase', letterSpacing: 0.5 };
+                const row: React.CSSProperties = { display: 'flex', justifyContent: 'space-between', padding: '2px 0', borderTop: '1px solid var(--border)', fontSize: 11 };
 
                 return (
-                  <div style={{
-                    marginBottom: 16,
-                    padding: '10px 12px',
-                    background: 'rgba(45, 212, 191, 0.05)',
-                    border: '1px solid var(--teal-dim)',
-                    borderRadius: 4,
-                    fontSize: 11,
-                  }}>
+                  <div style={{ marginBottom: 16, padding: '10px 12px', background: 'rgba(45, 212, 191, 0.05)', border: '1px solid var(--teal-dim)', borderRadius: 4, fontSize: 11 }}>
                     <div style={{ display: 'flex', gap: 12, marginBottom: 6 }}>
-                      <div style={{ flex: 1 }}>
-                        <div style={cellLabel}>This county</div>
-                      </div>
-                      <div style={{ flex: 1 }}>
-                        <div style={cellLabel}>Era budget share</div>
-                      </div>
+                      <div style={{ flex: 1 }}><div style={cellLabel}>This county</div></div>
+                      <div style={{ flex: 1 }}><div style={cellLabel}>Era budget share</div></div>
                     </div>
-
                     <div style={{ display: 'flex', gap: 12 }}>
-                      {/* This county column */}
                       <div style={{ flex: 1 }}>
                         {constructionJobs > 0 && (
                           <div style={row}>
@@ -499,9 +747,7 @@ export function PlacementOverlay({ map }: PlacementOverlayProps) {
                         {showFiscal && netFiscalDelta != null && (
                           <div style={row}>
                             <span style={{ color: 'var(--text-secondary)' }}>Δ revenue/yr</span>
-                            <span style={{ color: netFiscalDelta >= 0 ? 'var(--teal)' : 'var(--deficit)' }}>
-                              {fmt$(netFiscalDelta)}
-                            </span>
+                            <span style={{ color: netFiscalDelta >= 0 ? 'var(--teal)' : 'var(--deficit)' }}>{fmt$(netFiscalDelta)}</span>
                           </div>
                         )}
                         {showFiscal && propTaxDelta != null && propTaxDelta !== 0 && (
@@ -519,10 +765,7 @@ export function PlacementOverlay({ map }: PlacementOverlayProps) {
                         {showFiscal && ledgerCDelta != null && ledgerCDelta !== 0 && (
                           <div style={row}>
                             <span style={{ color: 'var(--text-muted)' }}>  ↳ School finance Δ (C)</span>
-                            <span style={{
-                              color: ledgerCDelta >= 0 ? 'var(--teal)' : 'var(--deficit)',
-                              fontWeight: 500,
-                            }}>
+                            <span style={{ color: ledgerCDelta >= 0 ? 'var(--teal)' : 'var(--deficit)', fontWeight: 500 }}>
                               {fmt$(ledgerCDelta)}
                             </span>
                           </div>
@@ -533,8 +776,6 @@ export function PlacementOverlay({ map }: PlacementOverlayProps) {
                           </div>
                         )}
                       </div>
-
-                      {/* Era budget column */}
                       <div style={{ flex: 1 }}>
                         {eraPoolShares.map(p => (
                           <div key={p.label} style={row}>
@@ -553,7 +794,6 @@ export function PlacementOverlay({ map }: PlacementOverlayProps) {
                 );
               })()}
 
-              {/* Delta-projection strip: 3 mini trajectories */}
               {showModal && (
                 <DeltaProjectionStrip
                   actionId={action.action_id ?? ''}
@@ -562,21 +802,10 @@ export function PlacementOverlay({ map }: PlacementOverlayProps) {
                 />
               )}
 
-              {/* Overflow banner */}
               {overflow.overflows && bindingResource && (
-                <div
-                  style={{
-                    marginBottom: 16,
-                    padding: '8px 10px',
-                    background: 'rgba(245, 158, 11, 0.1)',
-                    border: '1px solid var(--amber)',
-                    borderRadius: 4,
-                    fontSize: 11,
-                  }}
-                >
+                <div style={{ marginBottom: 16, padding: '8px 10px', background: 'rgba(245, 158, 11, 0.1)', border: '1px solid var(--amber)', borderRadius: 4, fontSize: 11 }}>
                   <div style={{ color: 'var(--amber)', fontWeight: 500, marginBottom: 4 }}>
-                    {bindingResource.res.charAt(0).toUpperCase() + bindingResource.res.slice(1)} pool exhausted
-                    for {currentEraName}
+                    {bindingResource.res.charAt(0).toUpperCase() + bindingResource.res.slice(1)} pool exhausted for {currentEraName}
                   </div>
                   <div style={{ color: 'var(--text-secondary)' }}>
                     This build is scheduled to begin {nextEraStart}.
@@ -587,21 +816,8 @@ export function PlacementOverlay({ map }: PlacementOverlayProps) {
                     )}
                   </div>
                   <button
-                    onClick={() => {
-                      const chipKey = RESOURCE_TO_CHIP[bindingResource.res] ?? bindingResource.res;
-                      setHudOpenChip(chipKey);
-                    }}
-                    style={{
-                      marginTop: 6,
-                      background: 'transparent',
-                      border: 'none',
-                      color: 'var(--amber)',
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: 10,
-                      cursor: 'pointer',
-                      padding: 0,
-                      textDecoration: 'underline',
-                    }}
+                    onClick={() => { const chipKey = RESOURCE_TO_CHIP[bindingResource.res] ?? bindingResource.res; setHudOpenChip(chipKey); }}
+                    style={{ marginTop: 6, background: 'transparent', border: 'none', color: 'var(--amber)', fontFamily: 'var(--font-mono)', fontSize: 10, cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
                   >
                     View {bindingResource.res} pool breakdown ↑
                   </button>
@@ -610,37 +826,14 @@ export function PlacementOverlay({ map }: PlacementOverlayProps) {
 
               <div style={{ display: 'flex', gap: 8, marginTop: 20 }}>
                 <button
-                  onClick={() => {
-                    confirmPlacement(showModal.geoid, modalMagnitude);
-                    setShowModal(null);
-                  }}
-                  style={{
-                    flex: 1,
-                    padding: '8px 0',
-                    background: 'var(--teal-dim)',
-                    color: 'var(--text-primary)',
-                    border: 'none',
-                    borderRadius: 4,
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: 13,
-                    cursor: 'pointer',
-                  }}
+                  onClick={() => { confirmPlacement(showModal.geoid, modalMagnitude); setShowModal(null); }}
+                  style={{ flex: 1, padding: '8px 0', background: 'var(--teal-dim)', color: 'var(--text-primary)', border: 'none', borderRadius: 4, fontFamily: 'var(--font-mono)', fontSize: 13, cursor: 'pointer' }}
                 >
                   Confirm
                 </button>
                 <button
                   onClick={() => { setShowModal(null); exitPlacementMode(); }}
-                  style={{
-                    flex: 1,
-                    padding: '8px 0',
-                    background: 'transparent',
-                    color: 'var(--text-secondary)',
-                    border: '1px solid var(--border)',
-                    borderRadius: 4,
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: 13,
-                    cursor: 'pointer',
-                  }}
+                  style={{ flex: 1, padding: '8px 0', background: 'transparent', color: 'var(--text-secondary)', border: '1px solid var(--border)', borderRadius: 4, fontFamily: 'var(--font-mono)', fontSize: 13, cursor: 'pointer' }}
                 >
                   Cancel
                 </button>

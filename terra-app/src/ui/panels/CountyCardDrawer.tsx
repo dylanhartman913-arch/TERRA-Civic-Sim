@@ -467,6 +467,8 @@ export function CountyCardDrawer() {
   const storeDelayRetirement = useTerraStore(s => s.delayRetirement);
   const storeCancelQueued = useTerraStore(s => s.cancelQueued);
   const engineState = useTerraStore(s => s.engineState) as EngineState;
+  // F3: read actionLog to surface site_coords on queued-asset rows
+  const actionLog = useTerraStore(s => s.actionLog);
 
   const [reductionModal, setReductionModal] = useState<ReductionModalState | null>(null);
   const [retirementModal, setRetirementModal] = useState<RetirementModalState | null>(null);
@@ -642,6 +644,20 @@ export function CountyCardDrawer() {
                 ? productionAssets.find(p => p.name === asset.name)
                 : null;
 
+              // F3: look up site_coords from action log
+              const logEntry = isPlayer && isQueuedOrUC
+                ? actionLog.find(
+                    e => e.type === 'queue' &&
+                      e.actionId === asset.action_id &&
+                      e.geoid === asset.geoid &&
+                      e.decisionYear === asset.decision_year,
+                  )
+                : null;
+              const siteCoords = logEntry?.site_coords ?? null;
+              const pinLabel = siteCoords
+                ? `pinned ${siteCoords[0].toFixed(2)}, ${siteCoords[1].toFixed(2)}`
+                : null;
+
               // Timeline countdowns
               const constructionYrs = (!asset.commissioned && asset.operational_year != null && isPlayer)
                 ? Math.max(0, asset.operational_year - engineState.year)
@@ -680,6 +696,13 @@ export function CountyCardDrawer() {
                   <div style={{ fontSize: 10, color: 'var(--text-secondary)', paddingLeft: 2, marginBottom: 2 }}>
                     {assetSubtitle(asset, engineState.year)}
                   </div>
+
+                  {/* F3: pin label when site_coords present */}
+                  {pinLabel && (
+                    <div style={{ fontSize: 9, color: 'var(--teal)', paddingLeft: 2, marginBottom: 2 }}>
+                      📍 {pinLabel}
+                    </div>
+                  )}
 
                   {/* Symmetric countdown bars */}
                   {constructionYrs != null && constructionYrs > 0 && constructionTotal != null && (

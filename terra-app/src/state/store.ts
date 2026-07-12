@@ -68,12 +68,32 @@ import fiscalCoefficientsData from '../data/fiscal_coefficients.json';
 export type ActiveMetric = 'E' | 'Ec' | 'S' | 'firm_capacity_margin' | 'load_growth' | 'delta_jobs' | 'delta_revenue' | 'construction_activity';
 export type { ActionLogEntry } from '../engine/types.js';
 
+/** F3: What a pin snapped to (site asset or Tier-2 anchor facility). */
+export interface PinSnapTarget {
+  type: 'site' | 'anchor';
+  /** asset_id for site; anchor name for anchor */
+  id: string;
+  name: string;
+  coords: [number, number];
+  /** Defined for type='site' — routes through existing succession-discount path */
+  siteAssetId?: string;
+}
+
 export interface PlacementMode {
   actionId: string;
   action: ActionRecord;
   eligibleGeoids: Set<string>;
   ghostGeoid: string | null;
   magnitude: number;
+  // F3 pin state — all optional/null so existing code paths are unchanged
+  /** Dropped pin [lon, lat]; null = not yet placed */
+  pinCoords: [number, number] | null;
+  /** Cursor position while dragging above zoom threshold (ghost icon follows) */
+  ghostCursorCoords: [number, number] | null;
+  /** True when map zoom >= PIN_ZOOM_THRESHOLD (towns legible) */
+  zoomAboveThreshold: boolean;
+  /** Non-null when pin magnetized to an anchor or site */
+  snapTarget: PinSnapTarget | null;
 }
 
 export interface LayerVisibility {
@@ -432,7 +452,7 @@ interface TerraStore {
 
   // Core game actions
   applyAction: (actionId: string, geoid: string, magnitude: number) => void;
-  queueAction: (actionId: string, geoid: string, magnitude: number, decisionYear: number, overrideOp?: number) => void;
+  queueAction: (actionId: string, geoid: string, magnitude: number, decisionYear: number, overrideOp?: number, siteCoords?: [number, number]) => void;
   advanceYear: () => void;
   reduceProductionAsset: (geoid: string, commodity: string, deltaVolume: number) => void;
 
@@ -453,6 +473,10 @@ interface TerraStore {
   enterPlacementMode: (actionId: string) => void;
   exitPlacementMode: () => void;
   confirmPlacement: (geoid: string, magnitude: number) => void;
+  // F3 pin actions
+  setPlacementPin: (coords: [number, number] | null, snapTarget: PinSnapTarget | null) => void;
+  setGhostCursorCoords: (coords: [number, number] | null) => void;
+  setPlacementZoomAbove: (above: boolean) => void;
   toggleLayer: (layer: keyof LayerVisibility) => void;
   setActiveScenario: (profile: ScenarioProfile) => void;
   dismissAutoPause: () => void;
@@ -679,12 +703,14 @@ export const useTerraStore = create<TerraStore>((set, get) => ({
     return result;
   },
 
-  queueAction: (actionId, geoid, magnitude, decisionYear, overrideOp) => {
+  queueAction: (actionId, geoid, magnitude, decisionYear, overrideOp, siteCoords) => {
     const { engineState, actionLog, yearSnapshots } = get();
     const newState = engineQueueAction(engineState, actionId, geoid, magnitude, decisionYear, overrideOp);
     const entry: ActionLogEntry = {
       type: 'queue', actionId, geoid, magnitude,
       year: engineState.year, decisionYear, overrideOp, timestamp: Date.now(),
+      // F3: site_coords is UI-only — excluded from digest, invisible to engine
+      ...(siteCoords ? { site_coords: siteCoords } : {}),
     };
     const newLog = [...actionLog, entry];
     const era = getEraForYear(engineState.year);
@@ -807,7 +833,13 @@ export const useTerraStore = create<TerraStore>((set, get) => ({
     if (!action) return;
     const eligibleGeoids = new Set<string>(action.applicable_counties ?? []);
     set({
-      placementMode: { actionId, action, eligibleGeoids, ghostGeoid: null, magnitude: action.unit_scale ?? 100 },
+      placementMode: {
+        actionId, action, eligibleGeoids, ghostGeoid: null,
+        magnitude: action.unit_scale ?? 100,
+        // F3 pin state — all null/false on entry
+        pinCoords: null, ghostCursorCoords: null,
+        zoomAboveThreshold: false, snapTarget: null,
+      },
     });
   },
 
@@ -816,12 +848,33 @@ export const useTerraStore = create<TerraStore>((set, get) => ({
   confirmPlacement: (geoid, magnitude) => {
     const { placementMode, engineState } = get();
     if (!placementMode) return;
-    get().queueAction(placementMode.actionId, geoid, magnitude, engineState.year);
+    // F3: thread pin coords through to queueAction (null → omitted from log entry)
+    const siteCoords = placementMode.pinCoords ?? undefined;
+    get().queueAction(placementMode.actionId, geoid, magnitude, engineState.year, undefined, siteCoords);
     set({ placementMode: null });
     const { activeCampaign, campaignAct } = get();
     if (activeCampaign && campaignAct === 3) {
       get().advanceCampaignHint();
     }
+  },
+
+  // F3 pin store actions
+  setPlacementPin: (coords, snapTarget) => {
+    const { placementMode } = get();
+    if (!placementMode) return;
+    set({ placementMode: { ...placementMode, pinCoords: coords, snapTarget } });
+  },
+
+  setGhostCursorCoords: (coords) => {
+    const { placementMode } = get();
+    if (!placementMode) return;
+    set({ placementMode: { ...placementMode, ghostCursorCoords: coords } });
+  },
+
+  setPlacementZoomAbove: (above) => {
+    const { placementMode } = get();
+    if (!placementMode) return;
+    set({ placementMode: { ...placementMode, zoomAboveThreshold: above } });
   },
 
   toggleLayer: (layer) => {
