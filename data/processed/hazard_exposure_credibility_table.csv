@@ -1,0 +1,14 @@
+geoid,county_name,state,wrc_risk_national_rank,wildfire_risk_score,drought_risk_score,hail_risk_score,strong_wind_risk_score,mtbs_fire_count_2000_2024,mtbs_burned_acres_2000_2024
+08107,Craig (CO),asset,,med,wet,,,,
+08117,Summit,CO,0.537,53.56234096692112,0.0,78.49872773536896,19.020356234096692,2,16155.0
+56015,Goshen,WY,0.811,72.6145038167939,55.37531806615776,86.73664122137404,17.20737913486005,9,44591.0
+56027,Niobrara,WY,0.824,80.88422391857506,25.127226463104325,25.731552162849873,3.307888040712468,12,50330.0
+56039,Teton,WY,0.881,90.64885496183206,16.444020356234095,22.423664122137403,8.93765903307888,102,544327.0
+30087,Colstrip,asset,,high,wet,,,,
+30087,COLSTRIP ENERGY LTD PARTNERSHIP,asset,,high,wet,,,,
+30087,Colstrip,asset,,high,wet,,,,
+30087,Colstrip Energy LP,asset,,high,wet,,,,
+56037,Jim Bridger,asset,,low,wet,,,,
+56037,Jim Bridger Mine,asset,,low,wet,,,,
+56037,Jim Bridger Power Plant,asset,,low,wet,,,,
+56037,Jim Bridger,asset,,low,wet,,,,
