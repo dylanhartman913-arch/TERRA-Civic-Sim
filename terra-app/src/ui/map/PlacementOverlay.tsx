@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import type maplibregl from 'maplibre-gl';
 import { useTerraStore } from '../../state/store.js';
 import type { PinSnapTarget } from '../../state/store.js';
-import type { ActionRecord, CrosswalkRow, CountyFiscal, EngineState } from '../../engine/types.js';
+import type { ActionRecord, CrosswalkRow, CountyFiscal, AssetInstance, EngineState } from '../../engine/types.js';
 import { Tooltip } from './Tooltip.js';
 import { computeConsumption, getBudgetShareString, isEraOverflow, getEraForYear } from '../../engine/budgets.js';
 import { computeFiscalDelta } from '../../engine/engine.js';
@@ -26,7 +26,7 @@ interface AnchorFeature {
 }
 
 const TIER2_ANCHORS: AnchorFeature[] = (
-  (anchorFacilitiesData as unknown as { features: AnchorFeature[] }).features ?? []
+  (anchorFacilitiesData as { features: AnchorFeature[] }).features ?? []
 ).filter(f => f.properties.tier === 2);
 
 // ── Snap detection ────────────────────────────────────────────────────────────
