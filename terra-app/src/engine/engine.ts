@@ -12,6 +12,12 @@
  */
 
 import { snapshotIndicators } from './indicators.js';
+import {
+  computeDemandModifier,
+  computeWaterStressDerate,
+  computeHeatDerate,
+  THERMAL_DERATE_FUELS,
+} from './climate_couplings.js';
 
 // ── Pure-JS MD5 (RFC 1321) — browser + Node compatible ─────────────────────
 // Produces byte-identical output to Node's createHash('md5').update(s).digest('hex').
@@ -1084,6 +1090,20 @@ function resolveGeoidToBus(state: EngineState, geoid: string): string | null {
   return null;
 }
 
+/** Inverse crosswalk: return county GEOIDs whose primary bus is busId. */
+function resolveBusToGeoids(state: EngineState, busId: string): string[] {
+  const xw = state.crosswalk;
+  if (!xw) return [];
+  const geoids = new Set<string>();
+  const numBusId = Number(busId);
+  for (const row of xw) {
+    if (row.bus_id === numBusId && row.primary_bus) {
+      geoids.add(row.geoid);
+    }
+  }
+  return [...geoids].sort();
+}
+
 function getBusEcoregion(state: EngineState, busId: string): string | null {
   const bus = state.buses[busId];
   if (!bus) return null;
@@ -1173,6 +1193,7 @@ export function initializeState(
     bus_state[bid] = {
       capacity_mw: b.generation_mw,
       firm_capacity_mw: firm_cap,
+      firm_capacity_mw_nominal: firm_cap,  // C3: pre-derate baseline
       load_mw: b.load_mw,
       deficit_mw: Math.max(0.0, b.load_mw - firm_cap),
       storage_mwh: b.storage_mwh || 0.0,
@@ -1477,6 +1498,7 @@ export function applyAction(
       const bs = state.bus_state[busId] || {} as BusState;
       bs.capacity_mw = bus.generation_mw;
       bs.firm_capacity_mw = (bs.firm_capacity_mw || 0.0) + magnitude;
+      bs.firm_capacity_mw_nominal = (bs.firm_capacity_mw_nominal || 0.0) + magnitude;  // C3
       bs.deficit_mw = Math.max(0.0, (bs.load_mw || 0.0) - bs.firm_capacity_mw);
       state.bus_state[busId] = bs;
 
@@ -1493,6 +1515,7 @@ export function applyAction(
       const bs = state.bus_state[busId] || {} as BusState;
       bs.storage_mwh = bus.storage_mwh;
       bs.firm_capacity_mw = (bs.firm_capacity_mw || 0.0) + firmAdd;
+      bs.firm_capacity_mw_nominal = (bs.firm_capacity_mw_nominal || 0.0) + firmAdd;  // C3
       bs.deficit_mw = Math.max(0.0, (bs.load_mw || 0.0) - bs.firm_capacity_mw);
       state.bus_state[busId] = bs;
 
@@ -1519,6 +1542,7 @@ export function applyAction(
       const bs = state.bus_state[busId] || {} as BusState;
       bs.capacity_mw = bus.generation_mw;
       bs.firm_capacity_mw = (bs.firm_capacity_mw || 0.0) + magnitude;
+      bs.firm_capacity_mw_nominal = (bs.firm_capacity_mw_nominal || 0.0) + magnitude;  // C3
       bs.deficit_mw = Math.max(0.0, (bs.load_mw || 0.0) - bs.firm_capacity_mw);
       state.bus_state[busId] = bs;
 
@@ -1531,6 +1555,7 @@ export function applyAction(
       bs.capacity_mw = bus.generation_mw;
       bs.storage_mwh = bus.storage_mwh;
       bs.firm_capacity_mw = (bs.firm_capacity_mw || 0.0) + firmAdd;
+      bs.firm_capacity_mw_nominal = (bs.firm_capacity_mw_nominal || 0.0) + firmAdd;  // C3
       bs.deficit_mw = Math.max(0.0, (bs.load_mw || 0.0) - bs.firm_capacity_mw);
       state.bus_state[busId] = bs;
 
@@ -2080,6 +2105,8 @@ export function advanceYear(
         if (busId && state.bus_state[busId]) {
           state.bus_state[busId].capacity_mw -= asset.capacity_mw;
           state.bus_state[busId].firm_capacity_mw -= asset.capacity_mw;
+          state.bus_state[busId].firm_capacity_mw_nominal =
+            (state.bus_state[busId].firm_capacity_mw_nominal || 0.0) - asset.capacity_mw;  // C3
         }
       }
     }
@@ -2148,6 +2175,54 @@ export function advanceYear(
   // v4.2: advance population (baseline projection + migration adjustment)
   // Must run BEFORE snapshotIndicators so history captures end-of-year demographic state.
   advancePopulation(state, currentYear);
+
+  // ── v4.4 (C3): Climate coupling block ────────────────────────────────────
+  // Applies demand modulation and supply derates from climate projections.
+  // Under historical lens (or missing tables), this is a complete no-op.
+  const climateCtx = _climateContext;
+  if (climateCtx.lens !== 'historical' && Object.keys(climateCtx.tables).length > 0) {
+    const buses = state.buses;
+    for (const bid of Object.keys(state.bus_state)) {
+      const bs = state.bus_state[bid];
+      const geoids = resolveBusToGeoids(state, bid);
+      if (geoids.length === 0) continue;
+
+      // ── Demand modulation (population-weighted across counties on bus) ──
+      let totalPop = 0.0;
+      let weightedMod = 0.0;
+      for (const gid of geoids) {
+        const pop = state.county_ees[gid]?.population ?? 1.0;
+        const dm = computeDemandModifier(gid, currentYear, climateCtx);
+        weightedMod += dm.modifier * pop;
+        totalPop += pop;
+      }
+      const busModifier = totalPop > 0 ? weightedMod / totalPop : 1.0;
+      // Recompute from nominal load (buses dict) — never compound
+      const nominalLoad = buses[bid].load_mw;
+      bs.load_mw = Math.round(nominalLoad * busModifier * 10000) / 10000;
+
+      // ── Supply derates (worst-case county on bus) ────────────────────
+      const nominalFirm = bs.firm_capacity_mw_nominal ?? bs.firm_capacity_mw ?? 0.0;
+      const fuelMix = buses[bid].fuel_mix ?? {};
+      let thermalFirm = 0.0;
+      for (const fuel of THERMAL_DERATE_FUELS) {
+        thermalFirm += fuelMix[fuel] ?? 0.0;
+      }
+      thermalFirm = Math.min(thermalFirm, nominalFirm);
+      const nonThermalFirm = nominalFirm - thermalFirm;
+
+      let worstDerate = 1.0;
+      for (const gid of geoids) {
+        const ws = computeWaterStressDerate(gid, currentYear, climateCtx);
+        const ht = computeHeatDerate(gid, currentYear, climateCtx);
+        const countyDerate = ws.derate_factor * ht.derate_factor;
+        worstDerate = Math.min(worstDerate, countyDerate);
+      }
+
+      bs.firm_capacity_mw = Math.round((nonThermalFirm + thermalFirm * worstDerate) * 10000) / 10000;
+      bs.deficit_mw = Math.max(0.0, bs.load_mw - bs.firm_capacity_mw);
+    }
+  }
 
   // v4.0: append indicator snapshot at end of year
   state.history = [...(state.history ?? []), snapshotIndicators(state)];

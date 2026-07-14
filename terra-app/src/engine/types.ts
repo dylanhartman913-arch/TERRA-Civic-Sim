@@ -64,6 +64,7 @@ export interface EcoregionEES {
 export interface BusState {
   capacity_mw: number;
   firm_capacity_mw: number;
+  firm_capacity_mw_nominal: number;  // C3: pre-derate baseline (never climate-adjusted)
   load_mw: number;
   deficit_mw: number;
   storage_mwh: number;

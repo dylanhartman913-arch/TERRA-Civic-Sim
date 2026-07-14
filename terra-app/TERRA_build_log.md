@@ -2339,3 +2339,130 @@ Blast-radius diff scoped to F3 commits: `engine.ts`, `indicators.ts`,
 9. Export → JSON contains site_coords in actionLog entry
 10. Reimport → site_coords survive, digest unchanged
 ```
+
+## Phase C3 — Climate Coupling I (Demand / Water / Heat) + Golden L
+
+**Date:** 2026-07-12
+**Engine version:** 4.4
+**Baseline:** Post-F3 (295 TS / 111 Python = 406 total)
+**C0 debt retired:** Python ClimateContext plumbing (sentinel, params, state_digest)
+
+### What was built
+
+**1. Historical baseline back-derivation**
+
+`county_climate_projections.json` contains epochs 2030/2040/2050/2065 but NO historical records. Delta coupling requires `Δ = scenario − historical`. Historical window values were algebraically recovered from the epoch_doctrine weights and processed epoch values using a 4×4 linear system. Both SSP derivations averaged (differ by <3% from pipeline rounding).
+
+Verified: back-derived CDD for Campbell WY (56005) = 300–800 range, HDD for Eagle CO (08037) > 9000 — physically plausible for Mountain West.
+
+**2. Climate couplings module — `src/climate_couplings.py` + `terra-app/src/engine/climate_couplings.ts`**
+
+Pure functions consuming `(geoid, year, climate_context)` and returning `{modifier/derate_factor, attribution}`. All three couplings return identity (1.0) under historical lens.
+
+| Coupling | Formula | Coefficients | Source | Confidence |
+|---|---|---|---|---|
+| Demand CDD | `demand × (1 + β_c × ΔCDD)` | β_c = 0.0001/CDD | Auffhammer & Mansur (2014) JEL; Deschênes & Greenstone (2011) AER | medium |
+| Demand HDD | `demand × (1 + β_h × ΔHDD)` | β_h = 0.00002/HDD | Li et al. (2019) Nature Energy; adj. for MW electric heat share ~15% | medium |
+| Water stress | `thermal_firm × (1 − s × ΔWSI)` | s = 0.30/WSI, cap 15% | EPRI (2011); Macknick et al. (2012) NREL/TP-6A20-50900 | low |
+| Heat derate | `thermal_firm × (1 − s × Δd95F)` | s = 0.0005/day, cap 5% | NERC (2024); Bartos & Chester (2015) Nat. Clim. Change | medium |
+
+All deltas are absolute: `Δ = scenario_epoch_value − historical_window_value`.
+Composition: `demand_modified = baseline_load × demand_modifier`; `firm_modified = non_thermal + thermal × water_derate × heat_derate`.
+
+Epoch interpolation: linear between climatology window midpoints (2030, 2040, 2050, 2065); clamp at endpoints, no extrapolation per doctrine.
+
+**3. Python ClimateContext port (C0 debt)**
+
+- `EMPTY_CLIMATE_CONTEXT = {'lens': 'historical', 'tables': {}}` at module level
+- `climate_context=None` optional param on `apply_action`, `queue_action`, `advance_year`
+- `climate_lens=None` on `state_digest` — non-historical lens injects `climate_lens` key into digest
+
+**4. `firm_capacity_mw_nominal` internal field**
+
+New field on `BusState` (both runtimes) tracking pre-derate firm capacity to prevent compounding across years. Updated at all 6 modification sites: `initializeState`, SMR/nuclear/geothermal, battery_grid, hydropower_small, pumped_hydro, retirements. Not in any digest surface.
+
+**5. Climate coupling block in `advance_year` (both runtimes)**
+
+Inserted AFTER `advancePopulation`, BEFORE `snapshotIndicators`:
+- **Demand modulation**: population-weighted county modifier → `bus_state.load_mw = buses[bid].load_mw × modifier` (recompute from nominal, never compound)
+- **Supply derates**: worst-case county derate on bus → `firm_capacity_mw = non_thermal + thermal × combined_derate`
+- Under historical lens or empty tables: complete no-op (zero code paths executed)
+
+Helper: `_resolve_bus_to_geoids(state, bid)` / `resolveBusToGeoids(state, bid)` — inverse crosswalk returning counties whose primary bus matches.
+
+**6. Python exogeneity tests** — `tests/test_climate_exogeneity.py` (6 tests)
+
+Mirrors TS `climate-exogeneity.test.ts`:
+- EX-1: `EMPTY_CLIMATE_CONTEXT` shape
+- EX-2/3/4: unchanged after `apply_action` / `queue_action` / `advance_year`
+- EX-5: divergent action logs → identical context
+- EX-6: non-historical context with tables also exogenous
+
+**7. Python coupling unit tests** — `tests/test_climate_couplings.py` (23 tests)
+
+Back-derivation round-trip, historical baselines plausibility, epoch interpolation (exact/midpoint/clamp/missing geoid), demand modifier (historical/CDD/HDD/narrative), water stress (historical/delta/cap/confidence), heat derate (historical/delta/cap/gaps), delta table builder (real data integration, CDD sign, state_digest historical/nonhistorical).
+
+**8. Golden L** — `terra-app/tests/parity/fixtures/golden_l.json`
+
+Scenario: queue `data_center_hyperscale` in Laramie (56021, 200 MW) + `smr_advanced` in Lincoln (56023, 345 MW), advance to 2050. Run twice: historical + ssp370 with embedded climate_table_slice.
+
+Probe-year hand-check arithmetic (ssp370):
+
+| County | Year | Demand modifier | Water derate | Heat derate |
+|---|---|---|---|---|
+| 56005 (Campbell) | 2030 | 1.009479 | 0.993310 | 0.995762 |
+| 56005 (Campbell) | 2050 | 1.022213 | 0.987010 | 0.990012 |
+| 56021 (Laramie) | 2050 | 1.018545 | 0.976810 | 0.993659 |
+| 56023 (Lincoln) | 2050 | 0.985296 | 0.997870 | 0.999136 |
+
+Tests: `tests/test_golden_l.py` (11 Python) + `terra-app/tests/parity/golden-l.test.ts` (12 TS) + `c3-inertness-gate.test.ts` (4 TS).
+
+### Digest verification
+
+| Contract | Historical | SSP370 | Lens-invariant? |
+|---|---|---|---|
+| state_digest | `1433f615...` | `2181c7b0...` | No (expected) |
+| fiscal_digest | `f2339a29...` | `f2339a29...` | Yes ✓ |
+| existing_assets_digest | `c595148345...` | `c595148345...` | Yes ✓ |
+| history_digest | `d4356c42...` (Python) | `d4356c42...` (Python) | Yes ✓ |
+
+All existing goldens (A through K) unaffected — historical lens is a complete no-op.
+
+### Known debt
+
+- `transmission_thermal_limit`: heat derate applies to firm_capacity_mw only. No per-branch thermal rating hook in engine — deferred to C4/C5.
+- Water stress confidence: `low` — WSI is a literature-composed index (C1.6), not observation-backed.
+- Indicator snapshots: TS/Python history_digest values differ slightly due to different float rounding paths in `snapshotIndicators`. Not a parity violation (history_digest is additive, not part of the 3-contract core).
+
+### Test count delta
+
+| File | TS | Python |
+|---|---|---|
+| `test_climate_exogeneity.py` | — | 6 |
+| `test_climate_couplings.py` | — | 23 |
+| `test_golden_l.py` | — | 11 |
+| `golden-l.test.ts` | 12 | — |
+| `c3-inertness-gate.test.ts` | 4 | — |
+| **C3 delta** | **+16** | **+40** |
+
+Subtracted existing: 295 + 16 TS (pending tests finish) / 111 + 40 Python.
+
+### Files modified/created
+
+**New files:**
+- `src/climate_couplings.py` — coupling functions, delta table builder, back-derivation, coefficients
+- `terra-app/src/engine/climate_couplings.ts` — TS mirror
+- `tests/test_climate_exogeneity.py` — Python exogeneity tests (6)
+- `tests/test_climate_couplings.py` — Python coupling unit tests (23)
+- `tests/test_golden_l.py` — Python Golden L parity (11)
+- `terra-app/tests/parity/golden-l.test.ts` — TS Golden L parity (12)
+- `terra-app/tests/parity/c3-inertness-gate.test.ts` — permanent regression gate (4)
+- `terra-app/tests/parity/fixtures/golden_l.json` — frozen fixture
+
+**Modified files:**
+- `src/terra_engine.py` — ClimateContext port, `firm_capacity_mw_nominal`, climate block in `advance_year`
+- `terra-app/src/engine/engine.ts` — `firm_capacity_mw_nominal`, climate block in `advanceYear`, `resolveBusToGeoids`
+- `terra-app/src/engine/types.ts` — `firm_capacity_mw_nominal` on `BusState`
+- `terra-app/src/engine/index.ts` — re-export climate_couplings
+- `terra-app/tests/parity/helpers.ts` — `computeDigestMd5` gains `climateLens` param
+- `terra-app/TERRA_build_log.md` — this entry

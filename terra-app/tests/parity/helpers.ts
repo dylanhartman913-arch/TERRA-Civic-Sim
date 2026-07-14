@@ -108,7 +108,7 @@ export function relClose(tsVal: number, pyVal: number, tol: number = 1e-6): bool
  *
  * MD5 of JSON.stringify with sorted keys and no whitespace.
  */
-export function computeDigestMd5(state: EngineState): { digest: Record<string, unknown>; md5: string } {
+export function computeDigestMd5(state: EngineState, climateLens?: string): { digest: Record<string, unknown>; md5: string } {
   // County EES
   const countyEes: Record<string, { E: PyFloat; Ec: PyFloat; S: PyFloat }> = {};
   for (const [geoid, ees] of Object.entries(state.county_ees)) {
@@ -149,6 +149,12 @@ export function computeDigestMd5(state: EngineState): { digest: Record<string, u
     sc_pools: scPools,
     year: state.year,
   };
+
+  // C0/C3: lens contributes to digest ONLY when non-historical.
+  const effectiveLens = climateLens ?? 'historical';
+  if (effectiveLens !== 'historical') {
+    digest['climate_lens'] = effectiveLens;
+  }
 
   // Canonical JSON: sorted keys, no whitespace (matches Python's json.dumps(sort_keys=True, separators=(',',':')))
   const canonical = canonicalJson(digest);

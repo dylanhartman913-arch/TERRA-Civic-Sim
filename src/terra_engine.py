@@ -57,6 +57,19 @@ try:
 except ImportError:
     _HAS_INDICATORS = False
 
+# v4.4 (C3): optional climate couplings module
+try:
+    from climate_couplings import (
+        compute_demand_modifier,
+        compute_water_stress_derate,
+        compute_heat_derate,
+        interpolate_epoch_value,
+        THERMAL_DERATE_FUELS,
+    )
+    _HAS_CLIMATE = True
+except ImportError:
+    _HAS_CLIMATE = False
+
 import numpy as np
 import pandas as pd
 
@@ -110,6 +123,11 @@ DISTURBANCE_COEFFICIENTS = {
 
 # Firm fuel types for supply gap calculations
 FIRM_FUEL_TYPES = frozenset({'nuclear', 'gas', 'coal', 'hydro', 'geothermal', 'storage'})
+
+# ── Climate Context (C0 port → C3) ──────────────────────────────────────────
+# Read-only, stateless. Coupling functions live in climate_couplings.py.
+EMPTY_CLIMATE_CONTEXT = {'lens': 'historical', 'tables': {}}
+VALID_CLIMATE_LENSES = frozenset({'historical', 'ssp245', 'ssp370'})
 
 # ── Housing stock constants (v3.3) ────────────────────────────────────────────
 # Construction workforce per MW by asset type — for boomtown housing-pressure model.
@@ -589,6 +607,15 @@ def _resolve_geoid_to_bus(state, geoid):
     if len(rows) == 0:
         return None
     return str(rows.iloc[0]['bus_id'])
+
+
+def _resolve_bus_to_geoids(state, bus_id):
+    """Inverse crosswalk: return list of county GEOIDs whose primary bus is bus_id."""
+    xw = state.get("crosswalk")
+    if xw is None:
+        return []
+    rows = xw[(xw['bus_id'] == int(bus_id)) & (xw['primary_bus'] == True)]
+    return sorted(rows['geoid'].unique().tolist())
 
 
 def _get_bus_ecoregion(state, bus_id):
@@ -1687,6 +1714,7 @@ def initialize_state(data_dir=None, county_ees_path=None, crosswalk_path=None,
         bus_state[bid] = {
             "capacity_mw": b['generation_mw'],
             "firm_capacity_mw": firm_cap,
+            "firm_capacity_mw_nominal": firm_cap,  # C3: pre-derate baseline
             "load_mw": b['load_mw'],
             "deficit_mw": max(0.0, b['load_mw'] - firm_cap),
             "storage_mwh": b.get('storage_mwh', 0.0),
@@ -1878,7 +1906,8 @@ def initialize_state(data_dir=None, county_ees_path=None, crosswalk_path=None,
 # PART 3 — apply_action()
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def apply_action(state, action_id, location, magnitude, _skip_coupling=False):
+def apply_action(state, action_id, location, magnitude, _skip_coupling=False,
+                 climate_context=None):
     """
     Apply a single action to the current state.
 
@@ -1890,6 +1919,8 @@ def apply_action(state, action_id, location, magnitude, _skip_coupling=False):
 
     Returns (state, delta_summary). Input state is NOT mutated.
     """
+    if climate_context is None:
+        climate_context = EMPTY_CLIMATE_CONTEXT
     state = _shallow_copy_state(state)
 
     actions = state["action_library"]["actions"]
@@ -2024,6 +2055,7 @@ def apply_action(state, action_id, location, magnitude, _skip_coupling=False):
             bs = state["bus_state"].get(bus_id, {})
             bs["capacity_mw"] = bus["generation_mw"]
             bs["firm_capacity_mw"] = bs.get("firm_capacity_mw", 0.0) + magnitude
+            bs["firm_capacity_mw_nominal"] = bs.get("firm_capacity_mw_nominal", 0.0) + magnitude  # C3
             bs["deficit_mw"] = max(0.0, bs.get("load_mw", 0.0) - bs["firm_capacity_mw"])
             state["bus_state"][bus_id] = bs
             # Update county added firm capacity
@@ -2042,6 +2074,7 @@ def apply_action(state, action_id, location, magnitude, _skip_coupling=False):
             bs = state["bus_state"].get(bus_id, {})
             bs["storage_mwh"] = bus["storage_mwh"]
             bs["firm_capacity_mw"] = bs.get("firm_capacity_mw", 0.0) + firm_add
+            bs["firm_capacity_mw_nominal"] = bs.get("firm_capacity_mw_nominal", 0.0) + firm_add  # C3
             bs["deficit_mw"] = max(0.0, bs.get("load_mw", 0.0) - bs["firm_capacity_mw"])
             state["bus_state"][bus_id] = bs
             # Update county added firm capacity
@@ -2069,6 +2102,7 @@ def apply_action(state, action_id, location, magnitude, _skip_coupling=False):
             bs = state["bus_state"].get(bus_id, {})
             bs["capacity_mw"] = bus["generation_mw"]
             bs["firm_capacity_mw"] = bs.get("firm_capacity_mw", 0.0) + magnitude
+            bs["firm_capacity_mw_nominal"] = bs.get("firm_capacity_mw_nominal", 0.0) + magnitude  # C3
             bs["deficit_mw"] = max(0.0, bs.get("load_mw", 0.0) - bs["firm_capacity_mw"])
             state["bus_state"][bus_id] = bs
 
@@ -2082,6 +2116,7 @@ def apply_action(state, action_id, location, magnitude, _skip_coupling=False):
             bs["capacity_mw"] = bus["generation_mw"]
             bs["storage_mwh"] = bus["storage_mwh"]
             bs["firm_capacity_mw"] = bs.get("firm_capacity_mw", 0.0) + firm_add
+            bs["firm_capacity_mw_nominal"] = bs.get("firm_capacity_mw_nominal", 0.0) + firm_add  # C3
             bs["deficit_mw"] = max(0.0, bs.get("load_mw", 0.0) - bs["firm_capacity_mw"])
             state["bus_state"][bus_id] = bs
 
@@ -2342,12 +2377,14 @@ def _evaluate_couplings(state):
 # ═══════════════════════════════════════════════════════════════════════════════
 
 def queue_action(state, action_id, geoid, magnitude, decision_year,
-                 override_operational_year=None):
+                 override_operational_year=None, climate_context=None):
     """
     Queue an action for future commissioning.
 
     Returns new state with the action added to build_queue.
     """
+    if climate_context is None:
+        climate_context = EMPTY_CLIMATE_CONTEXT
     state = _shallow_copy_state(state)
 
     actions = state["action_library"]["actions"]
@@ -2579,11 +2616,15 @@ def _advance_population(state, year):
         ees['working_age_population'] = _round_pop(new_pop * wa_share)
 
 
-def advance_year(state):
+def advance_year(state, climate_context=None):
     """
     Advance the simulation by one year.
     Commission completed builds, update supply chain pools, apply depreciation.
+    C3: climate_context drives demand modulation and supply derates when
+    lens != 'historical'.
     """
+    if climate_context is None:
+        climate_context = EMPTY_CLIMATE_CONTEXT
     state = _shallow_copy_state(state)
     state["year"] += 1
     current_year = state["year"]
@@ -2745,6 +2786,9 @@ def advance_year(state):
                 if bus_id and bus_id in state["bus_state"]:
                     state["bus_state"][bus_id]["capacity_mw"] -= cap
                     state["bus_state"][bus_id]["firm_capacity_mw"] -= cap
+                    state["bus_state"][bus_id]["firm_capacity_mw_nominal"] = (
+                        state["bus_state"][bus_id].get("firm_capacity_mw_nominal", 0.0) - cap
+                    )  # C3
     # v4.1+v4.3: spawn site assets from retirements that just fired this year.
     # Spawns for:
     #   - MW-based generators (generator/demand/storage) with capacity_mw > 0
@@ -2822,6 +2866,54 @@ def advance_year(state):
     # v4.2: advance population (baseline projection + migration adjustment)
     # Must run BEFORE snapshot_indicators so history captures end-of-year demographic state.
     _advance_population(state, current_year)
+
+    # ── v4.4 (C3): Climate coupling block ────────────────────────────────────
+    # Applies demand modulation and supply derates from climate projections.
+    # Under historical lens (or missing climate module), this is a complete no-op.
+    if climate_context is None:
+        climate_context = EMPTY_CLIMATE_CONTEXT
+    if (_HAS_CLIMATE
+            and climate_context.get('lens') not in (None, 'historical')
+            and climate_context.get('tables')):
+        buses = state["buses"]
+        for bid in list(state["bus_state"].keys()):
+            bs = state["bus_state"][bid]
+            geoids = _resolve_bus_to_geoids(state, bid)
+            if not geoids:
+                continue
+
+            # ── Demand modulation (population-weighted across counties on bus) ──
+            total_pop = 0.0
+            weighted_mod = 0.0
+            for gid in geoids:
+                pop = state.get("county_ees", {}).get(gid, {}).get("population", 1.0)
+                dm = compute_demand_modifier(gid, current_year, climate_context)
+                weighted_mod += dm['modifier'] * pop
+                total_pop += pop
+            if total_pop > 0:
+                bus_modifier = weighted_mod / total_pop
+            else:
+                bus_modifier = 1.0
+            # Recompute from nominal load (buses dict) — never compound
+            nominal_load = buses[bid]['load_mw']
+            bs["load_mw"] = round(nominal_load * bus_modifier, 4)
+
+            # ── Supply derates (worst-case county on bus) ────────────────────
+            nominal_firm = bs.get("firm_capacity_mw_nominal", bs.get("firm_capacity_mw", 0.0))
+            fuel_mix = buses[bid].get("fuel_mix", {})
+            thermal_firm = sum(fuel_mix.get(f, 0.0) for f in THERMAL_DERATE_FUELS)
+            thermal_firm = min(thermal_firm, nominal_firm)  # can't exceed total
+            non_thermal_firm = nominal_firm - thermal_firm
+
+            worst_derate = 1.0
+            for gid in geoids:
+                ws = compute_water_stress_derate(gid, current_year, climate_context)
+                ht = compute_heat_derate(gid, current_year, climate_context)
+                county_derate = ws['derate_factor'] * ht['derate_factor']
+                worst_derate = min(worst_derate, county_derate)
+
+            bs["firm_capacity_mw"] = round(non_thermal_firm + thermal_firm * worst_derate, 4)
+            bs["deficit_mw"] = max(0.0, bs["load_mw"] - bs["firm_capacity_mw"])
 
     # v4.0: append indicator snapshot at end of year
     if _HAS_INDICATORS:
@@ -3654,12 +3746,13 @@ def get_county_fiscal(state, geoid):
 # PART 13 — state_digest() and fiscal_digest()
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def state_digest(state):
+def state_digest(state, climate_lens=None):
     """
     Create a JSON-serializable digest of the final state.
     Covers county_ees, bus_state, couplings, sc_pools, year.
     This is the ORIGINAL digest — unchanged from v2.0 to preserve
     Golden A/B/C byte-identical digests.
+    C0/C3: climate_lens contributes only when non-historical.
     """
     county_ees = {}
     for geoid, ees in state['county_ees'].items():
@@ -3690,6 +3783,11 @@ def state_digest(state):
                      for k, v in state.get('sc_pools', {}).items()},
         "year": state.get('year', 2025),
     }
+
+    # C0/C3: lens contributes ONLY when non-historical
+    effective_lens = climate_lens or 'historical'
+    if effective_lens != 'historical':
+        digest['climate_lens'] = effective_lens
 
     canonical = json.dumps(digest, sort_keys=True, separators=(',', ':'))
     digest["md5"] = hashlib.md5(canonical.encode()).hexdigest()

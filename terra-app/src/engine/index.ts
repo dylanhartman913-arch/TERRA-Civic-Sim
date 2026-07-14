@@ -52,3 +52,21 @@ export {
 } from './indicators.js';
 
 export { EES_DECOMPOSITION } from './decomposition.js';
+
+export {
+  EPOCH_MIDPOINTS,
+  THERMAL_DERATE_FUELS,
+  DEMAND_COEFFICIENTS,
+  WATER_STRESS_DERATE,
+  HEAT_DERATE,
+  interpolateEpochValue,
+  computeDemandModifier,
+  computeWaterStressDerate,
+  computeHeatDerate,
+} from './climate_couplings.js';
+
+export type {
+  DemandModifierResult,
+  WaterStressResult,
+  HeatDerateResult,
+} from './climate_couplings.js';
