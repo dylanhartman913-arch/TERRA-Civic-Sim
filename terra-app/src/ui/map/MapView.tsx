@@ -11,6 +11,8 @@ import { Tooltip } from './Tooltip.js';
 import { YieldBadges } from './YieldBadges.js';
 import { SiteMarkers } from './SiteMarkers.js';
 import { QueuedBuildMarkers } from './QueuedBuildMarkers.js';
+import { AnchorFacilityLayer } from './AnchorFacilityLayer.js';
+import { MarkerLegend } from './MarkerLegend.js';
 
 export function MapView() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -88,8 +90,10 @@ export function MapView() {
           <BranchLayer map={mapRef.current} engineState={engineState} visible={layers.branches} />
           <CouplingLinks map={mapRef.current} engineState={engineState} />
           <YieldBadges map={mapRef.current} />
+          <AnchorFacilityLayer map={mapRef.current} />
           <SiteMarkers map={mapRef.current} />
           <QueuedBuildMarkers map={mapRef.current} />
+          <MarkerLegend />
         </>
       )}
       {tooltipState && (

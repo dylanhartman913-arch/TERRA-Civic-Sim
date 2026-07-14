@@ -1,0 +1,82 @@
+{
+  "11": {
+    "color_token": "sector_agriculture",
+    "display_sector": "agriculture"
+  },
+  "21": {
+    "color_token": "sector_mining",
+    "display_sector": "mining/extraction"
+  },
+  "22": {
+    "color_token": "sector_utilities",
+    "display_sector": "utilities/power"
+  },
+  "23": {
+    "color_token": "sector_other",
+    "display_sector": "other"
+  },
+  "31-33": {
+    "color_token": "sector_manufacturing",
+    "display_sector": "manufacturing/chemicals"
+  },
+  "42": {
+    "color_token": "sector_other",
+    "display_sector": "other"
+  },
+  "44-45": {
+    "color_token": "sector_tourism",
+    "display_sector": "tourism/recreation"
+  },
+  "48-49": {
+    "color_token": "sector_other",
+    "display_sector": "other"
+  },
+  "51": {
+    "color_token": "sector_data_technology",
+    "display_sector": "data/technology"
+  },
+  "52": {
+    "color_token": "sector_other",
+    "display_sector": "other"
+  },
+  "53": {
+    "color_token": "sector_other",
+    "display_sector": "other"
+  },
+  "54": {
+    "color_token": "sector_data_technology",
+    "display_sector": "data/technology"
+  },
+  "55": {
+    "color_token": "sector_other",
+    "display_sector": "other"
+  },
+  "56": {
+    "color_token": "sector_other",
+    "display_sector": "other"
+  },
+  "61": {
+    "color_token": "sector_education",
+    "display_sector": "education"
+  },
+  "62": {
+    "color_token": "sector_healthcare",
+    "display_sector": "healthcare"
+  },
+  "71": {
+    "color_token": "sector_tourism",
+    "display_sector": "tourism/recreation"
+  },
+  "72": {
+    "color_token": "sector_tourism",
+    "display_sector": "tourism/recreation"
+  },
+  "81": {
+    "color_token": "sector_other",
+    "display_sector": "other"
+  },
+  "92": {
+    "color_token": "sector_government",
+    "display_sector": "government/military"
+  }
+}

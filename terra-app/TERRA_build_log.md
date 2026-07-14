@@ -2466,3 +2466,108 @@ Subtracted existing: 295 + 16 TS (pending tests finish) / 111 + 40 Python.
 - `terra-app/src/engine/index.ts` — re-export climate_couplings
 - `terra-app/tests/parity/helpers.ts` — `computeDigestMd5` gains `climateLens` param
 - `terra-app/TERRA_build_log.md` — this entry
+
+---
+
+## Session F2 — Facility Layer + Economy Card
+**Date:** 2026-07-12
+**Scope:** `terra-app/` UI-only. No digest files, no `data/golden/` edits.
+
+### First-act repo check: Z5-lineage status
+
+- Z4 site markers exist as `src/ui/map/SiteMarkers.tsx`; they render operating
+  brownfield `site` assets from `asset_registry` at county centroids and use
+  existing succession-discount UI.
+- Z4 asset-registry card section exists in
+  `src/ui/panels/CountyCardDrawer.tsx`; it already exposes lifecycle badges,
+  retirement verbs, cancel verbs, site popovers, and F3 pin labels.
+- F3 pin layer exists as `src/ui/map/QueuedBuildMarkers.tsx`; it reads
+  `ActionLogEntry.site_coords` and falls back to county centroid placement.
+- F1 anchor registry wiring exists in `src/engine/engine.ts`
+  (`seedAnchorFacilities`) but the app store had not yet passed the anchor
+  GeoJSON into `initializeState`, so Tier-2 registry assets were not surfaced in
+  the running UI.
+- No existing unified map-marker legend was present. Layer toggles existed, but
+  anchor facilities were not a toggleable map layer.
+
+### What was built
+
+- Added app-local `anchor_sector_taxonomy.json` and refreshed
+  `src/data/county_cards.json` from processed cards so the UI has
+  `economic_drivers` and `anchor_facilities`.
+- Added `src/ui/map/anchorFacilities.ts` with fixture-backed anchor loading,
+  sector token resolution, size buckets, zoom-gated decluttering, and anchor
+  lookup helpers.
+- Added a deck.gl `ScatterplotLayer` overlay in
+  `src/ui/map/AnchorFacilityLayer.tsx`. Tier-2 anchors are sector-colored via
+  CSS token names, size-bucketed by MW/employment/emissions proxy, and
+  decluttered to top-N anchors per county below high zoom.
+- Added one unified `MarkerLegend` for generator buses, Z4 sites, F3 player
+  pins, and anchor facilities.
+- Added an Economy block to the county drawer: top-3 by share, top-3 by LQ,
+  display-sector names, driver source/vintage footnote, and county anchor list
+  with tier badges plus click-to-zoom.
+- Anchor click card surfaces Tier 1 identity fields; Tier 2 cards also look up
+  the linked `asset_registry` entry by `anchor_id` and expose existing
+  retirement verbs (`Schedule Retirement`, `Accelerate`, `Delay`) without new
+  action semantics.
+
+### Sweetwater walkthrough
+
+1. Enter Free Play and zoom to Sweetwater County.
+2. Anchor layer shows Jim Bridger (`eia860_8066_56037`) and trona/alkali
+   anchors sector-colored: utilities/power teal, mining/extraction amber,
+   manufacturing/chemicals orange.
+3. Open a trona mine such as `WE Soda @ WESTVACO` (`msha_4800152`): the Tier-2
+   card shows name, sector, employment estimate, source, confidence, and the
+   linked registry asset status.
+4. In the Sweetwater county drawer, Economy shows mining/extraction as top LQ
+   and top share from `CBP_2023+QCEW_2024`; the anchor list click-zooms back to
+   map facilities.
+
+### Performance measurement
+
+Attempted real browser rAF pan measurement against Vite:
+- Local dev server required escalation because the sandbox blocked binding to
+  `127.0.0.1:5173`; it then started successfully.
+- Playwright was installed, but its bundled Chromium was missing.
+- System Chrome existed, but headless launch aborted in this environment.
+
+Fallback deterministic hot-path measurement:
+```
+Method: Node perf_hooks, 5000 runs, zoom 6.8 declutter pass over full
+        404-feature fixture (Front Range + I-80 mid-zoom proxy)
+Visible markers after declutter: 153
+Average: 0.0408 ms
+P95:     0.0760 ms
+Max:     4.8713 ms
+```
+This validates the F2 filtering/sizing/token-prep path under the 16 ms frame
+budget. A true rAF pan measurement still needs a usable headless/browser
+runtime.
+
+### Tests and checks
+
+Targeted F2 suite:
+```
+npx vitest run tests/ui/f2-anchor-economy.test.ts
+Test Files  1 passed
+Tests       5 passed
+```
+
+Coverage:
+- Layer data renders from fixture GeoJSON into a deck.gl `ScatterplotLayer`.
+- Taxonomy token resolution covers every sector present in the GeoJSON.
+- Economy block renders driver source/vintage variants and government/military
+  as a normal sector row.
+- Tier-2 `anchor_id` reaches the seeded registry asset.
+
+Other checks:
+- Token-resolution script: 404 features, 0 missing token resolutions.
+- New F2 components have no hex literals; repo-wide UI hex grep still finds
+  older literals in pre-existing map/analysis components.
+- `npm run build` is blocked by pre-existing unused imports in
+  `src/engine/replay.ts` (`ClimateContext`, `EMPTY_CLIMATE_CONTEXT`), left
+  untouched because this session is scoped away from engine files.
+
+---

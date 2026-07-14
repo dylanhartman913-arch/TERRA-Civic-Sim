@@ -62,6 +62,7 @@ import campaignsData from '../data/campaigns.json';
 import scenarioProfilesData from '../data/scenario_profiles.json';
 import fiscalBaselineData from '../data/fiscal_baseline.json';
 import fiscalCoefficientsData from '../data/fiscal_coefficients.json';
+import anchorFacilitiesData from '../data/mw_anchor_facilities.geojson';
 
 // ── Types ───────────────────────────────────────────────────────────────────
 
@@ -104,6 +105,7 @@ export interface LayerVisibility {
   oracle: boolean;
   yieldBadges: boolean;
   sites: boolean;
+  anchors: boolean;
 }
 
 // ── Era boundaries ─────────────────────────────────────────────────────────
@@ -556,7 +558,24 @@ interface TerraStore {
 
 // ── Initial state ────────────────────────────────────────────────────────────
 
-const initialEngineState = initializeState(typedBaseline, typedCrosswalk, typedActionLibrary, typedNetwork, typedCards, 2025, typedFiscalBaseline, typedFiscalCoefficients);
+const typedAnchorFacilities = anchorFacilitiesData as Parameters<typeof initializeState>[13];
+
+const initialEngineState = initializeState(
+  typedBaseline,
+  typedCrosswalk,
+  typedActionLibrary,
+  typedNetwork,
+  typedCards,
+  2025,
+  typedFiscalBaseline,
+  typedFiscalCoefficients,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  typedAnchorFacilities,
+);
 
 const initialEraBudgets = getEraBudgets();
 const initialEra = getEraForYear(2025);
@@ -595,6 +614,7 @@ export const useTerraStore = create<TerraStore>((set, get) => ({
     oracle: false,
     yieldBadges: false,
     sites: true,
+    anchors: true,
   },
 
   // Undo / Redo
