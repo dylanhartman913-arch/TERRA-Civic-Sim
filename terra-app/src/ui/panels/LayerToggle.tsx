@@ -7,6 +7,8 @@ const LAYERS: { key: keyof LayerVisibility; label: string }[] = [
   { key: 'interchange', label: 'Interchange' },
   { key: 'oracle',      label: 'Oracle' },
   { key: 'yieldBadges', label: 'Yield badges' },
+  { key: 'anchors',     label: 'Anchor facilities' },
+  { key: 'sites',       label: 'Site markers' },
 ];
 
 export function LayerToggle() {

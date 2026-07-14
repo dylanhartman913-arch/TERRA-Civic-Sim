@@ -8,6 +8,7 @@ import {
 } from '../../engine/engine.js';
 import { CountyYields } from './CountyYields.js';
 import { ChartExpander } from './ChartExpander.js';
+import { anchorById, formatSectorName } from '../map/anchorFacilities.js';
 
 // ── Formatting helpers ────────────────────────────────────────────────────
 
@@ -177,6 +178,123 @@ function EraTimeline({ events, currentYear }: { events: TimelineEvent[]; current
   );
 }
 
+export function EconomyDrivers({ drivers }: {
+  drivers: NonNullable<CountyCardData['economic_drivers']>;
+}) {
+  return (
+    <div style={{ display: 'grid', gap: 8 }}>
+      <DriverList title="Top GDP Share" rows={(drivers.top_by_share ?? []).slice(0, 3)} mode="share" />
+      <DriverList title="Top LQ" rows={(drivers.top_by_lq ?? []).slice(0, 3)} mode="lq" />
+      <div style={{ fontSize: 9, color: 'var(--text-muted)', lineHeight: 1.4 }}>
+        {drivers.driver_source ?? 'driver source unknown'} · {drivers.vintage ?? 'vintage unknown'}
+      </div>
+    </div>
+  );
+}
+
+function DriverList({ title, rows, mode }: {
+  title: string;
+  rows: EconomicDriver[];
+  mode: 'share' | 'lq';
+}) {
+  if (rows.length === 0) return null;
+  return (
+    <div>
+      <div style={{ fontSize: 10, color: 'var(--text-secondary)', marginBottom: 3 }}>{title}</div>
+      {rows.map((row, index) => (
+        <div key={`${mode}-${row.display_sector}-${index}`} style={rowStyle}>
+          <span style={{ color: 'var(--text-secondary)' }}>{formatSectorName(row.display_sector)}</span>
+          <span>
+            {mode === 'share'
+              ? `${(((row.share ?? 0) * 100)).toFixed(1)}%`
+              : (row.lq ?? 0).toFixed(2)}
+            {row.employment != null && (
+              <span style={{ color: 'var(--text-muted)', marginLeft: 5, fontSize: 9 }}>
+                {Math.round(row.employment).toLocaleString()} jobs
+              </span>
+            )}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export function AnchorFacilityList({ anchorIds, registryAssets }: {
+  anchorIds: string[];
+  registryAssets: AssetInstance[];
+}) {
+  const anchors = anchorIds
+    .map(anchorById)
+    .filter((anchor): anchor is NonNullable<ReturnType<typeof anchorById>> => anchor !== null);
+  if (anchors.length === 0) return null;
+
+  const tier2 = anchors
+    .filter(anchor => anchor.properties.tier === 2)
+    .sort((a, b) => {
+      const aw = Math.max(a.properties.capacity_or_load_mw ?? 0, (a.properties.employment_est ?? 0) / 2);
+      const bw = Math.max(b.properties.capacity_or_load_mw ?? 0, (b.properties.employment_est ?? 0) / 2);
+      return bw - aw;
+    })
+    .slice(0, 8);
+
+  return (
+    <div style={{ marginTop: 8, paddingTop: 8, borderTop: '1px solid var(--border)' }}>
+      <div style={{ fontSize: 10, color: 'var(--text-secondary)', marginBottom: 4 }}>Anchor Facilities</div>
+      {tier2.map(anchor => {
+        const asset = registryAssets.find(candidate => candidate.anchor_id === anchor.properties.anchor_id);
+        return (
+          <button
+            key={anchor.properties.anchor_id}
+            onClick={() => {
+              window.dispatchEvent(new CustomEvent('terra:focus-anchor', {
+                detail: { anchorId: anchor.properties.anchor_id },
+              }));
+            }}
+            style={{
+              width: '100%',
+              display: 'grid',
+              gridTemplateColumns: '1fr auto',
+              gap: 8,
+              alignItems: 'center',
+              background: 'transparent',
+              border: 'none',
+              borderBottom: '1px solid var(--border)',
+              color: 'var(--text-primary)',
+              cursor: 'pointer',
+              padding: '5px 0',
+              fontFamily: 'var(--font-mono)',
+              textAlign: 'left',
+            }}
+          >
+            <span style={{ minWidth: 0 }}>
+              <span style={{ display: 'block', fontSize: 10, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                {anchor.properties.name}
+              </span>
+              <span style={{ display: 'block', color: 'var(--text-muted)', fontSize: 9 }}>
+                {formatSectorName(anchor.properties.display_sector)}
+                {asset?.confidence === 'low' && (
+                  <span style={{ color: 'var(--amber)', marginLeft: 4 }}>low confidence</span>
+                )}
+              </span>
+            </span>
+            <span style={{
+              fontSize: 8,
+              color: anchor.properties.tier === 2 ? 'var(--teal)' : 'var(--text-secondary)',
+              border: `1px solid ${anchor.properties.tier === 2 ? 'var(--teal)' : 'var(--text-secondary)'}`,
+              borderRadius: 3,
+              padding: '1px 4px',
+              whiteSpace: 'nowrap',
+            }}>
+              Tier {anchor.properties.tier}
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 // ── Shared styles ─────────────────────────────────────────────────────────
 
 const sectionStyle: React.CSSProperties = {
@@ -317,16 +435,16 @@ function FuelBar({ fuelMix }: { fuelMix: Record<string, number> }) {
   const entries = Object.entries(fuelMix).filter(([, v]) => v > 0);
   if (!entries.length) return <div style={{ color: 'var(--text-muted)', fontSize: 11 }}>No generation data</div>;
   const FUEL_COLORS: Record<string, string> = {
-    SUB: '#92400e', BIT: '#92400e', LIG: '#92400e',
-    NG: '#6d28d9', GAS: '#6d28d9', NUC: '#2dd4bf', nuclear: '#2dd4bf',
-    WND: '#34d399', wind: '#34d399', SUN: '#f59e0b', solar: '#f59e0b',
-    WAT: '#3b82f6', hydro: '#3b82f6',
+    SUB: 'var(--fuel-coal)', BIT: 'var(--fuel-coal)', LIG: 'var(--fuel-coal)',
+    NG: 'var(--fuel-gas)', GAS: 'var(--fuel-gas)', NUC: 'var(--fuel-nuclear)', nuclear: 'var(--fuel-nuclear)',
+    WND: 'var(--fuel-wind)', wind: 'var(--fuel-wind)', SUN: 'var(--fuel-solar)', solar: 'var(--fuel-solar)',
+    WAT: 'var(--fuel-hydro)', hydro: 'var(--fuel-hydro)',
   };
   return (
     <div style={{ display: 'flex', height: 6, borderRadius: 3, overflow: 'hidden', marginTop: 4 }}>
       {entries.map(([fuel, share]) => (
         <div key={fuel} title={`${fuel}: ${(share * 100).toFixed(0)}%`}
-          style={{ flex: share, background: FUEL_COLORS[fuel] ?? '#484f58' }} />
+          style={{ flex: share, background: FUEL_COLORS[fuel] ?? 'var(--fuel-other)' }} />
       ))}
     </div>
   );
@@ -455,6 +573,21 @@ interface CountyCardData {
   water_withdrawals_mgd?: number | null;
   water_vintage?: number | null;
   flagship_assets?: unknown[];
+  economic_drivers?: {
+    driver_source?: string;
+    vintage?: string;
+    top_by_share?: EconomicDriver[];
+    top_by_lq?: EconomicDriver[];
+  };
+  anchor_facilities?: string[];
+}
+
+interface EconomicDriver {
+  display_sector: string;
+  employment?: number | null;
+  establishments?: number | null;
+  lq?: number | null;
+  share?: number | null;
 }
 
 export function CountyCardDrawer() {
@@ -592,6 +725,22 @@ export function CountyCardDrawer() {
             </span>
           </div>
         </div>
+
+        {/* Section 2: Economy */}
+        {(card.economic_drivers || (card.anchor_facilities?.length ?? 0) > 0) && (
+          <div style={sectionStyle}>
+            <div style={labelStyle}>Economy</div>
+            {card.economic_drivers && (
+              <EconomyDrivers drivers={card.economic_drivers} />
+            )}
+            {(card.anchor_facilities?.length ?? 0) > 0 && (
+              <AnchorFacilityList
+                anchorIds={card.anchor_facilities ?? []}
+                registryAssets={registryAssets}
+              />
+            )}
+          </div>
+        )}
 
         {/* Section 2: Energy Baseline */}
         <div style={sectionStyle}>

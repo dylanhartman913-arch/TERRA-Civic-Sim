@@ -26,6 +26,27 @@
   --warning:       #fbbf24;
   --construction:  #fb923c;
 
+  /* Anchor facility sector tokens */
+  --sector-agriculture:       #34d399;
+  --sector-data-technology:   #60a5fa;
+  --sector-education:         #a78bfa;
+  --sector-government:        #f472b6;
+  --sector-healthcare:        #fb7185;
+  --sector-manufacturing:     #f97316;
+  --sector-mining:            #f59e0b;
+  --sector-other:             #8b949e;
+  --sector-tourism:           #22c55e;
+  --sector-utilities:         #2dd4bf;
+
+  /* Fuel tokens */
+  --fuel-coal:     #92400e;
+  --fuel-gas:      #6d28d9;
+  --fuel-nuclear:  #2dd4bf;
+  --fuel-wind:     #34d399;
+  --fuel-solar:    #f59e0b;
+  --fuel-hydro:    #3b82f6;
+  --fuel-other:    #484f58;
+
   /* Font */
   --font-mono:     'DM Mono', monospace;
 

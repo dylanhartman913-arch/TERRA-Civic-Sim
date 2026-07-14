@@ -6,8 +6,7 @@
  * using the same PyFloat-aware canonical JSON and MD5 algorithm.
  */
 
-import type { EngineState, ScenarioFile, ClimateContext } from './types.js';
-import { EMPTY_CLIMATE_CONTEXT } from './types.js';
+import type { EngineState, ScenarioFile } from './types.js';
 import {
   initializeState,
   applyAction as engineApplyAction,
