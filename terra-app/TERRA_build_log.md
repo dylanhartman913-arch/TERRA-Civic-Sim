@@ -2571,3 +2571,74 @@ Other checks:
   untouched because this session is scoped away from engine files.
 
 ---
+
+## Session C2-data — Hazard Exposure Baseline + NRI/WRC Tagging
+**Date:** 2026-07-12 · **Branch:** c2-data · **Executor:** Codex
+
+### What was built
+
+- `notebooks/24_hazard_exposure_baseline.ipynb` — manifest/pointer notebook. Actual
+  computation run interactively; outputs written to `data/processed/`.
+- Raw cache inputs (no live-API re-fetch required):
+  - `data/raw/fema_nri_counties_dec2025_v1.20.0_pulled_2026-07-12.json` (2.9 MB)
+  - `data/raw/usfs_wrc_county_20260415_pulled_2026-07-12.xlsx` (5.0 MB)
+  - `data/raw/mtbs_fires_export_all_pulled_2026-07-12.csv` (13.2 MB)
+- Output artifacts:
+  - `data/processed/nri_wrc_county_hazard_summary.csv` — 157 rows × N cols; full NRI+WRC per-county table
+  - `data/processed/asset_exposure_tags.json` — 682 asset records, 100% coverage
+  - `data/processed/snapshots/nri_wrc_baseline_v1.json` — 157-row snapshot for before-state recomputation
+  - `data/processed/hazard_exposure_credibility_table.csv` — 13 hazard rows
+  - `data/processed/hazard_county_sanity_stats.csv` — 7-row sanity summary
+  - `data/processed/exposure_tag_rules.md` — 23-line schema doc
+- Stretch task (MSHA crosswalk): skipped. Documented in `MANUAL_FETCH.md`. F1-derived lookup stays
+  in place until an engine-side patch consumes the future commodity field. Does not block downstream.
+
+### Goshen & Niobrara wildfire ranking — resolution
+
+**Conclusion: correct tags (`wildfire_exposure: "med"`); genuine study-area tertile artifact, not a bug.**
+
+The roadmap's stated expectation of "low wildfire" for these plains counties is partially wrong.
+Both counties have non-trivial fire history and rank above ~81% of US counties nationally on
+WRC building-risk. They are mid-range only within this study's Mountain West scope.
+
+Numeric evidence (from `nri_wrc_county_hazard_summary.csv` and `nri_wrc_baseline_v1.json`):
+
+| Metric | Goshen (56015) | Niobrara (56027) |
+|---|---|---|
+| NRI wildfire_risk_score | 72.61 | 80.88 |
+| NRI wildfire_eal_total ($) | $217,717 | $309,536 |
+| WRC risk_national_rank | 0.811 | 0.824 |
+| MTBS fires 2000–2024 | 9 | 12 |
+| MTBS burned acres | 44,591 | 50,330 |
+
+Study-county tertile breakpoints (n=157):
+- WRC risk_national_rank: low < 0.722 / med 0.722–0.847 / high > 0.847
+- NRI wildfire_risk_score: low < 70.20 / med 70.20–87.09 / high > 87.09
+
+Both counties fall in the middle tertile on both scales. The "elevated" appearance versus
+roadmap expectation is explained by: (a) Mountain West floor is high — study-area minimum
+NRI wildfire score is 17.2 and median is 80.8, so even rangeland/grass counties score
+above the US median; (b) 9–12 MTBS fires totaling 44–50K acres in 24 years is real,
+not zero. `wildfire_exposure: "med"` is the correct assignment.
+
+### Independent verification gate results (C2-data Verify session, 2026-07-12)
+
+| Gate | Result | Notes |
+|---|---|---|
+| NB24 output reproducibility | PASS* | All 6 outputs exist; no live-API calls; *notebook is a stub (no re-runnable cells) |
+| Goshen/Niobrara wildfire resolution | PASS | `med` tags correct; documented above with numeric evidence |
+| Tag coverage (682 / 100%) | PASS | 682 confirmed in JSON; 404 anchor_ids + 278 ORIS; 100% match against source registries |
+| Schema / join keys for C2-merge | PASS | `anchor_id` and `oris_plantid` keys; 0 nulls; clean join against `mw_anchor_facilities.geojson` and `power_plants_with_ba.geojson` |
+| Blast-radius (data-only) | FAIL | No c2-data branch; dirty working tree contains F2 + C3 stray files |
+| `nri_wrc_baseline_v1.json` snapshot | PASS | 7,242 lines / 326 KB; version, date, source, 157-record schema all present |
+| MSHA skip documented | PASS | `MANUAL_FETCH.md` lines 106–109; notes it does not block downstream |
+
+**Merge recommendation: NOT CLEAN in current state.** Data products are internally
+consistent and cover 100% of the asset universe. Gate failure is exclusively procedural:
+c2-data branch does not exist, and the working tree contains substantial engine/UI/app
+changes that must be separated before the data commit is created via cherry-pick.
+
+**Resolution (2026-07-14):** Blast-radius FAIL resolved via Repo-Surgery Stage 3
+(commit `d63fdd2`) — C2-data files extracted onto proper `c2-data` branch from
+previously-shared working tree. Engine/UI source diff against main verified empty.
+notebooks/23*.ipynb excluded (belong to C1 per session mapping table).
