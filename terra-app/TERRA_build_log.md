@@ -2526,5 +2526,16 @@ not zero. `wildfire_exposure: "med"` is the correct assignment.
 | Goshen/Niobrara wildfire resolution | PASS | `med` tags correct; documented above with numeric evidence |
 | Tag coverage (682 / 100%) | PASS | 682 confirmed in JSON; 404 anchor_ids + 278 ORIS; 100% match against source registries |
 | Schema / join keys for C2-merge | PASS | `anchor_id` and `oris_plantid` keys; 0 nulls; clean join against `mw_anchor_facilities.geojson` and `power_plants_with_ba.geojson` |
+| Blast-radius (data-only) | FAIL | No c2-data branch; dirty working tree contains F2 + C3 stray files |
 | `nri_wrc_baseline_v1.json` snapshot | PASS | 7,242 lines / 326 KB; version, date, source, 157-record schema all present |
 | MSHA skip documented | PASS | `MANUAL_FETCH.md` lines 106–109; notes it does not block downstream |
+
+**Merge recommendation: NOT CLEAN in current state.** Data products are internally
+consistent and cover 100% of the asset universe. Gate failure is exclusively procedural:
+c2-data branch does not exist, and the working tree contains substantial engine/UI/app
+changes that must be separated before the data commit is created via cherry-pick.
+
+**Resolution (2026-07-14):** Blast-radius FAIL resolved via Repo-Surgery Stage 3
+(commit `d63fdd2`) — C2-data files extracted onto proper `c2-data` branch from
+previously-shared working tree. Engine/UI source diff against main verified empty.
+notebooks/23*.ipynb excluded (belong to C1 per session mapping table).
