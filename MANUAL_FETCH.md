@@ -107,3 +107,7 @@ Overall result: PARTIAL (0/6 comparisons)
 
 - Stretch task skipped: add real commodity field to `data/processed/mw_anchor_facilities.geojson` via an MSHA mine-ID crosswalk. F1 derived lookup remains in place until an engine-side patch consumes the future data field.
 
+## Local Test Data Dependencies
+
+- `data/processed/county_climate_projections.json` is required for the Python climate tests to pass, but it is not currently tracked in git. Independent C2-merge verification initially failed three Python tests from a clean archived tree until this local file was restored. Keep this file present when running the full Python suite, or track/regenerate it before expecting a fresh clone to pass out of the box.
+  - **Resolved 2026-07-15 by P0.1 (commit 626ed95):** file now tracked in git via `!` exception in `.gitignore`. Fresh clones and worktrees will have it.
