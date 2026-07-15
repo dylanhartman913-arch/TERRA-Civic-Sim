@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# provision_worktree.sh — copy untracked-but-required data files into a new worktree.
+# provision_worktree.sh — copy untracked-but-required files into a new worktree.
 #
 # Usage:
 #   scripts/provision_worktree.sh <worktree-path>
@@ -8,16 +8,24 @@
 #   scripts/provision_worktree.sh ../w4-c4-engine
 #
 # Background:
-#   Six files are required by terra_engine.initialize_state() but cannot be
-#   git-tracked in the normal way:
+#   Several files must be present in every worktree but cannot be git-tracked:
+#
+#   Data files (terra_engine.initialize_state() hard dependencies):
 #     - mw_ecoregions.geojson (11 MB): git-add triggers an OneDrive re-upload
 #       that blocks Python f.read() during sync (ETIMEDOUT); left untracked.
 #     - *.parquet files: excluded by the global *.parquet rule in .gitignore;
 #       binary format, potentially large, policy-excluded from version control.
 #
-#   Without these files a fresh worktree will fail the entire Python test suite
-#   at the first initialize_state() call. Run this script once after
-#   `git worktree add` to provision the worktree.
+#   Reference docs (Wave 4 context, untracked so git does not dirty the branch):
+#     - Wave4_roadmap.md: ticket scope and dispatch conditions for each branch.
+#     - build_log/wave4/_baseline.md: P0 baseline record (SHAs, test counts,
+#       golden-letter collision check, exposure-tag registry format check).
+#
+#   Without the data files a fresh worktree will fail the entire Python test
+#   suite at the first initialize_state() call. Without the reference docs a
+#   branch worker has no local copy of the roadmap or baseline record.
+#
+#   Run this script once after `git worktree add` to provision the worktree.
 
 set -euo pipefail
 
@@ -36,15 +44,20 @@ fi
 # Resolve the repo root (directory containing this script's parent).
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-SRC="$REPO_ROOT/data/processed"
-DEST="$TARGET/data/processed"
 
-if [[ ! -d "$DEST" ]]; then
-  echo "Error: $DEST does not exist — is $TARGET a valid TERRA worktree?" >&2
+echo "Provisioning worktree: $TARGET"
+echo ""
+
+# ── Data files (data/processed/) ─────────────────────────────────────────────
+SRC_DATA="$REPO_ROOT/data/processed"
+DEST_DATA="$TARGET/data/processed"
+
+if [[ ! -d "$DEST_DATA" ]]; then
+  echo "Error: $DEST_DATA does not exist — is $TARGET a valid TERRA worktree?" >&2
   exit 1
 fi
 
-FILES=(
+DATA_FILES=(
   "mw_ecoregions.geojson"
   "county_crosswalk.parquet"
   "generators_with_costs.parquet"
@@ -53,13 +66,10 @@ FILES=(
   "synthetic_plant_assignments.parquet"
 )
 
-echo "Provisioning worktree: $TARGET"
-echo "Source: $SRC"
-echo ""
-
-for f in "${FILES[@]}"; do
-  src_path="$SRC/$f"
-  dest_path="$DEST/$f"
+echo "Data files → $DEST_DATA"
+for f in "${DATA_FILES[@]}"; do
+  src_path="$SRC_DATA/$f"
+  dest_path="$DEST_DATA/$f"
   if [[ ! -f "$src_path" ]]; then
     echo "  SKIP (not found in source): $f" >&2
     continue
@@ -69,6 +79,34 @@ for f in "${FILES[@]}"; do
   echo "  copied ($size): $f"
 done
 
+# ── Reference docs (repo root and build_log/wave4/) ──────────────────────────
 echo ""
-echo "Done. These files are untracked in the worktree (.gitignore excludes them)."
-echo "Re-run this script if the source files are regenerated."
+echo "Reference docs → $TARGET"
+
+# Wave4_roadmap.md lives at repo root
+ROADMAP_SRC="$REPO_ROOT/Wave4_roadmap.md"
+ROADMAP_DEST="$TARGET/Wave4_roadmap.md"
+if [[ -f "$ROADMAP_SRC" ]]; then
+  cp "$ROADMAP_SRC" "$ROADMAP_DEST"
+  size=$(du -sh "$ROADMAP_DEST" | cut -f1)
+  echo "  copied ($size): Wave4_roadmap.md"
+else
+  echo "  SKIP (not found in source): Wave4_roadmap.md" >&2
+fi
+
+# _baseline.md lives in build_log/wave4/ — create the directory if absent
+BASELINE_SRC="$REPO_ROOT/build_log/wave4/_baseline.md"
+BASELINE_DEST_DIR="$TARGET/build_log/wave4"
+BASELINE_DEST="$BASELINE_DEST_DIR/_baseline.md"
+if [[ -f "$BASELINE_SRC" ]]; then
+  mkdir -p "$BASELINE_DEST_DIR"
+  cp "$BASELINE_SRC" "$BASELINE_DEST"
+  size=$(du -sh "$BASELINE_DEST" | cut -f1)
+  echo "  copied ($size): build_log/wave4/_baseline.md"
+else
+  echo "  SKIP (not found in source): build_log/wave4/_baseline.md" >&2
+fi
+
+echo ""
+echo "Done. All copied files are untracked in the worktree (.gitignore or"
+echo "unlisted). Re-run this script if the source files are updated."
