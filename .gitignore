@@ -42,11 +42,26 @@ data/processed/combined_map.html
 data/processed/HTML/
 data/processed/figures/14_lmp_map.html
 
-# ── Tracked build deliverables (excepted from data/processed/ blanket ignore) ──
-# county_climate_projections.json: C1.6 build output — LOCA2/STAR-ESDM downscaled
-# county-level projections, NOAA CMRA tabulations, cross-checked NASA NEX-GDDP-CMIP6.
-# 38 MB JSON, under 50 MB threshold. Required by TERRA engine climate tests.
+# ── Tracked build deliverables (excepted from data/processed/* blanket ignore) ──
+# All files below are deterministic notebook outputs, under the 50 MB git threshold,
+# and required by terra_engine.initialize_state() (called by every Python test).
+# Parquet files (county_crosswalk, generators_with_costs, spatial_hierarchy_*,
+# synthetic_plant_assignments) remain untracked — blocked by global *.parquet rule.
 !data/processed/county_climate_projections.json
+!data/processed/synthetic_buses.geojson
+!data/processed/synthetic_branches.geojson
+!data/processed/ba_interchange_summary.csv
+!data/processed/county_housing_baseline.json
+!data/processed/lifecycle_coefficients.json
+!data/processed/mw_action_library_v3.json
+!data/processed/mw_county_cards.json
+!data/processed/mw_county_ees_summary.csv
+!data/processed/mw_ecoregion_ees_summary.csv
+# mw_ecoregions.geojson (11MB) — excluded: OneDrive re-upload during git-add
+# blocked Python f.read() on the file. Leave untracked; regenerate from nb08.
+!data/processed/mw_scenario_profiles.json
+!data/processed/wy_county_fiscal_baseline.json
+!data/processed/wy_fiscal_coefficients.json
 
 # ── Notebooks with embedded large outputs ────────────────────────────────────
 notebooks/14_e4st_results.ipynb
