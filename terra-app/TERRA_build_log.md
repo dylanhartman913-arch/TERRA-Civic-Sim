@@ -2648,7 +2648,7 @@ notebooks/23*.ipynb excluded (belong to C1 per session mapping table).
 ## Phase C2-merge — Exposure Tag Registry Integration
 **Date:** 2026-07-14
 **Engine version:** 4.4 (no behavioral change — data field only)
-**Baseline:** Post-C3/F1/F2/F3 (319 TS / 119 Python = 438 total)
+**Baseline:** Post-C3/F1/F2/F3 (311 TS / 119 Python = 430 total)
 **Amendments consumed:** 0 (zero-amendment path succeeded; total remains 4/4)
 
 ### What was built
@@ -2711,8 +2711,8 @@ Golden K regression gate: all four frozen digests (yr2040) match after C2-merge 
 
 ### Test count delta
 
-Pre-C2: **319 TS / 119 Python = 438 total**
-Post-C2: **327 TS / 127 Python = 454 total**
+Pre-C2: **311 TS / 119 Python = 430 total**
+Post-C2: **319 TS / 127 Python = 446 total**
 **C2-merge delta: +8 TS / +8 Python = +16 total**
 
 ### Per-file test count (post-C2-merge)
@@ -2721,8 +2721,8 @@ Post-C2: **327 TS / 127 Python = 454 total**
 |---|---|
 | c2-exposure-tags.test.ts (new) | 8 TS |
 | test_c2_exposure_tags.py (new) | 8 Python |
-| *all other files unchanged* | 319 TS / 119 Python |
-| **Total** | **327 TS / 127 Python** |
+| *all other files unchanged* | 311 TS / 119 Python |
+| **Total** | **319 TS / 127 Python** |
 
 ### Files modified (git add list)
 
