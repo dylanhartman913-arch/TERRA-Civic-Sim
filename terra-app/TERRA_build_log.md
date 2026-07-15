@@ -2684,13 +2684,15 @@ notebooks/23*.ipynb excluded (belong to C1 per session mapping table).
 
 | Asset class | Per-asset rows | Class default | Total tagged | Coverage |
 |---|---|---|---|---|
-| generator (anchor_id attached) | 265 | — | 265 | 100% |
+| Tier 2 total | 265 total rows: 104 generator + 159 mine/industrial/commercial + 2 data_center | — | 265 | 100% |
 | mine | per-asset in JSON | class_default fallback | all | 100% |
 | industrial_load | per-asset in JSON | class_default fallback | all | 100% |
 | commercial_anchor_load | per-asset in JSON | class_default fallback | all | 100% |
 | generator (no anchor_id) | — | class_default | all | 100% |
 | housing_stock | — | none in JSON | null | n/a (C4 scope) |
 | site (spawned) | inherited from origin | — | on spawn | 100% |
+
+P0 verification re-derived Tier 2 counts directly from `asset_exposure_tags.json` (Sonnet PM, 2026-07-15). The 265 Tier 2 per-asset rows break down as: **104 generators** (keyed by `anchor_id`), 104 `industrial_load`, 50 `mine`, 5 `commercial_anchor_load`, and 2 `data_center`. The remaining 417 assets — 278 generators keyed by `oris_plantid` and 139 `unclassified_anchor` — receive class-default tags. Total: 682 assets at 100% coverage. The prior draft's figure "4 generators with `anchor_id`" was a transcription error; the correct count is **104**. The "163/163" figure was also incorrect and has been removed; the correct Tier 2 per-asset scope is 265.
 
 Total asset_exposure_tags.json coverage: 682 assets / 100%.
 
