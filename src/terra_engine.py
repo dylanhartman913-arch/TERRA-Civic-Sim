@@ -886,6 +886,8 @@ def _spawn_site_from_retired(retired_asset, spawn_year):
         'workforce_pool_half_life_years': SITE_WORKFORCE_HALF_LIFE_YEARS,
         'site_spawn_year': spawn_year,
         'restoration_eligibility': site_class == 'mine',
+        # v4.4 (C2): inherit origin asset's exposure context
+        'exposure_tags': retired_asset.get('exposure_tags'),
     }
 
 
@@ -1117,6 +1119,39 @@ def _seed_anchor_facilities(data_dir, registry):
         })
 
     return new_assets
+
+
+def _apply_exposure_tags(asset_registry, data_dir):
+    """
+    Apply hazard exposure tags to every asset in the registry.
+    v4.4 (C2): read-only data field — excluded from all four digest surfaces.
+
+    Loads asset_exposure_tags.json from data_dir. Assigns tags by:
+      1. Per-asset lookup: registry asset.anchor_id → JSON asset_id
+      2. Class default: class_defaults[asset_class]
+      3. None (asset_class not covered)
+
+    Mutates registry in place.
+    """
+    tag_path = data_dir / "asset_exposure_tags.json"
+    if not tag_path.exists():
+        return
+
+    with open(tag_path) as f:
+        tag_data = json.load(f)
+
+    class_defaults = tag_data.get('class_defaults', {})
+    by_anchor_id = {entry['asset_id']: entry['tags']
+                    for entry in tag_data.get('assets', [])}
+
+    for a in asset_registry:
+        anchor_id = a.get('anchor_id')
+        if anchor_id and anchor_id in by_anchor_id:
+            a['exposure_tags'] = by_anchor_id[anchor_id]
+        elif a.get('asset_class') in class_defaults:
+            a['exposure_tags'] = class_defaults[a['asset_class']]
+        else:
+            a['exposure_tags'] = None
 
 
 def _find_housing_asset(state, geoid):
@@ -1670,6 +1705,11 @@ def initialize_state(data_dir=None, county_ees_path=None, crosswalk_path=None,
     # Generators get anchor_id + co2e_tpy attached (not re-seeded).
     # Anchors are excluded from existing_assets view → digest-stable.
     asset_registry.extend(_seed_anchor_facilities(data_dir, asset_registry))
+
+    # ── v4.4 (C2): Apply hazard exposure tags ────────────────────────────────
+    # Tags are read-only data on registry rows. Excluded from all digest surfaces:
+    # existing_assets materialization, state_digest, fiscal_digest, history_digest.
+    _apply_exposure_tags(asset_registry, data_dir)
 
     # Materialize existing_assets from registry (overrides the _seed_existing_assets above)
     existing_assets = _materialize_existing_assets(asset_registry)

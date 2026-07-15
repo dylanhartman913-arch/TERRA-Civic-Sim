@@ -2642,3 +2642,102 @@ changes that must be separated before the data commit is created via cherry-pick
 (commit `d63fdd2`) — C2-data files extracted onto proper `c2-data` branch from
 previously-shared working tree. Engine/UI source diff against main verified empty.
 notebooks/23*.ipynb excluded (belong to C1 per session mapping table).
+
+---
+
+## Phase C2-merge — Exposure Tag Registry Integration
+**Date:** 2026-07-14
+**Engine version:** 4.4 (no behavioral change — data field only)
+**Baseline:** Post-C3/F1/F2/F3 (319 TS / 119 Python = 438 total)
+**Amendments consumed:** 0 (zero-amendment path succeeded; total remains 4/4)
+
+### What was built
+
+**1. Type system (types.ts)**
+- `ExposureTag` interface: `value`, `source`, `method`, `confidence`, `judgment_call`
+- `ExposureTagSet` interface: four optional dimensions (`wildfire_exposure`, `water_dependency`, `flood_zone`, `heat_sensitivity`)
+- `AssetInstance` gains: `exposure_tags?: ExposureTagSet | null` (optional, like F1 anchor fields)
+
+**2. Engine — TypeScript (engine.ts)**
+- `AssetExposureTagData` interface (internal): schema shape of `asset_exposure_tags.json`
+- `applyExposureTags(registry, data)`: assigns per-asset tags (by `anchor_id → asset_id` lookup) with class-default fallback; mutates registry in place
+- `initializeState` gains: `exposureTagData?: AssetExposureTagData | null` (14th optional parameter)
+- Call site: after `seedAnchorFacilities`, before `materializeExistingAssets`
+- `spawnSiteFromRetired`: spawned sites inherit `exposure_tags` from retired asset
+
+**3. Engine — Python (terra_engine.py)**
+- `_apply_exposure_tags(asset_registry, data_dir)`: loads `asset_exposure_tags.json`, builds per-anchor lookup, assigns with class-default fallback; mutates in place
+- Call site: after `_seed_anchor_facilities`, before `_materialize_existing_assets`
+- `_spawn_site_from_retired`: spawned sites inherit `exposure_tags`
+
+**4. Data file**
+- `terra-app/src/data/asset_exposure_tags.json`: copy of `data/processed/asset_exposure_tags.json` for TS test access (682 assets, 100% coverage, schema_version `C2-data-hazard-exposure-tags-v1`)
+
+**5. Helpers (tests/parity/helpers.ts)**
+- `loadInitialStateWithAnchorsAndTags()`: exported helper that loads anchors + exposure tags + retirements + full optional stack; used by C2 tests and available for downstream sessions
+
+**6. Tests**
+- `terra-app/tests/parity/c2-exposure-tags.test.ts`: 8 TS tests (c2-a through c2-h)
+- `tests/test_c2_exposure_tags.py`: 8 Python tests (C2-a through C2-h)
+
+### Coverage table (Tier 2 assets)
+
+| Asset class | Per-asset rows | Class default | Total tagged | Coverage |
+|---|---|---|---|---|
+| generator (anchor_id attached) | 265 | — | 265 | 100% |
+| mine | per-asset in JSON | class_default fallback | all | 100% |
+| industrial_load | per-asset in JSON | class_default fallback | all | 100% |
+| commercial_anchor_load | per-asset in JSON | class_default fallback | all | 100% |
+| generator (no anchor_id) | — | class_default | all | 100% |
+| housing_stock | — | none in JSON | null | n/a (C4 scope) |
+| site (spawned) | inherited from origin | — | on spawn | 100% |
+
+Total asset_exposure_tags.json coverage: 682 assets / 100%.
+
+### Inertness proof
+
+All four digest contracts byte-identical with and without exposure tags, tested at initialization and after 3 `advance_year` cycles:
+
+| Contract | With tags | Without tags | Match |
+|---|---|---|---|
+| state_digest | identical | identical | ✓ |
+| fiscal_digest | identical | identical | ✓ |
+| existing_assets_digest | identical | identical | ✓ |
+| history_digest | identical | identical | ✓ |
+
+Mechanism: `ExistingAsset`, `ProductionAsset`, and `IndicatorSnapshot` do not carry `exposure_tags`. The `materializeExistingAssets` function materializes from these types (not from `AssetInstance`), so tags are never serialized into any digest surface.
+
+Golden K regression gate: all four frozen digests (yr2040) match after C2-merge — confirmed in both TS and Python.
+
+### Test count delta
+
+Pre-C2: **319 TS / 119 Python = 438 total**
+Post-C2: **327 TS / 127 Python = 454 total**
+**C2-merge delta: +8 TS / +8 Python = +16 total**
+
+### Per-file test count (post-C2-merge)
+
+| File | Tests |
+|---|---|
+| c2-exposure-tags.test.ts (new) | 8 TS |
+| test_c2_exposure_tags.py (new) | 8 Python |
+| *all other files unchanged* | 319 TS / 119 Python |
+| **Total** | **327 TS / 127 Python** |
+
+### Files modified (git add list)
+
+- `terra-app/src/engine/types.ts`
+- `terra-app/src/engine/engine.ts`
+- `terra-app/tests/parity/helpers.ts`
+- `terra-app/tests/parity/c2-exposure-tags.test.ts` (new)
+- `src/terra_engine.py`
+- `tests/test_c2_exposure_tags.py` (new)
+- `terra-app/src/data/asset_exposure_tags.json` (new)
+- `terra-app/TERRA_build_log.md`
+
+### Known debt / handoff notes
+
+- **Consumer logic deferred to C4**: `exposure_tags` are read-only data in this session. Event targeting, vulnerability functions, and loss-of-load probability modifiers that consume tags are C4 scope.
+- **Housing exposure tags**: `housing_stock` assets get `exposure_tags: null` (no class default in v1 JSON). C4 should assign county-level tags from NRI HWAV/flood fields for housing vulnerability modeling.
+- **`asset_exposure_tags.json` in src/data/**: copied for TS test access; same known-debt note as anchor geojson — should be managed via build-time pipeline.
+- **node_modules symlink in worktree**: `terra-app/node_modules` → main worktree `node_modules`; git-ignored, not committed.

@@ -570,6 +570,29 @@ export interface AssetInstance {
   co2e_tpy?: number | null;                     // CO2-equivalent emissions (tons/yr)
   display_sector?: string | null;               // 'mining/extraction', 'utilities/power', etc.
   confidence?: string | null;                   // 'high' | 'low' | 'medium' | 'curated'
+
+  // v4.4 (C2) hazard exposure tags — read-only data field; excluded from all digest surfaces
+  // (ExistingAsset/ProductionAsset/IndicatorSnapshot do not carry this field)
+  exposure_tags?: ExposureTagSet | null;
+}
+
+// ── Exposure Tags (C2 hazard data) ─────────────────────────────────────────
+
+/** A single hazard exposure tag value with provenance. */
+export interface ExposureTag {
+  value: string;
+  source: string;
+  method: string;
+  confidence: string;
+  judgment_call: boolean;
+}
+
+/** All four hazard exposure dimensions for one asset. */
+export interface ExposureTagSet {
+  wildfire_exposure?: ExposureTag;
+  water_dependency?: ExposureTag;
+  flood_zone?: ExposureTag;
+  heat_sensitivity?: ExposureTag;
 }
 
 // ── Engine State ────────────────────────────────────────────────────────────
