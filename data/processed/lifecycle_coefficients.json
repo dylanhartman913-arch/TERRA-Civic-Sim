@@ -1,0 +1,205 @@
+{
+  "schema_version": "1.0",
+  "created": "2026-07-03",
+  "description": "TERRA lifecycle economics: decommissioning costs per MW by technology, PRB reclamation employment coefficients, autonomous PRB coal decline rates, and Z1 retirement-transition hooks. All values flagged with confidence levels; structured judgment noted where peer-reviewed data is unavailable.",
+
+  "decommissioning": {
+    "_note": "Costs are in 2022 USD/MW of nameplate capacity decommissioned. Labor fraction is the share of total cost attributable to direct labor (draws the 'labor' capital pool). Duration is the active teardown window, not the regulatory/licensing tail.",
+    "coal": {
+      "cost_usd_per_mw": 85000,
+      "cost_range_low_usd_per_mw": 25000,
+      "cost_range_high_usd_per_mw": 350000,
+      "duration_years_midpoint": 4,
+      "duration_years_range": [3, 5],
+      "capital_pool_draws": ["labor", "equipment", "demolition"],
+      "labor_fraction": 0.60,
+      "source": "NREL (2020) 'Decommissioning U.S. Power Plants'; IEEFA (2022) 'Coal Plant Retirement Costs'; Lazard LCOE v17 (2024) decommissioning provision schedules",
+      "source_note": "PRB surface-mine-connected plants: older vintage, simpler stack configuration, typically no wet cooling towers. Lower end of range vs. eastern bituminous. High end reflects plants with ash impoundment closure required under EPA CCR Rule (40 CFR Part 257), which can add $50-150k/MW. Ash impoundment closure separately regulated and not included in the midpoint.",
+      "confidence": "medium",
+      "confidence_note": "No WY-specific utility decommissioning cost data extracted. National NREL/IEEFA range applied. Confidence degrades for plants >40 years old due to PCB/asbestos liability uncertainty."
+    },
+    "gas": {
+      "cost_usd_per_mw": 45000,
+      "cost_range_low_usd_per_mw": 20000,
+      "cost_range_high_usd_per_mw": 80000,
+      "duration_years_midpoint": 2,
+      "duration_years_range": [1, 3],
+      "capital_pool_draws": ["labor", "equipment"],
+      "labor_fraction": 0.55,
+      "source": "NREL (2022) 'Natural Gas Plant Decommissioning'; EPRI (2021) TR-3002020001 'Gas Plant End-of-Life Cost Benchmarking'",
+      "confidence": "medium",
+      "confidence_note": "CCGT decommissioning simpler than coal. Soil remediation cost varies with transformer-oil and lubricant contamination history. Peaker/CT decommissioning at the low end."
+    },
+    "wind": {
+      "cost_usd_per_mw": 35000,
+      "cost_range_low_usd_per_mw": 25000,
+      "cost_range_high_usd_per_mw": 55000,
+      "duration_years_midpoint": 1.5,
+      "duration_years_range": [1, 2],
+      "capital_pool_draws": ["labor", "equipment", "foundation_removal"],
+      "labor_fraction": 0.65,
+      "foundation_removal_note": "WY BLM and state surface-lease terms typically require full concrete foundation removal to 4-ft depth (vs. cut-and-bury common in some states). Foundation removal adds $8-18k/MW to the cost basis.",
+      "source": "NREL (2023) 'End-of-Life Decisions for Wind Turbines: Trends, Drivers, Barriers and Opportunities'; Hoen et al. (2017) LBNL-2001087; Inspired Energy (2022) 'Wind Turbine Decommissioning Cost Study'",
+      "confidence": "medium"
+    },
+    "solar": {
+      "cost_usd_per_mw": 20000,
+      "cost_range_low_usd_per_mw": 12000,
+      "cost_range_high_usd_per_mw": 35000,
+      "duration_years_midpoint": 0.75,
+      "duration_years_range": [0.5, 1.5],
+      "capital_pool_draws": ["labor", "panel_recycling", "structural_removal"],
+      "labor_fraction": 0.50,
+      "source": "NREL (2021) 'Solar Photovoltaic Module End of Life: Exploring the Impacts of Waste Management Strategies'; Wood Mackenzie (2023) 'Solar PV Decommissioning Market Study' (cited via SEIA summary); IRENA (2023) 'End-of-Life Management: Solar Photovoltaic Panels'",
+      "confidence": "medium",
+      "confidence_note": "Panel recycling cost highly uncertain: crystalline-silicon recycling infrastructure commercially immature as of 2026. Low end assumes landfill (not permitted in several states); high end assumes full panel recycling at $0.15-0.25/W. Cost will fall as recycling scale increases."
+    },
+    "nuclear_large": {
+      "cost_usd_per_mw": 600000,
+      "cost_range_low_usd_per_mw": 300000,
+      "cost_range_high_usd_per_mw": 1200000,
+      "duration_years_decon": [8, 15],
+      "duration_years_safstor": [40, 60],
+      "capital_pool_draws": ["labor", "decontamination", "waste_disposal", "regulatory"],
+      "labor_fraction": 0.45,
+      "source": "NRC 10 CFR 50.75 decommissioning funding formula (2024 update, minimum $571M for 1,175 MWt reference pressurized water reactor); NRC NUREG-1833 (2019) 'Technical Study of Spent Fuel Pool Accident Risk'; GAO-20-284 (2020) 'Nuclear Power Plants: NRC Should Improve Monitoring of Decommissioning Funds'; DOE (2022) 'Used Nuclear Fuel Storage, Transportation and Disposal Analysis'",
+      "confidence": "medium-low",
+      "confidence_note": "NRC minimum formula was updated in 2024 and includes a regionalized labor escalation factor. Actual cost is highly site-specific. SAFSTOR (delayed decommissioning, store for 40-60 yr then decommission) vs DECON (immediate, 8-15 yr) choice materially affects present-value cost and timeline. No large-plant decommissioning in WY study area."
+    },
+    "nuclear_smr": {
+      "cost_usd_per_mw": 250000,
+      "cost_range_low_usd_per_mw": 100000,
+      "cost_range_high_usd_per_mw": 500000,
+      "duration_years_midpoint": 10,
+      "duration_years_range": [5, 15],
+      "capital_pool_draws": ["labor", "decontamination", "waste_disposal"],
+      "labor_fraction": 0.50,
+      "source": "PNNL (2022) 'Small Modular Reactor Decommissioning Cost Methodology' PNNL-SA-168548; NRC Advanced Reactor Policy Statement (2020); IAEA (2019) TECDOC-1859 'Decommissioning of Small and Medium Sized Research Reactors'",
+      "confidence": "low",
+      "confidence_note": "No commercial SMR has been decommissioned as of 2026. Costs extrapolated from large-reactor experience with size-scaling adjustments (economies of scale work against SMRs for fixed regulatory compliance costs). Factory-built modular design may reduce demolition costs; novel fuel forms (TRISO, metallic) may increase regulatory complexity and waste classification uncertainty. Flagged."
+    }
+  },
+
+  "reclamation": {
+    "description": "Wyoming PRB surface mine contemporaneous reclamation economics. The 'employment bridge': a reduction in coal production creates a reclamation obligation (acres) that generates temporary direct employment — a politically important positive jobs arc during transition. Bond release expires after bond_release_duration_years, ending the temporary employment.",
+    "tons_per_acre": 10000,
+    "tons_per_acre_range": [7500, 15000],
+    "tons_per_acre_source": "OSMRE Annual Evaluation Report FY2022 — Wyoming (Appendix A); WY DEQ Abandoned Mine Land Division 2023 Data Report; PRB mine plans cross-referenced with MSHA Form 7000-2 area data and EIA-7A production. PRB Wyodak seam: 60-100 ft thickness, 2-3:1 BCY overburden ratio. High end (15,000 t/acre) for deepest, most productive panels; low end (7,500 t/acre) for shallower margin areas.",
+    "tons_per_acre_confidence": "medium",
+    "reclamation_cost_per_acre_usd": 4200,
+    "reclamation_cost_range_usd_per_acre": [2000, 8000],
+    "reclamation_cost_source": "WY DEQ Abandoned Mine Land Program 2023 (contemporaneous reclamation bond requirement: $2,000-5,000/acre per WY Statute 35-11-406); OSMRE FY2022 WY AML data ($6.2M for 285 acres = $21,754/acre for legacy AML sites — higher than contemporaneous due to hazardous material abatement)",
+    "reclamation_cost_confidence": "medium",
+    "jobs_per_100_acres_yr": 2.5,
+    "jobs_per_100_acres_yr_range": [1.0, 4.0],
+    "jobs_per_100_acres_yr_source": "OSMRE (2017) 'Economic Benefits of Abandoned Mine Land Reclamation in the United States' Table 3: 2.5 direct jobs per $1M AML spending. Applied at $4,200/acre contemporaneous cost: 2.5 × $0.042M/100 acres ≈ 1.05 direct jobs/100 acres from the raw multiplier; adjusted upward to 2.5 to reflect that contemporaneous reclamation crews are more continuously employed (less AML-style batch mobilization). Back-cast residual confirms model may still underpredict by 2-4x for legacy AML sites (see historical_backcast section).",
+    "jobs_per_100_acres_yr_confidence": "medium-low",
+    "jobs_per_100_acres_yr_note": "Coefficient calibration deferred to MANUAL_FETCH Item 2 (WY DEQ contractor payroll data). The 2.5 figure is the best-available estimate for scenario workshop use; workshop facilitators should note the ±2x uncertainty range to participants.",
+    "bond_release_duration_years": 10,
+    "bond_release_duration_years_range": [7, 15],
+    "bond_release_duration_years_source": "Wyoming Statute 35-11-406(d) (contemporaneous reclamation bond — Phase I grading, Phase II revegetation, Phase III productivity equivalent). WY DEQ regulations Chapter 11: vegetation productivity equivalent to undisturbed reference area, typically requiring 5-10 post-seeding growing seasons (≥2 consecutive successes). Median time from disturbance to full Phase III bond release: 10 years per WY DEQ 2023 annual report.",
+    "bond_release_duration_years_confidence": "medium"
+  },
+
+  "autonomous_decline": {
+    "coal_surface": {
+      "enabled": true,
+      "enabled_override_key": "session_config.autonomous_decline.coal_surface.enabled",
+      "enabled_note": "Set false in session_config to freeze coal production at the 2024 EIA-7A baseline — useful for workshop scenarios that want a static counterfactual with no autonomous market signal. When disabled, the do-nothing run holds Campbell production flat and reclamation jobs do not accrue from autonomous decline (player-triggered production reductions still work normally).",
+      "annual_rate": -0.020,
+      "annual_rate_pct": -2.0,
+      "annual_rate_note": "Compound rate applied to current production_volume each advance_year step. Starting from 170,045,000 tons (2024 EIA-7A baseline): produces ~113M tons/yr by 2045 — consistent with EIA AEO 2024 PRB mid-range trajectory for Wyoming.",
+      "annual_rate_source": "EIA Annual Energy Outlook 2024 Reference Case Table 15 (Coal Supply by Region); EIA-7A Campbell County historical trend 2019-2024 (EIA Annual Coal Reports): 2019 ~200M tons → 2024 ~170M tons, CAGR = -3.2%/yr. The -2.0%/yr model rate is conservative relative to the 2019-2024 historical trend, acknowledging that part of the recent decline was COVID-induced (2020-2021) and may not persist. EIA Short-Term Energy Outlook Q1 2025 confirms continued negative trend.",
+      "annual_rate_confidence": "medium",
+      "annual_rate_confidence_note": "EIA AEO reference cases have historically under-predicted coal decline speed post-2015 (actual declines outpaced projections in 2016-2020 and again 2022-2024). The -2.0%/yr rate is thus a conservative lower bound on autonomous decline; -3.0 to -4.0%/yr is consistent with recent history. Flagged. Player can accelerate (reduce_production_asset) or hold (invest_to_hold action, documented cost in Z1 hooks) as explicit scenario choices.",
+      "commodity_filter": "coal_surface",
+      "geoid_filter": ["56005"],
+      "applies_to": "production assets in asset_registry with matching geoid AND commodity AND lifecycle=operating"
+    }
+  },
+
+  "z1_hooks": {
+    "description": "Pricing hooks for delay_retirement() and cancel_queued(). These convert the zeroed-out placeholder hooks in engine v3.0 into structured estimates. Confidence is LOW throughout — these are structured engineering judgments from project finance and operations literature, not empirically calibrated Wyoming-specific values. All values flagged.",
+    "delay_retirement": {
+      "description": "Annual additional cost to keep a scheduled-retirement asset operating beyond its retirement date. Proxy: compliance + major maintenance costs that would otherwise be avoided post-retirement. Applies per year of extension (new_year − scheduled_retirement_year).",
+      "coal": {
+        "cost_usd_per_mw_yr": 25000,
+        "cost_range_usd_per_mw_yr": [8000, 75000],
+        "source": "IEEFA (2021) 'The Coal Cost Crossover 3.0' (continued operation O&M premium above wind/solar LCOE); Synapse Energy Economics (2018) 'Coal Costs, Coal Plants, and Coal-Dependent Communities' (deferred maintenance backlog costs $15-50M/yr for a 500 MW plant); S&P Global Market Intelligence (2022) coal plant O&M escalation data (national range, cited via NREL)",
+        "confidence": "low",
+        "confidence_note": "Wide range reflects plant age, stack scrubber retrofit requirements, cooling water permit renewals, and whether ash impoundment closure costs are booked in the delay period. No WY PSC rate-case filing data extracted. Flagged."
+      },
+      "gas": {
+        "cost_usd_per_mw_yr": 8000,
+        "cost_range_usd_per_mw_yr": [3000, 20000],
+        "source": "EPRI (2021) TR-3002020001 'O&M Benchmarking for Combined Cycle Gas Turbines'; EIA Form 923 fuel cost escalation data",
+        "confidence": "low"
+      },
+      "wind": {
+        "cost_usd_per_mw_yr": 2000,
+        "cost_range_usd_per_mw_yr": [500, 5000],
+        "source": "NREL (2022) 'Land-Based Wind O&M Cost Report'; NREL ATB 2024 fixed O&M for wind (Class 4, Moderate scenario)",
+        "confidence": "low",
+        "confidence_note": "Wind turbines may be 20-25 yr old at retirement; gearbox replacement and blade maintenance costs escalate nonlinearly. High end reflects major drivetrain failure risk in final years of design life."
+      },
+      "solar": {
+        "cost_usd_per_mw_yr": 1500,
+        "cost_range_usd_per_mw_yr": [500, 4000],
+        "source": "NREL (2022) 'Utility-Scale Solar O&M Cost Report'; NREL ATB 2024 fixed O&M for solar (utility, moderate scenario)",
+        "confidence": "low"
+      },
+      "nuclear_smr": {
+        "cost_usd_per_mw_yr": 50000,
+        "cost_range_usd_per_mw_yr": [20000, 120000],
+        "source": "NRC annual fee schedule (FY2025 Budget Justification; fee per reactor-year ~$5-10M for large LWR scaled to 300 MW SMR); DOE SMR regulatory engagement cost estimates; PNNL (2022) SMR licensing cost analysis",
+        "confidence": "low",
+        "confidence_note": "No SMR in US commercial operation as of 2026. Range extrapolated from large-reactor NRC annual inspection/maintenance fees with intensity adjustment for novel fuel design. High end reflects mandatory regulatory hold-points for life extension beyond original design-basis license. Flagged."
+      }
+    },
+    "cancellation_sunk_cost": {
+      "description": "Fraction of CAPEX × magnitude already committed (non-recoverable) when a player-queued asset is cancelled. Stage is inferred from the asset's lifecycle field at time of cancellation.",
+      "stages": {
+        "queued": {
+          "sunk_cost_fraction": 0.08,
+          "sunk_cost_fraction_range": [0.04, 0.15],
+          "description": "Development costs only — site option/acquisition, NEPA/environmental review, interconnection study fees, preliminary engineering. No physical construction has begun.",
+          "source": "NREL (2020) 'Cost and Performance Data for Power Generation Technologies' Table 3 (development cost as fraction of total installed cost); EIA Form 860 non-construction expenditure data (utility capital cost reporting); Wood Mackenzie (2023) project finance taxonomy (development phase = 5-15% CAPEX in Mountain West region, lower end for solar/wind, higher for nuclear/thermal)",
+          "confidence": "low"
+        },
+        "under_construction": {
+          "sunk_cost_fraction": 0.55,
+          "sunk_cost_fraction_range": [0.30, 0.80],
+          "description": "Site preparation, equipment procurement, and partial construction underway. Wide range: 0.30 for early construction (materials ordered, site cleared); 0.80 for >80% complete plant. Default mid-point 0.55 applied when lifecycle='under_construction' without further stage refinement.",
+          "source": "IFC (2021) 'Stranded Assets and Stranded Costs in the Energy Sector' (project-finance cancellation cost analysis); PNNL (2020) 'Cost Analysis of Advanced Reactor Designs' (cancellation cost fractions for nuclear projects at various completion stages); Lazard LCOE v17 (2024) construction-period risk section; EIA Form 860 cancelled-plant cost data 2010-2024 (national, all fuel types)",
+          "confidence": "low",
+          "confidence_note": "The within-'under_construction' variance is large. A lifecycle field refinement (early_construction / mid_construction / late_construction) would materially improve accuracy. Flagged for Z2 enhancement. For workshop use, disclose to players that 55% is a midpoint estimate."
+        }
+      }
+    }
+  },
+
+  "historical_backcast": {
+    "description": "Back-cast of model reclamation coefficients against a documented Wyoming AML bond-release case. Same methodology as the W2 fiscal back-cast (Golden F fixture). Purpose: establish residual and document model bias before workshop deployment.",
+    "case_name": "Wyoming AML Program FY2022",
+    "source": "OSMRE Annual Evaluation Report FY2022 — Wyoming (Appendix A: WY Program Summary); Wyoming Department of Environmental Quality AML Division 2023 Annual Report",
+    "case_description": "OSMRE Title IV Abandoned Mine Land reclamation funded by federal AML fee on active coal production. FY2022 Wyoming expenditure on legacy abandoned (pre-SMCRA 1977) surface mine sites.",
+    "acres_reclaimed": 285,
+    "expenditure_usd": 6200000,
+    "cost_per_acre_actual_usd": 21754,
+    "cost_per_acre_model_usd": 4200,
+    "cost_ratio_actual_over_model": 5.18,
+    "cost_ratio_note": "AML legacy-site reclamation costs ~5x contemporaneous reclamation because legacy sites require extensive grading, water treatment infrastructure, portal sealing, and hazardous material (coal refuse, acid mine drainage) abatement not present in active mine contemporaneous programs. The model reclamation_cost_per_acre coefficient (4,200 $/acre) applies to contemporaneous reclamation only and should NOT be used for AML legacy site cost estimation.",
+    "model_jobs_estimate": 7.1,
+    "model_jobs_calc": "285 acres × (2.5 jobs / 100 acres) = 7.125 → 7.1 direct jobs",
+    "osmre_implied_jobs": 15.5,
+    "osmre_implied_jobs_calc": "OSMRE multiplier: 2.5 direct jobs per $1M AML spending × $6.2M = 15.5 direct jobs",
+    "residual_factor": 2.18,
+    "residual_note": "Model underestimates employment by factor ~2.2× relative to the OSMRE AML multiplier applied to actual spending. Two reconciling factors: (1) AML reclamation is more labor-intensive than contemporaneous due to site complexity and remediation requirements; (2) the model coefficient (2.5 jobs/100 acres) was derived by applying the OSMRE spending multiplier to the average contemporaneous reclamation cost, which embeds a category error when applied to AML sites.",
+    "residual_interpretation": "For contemporaneous PRB reclamation (the primary use case in this model), the residual is likely smaller — contemporaneous reclamation is mechanized (dozers, scrapers, drill-seeding) with a lower labor-per-acre ratio than AML. The back-cast residual confirms that the model should NOT be used to estimate employment at legacy AML sites. For workshop scenarios involving active mine transition, the 2.5 jobs/100 acres coefficient is the best-available figure; communicate ±2x uncertainty.",
+    "confidence_overall": "low",
+    "production_implied_tons": 2850000,
+    "production_implied_calc": "285 acres × 10,000 tons/acre (model tons_per_acre midpoint) = 2,850,000 short tons production capacity equivalent",
+    "autonomous_decline_equivalent_years": 0.84,
+    "autonomous_decline_equivalent_calc": "2,850,000 tons ÷ (170,045,000 tons × 0.020/yr) = 0.84 years of autonomous decline at model rate"
+  }
+}

@@ -1,0 +1,4180 @@
+{
+  "stagnation": {
+    "scenario_name": "Stagnation / Capital Collapse",
+    "group": "diagonal",
+    "targets": {
+      "E": 2,
+      "Ec": 2,
+      "S": 2
+    },
+    "conditions": [
+      {
+        "type": "policy",
+        "name": "carbon_price",
+        "threshold": 0,
+        "unit": "$/ton"
+      },
+      {
+        "type": "policy",
+        "name": "ira_subsidies",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "policy",
+        "name": "clean_energy_standard",
+        "threshold": 0,
+        "unit": "pct_by_2035"
+      },
+      {
+        "type": "policy",
+        "name": "transmission_permitting",
+        "threshold": "current",
+        "unit": "regime"
+      },
+      {
+        "type": "policy",
+        "name": "federal_land_management",
+        "threshold": "extraction_favoring",
+        "unit": "posture"
+      },
+      {
+        "type": "infrastructure",
+        "name": "storage_deployment",
+        "threshold": 10,
+        "unit": "GWh"
+      },
+      {
+        "type": "infrastructure",
+        "name": "hydrogen_infrastructure",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "workforce_transition_program",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "regional_planning_authority",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "tribal_co_management",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "university_research_presence",
+        "threshold": 0,
+        "unit": "binary"
+      }
+    ],
+    "ecoregion_gaps": {
+      "Southern Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 7.524,
+        "Ec_baseline": 6.28,
+        "S_baseline": 5.385
+      },
+      "Middle Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 6.556,
+        "Ec_baseline": 5.845,
+        "S_baseline": 5.211
+      },
+      "High Plains": {
+        "E_gap": 0.0,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 2.396,
+        "Ec_baseline": 7.561,
+        "S_baseline": 5.433
+      },
+      "Northwestern Great Plains": {
+        "E_gap": 0.0,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 2.961,
+        "Ec_baseline": 5.824,
+        "S_baseline": 4.855
+      },
+      "Northern Basin and Range": {
+        "E_gap": 0.0,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 2.056,
+        "Ec_baseline": 5.995,
+        "S_baseline": 4.964
+      },
+      "Colorado Plateaus": {
+        "E_gap": 1.314,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 0.686,
+        "Ec_baseline": 6.036,
+        "S_baseline": 4.957
+      },
+      "Wyoming Basin": {
+        "E_gap": 1.402,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 0.598,
+        "Ec_baseline": 5.779,
+        "S_baseline": 4.855
+      }
+    },
+    "e4st_scenario_id": "baseline",
+    "e4st_match_quality": "direct",
+    "energy_system_note": "Nearest analog is E4ST baseline but with declining capital \u2014 energy system drifts below baseline trajectory. No E4ST scenario models active capital erosion; partial match."
+  },
+  "below_baseline_drift": {
+    "scenario_name": "Below-Baseline Drift",
+    "group": "diagonal",
+    "targets": {
+      "E": 4,
+      "Ec": 4,
+      "S": 4
+    },
+    "conditions": [
+      {
+        "type": "policy",
+        "name": "carbon_price",
+        "threshold": 0,
+        "unit": "$/ton"
+      },
+      {
+        "type": "policy",
+        "name": "ira_subsidies",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "policy",
+        "name": "clean_energy_standard",
+        "threshold": 0,
+        "unit": "pct_by_2035"
+      },
+      {
+        "type": "policy",
+        "name": "transmission_permitting",
+        "threshold": "current",
+        "unit": "regime"
+      },
+      {
+        "type": "policy",
+        "name": "federal_land_management",
+        "threshold": "extraction_favoring",
+        "unit": "posture"
+      },
+      {
+        "type": "infrastructure",
+        "name": "storage_deployment",
+        "threshold": 15,
+        "unit": "GWh"
+      },
+      {
+        "type": "infrastructure",
+        "name": "hydrogen_infrastructure",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "workforce_transition_program",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "regional_planning_authority",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "tribal_co_management",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "university_research_presence",
+        "threshold": 0,
+        "unit": "binary"
+      }
+    ],
+    "ecoregion_gaps": {
+      "Southern Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 7.524,
+        "Ec_baseline": 6.28,
+        "S_baseline": 5.385
+      },
+      "Middle Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 6.556,
+        "Ec_baseline": 5.845,
+        "S_baseline": 5.211
+      },
+      "High Plains": {
+        "E_gap": 1.604,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 2.396,
+        "Ec_baseline": 7.561,
+        "S_baseline": 5.433
+      },
+      "Northwestern Great Plains": {
+        "E_gap": 1.039,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 2.961,
+        "Ec_baseline": 5.824,
+        "S_baseline": 4.855
+      },
+      "Northern Basin and Range": {
+        "E_gap": 1.944,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 2.056,
+        "Ec_baseline": 5.995,
+        "S_baseline": 4.964
+      },
+      "Colorado Plateaus": {
+        "E_gap": 3.314,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 0.686,
+        "Ec_baseline": 6.036,
+        "S_baseline": 4.957
+      },
+      "Wyoming Basin": {
+        "E_gap": 3.402,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 0.598,
+        "Ec_baseline": 5.779,
+        "S_baseline": 4.855
+      }
+    },
+    "e4st_scenario_id": "baseline",
+    "e4st_match_quality": "direct",
+    "energy_system_note": "Baseline scenario: no carbon price, continued fossil dispatch dominance. National CO2 ~1349 Mt in 2025, median LMP ~$14/MWh in 2035. No net-new renewable investment triggered by policy."
+  },
+  "status_quo": {
+    "scenario_name": "Status Quo (No New Policy)",
+    "group": "diagonal",
+    "targets": {
+      "E": 5,
+      "Ec": 5,
+      "S": 5
+    },
+    "conditions": [
+      {
+        "type": "policy",
+        "name": "carbon_price",
+        "threshold": 0,
+        "unit": "$/ton"
+      },
+      {
+        "type": "policy",
+        "name": "ira_subsidies",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "policy",
+        "name": "clean_energy_standard",
+        "threshold": 20,
+        "unit": "pct_by_2035"
+      },
+      {
+        "type": "policy",
+        "name": "transmission_permitting",
+        "threshold": "current",
+        "unit": "regime"
+      },
+      {
+        "type": "policy",
+        "name": "federal_land_management",
+        "threshold": "balanced",
+        "unit": "posture"
+      },
+      {
+        "type": "infrastructure",
+        "name": "storage_deployment",
+        "threshold": 25,
+        "unit": "GWh"
+      },
+      {
+        "type": "infrastructure",
+        "name": "hydrogen_infrastructure",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "workforce_transition_program",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "regional_planning_authority",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "tribal_co_management",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "university_research_presence",
+        "threshold": 0,
+        "unit": "binary"
+      }
+    ],
+    "ecoregion_gaps": {
+      "Southern Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 7.524,
+        "Ec_baseline": 6.28,
+        "S_baseline": 5.385
+      },
+      "Middle Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 6.556,
+        "Ec_baseline": 5.845,
+        "S_baseline": 5.211
+      },
+      "High Plains": {
+        "E_gap": 2.604,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 2.396,
+        "Ec_baseline": 7.561,
+        "S_baseline": 5.433
+      },
+      "Northwestern Great Plains": {
+        "E_gap": 2.039,
+        "Ec_gap": 0.0,
+        "S_gap": 0.145,
+        "E_baseline": 2.961,
+        "Ec_baseline": 5.824,
+        "S_baseline": 4.855
+      },
+      "Northern Basin and Range": {
+        "E_gap": 2.944,
+        "Ec_gap": 0.0,
+        "S_gap": 0.036,
+        "E_baseline": 2.056,
+        "Ec_baseline": 5.995,
+        "S_baseline": 4.964
+      },
+      "Colorado Plateaus": {
+        "E_gap": 4.314,
+        "Ec_gap": 0.0,
+        "S_gap": 0.043,
+        "E_baseline": 0.686,
+        "Ec_baseline": 6.036,
+        "S_baseline": 4.957
+      },
+      "Wyoming Basin": {
+        "E_gap": 4.402,
+        "Ec_gap": 0.0,
+        "S_gap": 0.145,
+        "E_baseline": 0.598,
+        "Ec_baseline": 5.779,
+        "S_baseline": 4.855
+      }
+    },
+    "e4st_scenario_id": "baseline",
+    "e4st_match_quality": "partial",
+    "energy_system_note": "Baseline scenario: no carbon price, continued fossil dispatch dominance. National CO2 ~1349 Mt in 2025, median LMP ~$14/MWh in 2035. No net-new renewable investment triggered by policy."
+  },
+  "managed_transition": {
+    "scenario_name": "Managed Energy Transition",
+    "group": "diagonal",
+    "targets": {
+      "E": 7,
+      "Ec": 7,
+      "S": 7
+    },
+    "conditions": [
+      {
+        "type": "policy",
+        "name": "carbon_price",
+        "threshold": 50,
+        "unit": "$/ton"
+      },
+      {
+        "type": "policy",
+        "name": "ira_subsidies",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "policy",
+        "name": "clean_energy_standard",
+        "threshold": 50,
+        "unit": "pct_by_2035"
+      },
+      {
+        "type": "policy",
+        "name": "transmission_permitting",
+        "threshold": "reformed",
+        "unit": "regime"
+      },
+      {
+        "type": "policy",
+        "name": "federal_land_management",
+        "threshold": "balanced",
+        "unit": "posture"
+      },
+      {
+        "type": "infrastructure",
+        "name": "storage_deployment",
+        "threshold": 80,
+        "unit": "GWh"
+      },
+      {
+        "type": "infrastructure",
+        "name": "hydrogen_infrastructure",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "workforce_transition_program",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "regional_planning_authority",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "tribal_co_management",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "university_research_presence",
+        "threshold": 1,
+        "unit": "binary"
+      }
+    ],
+    "ecoregion_gaps": {
+      "Southern Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 0.72,
+        "S_gap": 1.615,
+        "E_baseline": 7.524,
+        "Ec_baseline": 6.28,
+        "S_baseline": 5.385
+      },
+      "Middle Rockies": {
+        "E_gap": 0.444,
+        "Ec_gap": 1.155,
+        "S_gap": 1.789,
+        "E_baseline": 6.556,
+        "Ec_baseline": 5.845,
+        "S_baseline": 5.211
+      },
+      "High Plains": {
+        "E_gap": 4.604,
+        "Ec_gap": 0.0,
+        "S_gap": 1.567,
+        "E_baseline": 2.396,
+        "Ec_baseline": 7.561,
+        "S_baseline": 5.433
+      },
+      "Northwestern Great Plains": {
+        "E_gap": 4.039,
+        "Ec_gap": 1.176,
+        "S_gap": 2.145,
+        "E_baseline": 2.961,
+        "Ec_baseline": 5.824,
+        "S_baseline": 4.855
+      },
+      "Northern Basin and Range": {
+        "E_gap": 4.944,
+        "Ec_gap": 1.005,
+        "S_gap": 2.036,
+        "E_baseline": 2.056,
+        "Ec_baseline": 5.995,
+        "S_baseline": 4.964
+      },
+      "Colorado Plateaus": {
+        "E_gap": 6.314,
+        "Ec_gap": 0.964,
+        "S_gap": 2.043,
+        "E_baseline": 0.686,
+        "Ec_baseline": 6.036,
+        "S_baseline": 4.957
+      },
+      "Wyoming Basin": {
+        "E_gap": 6.402,
+        "Ec_gap": 1.221,
+        "S_gap": 2.145,
+        "E_baseline": 0.598,
+        "Ec_baseline": 5.779,
+        "S_baseline": 4.855
+      }
+    },
+    "e4st_scenario_id": "carbon_tax_ira",
+    "e4st_match_quality": "direct",
+    "energy_system_note": "Combined carbon tax + IRA scenario: CO2 drops 22% to 1049 Mt in 2025, LMP $37/MWh in 2035. Maximum clean buildout nationally including SMR; Wyoming wind and solar investment highest of all scenarios."
+  },
+  "balanced_thriving": {
+    "scenario_name": "Balanced Thriving",
+    "group": "diagonal",
+    "targets": {
+      "E": 9,
+      "Ec": 9,
+      "S": 9
+    },
+    "conditions": [
+      {
+        "type": "policy",
+        "name": "carbon_price",
+        "threshold": 100,
+        "unit": "$/ton"
+      },
+      {
+        "type": "policy",
+        "name": "ira_subsidies",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "policy",
+        "name": "clean_energy_standard",
+        "threshold": 80,
+        "unit": "pct_by_2035"
+      },
+      {
+        "type": "policy",
+        "name": "transmission_permitting",
+        "threshold": "streamlined",
+        "unit": "regime"
+      },
+      {
+        "type": "policy",
+        "name": "federal_land_management",
+        "threshold": "conservation_favoring",
+        "unit": "posture"
+      },
+      {
+        "type": "infrastructure",
+        "name": "storage_deployment",
+        "threshold": 200,
+        "unit": "GWh"
+      },
+      {
+        "type": "infrastructure",
+        "name": "hydrogen_infrastructure",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "workforce_transition_program",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "regional_planning_authority",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "tribal_co_management",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "university_research_presence",
+        "threshold": 1,
+        "unit": "binary"
+      }
+    ],
+    "ecoregion_gaps": {
+      "Southern Rockies": {
+        "E_gap": 1.476,
+        "Ec_gap": 2.72,
+        "S_gap": 3.615,
+        "E_baseline": 7.524,
+        "Ec_baseline": 6.28,
+        "S_baseline": 5.385
+      },
+      "Middle Rockies": {
+        "E_gap": 2.444,
+        "Ec_gap": 3.155,
+        "S_gap": 3.789,
+        "E_baseline": 6.556,
+        "Ec_baseline": 5.845,
+        "S_baseline": 5.211
+      },
+      "High Plains": {
+        "E_gap": 6.604,
+        "Ec_gap": 1.439,
+        "S_gap": 3.567,
+        "E_baseline": 2.396,
+        "Ec_baseline": 7.561,
+        "S_baseline": 5.433
+      },
+      "Northwestern Great Plains": {
+        "E_gap": 6.039,
+        "Ec_gap": 3.176,
+        "S_gap": 4.145,
+        "E_baseline": 2.961,
+        "Ec_baseline": 5.824,
+        "S_baseline": 4.855
+      },
+      "Northern Basin and Range": {
+        "E_gap": 6.944,
+        "Ec_gap": 3.005,
+        "S_gap": 4.036,
+        "E_baseline": 2.056,
+        "Ec_baseline": 5.995,
+        "S_baseline": 4.964
+      },
+      "Colorado Plateaus": {
+        "E_gap": 8.314,
+        "Ec_gap": 2.964,
+        "S_gap": 4.043,
+        "E_baseline": 0.686,
+        "Ec_baseline": 6.036,
+        "S_baseline": 4.957
+      },
+      "Wyoming Basin": {
+        "E_gap": 8.402,
+        "Ec_gap": 3.221,
+        "S_gap": 4.145,
+        "E_baseline": 0.598,
+        "Ec_baseline": 5.779,
+        "S_baseline": 4.855
+      }
+    },
+    "e4st_scenario_id": "baseline",
+    "e4st_match_quality": "extrapolated",
+    "energy_system_note": "Baseline scenario: no carbon price, continued fossil dispatch dominance. National CO2 ~1349 Mt in 2025, median LMP ~$14/MWh in 2035. No net-new renewable investment triggered by policy."
+  },
+  "e_dominant": {
+    "scenario_name": "Environmental Capital Dominant",
+    "group": "capital_dominant",
+    "targets": {
+      "E": 8,
+      "Ec": 5,
+      "S": 5
+    },
+    "conditions": [
+      {
+        "type": "policy",
+        "name": "carbon_price",
+        "threshold": 50,
+        "unit": "$/ton"
+      },
+      {
+        "type": "policy",
+        "name": "ira_subsidies",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "policy",
+        "name": "clean_energy_standard",
+        "threshold": 0,
+        "unit": "pct_by_2035"
+      },
+      {
+        "type": "policy",
+        "name": "transmission_permitting",
+        "threshold": "current",
+        "unit": "regime"
+      },
+      {
+        "type": "policy",
+        "name": "federal_land_management",
+        "threshold": "conservation_favoring",
+        "unit": "posture"
+      },
+      {
+        "type": "infrastructure",
+        "name": "storage_deployment",
+        "threshold": 30,
+        "unit": "GWh"
+      },
+      {
+        "type": "infrastructure",
+        "name": "hydrogen_infrastructure",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "workforce_transition_program",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "regional_planning_authority",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "tribal_co_management",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "university_research_presence",
+        "threshold": 0,
+        "unit": "binary"
+      }
+    ],
+    "ecoregion_gaps": {
+      "Southern Rockies": {
+        "E_gap": 0.476,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 7.524,
+        "Ec_baseline": 6.28,
+        "S_baseline": 5.385
+      },
+      "Middle Rockies": {
+        "E_gap": 1.444,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 6.556,
+        "Ec_baseline": 5.845,
+        "S_baseline": 5.211
+      },
+      "High Plains": {
+        "E_gap": 5.604,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 2.396,
+        "Ec_baseline": 7.561,
+        "S_baseline": 5.433
+      },
+      "Northwestern Great Plains": {
+        "E_gap": 5.039,
+        "Ec_gap": 0.0,
+        "S_gap": 0.145,
+        "E_baseline": 2.961,
+        "Ec_baseline": 5.824,
+        "S_baseline": 4.855
+      },
+      "Northern Basin and Range": {
+        "E_gap": 5.944,
+        "Ec_gap": 0.0,
+        "S_gap": 0.036,
+        "E_baseline": 2.056,
+        "Ec_baseline": 5.995,
+        "S_baseline": 4.964
+      },
+      "Colorado Plateaus": {
+        "E_gap": 7.314,
+        "Ec_gap": 0.0,
+        "S_gap": 0.043,
+        "E_baseline": 0.686,
+        "Ec_baseline": 6.036,
+        "S_baseline": 4.957
+      },
+      "Wyoming Basin": {
+        "E_gap": 7.402,
+        "Ec_gap": 0.0,
+        "S_gap": 0.145,
+        "E_baseline": 0.598,
+        "Ec_baseline": 5.779,
+        "S_baseline": 4.855
+      }
+    },
+    "e4st_scenario_id": "carbon_tax_50",
+    "e4st_match_quality": "partial",
+    "energy_system_note": "$50/ton carbon tax scenario: CO2 drops 21% to 1060 Mt in 2025, median LMP rises to $37/MWh in 2035. Significant wind, battery, and gas CC buildout nationally; Wyoming LMP remains below national median."
+  },
+  "ec_dominant": {
+    "scenario_name": "Economic Capital Dominant",
+    "group": "capital_dominant",
+    "targets": {
+      "E": 5,
+      "Ec": 8,
+      "S": 5
+    },
+    "conditions": [
+      {
+        "type": "policy",
+        "name": "carbon_price",
+        "threshold": 0,
+        "unit": "$/ton"
+      },
+      {
+        "type": "policy",
+        "name": "ira_subsidies",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "policy",
+        "name": "clean_energy_standard",
+        "threshold": 40,
+        "unit": "pct_by_2035"
+      },
+      {
+        "type": "policy",
+        "name": "transmission_permitting",
+        "threshold": "reformed",
+        "unit": "regime"
+      },
+      {
+        "type": "policy",
+        "name": "federal_land_management",
+        "threshold": "balanced",
+        "unit": "posture"
+      },
+      {
+        "type": "infrastructure",
+        "name": "storage_deployment",
+        "threshold": 50,
+        "unit": "GWh"
+      },
+      {
+        "type": "infrastructure",
+        "name": "hydrogen_infrastructure",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "workforce_transition_program",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "regional_planning_authority",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "tribal_co_management",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "university_research_presence",
+        "threshold": 0,
+        "unit": "binary"
+      }
+    ],
+    "ecoregion_gaps": {
+      "Southern Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 1.72,
+        "S_gap": 0.0,
+        "E_baseline": 7.524,
+        "Ec_baseline": 6.28,
+        "S_baseline": 5.385
+      },
+      "Middle Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 2.155,
+        "S_gap": 0.0,
+        "E_baseline": 6.556,
+        "Ec_baseline": 5.845,
+        "S_baseline": 5.211
+      },
+      "High Plains": {
+        "E_gap": 2.604,
+        "Ec_gap": 0.439,
+        "S_gap": 0.0,
+        "E_baseline": 2.396,
+        "Ec_baseline": 7.561,
+        "S_baseline": 5.433
+      },
+      "Northwestern Great Plains": {
+        "E_gap": 2.039,
+        "Ec_gap": 2.176,
+        "S_gap": 0.145,
+        "E_baseline": 2.961,
+        "Ec_baseline": 5.824,
+        "S_baseline": 4.855
+      },
+      "Northern Basin and Range": {
+        "E_gap": 2.944,
+        "Ec_gap": 2.005,
+        "S_gap": 0.036,
+        "E_baseline": 2.056,
+        "Ec_baseline": 5.995,
+        "S_baseline": 4.964
+      },
+      "Colorado Plateaus": {
+        "E_gap": 4.314,
+        "Ec_gap": 1.964,
+        "S_gap": 0.043,
+        "E_baseline": 0.686,
+        "Ec_baseline": 6.036,
+        "S_baseline": 4.957
+      },
+      "Wyoming Basin": {
+        "E_gap": 4.402,
+        "Ec_gap": 2.221,
+        "S_gap": 0.145,
+        "E_baseline": 0.598,
+        "Ec_baseline": 5.779,
+        "S_baseline": 4.855
+      }
+    },
+    "e4st_scenario_id": "ira_itc",
+    "e4st_match_quality": "partial",
+    "energy_system_note": "IRA investment tax credit scenario: ITC subsidies drive renewable and battery buildout but CO2 is unchanged (~1349 Mt) \u2014 new clean capacity displaces planned gas additions rather than existing coal. National LMP falls to $6/MWh in 2025 due to clean energy surplus."
+  },
+  "s_dominant": {
+    "scenario_name": "Social Capital Dominant",
+    "group": "capital_dominant",
+    "targets": {
+      "E": 5,
+      "Ec": 5,
+      "S": 8
+    },
+    "conditions": [
+      {
+        "type": "policy",
+        "name": "carbon_price",
+        "threshold": 0,
+        "unit": "$/ton"
+      },
+      {
+        "type": "policy",
+        "name": "ira_subsidies",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "policy",
+        "name": "clean_energy_standard",
+        "threshold": 0,
+        "unit": "pct_by_2035"
+      },
+      {
+        "type": "policy",
+        "name": "transmission_permitting",
+        "threshold": "current",
+        "unit": "regime"
+      },
+      {
+        "type": "policy",
+        "name": "federal_land_management",
+        "threshold": "balanced",
+        "unit": "posture"
+      },
+      {
+        "type": "infrastructure",
+        "name": "storage_deployment",
+        "threshold": 20,
+        "unit": "GWh"
+      },
+      {
+        "type": "infrastructure",
+        "name": "hydrogen_infrastructure",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "workforce_transition_program",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "regional_planning_authority",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "tribal_co_management",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "university_research_presence",
+        "threshold": 1,
+        "unit": "binary"
+      }
+    ],
+    "ecoregion_gaps": {
+      "Southern Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 0.0,
+        "S_gap": 2.615,
+        "E_baseline": 7.524,
+        "Ec_baseline": 6.28,
+        "S_baseline": 5.385
+      },
+      "Middle Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 0.0,
+        "S_gap": 2.789,
+        "E_baseline": 6.556,
+        "Ec_baseline": 5.845,
+        "S_baseline": 5.211
+      },
+      "High Plains": {
+        "E_gap": 2.604,
+        "Ec_gap": 0.0,
+        "S_gap": 2.567,
+        "E_baseline": 2.396,
+        "Ec_baseline": 7.561,
+        "S_baseline": 5.433
+      },
+      "Northwestern Great Plains": {
+        "E_gap": 2.039,
+        "Ec_gap": 0.0,
+        "S_gap": 3.145,
+        "E_baseline": 2.961,
+        "Ec_baseline": 5.824,
+        "S_baseline": 4.855
+      },
+      "Northern Basin and Range": {
+        "E_gap": 2.944,
+        "Ec_gap": 0.0,
+        "S_gap": 3.036,
+        "E_baseline": 2.056,
+        "Ec_baseline": 5.995,
+        "S_baseline": 4.964
+      },
+      "Colorado Plateaus": {
+        "E_gap": 4.314,
+        "Ec_gap": 0.0,
+        "S_gap": 3.043,
+        "E_baseline": 0.686,
+        "Ec_baseline": 6.036,
+        "S_baseline": 4.957
+      },
+      "Wyoming Basin": {
+        "E_gap": 4.402,
+        "Ec_gap": 0.0,
+        "S_gap": 3.145,
+        "E_baseline": 0.598,
+        "Ec_baseline": 5.779,
+        "S_baseline": 4.855
+      }
+    },
+    "e4st_scenario_id": "ira_itc",
+    "e4st_match_quality": "direct",
+    "energy_system_note": "IRA investment tax credit scenario: ITC subsidies drive renewable and battery buildout but CO2 is unchanged (~1349 Mt) \u2014 new clean capacity displaces planned gas additions rather than existing coal. National LMP falls to $6/MWh in 2025 due to clean energy surplus."
+  },
+  "e_ec_dominant": {
+    "scenario_name": "Environmental + Economic Dominant",
+    "group": "capital_dominant",
+    "targets": {
+      "E": 8,
+      "Ec": 8,
+      "S": 5
+    },
+    "conditions": [
+      {
+        "type": "policy",
+        "name": "carbon_price",
+        "threshold": 50,
+        "unit": "$/ton"
+      },
+      {
+        "type": "policy",
+        "name": "ira_subsidies",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "policy",
+        "name": "clean_energy_standard",
+        "threshold": 40,
+        "unit": "pct_by_2035"
+      },
+      {
+        "type": "policy",
+        "name": "transmission_permitting",
+        "threshold": "reformed",
+        "unit": "regime"
+      },
+      {
+        "type": "policy",
+        "name": "federal_land_management",
+        "threshold": "conservation_favoring",
+        "unit": "posture"
+      },
+      {
+        "type": "infrastructure",
+        "name": "storage_deployment",
+        "threshold": 80,
+        "unit": "GWh"
+      },
+      {
+        "type": "infrastructure",
+        "name": "hydrogen_infrastructure",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "workforce_transition_program",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "regional_planning_authority",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "tribal_co_management",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "university_research_presence",
+        "threshold": 0,
+        "unit": "binary"
+      }
+    ],
+    "ecoregion_gaps": {
+      "Southern Rockies": {
+        "E_gap": 0.476,
+        "Ec_gap": 1.72,
+        "S_gap": 0.0,
+        "E_baseline": 7.524,
+        "Ec_baseline": 6.28,
+        "S_baseline": 5.385
+      },
+      "Middle Rockies": {
+        "E_gap": 1.444,
+        "Ec_gap": 2.155,
+        "S_gap": 0.0,
+        "E_baseline": 6.556,
+        "Ec_baseline": 5.845,
+        "S_baseline": 5.211
+      },
+      "High Plains": {
+        "E_gap": 5.604,
+        "Ec_gap": 0.439,
+        "S_gap": 0.0,
+        "E_baseline": 2.396,
+        "Ec_baseline": 7.561,
+        "S_baseline": 5.433
+      },
+      "Northwestern Great Plains": {
+        "E_gap": 5.039,
+        "Ec_gap": 2.176,
+        "S_gap": 0.145,
+        "E_baseline": 2.961,
+        "Ec_baseline": 5.824,
+        "S_baseline": 4.855
+      },
+      "Northern Basin and Range": {
+        "E_gap": 5.944,
+        "Ec_gap": 2.005,
+        "S_gap": 0.036,
+        "E_baseline": 2.056,
+        "Ec_baseline": 5.995,
+        "S_baseline": 4.964
+      },
+      "Colorado Plateaus": {
+        "E_gap": 7.314,
+        "Ec_gap": 1.964,
+        "S_gap": 0.043,
+        "E_baseline": 0.686,
+        "Ec_baseline": 6.036,
+        "S_baseline": 4.957
+      },
+      "Wyoming Basin": {
+        "E_gap": 7.402,
+        "Ec_gap": 2.221,
+        "S_gap": 0.145,
+        "E_baseline": 0.598,
+        "Ec_baseline": 5.779,
+        "S_baseline": 4.855
+      }
+    },
+    "e4st_scenario_id": "carbon_tax_ira",
+    "e4st_match_quality": "direct",
+    "energy_system_note": "Combined carbon tax + IRA scenario: CO2 drops 22% to 1049 Mt in 2025, LMP $37/MWh in 2035. Maximum clean buildout nationally including SMR; Wyoming wind and solar investment highest of all scenarios."
+  },
+  "e_s_dominant": {
+    "scenario_name": "Environmental + Social Dominant",
+    "group": "capital_dominant",
+    "targets": {
+      "E": 8,
+      "Ec": 5,
+      "S": 8
+    },
+    "conditions": [
+      {
+        "type": "policy",
+        "name": "carbon_price",
+        "threshold": 50,
+        "unit": "$/ton"
+      },
+      {
+        "type": "policy",
+        "name": "ira_subsidies",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "policy",
+        "name": "clean_energy_standard",
+        "threshold": 0,
+        "unit": "pct_by_2035"
+      },
+      {
+        "type": "policy",
+        "name": "transmission_permitting",
+        "threshold": "current",
+        "unit": "regime"
+      },
+      {
+        "type": "policy",
+        "name": "federal_land_management",
+        "threshold": "conservation_favoring",
+        "unit": "posture"
+      },
+      {
+        "type": "infrastructure",
+        "name": "storage_deployment",
+        "threshold": 30,
+        "unit": "GWh"
+      },
+      {
+        "type": "infrastructure",
+        "name": "hydrogen_infrastructure",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "workforce_transition_program",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "regional_planning_authority",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "tribal_co_management",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "university_research_presence",
+        "threshold": 1,
+        "unit": "binary"
+      }
+    ],
+    "ecoregion_gaps": {
+      "Southern Rockies": {
+        "E_gap": 0.476,
+        "Ec_gap": 0.0,
+        "S_gap": 2.615,
+        "E_baseline": 7.524,
+        "Ec_baseline": 6.28,
+        "S_baseline": 5.385
+      },
+      "Middle Rockies": {
+        "E_gap": 1.444,
+        "Ec_gap": 0.0,
+        "S_gap": 2.789,
+        "E_baseline": 6.556,
+        "Ec_baseline": 5.845,
+        "S_baseline": 5.211
+      },
+      "High Plains": {
+        "E_gap": 5.604,
+        "Ec_gap": 0.0,
+        "S_gap": 2.567,
+        "E_baseline": 2.396,
+        "Ec_baseline": 7.561,
+        "S_baseline": 5.433
+      },
+      "Northwestern Great Plains": {
+        "E_gap": 5.039,
+        "Ec_gap": 0.0,
+        "S_gap": 3.145,
+        "E_baseline": 2.961,
+        "Ec_baseline": 5.824,
+        "S_baseline": 4.855
+      },
+      "Northern Basin and Range": {
+        "E_gap": 5.944,
+        "Ec_gap": 0.0,
+        "S_gap": 3.036,
+        "E_baseline": 2.056,
+        "Ec_baseline": 5.995,
+        "S_baseline": 4.964
+      },
+      "Colorado Plateaus": {
+        "E_gap": 7.314,
+        "Ec_gap": 0.0,
+        "S_gap": 3.043,
+        "E_baseline": 0.686,
+        "Ec_baseline": 6.036,
+        "S_baseline": 4.957
+      },
+      "Wyoming Basin": {
+        "E_gap": 7.402,
+        "Ec_gap": 0.0,
+        "S_gap": 3.145,
+        "E_baseline": 0.598,
+        "Ec_baseline": 5.779,
+        "S_baseline": 4.855
+      }
+    },
+    "e4st_scenario_id": "carbon_tax_50",
+    "e4st_match_quality": "partial",
+    "energy_system_note": "$50/ton carbon tax scenario: CO2 drops 21% to 1060 Mt in 2025, median LMP rises to $37/MWh in 2035. Significant wind, battery, and gas CC buildout nationally; Wyoming LMP remains below national median."
+  },
+  "ec_s_dominant": {
+    "scenario_name": "Economic + Social Dominant",
+    "group": "capital_dominant",
+    "targets": {
+      "E": 5,
+      "Ec": 8,
+      "S": 8
+    },
+    "conditions": [
+      {
+        "type": "policy",
+        "name": "carbon_price",
+        "threshold": 0,
+        "unit": "$/ton"
+      },
+      {
+        "type": "policy",
+        "name": "ira_subsidies",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "policy",
+        "name": "clean_energy_standard",
+        "threshold": 40,
+        "unit": "pct_by_2035"
+      },
+      {
+        "type": "policy",
+        "name": "transmission_permitting",
+        "threshold": "reformed",
+        "unit": "regime"
+      },
+      {
+        "type": "policy",
+        "name": "federal_land_management",
+        "threshold": "balanced",
+        "unit": "posture"
+      },
+      {
+        "type": "infrastructure",
+        "name": "storage_deployment",
+        "threshold": 50,
+        "unit": "GWh"
+      },
+      {
+        "type": "infrastructure",
+        "name": "hydrogen_infrastructure",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "workforce_transition_program",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "regional_planning_authority",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "tribal_co_management",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "university_research_presence",
+        "threshold": 1,
+        "unit": "binary"
+      }
+    ],
+    "ecoregion_gaps": {
+      "Southern Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 1.72,
+        "S_gap": 2.615,
+        "E_baseline": 7.524,
+        "Ec_baseline": 6.28,
+        "S_baseline": 5.385
+      },
+      "Middle Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 2.155,
+        "S_gap": 2.789,
+        "E_baseline": 6.556,
+        "Ec_baseline": 5.845,
+        "S_baseline": 5.211
+      },
+      "High Plains": {
+        "E_gap": 2.604,
+        "Ec_gap": 0.439,
+        "S_gap": 2.567,
+        "E_baseline": 2.396,
+        "Ec_baseline": 7.561,
+        "S_baseline": 5.433
+      },
+      "Northwestern Great Plains": {
+        "E_gap": 2.039,
+        "Ec_gap": 2.176,
+        "S_gap": 3.145,
+        "E_baseline": 2.961,
+        "Ec_baseline": 5.824,
+        "S_baseline": 4.855
+      },
+      "Northern Basin and Range": {
+        "E_gap": 2.944,
+        "Ec_gap": 2.005,
+        "S_gap": 3.036,
+        "E_baseline": 2.056,
+        "Ec_baseline": 5.995,
+        "S_baseline": 4.964
+      },
+      "Colorado Plateaus": {
+        "E_gap": 4.314,
+        "Ec_gap": 1.964,
+        "S_gap": 3.043,
+        "E_baseline": 0.686,
+        "Ec_baseline": 6.036,
+        "S_baseline": 4.957
+      },
+      "Wyoming Basin": {
+        "E_gap": 4.402,
+        "Ec_gap": 2.221,
+        "S_gap": 3.145,
+        "E_baseline": 0.598,
+        "Ec_baseline": 5.779,
+        "S_baseline": 4.855
+      }
+    },
+    "e4st_scenario_id": "ira_itc",
+    "e4st_match_quality": "partial",
+    "energy_system_note": "IRA investment tax credit scenario: ITC subsidies drive renewable and battery buildout but CO2 is unchanged (~1349 Mt) \u2014 new clean capacity displaces planned gas additions rather than existing coal. National LMP falls to $6/MWh in 2025 due to clean energy surplus."
+  },
+  "e_strong_others_weak": {
+    "scenario_name": "E Strong, Ec/S Weak",
+    "group": "capital_dominant",
+    "targets": {
+      "E": 8,
+      "Ec": 3,
+      "S": 3
+    },
+    "conditions": [
+      {
+        "type": "policy",
+        "name": "carbon_price",
+        "threshold": 50,
+        "unit": "$/ton"
+      },
+      {
+        "type": "policy",
+        "name": "ira_subsidies",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "policy",
+        "name": "clean_energy_standard",
+        "threshold": 0,
+        "unit": "pct_by_2035"
+      },
+      {
+        "type": "policy",
+        "name": "transmission_permitting",
+        "threshold": "current",
+        "unit": "regime"
+      },
+      {
+        "type": "policy",
+        "name": "federal_land_management",
+        "threshold": "conservation_favoring",
+        "unit": "posture"
+      },
+      {
+        "type": "infrastructure",
+        "name": "storage_deployment",
+        "threshold": 20,
+        "unit": "GWh"
+      },
+      {
+        "type": "infrastructure",
+        "name": "hydrogen_infrastructure",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "workforce_transition_program",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "regional_planning_authority",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "tribal_co_management",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "university_research_presence",
+        "threshold": 0,
+        "unit": "binary"
+      }
+    ],
+    "ecoregion_gaps": {
+      "Southern Rockies": {
+        "E_gap": 0.476,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 7.524,
+        "Ec_baseline": 6.28,
+        "S_baseline": 5.385
+      },
+      "Middle Rockies": {
+        "E_gap": 1.444,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 6.556,
+        "Ec_baseline": 5.845,
+        "S_baseline": 5.211
+      },
+      "High Plains": {
+        "E_gap": 5.604,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 2.396,
+        "Ec_baseline": 7.561,
+        "S_baseline": 5.433
+      },
+      "Northwestern Great Plains": {
+        "E_gap": 5.039,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 2.961,
+        "Ec_baseline": 5.824,
+        "S_baseline": 4.855
+      },
+      "Northern Basin and Range": {
+        "E_gap": 5.944,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 2.056,
+        "Ec_baseline": 5.995,
+        "S_baseline": 4.964
+      },
+      "Colorado Plateaus": {
+        "E_gap": 7.314,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 0.686,
+        "Ec_baseline": 6.036,
+        "S_baseline": 4.957
+      },
+      "Wyoming Basin": {
+        "E_gap": 7.402,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 0.598,
+        "Ec_baseline": 5.779,
+        "S_baseline": 4.855
+      }
+    },
+    "e4st_scenario_id": "carbon_tax_50",
+    "e4st_match_quality": "partial",
+    "energy_system_note": "$50/ton carbon tax scenario: CO2 drops 21% to 1060 Mt in 2025, median LMP rises to $37/MWh in 2035. Significant wind, battery, and gas CC buildout nationally; Wyoming LMP remains below national median."
+  },
+  "ec_strong_others_weak": {
+    "scenario_name": "Ec Strong, E/S Weak",
+    "group": "capital_dominant",
+    "targets": {
+      "E": 3,
+      "Ec": 8,
+      "S": 3
+    },
+    "conditions": [
+      {
+        "type": "policy",
+        "name": "carbon_price",
+        "threshold": 0,
+        "unit": "$/ton"
+      },
+      {
+        "type": "policy",
+        "name": "ira_subsidies",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "policy",
+        "name": "clean_energy_standard",
+        "threshold": 0,
+        "unit": "pct_by_2035"
+      },
+      {
+        "type": "policy",
+        "name": "transmission_permitting",
+        "threshold": "current",
+        "unit": "regime"
+      },
+      {
+        "type": "policy",
+        "name": "federal_land_management",
+        "threshold": "extraction_favoring",
+        "unit": "posture"
+      },
+      {
+        "type": "infrastructure",
+        "name": "storage_deployment",
+        "threshold": 10,
+        "unit": "GWh"
+      },
+      {
+        "type": "infrastructure",
+        "name": "hydrogen_infrastructure",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "workforce_transition_program",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "regional_planning_authority",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "tribal_co_management",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "university_research_presence",
+        "threshold": 0,
+        "unit": "binary"
+      }
+    ],
+    "ecoregion_gaps": {
+      "Southern Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 1.72,
+        "S_gap": 0.0,
+        "E_baseline": 7.524,
+        "Ec_baseline": 6.28,
+        "S_baseline": 5.385
+      },
+      "Middle Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 2.155,
+        "S_gap": 0.0,
+        "E_baseline": 6.556,
+        "Ec_baseline": 5.845,
+        "S_baseline": 5.211
+      },
+      "High Plains": {
+        "E_gap": 0.604,
+        "Ec_gap": 0.439,
+        "S_gap": 0.0,
+        "E_baseline": 2.396,
+        "Ec_baseline": 7.561,
+        "S_baseline": 5.433
+      },
+      "Northwestern Great Plains": {
+        "E_gap": 0.039,
+        "Ec_gap": 2.176,
+        "S_gap": 0.0,
+        "E_baseline": 2.961,
+        "Ec_baseline": 5.824,
+        "S_baseline": 4.855
+      },
+      "Northern Basin and Range": {
+        "E_gap": 0.944,
+        "Ec_gap": 2.005,
+        "S_gap": 0.0,
+        "E_baseline": 2.056,
+        "Ec_baseline": 5.995,
+        "S_baseline": 4.964
+      },
+      "Colorado Plateaus": {
+        "E_gap": 2.314,
+        "Ec_gap": 1.964,
+        "S_gap": 0.0,
+        "E_baseline": 0.686,
+        "Ec_baseline": 6.036,
+        "S_baseline": 4.957
+      },
+      "Wyoming Basin": {
+        "E_gap": 2.402,
+        "Ec_gap": 2.221,
+        "S_gap": 0.0,
+        "E_baseline": 0.598,
+        "Ec_baseline": 5.779,
+        "S_baseline": 4.855
+      }
+    },
+    "e4st_scenario_id": "baseline",
+    "e4st_match_quality": "direct",
+    "energy_system_note": "Baseline scenario: no carbon price, continued fossil dispatch dominance. National CO2 ~1349 Mt in 2025, median LMP ~$14/MWh in 2035. No net-new renewable investment triggered by policy."
+  },
+  "s_strong_others_weak": {
+    "scenario_name": "S Strong, E/Ec Weak",
+    "group": "capital_dominant",
+    "targets": {
+      "E": 3,
+      "Ec": 3,
+      "S": 8
+    },
+    "conditions": [
+      {
+        "type": "policy",
+        "name": "carbon_price",
+        "threshold": 0,
+        "unit": "$/ton"
+      },
+      {
+        "type": "policy",
+        "name": "ira_subsidies",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "policy",
+        "name": "clean_energy_standard",
+        "threshold": 0,
+        "unit": "pct_by_2035"
+      },
+      {
+        "type": "policy",
+        "name": "transmission_permitting",
+        "threshold": "current",
+        "unit": "regime"
+      },
+      {
+        "type": "policy",
+        "name": "federal_land_management",
+        "threshold": "extraction_favoring",
+        "unit": "posture"
+      },
+      {
+        "type": "infrastructure",
+        "name": "storage_deployment",
+        "threshold": 10,
+        "unit": "GWh"
+      },
+      {
+        "type": "infrastructure",
+        "name": "hydrogen_infrastructure",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "workforce_transition_program",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "regional_planning_authority",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "tribal_co_management",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "university_research_presence",
+        "threshold": 1,
+        "unit": "binary"
+      }
+    ],
+    "ecoregion_gaps": {
+      "Southern Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 0.0,
+        "S_gap": 2.615,
+        "E_baseline": 7.524,
+        "Ec_baseline": 6.28,
+        "S_baseline": 5.385
+      },
+      "Middle Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 0.0,
+        "S_gap": 2.789,
+        "E_baseline": 6.556,
+        "Ec_baseline": 5.845,
+        "S_baseline": 5.211
+      },
+      "High Plains": {
+        "E_gap": 0.604,
+        "Ec_gap": 0.0,
+        "S_gap": 2.567,
+        "E_baseline": 2.396,
+        "Ec_baseline": 7.561,
+        "S_baseline": 5.433
+      },
+      "Northwestern Great Plains": {
+        "E_gap": 0.039,
+        "Ec_gap": 0.0,
+        "S_gap": 3.145,
+        "E_baseline": 2.961,
+        "Ec_baseline": 5.824,
+        "S_baseline": 4.855
+      },
+      "Northern Basin and Range": {
+        "E_gap": 0.944,
+        "Ec_gap": 0.0,
+        "S_gap": 3.036,
+        "E_baseline": 2.056,
+        "Ec_baseline": 5.995,
+        "S_baseline": 4.964
+      },
+      "Colorado Plateaus": {
+        "E_gap": 2.314,
+        "Ec_gap": 0.0,
+        "S_gap": 3.043,
+        "E_baseline": 0.686,
+        "Ec_baseline": 6.036,
+        "S_baseline": 4.957
+      },
+      "Wyoming Basin": {
+        "E_gap": 2.402,
+        "Ec_gap": 0.0,
+        "S_gap": 3.145,
+        "E_baseline": 0.598,
+        "Ec_baseline": 5.779,
+        "S_baseline": 4.855
+      }
+    },
+    "e4st_scenario_id": "ira_itc",
+    "e4st_match_quality": "direct",
+    "energy_system_note": "IRA investment tax credit scenario: ITC subsidies drive renewable and battery buildout but CO2 is unchanged (~1349 Mt) \u2014 new clean capacity displaces planned gas additions rather than existing coal. National LMP falls to $6/MWh in 2025 due to clean energy surplus."
+  },
+  "eco_extreme": {
+    "scenario_name": "Eco-Extreme (Conservation Only)",
+    "group": "corner",
+    "targets": {
+      "E": 9,
+      "Ec": 2,
+      "S": 2
+    },
+    "conditions": [
+      {
+        "type": "policy",
+        "name": "carbon_price",
+        "threshold": 100,
+        "unit": "$/ton"
+      },
+      {
+        "type": "policy",
+        "name": "ira_subsidies",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "policy",
+        "name": "clean_energy_standard",
+        "threshold": 0,
+        "unit": "pct_by_2035"
+      },
+      {
+        "type": "policy",
+        "name": "transmission_permitting",
+        "threshold": "current",
+        "unit": "regime"
+      },
+      {
+        "type": "policy",
+        "name": "federal_land_management",
+        "threshold": "conservation_favoring",
+        "unit": "posture"
+      },
+      {
+        "type": "infrastructure",
+        "name": "storage_deployment",
+        "threshold": 10,
+        "unit": "GWh"
+      },
+      {
+        "type": "infrastructure",
+        "name": "hydrogen_infrastructure",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "workforce_transition_program",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "regional_planning_authority",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "tribal_co_management",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "university_research_presence",
+        "threshold": 0,
+        "unit": "binary"
+      }
+    ],
+    "ecoregion_gaps": {
+      "Southern Rockies": {
+        "E_gap": 1.476,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 7.524,
+        "Ec_baseline": 6.28,
+        "S_baseline": 5.385
+      },
+      "Middle Rockies": {
+        "E_gap": 2.444,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 6.556,
+        "Ec_baseline": 5.845,
+        "S_baseline": 5.211
+      },
+      "High Plains": {
+        "E_gap": 6.604,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 2.396,
+        "Ec_baseline": 7.561,
+        "S_baseline": 5.433
+      },
+      "Northwestern Great Plains": {
+        "E_gap": 6.039,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 2.961,
+        "Ec_baseline": 5.824,
+        "S_baseline": 4.855
+      },
+      "Northern Basin and Range": {
+        "E_gap": 6.944,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 2.056,
+        "Ec_baseline": 5.995,
+        "S_baseline": 4.964
+      },
+      "Colorado Plateaus": {
+        "E_gap": 8.314,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 0.686,
+        "Ec_baseline": 6.036,
+        "S_baseline": 4.957
+      },
+      "Wyoming Basin": {
+        "E_gap": 8.402,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 0.598,
+        "Ec_baseline": 5.779,
+        "S_baseline": 4.855
+      }
+    },
+    "e4st_scenario_id": "baseline",
+    "e4st_match_quality": "extrapolated",
+    "energy_system_note": "Baseline scenario: no carbon price, continued fossil dispatch dominance. National CO2 ~1349 Mt in 2025, median LMP ~$14/MWh in 2035. No net-new renewable investment triggered by policy."
+  },
+  "econ_extreme": {
+    "scenario_name": "Econ-Extreme (Fossil Extraction Peak)",
+    "group": "corner",
+    "targets": {
+      "E": 2,
+      "Ec": 9,
+      "S": 2
+    },
+    "conditions": [
+      {
+        "type": "policy",
+        "name": "carbon_price",
+        "threshold": 0,
+        "unit": "$/ton"
+      },
+      {
+        "type": "policy",
+        "name": "ira_subsidies",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "policy",
+        "name": "clean_energy_standard",
+        "threshold": 0,
+        "unit": "pct_by_2035"
+      },
+      {
+        "type": "policy",
+        "name": "transmission_permitting",
+        "threshold": "current",
+        "unit": "regime"
+      },
+      {
+        "type": "policy",
+        "name": "federal_land_management",
+        "threshold": "extraction_favoring",
+        "unit": "posture"
+      },
+      {
+        "type": "infrastructure",
+        "name": "storage_deployment",
+        "threshold": 10,
+        "unit": "GWh"
+      },
+      {
+        "type": "infrastructure",
+        "name": "hydrogen_infrastructure",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "workforce_transition_program",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "regional_planning_authority",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "tribal_co_management",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "university_research_presence",
+        "threshold": 0,
+        "unit": "binary"
+      }
+    ],
+    "ecoregion_gaps": {
+      "Southern Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 2.72,
+        "S_gap": 0.0,
+        "E_baseline": 7.524,
+        "Ec_baseline": 6.28,
+        "S_baseline": 5.385
+      },
+      "Middle Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 3.155,
+        "S_gap": 0.0,
+        "E_baseline": 6.556,
+        "Ec_baseline": 5.845,
+        "S_baseline": 5.211
+      },
+      "High Plains": {
+        "E_gap": 0.0,
+        "Ec_gap": 1.439,
+        "S_gap": 0.0,
+        "E_baseline": 2.396,
+        "Ec_baseline": 7.561,
+        "S_baseline": 5.433
+      },
+      "Northwestern Great Plains": {
+        "E_gap": 0.0,
+        "Ec_gap": 3.176,
+        "S_gap": 0.0,
+        "E_baseline": 2.961,
+        "Ec_baseline": 5.824,
+        "S_baseline": 4.855
+      },
+      "Northern Basin and Range": {
+        "E_gap": 0.0,
+        "Ec_gap": 3.005,
+        "S_gap": 0.0,
+        "E_baseline": 2.056,
+        "Ec_baseline": 5.995,
+        "S_baseline": 4.964
+      },
+      "Colorado Plateaus": {
+        "E_gap": 1.314,
+        "Ec_gap": 2.964,
+        "S_gap": 0.0,
+        "E_baseline": 0.686,
+        "Ec_baseline": 6.036,
+        "S_baseline": 4.957
+      },
+      "Wyoming Basin": {
+        "E_gap": 1.402,
+        "Ec_gap": 3.221,
+        "S_gap": 0.0,
+        "E_baseline": 0.598,
+        "Ec_baseline": 5.779,
+        "S_baseline": 4.855
+      }
+    },
+    "e4st_scenario_id": "baseline",
+    "e4st_match_quality": "direct",
+    "energy_system_note": "Nearest analog is E4ST baseline (no carbon price, extraction-favoring). Ec=9 from fossil extraction implies production volumes exceeding current baseline \u2014 outside E4ST solution space; energy system response extrapolated."
+  },
+  "social_extreme": {
+    "scenario_name": "Social-Extreme (Welfare State, No Economy)",
+    "group": "corner",
+    "targets": {
+      "E": 2,
+      "Ec": 2,
+      "S": 9
+    },
+    "conditions": [
+      {
+        "type": "policy",
+        "name": "carbon_price",
+        "threshold": 0,
+        "unit": "$/ton"
+      },
+      {
+        "type": "policy",
+        "name": "ira_subsidies",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "policy",
+        "name": "clean_energy_standard",
+        "threshold": 0,
+        "unit": "pct_by_2035"
+      },
+      {
+        "type": "policy",
+        "name": "transmission_permitting",
+        "threshold": "current",
+        "unit": "regime"
+      },
+      {
+        "type": "policy",
+        "name": "federal_land_management",
+        "threshold": "balanced",
+        "unit": "posture"
+      },
+      {
+        "type": "infrastructure",
+        "name": "storage_deployment",
+        "threshold": 10,
+        "unit": "GWh"
+      },
+      {
+        "type": "infrastructure",
+        "name": "hydrogen_infrastructure",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "workforce_transition_program",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "regional_planning_authority",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "tribal_co_management",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "university_research_presence",
+        "threshold": 1,
+        "unit": "binary"
+      }
+    ],
+    "ecoregion_gaps": {
+      "Southern Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 0.0,
+        "S_gap": 3.615,
+        "E_baseline": 7.524,
+        "Ec_baseline": 6.28,
+        "S_baseline": 5.385
+      },
+      "Middle Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 0.0,
+        "S_gap": 3.789,
+        "E_baseline": 6.556,
+        "Ec_baseline": 5.845,
+        "S_baseline": 5.211
+      },
+      "High Plains": {
+        "E_gap": 0.0,
+        "Ec_gap": 0.0,
+        "S_gap": 3.567,
+        "E_baseline": 2.396,
+        "Ec_baseline": 7.561,
+        "S_baseline": 5.433
+      },
+      "Northwestern Great Plains": {
+        "E_gap": 0.0,
+        "Ec_gap": 0.0,
+        "S_gap": 4.145,
+        "E_baseline": 2.961,
+        "Ec_baseline": 5.824,
+        "S_baseline": 4.855
+      },
+      "Northern Basin and Range": {
+        "E_gap": 0.0,
+        "Ec_gap": 0.0,
+        "S_gap": 4.036,
+        "E_baseline": 2.056,
+        "Ec_baseline": 5.995,
+        "S_baseline": 4.964
+      },
+      "Colorado Plateaus": {
+        "E_gap": 1.314,
+        "Ec_gap": 0.0,
+        "S_gap": 4.043,
+        "E_baseline": 0.686,
+        "Ec_baseline": 6.036,
+        "S_baseline": 4.957
+      },
+      "Wyoming Basin": {
+        "E_gap": 1.402,
+        "Ec_gap": 0.0,
+        "S_gap": 4.145,
+        "E_baseline": 0.598,
+        "Ec_baseline": 5.779,
+        "S_baseline": 4.855
+      }
+    },
+    "e4st_scenario_id": "ira_itc",
+    "e4st_match_quality": "direct",
+    "energy_system_note": "IRA scenario is the nearest analog (social programs funded by clean energy tax base). S=9 requires institutional investment beyond what IRA alone delivers; extrapolated."
+  },
+  "eco_econ_paired": {
+    "scenario_name": "Eco + Econ Paired (Green Growth, Low Social)",
+    "group": "corner",
+    "targets": {
+      "E": 9,
+      "Ec": 9,
+      "S": 2
+    },
+    "conditions": [
+      {
+        "type": "policy",
+        "name": "carbon_price",
+        "threshold": 100,
+        "unit": "$/ton"
+      },
+      {
+        "type": "policy",
+        "name": "ira_subsidies",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "policy",
+        "name": "clean_energy_standard",
+        "threshold": 80,
+        "unit": "pct_by_2035"
+      },
+      {
+        "type": "policy",
+        "name": "transmission_permitting",
+        "threshold": "streamlined",
+        "unit": "regime"
+      },
+      {
+        "type": "policy",
+        "name": "federal_land_management",
+        "threshold": "conservation_favoring",
+        "unit": "posture"
+      },
+      {
+        "type": "infrastructure",
+        "name": "storage_deployment",
+        "threshold": 150,
+        "unit": "GWh"
+      },
+      {
+        "type": "infrastructure",
+        "name": "hydrogen_infrastructure",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "workforce_transition_program",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "regional_planning_authority",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "tribal_co_management",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "university_research_presence",
+        "threshold": 0,
+        "unit": "binary"
+      }
+    ],
+    "ecoregion_gaps": {
+      "Southern Rockies": {
+        "E_gap": 1.476,
+        "Ec_gap": 2.72,
+        "S_gap": 0.0,
+        "E_baseline": 7.524,
+        "Ec_baseline": 6.28,
+        "S_baseline": 5.385
+      },
+      "Middle Rockies": {
+        "E_gap": 2.444,
+        "Ec_gap": 3.155,
+        "S_gap": 0.0,
+        "E_baseline": 6.556,
+        "Ec_baseline": 5.845,
+        "S_baseline": 5.211
+      },
+      "High Plains": {
+        "E_gap": 6.604,
+        "Ec_gap": 1.439,
+        "S_gap": 0.0,
+        "E_baseline": 2.396,
+        "Ec_baseline": 7.561,
+        "S_baseline": 5.433
+      },
+      "Northwestern Great Plains": {
+        "E_gap": 6.039,
+        "Ec_gap": 3.176,
+        "S_gap": 0.0,
+        "E_baseline": 2.961,
+        "Ec_baseline": 5.824,
+        "S_baseline": 4.855
+      },
+      "Northern Basin and Range": {
+        "E_gap": 6.944,
+        "Ec_gap": 3.005,
+        "S_gap": 0.0,
+        "E_baseline": 2.056,
+        "Ec_baseline": 5.995,
+        "S_baseline": 4.964
+      },
+      "Colorado Plateaus": {
+        "E_gap": 8.314,
+        "Ec_gap": 2.964,
+        "S_gap": 0.0,
+        "E_baseline": 0.686,
+        "Ec_baseline": 6.036,
+        "S_baseline": 4.957
+      },
+      "Wyoming Basin": {
+        "E_gap": 8.402,
+        "Ec_gap": 3.221,
+        "S_gap": 0.0,
+        "E_baseline": 0.598,
+        "Ec_baseline": 5.779,
+        "S_baseline": 4.855
+      }
+    },
+    "e4st_scenario_id": "baseline",
+    "e4st_match_quality": "extrapolated",
+    "energy_system_note": "Baseline scenario: no carbon price, continued fossil dispatch dominance. National CO2 ~1349 Mt in 2025, median LMP ~$14/MWh in 2035. No net-new renewable investment triggered by policy."
+  },
+  "coal_retirement_no_reinvestment": {
+    "scenario_name": "Coal Retirement Without Reinvestment",
+    "group": "transition",
+    "targets": {
+      "E": 3,
+      "Ec": 4,
+      "S": 5
+    },
+    "conditions": [
+      {
+        "type": "policy",
+        "name": "carbon_price",
+        "threshold": 0,
+        "unit": "$/ton"
+      },
+      {
+        "type": "policy",
+        "name": "ira_subsidies",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "policy",
+        "name": "clean_energy_standard",
+        "threshold": 0,
+        "unit": "pct_by_2035"
+      },
+      {
+        "type": "policy",
+        "name": "transmission_permitting",
+        "threshold": "current",
+        "unit": "regime"
+      },
+      {
+        "type": "policy",
+        "name": "federal_land_management",
+        "threshold": "balanced",
+        "unit": "posture"
+      },
+      {
+        "type": "infrastructure",
+        "name": "storage_deployment",
+        "threshold": 15,
+        "unit": "GWh"
+      },
+      {
+        "type": "infrastructure",
+        "name": "hydrogen_infrastructure",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "workforce_transition_program",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "regional_planning_authority",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "tribal_co_management",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "university_research_presence",
+        "threshold": 0,
+        "unit": "binary"
+      }
+    ],
+    "ecoregion_gaps": {
+      "Southern Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 7.524,
+        "Ec_baseline": 6.28,
+        "S_baseline": 5.385
+      },
+      "Middle Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 6.556,
+        "Ec_baseline": 5.845,
+        "S_baseline": 5.211
+      },
+      "High Plains": {
+        "E_gap": 0.604,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 2.396,
+        "Ec_baseline": 7.561,
+        "S_baseline": 5.433
+      },
+      "Northwestern Great Plains": {
+        "E_gap": 0.039,
+        "Ec_gap": 0.0,
+        "S_gap": 0.145,
+        "E_baseline": 2.961,
+        "Ec_baseline": 5.824,
+        "S_baseline": 4.855
+      },
+      "Northern Basin and Range": {
+        "E_gap": 0.944,
+        "Ec_gap": 0.0,
+        "S_gap": 0.036,
+        "E_baseline": 2.056,
+        "Ec_baseline": 5.995,
+        "S_baseline": 4.964
+      },
+      "Colorado Plateaus": {
+        "E_gap": 2.314,
+        "Ec_gap": 0.0,
+        "S_gap": 0.043,
+        "E_baseline": 0.686,
+        "Ec_baseline": 6.036,
+        "S_baseline": 4.957
+      },
+      "Wyoming Basin": {
+        "E_gap": 2.402,
+        "Ec_gap": 0.0,
+        "S_gap": 0.145,
+        "E_baseline": 0.598,
+        "Ec_baseline": 5.779,
+        "S_baseline": 4.855
+      }
+    },
+    "e4st_scenario_id": "baseline",
+    "e4st_match_quality": "direct",
+    "energy_system_note": "Baseline scenario: coal retires under market pressure without policy replacement. E4ST baseline shows coal remaining competitive absent carbon price; this profile represents a market-only coal exit not captured in the solved scenarios."
+  },
+  "coordinated_transition": {
+    "scenario_name": "Coordinated Clean Energy Transition",
+    "group": "transition",
+    "targets": {
+      "E": 6,
+      "Ec": 7,
+      "S": 6
+    },
+    "conditions": [
+      {
+        "type": "policy",
+        "name": "carbon_price",
+        "threshold": 50,
+        "unit": "$/ton"
+      },
+      {
+        "type": "policy",
+        "name": "ira_subsidies",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "policy",
+        "name": "clean_energy_standard",
+        "threshold": 50,
+        "unit": "pct_by_2035"
+      },
+      {
+        "type": "policy",
+        "name": "transmission_permitting",
+        "threshold": "reformed",
+        "unit": "regime"
+      },
+      {
+        "type": "policy",
+        "name": "federal_land_management",
+        "threshold": "balanced",
+        "unit": "posture"
+      },
+      {
+        "type": "infrastructure",
+        "name": "storage_deployment",
+        "threshold": 100,
+        "unit": "GWh"
+      },
+      {
+        "type": "infrastructure",
+        "name": "hydrogen_infrastructure",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "workforce_transition_program",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "regional_planning_authority",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "tribal_co_management",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "university_research_presence",
+        "threshold": 1,
+        "unit": "binary"
+      }
+    ],
+    "ecoregion_gaps": {
+      "Southern Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 0.72,
+        "S_gap": 0.615,
+        "E_baseline": 7.524,
+        "Ec_baseline": 6.28,
+        "S_baseline": 5.385
+      },
+      "Middle Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 1.155,
+        "S_gap": 0.789,
+        "E_baseline": 6.556,
+        "Ec_baseline": 5.845,
+        "S_baseline": 5.211
+      },
+      "High Plains": {
+        "E_gap": 3.604,
+        "Ec_gap": 0.0,
+        "S_gap": 0.567,
+        "E_baseline": 2.396,
+        "Ec_baseline": 7.561,
+        "S_baseline": 5.433
+      },
+      "Northwestern Great Plains": {
+        "E_gap": 3.039,
+        "Ec_gap": 1.176,
+        "S_gap": 1.145,
+        "E_baseline": 2.961,
+        "Ec_baseline": 5.824,
+        "S_baseline": 4.855
+      },
+      "Northern Basin and Range": {
+        "E_gap": 3.944,
+        "Ec_gap": 1.005,
+        "S_gap": 1.036,
+        "E_baseline": 2.056,
+        "Ec_baseline": 5.995,
+        "S_baseline": 4.964
+      },
+      "Colorado Plateaus": {
+        "E_gap": 5.314,
+        "Ec_gap": 0.964,
+        "S_gap": 1.043,
+        "E_baseline": 0.686,
+        "Ec_baseline": 6.036,
+        "S_baseline": 4.957
+      },
+      "Wyoming Basin": {
+        "E_gap": 5.402,
+        "Ec_gap": 1.221,
+        "S_gap": 1.145,
+        "E_baseline": 0.598,
+        "Ec_baseline": 5.779,
+        "S_baseline": 4.855
+      }
+    },
+    "e4st_scenario_id": "carbon_tax_ira",
+    "e4st_match_quality": "direct",
+    "energy_system_note": "Combined carbon tax + IRA scenario: CO2 drops 22% to 1049 Mt in 2025, LMP $37/MWh in 2035. Maximum clean buildout nationally including SMR; Wyoming wind and solar investment highest of all scenarios."
+  },
+  "extractive_lock_in": {
+    "scenario_name": "Extractive Lock-In (Fossil Dependency)",
+    "group": "transition",
+    "targets": {
+      "E": 2,
+      "Ec": 7,
+      "S": 3
+    },
+    "conditions": [
+      {
+        "type": "policy",
+        "name": "carbon_price",
+        "threshold": 0,
+        "unit": "$/ton"
+      },
+      {
+        "type": "policy",
+        "name": "ira_subsidies",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "policy",
+        "name": "clean_energy_standard",
+        "threshold": 0,
+        "unit": "pct_by_2035"
+      },
+      {
+        "type": "policy",
+        "name": "transmission_permitting",
+        "threshold": "current",
+        "unit": "regime"
+      },
+      {
+        "type": "policy",
+        "name": "federal_land_management",
+        "threshold": "extraction_favoring",
+        "unit": "posture"
+      },
+      {
+        "type": "infrastructure",
+        "name": "storage_deployment",
+        "threshold": 10,
+        "unit": "GWh"
+      },
+      {
+        "type": "infrastructure",
+        "name": "hydrogen_infrastructure",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "workforce_transition_program",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "regional_planning_authority",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "tribal_co_management",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "university_research_presence",
+        "threshold": 0,
+        "unit": "binary"
+      }
+    ],
+    "ecoregion_gaps": {
+      "Southern Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 0.72,
+        "S_gap": 0.0,
+        "E_baseline": 7.524,
+        "Ec_baseline": 6.28,
+        "S_baseline": 5.385
+      },
+      "Middle Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 1.155,
+        "S_gap": 0.0,
+        "E_baseline": 6.556,
+        "Ec_baseline": 5.845,
+        "S_baseline": 5.211
+      },
+      "High Plains": {
+        "E_gap": 0.0,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 2.396,
+        "Ec_baseline": 7.561,
+        "S_baseline": 5.433
+      },
+      "Northwestern Great Plains": {
+        "E_gap": 0.0,
+        "Ec_gap": 1.176,
+        "S_gap": 0.0,
+        "E_baseline": 2.961,
+        "Ec_baseline": 5.824,
+        "S_baseline": 4.855
+      },
+      "Northern Basin and Range": {
+        "E_gap": 0.0,
+        "Ec_gap": 1.005,
+        "S_gap": 0.0,
+        "E_baseline": 2.056,
+        "Ec_baseline": 5.995,
+        "S_baseline": 4.964
+      },
+      "Colorado Plateaus": {
+        "E_gap": 1.314,
+        "Ec_gap": 0.964,
+        "S_gap": 0.0,
+        "E_baseline": 0.686,
+        "Ec_baseline": 6.036,
+        "S_baseline": 4.957
+      },
+      "Wyoming Basin": {
+        "E_gap": 1.402,
+        "Ec_gap": 1.221,
+        "S_gap": 0.0,
+        "E_baseline": 0.598,
+        "Ec_baseline": 5.779,
+        "S_baseline": 4.855
+      }
+    },
+    "e4st_scenario_id": "baseline",
+    "e4st_match_quality": "direct",
+    "energy_system_note": "Baseline scenario: no carbon price, continued fossil dispatch dominance. National CO2 ~1349 Mt in 2025, median LMP ~$14/MWh in 2035. No net-new renewable investment triggered by policy."
+  },
+  "eco_tech_buildout": {
+    "scenario_name": "Eco-Tech Buildout (Clean Energy on Degraded Land)",
+    "group": "transition",
+    "targets": {
+      "E": 8,
+      "Ec": 6,
+      "S": 5
+    },
+    "conditions": [
+      {
+        "type": "policy",
+        "name": "carbon_price",
+        "threshold": 50,
+        "unit": "$/ton"
+      },
+      {
+        "type": "policy",
+        "name": "ira_subsidies",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "policy",
+        "name": "clean_energy_standard",
+        "threshold": 60,
+        "unit": "pct_by_2035"
+      },
+      {
+        "type": "policy",
+        "name": "transmission_permitting",
+        "threshold": "reformed",
+        "unit": "regime"
+      },
+      {
+        "type": "policy",
+        "name": "federal_land_management",
+        "threshold": "conservation_favoring",
+        "unit": "posture"
+      },
+      {
+        "type": "infrastructure",
+        "name": "storage_deployment",
+        "threshold": 60,
+        "unit": "GWh"
+      },
+      {
+        "type": "infrastructure",
+        "name": "hydrogen_infrastructure",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "workforce_transition_program",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "regional_planning_authority",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "tribal_co_management",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "university_research_presence",
+        "threshold": 1,
+        "unit": "binary"
+      }
+    ],
+    "ecoregion_gaps": {
+      "Southern Rockies": {
+        "E_gap": 0.476,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 7.524,
+        "Ec_baseline": 6.28,
+        "S_baseline": 5.385
+      },
+      "Middle Rockies": {
+        "E_gap": 1.444,
+        "Ec_gap": 0.155,
+        "S_gap": 0.0,
+        "E_baseline": 6.556,
+        "Ec_baseline": 5.845,
+        "S_baseline": 5.211
+      },
+      "High Plains": {
+        "E_gap": 5.604,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 2.396,
+        "Ec_baseline": 7.561,
+        "S_baseline": 5.433
+      },
+      "Northwestern Great Plains": {
+        "E_gap": 5.039,
+        "Ec_gap": 0.176,
+        "S_gap": 0.145,
+        "E_baseline": 2.961,
+        "Ec_baseline": 5.824,
+        "S_baseline": 4.855
+      },
+      "Northern Basin and Range": {
+        "E_gap": 5.944,
+        "Ec_gap": 0.005,
+        "S_gap": 0.036,
+        "E_baseline": 2.056,
+        "Ec_baseline": 5.995,
+        "S_baseline": 4.964
+      },
+      "Colorado Plateaus": {
+        "E_gap": 7.314,
+        "Ec_gap": 0.0,
+        "S_gap": 0.043,
+        "E_baseline": 0.686,
+        "Ec_baseline": 6.036,
+        "S_baseline": 4.957
+      },
+      "Wyoming Basin": {
+        "E_gap": 7.402,
+        "Ec_gap": 0.221,
+        "S_gap": 0.145,
+        "E_baseline": 0.598,
+        "Ec_baseline": 5.779,
+        "S_baseline": 4.855
+      }
+    },
+    "e4st_scenario_id": "carbon_tax_50",
+    "e4st_match_quality": "partial",
+    "energy_system_note": "$50/ton carbon tax scenario: CO2 drops 21% to 1060 Mt in 2025, median LMP rises to $37/MWh in 2035. Significant wind, battery, and gas CC buildout nationally; Wyoming LMP remains below national median."
+  },
+  "resilient_communities": {
+    "scenario_name": "Resilient Communities (Social Infrastructure Priority)",
+    "group": "transition",
+    "targets": {
+      "E": 5,
+      "Ec": 6,
+      "S": 8
+    },
+    "conditions": [
+      {
+        "type": "policy",
+        "name": "carbon_price",
+        "threshold": 0,
+        "unit": "$/ton"
+      },
+      {
+        "type": "policy",
+        "name": "ira_subsidies",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "policy",
+        "name": "clean_energy_standard",
+        "threshold": 20,
+        "unit": "pct_by_2035"
+      },
+      {
+        "type": "policy",
+        "name": "transmission_permitting",
+        "threshold": "current",
+        "unit": "regime"
+      },
+      {
+        "type": "policy",
+        "name": "federal_land_management",
+        "threshold": "balanced",
+        "unit": "posture"
+      },
+      {
+        "type": "infrastructure",
+        "name": "storage_deployment",
+        "threshold": 30,
+        "unit": "GWh"
+      },
+      {
+        "type": "infrastructure",
+        "name": "hydrogen_infrastructure",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "workforce_transition_program",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "regional_planning_authority",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "tribal_co_management",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "university_research_presence",
+        "threshold": 1,
+        "unit": "binary"
+      }
+    ],
+    "ecoregion_gaps": {
+      "Southern Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 0.0,
+        "S_gap": 2.615,
+        "E_baseline": 7.524,
+        "Ec_baseline": 6.28,
+        "S_baseline": 5.385
+      },
+      "Middle Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 0.155,
+        "S_gap": 2.789,
+        "E_baseline": 6.556,
+        "Ec_baseline": 5.845,
+        "S_baseline": 5.211
+      },
+      "High Plains": {
+        "E_gap": 2.604,
+        "Ec_gap": 0.0,
+        "S_gap": 2.567,
+        "E_baseline": 2.396,
+        "Ec_baseline": 7.561,
+        "S_baseline": 5.433
+      },
+      "Northwestern Great Plains": {
+        "E_gap": 2.039,
+        "Ec_gap": 0.176,
+        "S_gap": 3.145,
+        "E_baseline": 2.961,
+        "Ec_baseline": 5.824,
+        "S_baseline": 4.855
+      },
+      "Northern Basin and Range": {
+        "E_gap": 2.944,
+        "Ec_gap": 0.005,
+        "S_gap": 3.036,
+        "E_baseline": 2.056,
+        "Ec_baseline": 5.995,
+        "S_baseline": 4.964
+      },
+      "Colorado Plateaus": {
+        "E_gap": 4.314,
+        "Ec_gap": 0.0,
+        "S_gap": 3.043,
+        "E_baseline": 0.686,
+        "Ec_baseline": 6.036,
+        "S_baseline": 4.957
+      },
+      "Wyoming Basin": {
+        "E_gap": 4.402,
+        "Ec_gap": 0.221,
+        "S_gap": 3.145,
+        "E_baseline": 0.598,
+        "Ec_baseline": 5.779,
+        "S_baseline": 4.855
+      }
+    },
+    "e4st_scenario_id": "ira_itc",
+    "e4st_match_quality": "direct",
+    "energy_system_note": "IRA investment tax credit scenario: ITC subsidies drive renewable and battery buildout but CO2 is unchanged (~1349 Mt) \u2014 new clean capacity displaces planned gas additions rather than existing coal. National LMP falls to $6/MWh in 2025 due to clean energy surplus."
+  },
+  "federal_lands_conservation": {
+    "scenario_name": "Federal Lands Conservation (No Carbon Price)",
+    "group": "transition",
+    "targets": {
+      "E": 7,
+      "Ec": 4,
+      "S": 4
+    },
+    "conditions": [
+      {
+        "type": "policy",
+        "name": "carbon_price",
+        "threshold": 0,
+        "unit": "$/ton"
+      },
+      {
+        "type": "policy",
+        "name": "ira_subsidies",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "policy",
+        "name": "clean_energy_standard",
+        "threshold": 0,
+        "unit": "pct_by_2035"
+      },
+      {
+        "type": "policy",
+        "name": "transmission_permitting",
+        "threshold": "current",
+        "unit": "regime"
+      },
+      {
+        "type": "policy",
+        "name": "federal_land_management",
+        "threshold": "conservation_favoring",
+        "unit": "posture"
+      },
+      {
+        "type": "infrastructure",
+        "name": "storage_deployment",
+        "threshold": 20,
+        "unit": "GWh"
+      },
+      {
+        "type": "infrastructure",
+        "name": "hydrogen_infrastructure",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "workforce_transition_program",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "regional_planning_authority",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "tribal_co_management",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "university_research_presence",
+        "threshold": 0,
+        "unit": "binary"
+      }
+    ],
+    "ecoregion_gaps": {
+      "Southern Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 7.524,
+        "Ec_baseline": 6.28,
+        "S_baseline": 5.385
+      },
+      "Middle Rockies": {
+        "E_gap": 0.444,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 6.556,
+        "Ec_baseline": 5.845,
+        "S_baseline": 5.211
+      },
+      "High Plains": {
+        "E_gap": 4.604,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 2.396,
+        "Ec_baseline": 7.561,
+        "S_baseline": 5.433
+      },
+      "Northwestern Great Plains": {
+        "E_gap": 4.039,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 2.961,
+        "Ec_baseline": 5.824,
+        "S_baseline": 4.855
+      },
+      "Northern Basin and Range": {
+        "E_gap": 4.944,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 2.056,
+        "Ec_baseline": 5.995,
+        "S_baseline": 4.964
+      },
+      "Colorado Plateaus": {
+        "E_gap": 6.314,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 0.686,
+        "Ec_baseline": 6.036,
+        "S_baseline": 4.957
+      },
+      "Wyoming Basin": {
+        "E_gap": 6.402,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 0.598,
+        "Ec_baseline": 5.779,
+        "S_baseline": 4.855
+      }
+    },
+    "e4st_scenario_id": "baseline",
+    "e4st_match_quality": "extrapolated",
+    "energy_system_note": "Baseline scenario: no carbon price, continued fossil dispatch dominance. National CO2 ~1349 Mt in 2025, median LMP ~$14/MWh in 2035. No net-new renewable investment triggered by policy."
+  },
+  "fossil_exit_no_replacement": {
+    "scenario_name": "Fossil Exit Without Replacement Employment",
+    "group": "transition",
+    "targets": {
+      "E": 3,
+      "Ec": 3,
+      "S": 4
+    },
+    "conditions": [
+      {
+        "type": "policy",
+        "name": "carbon_price",
+        "threshold": 50,
+        "unit": "$/ton"
+      },
+      {
+        "type": "policy",
+        "name": "ira_subsidies",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "policy",
+        "name": "clean_energy_standard",
+        "threshold": 0,
+        "unit": "pct_by_2035"
+      },
+      {
+        "type": "policy",
+        "name": "transmission_permitting",
+        "threshold": "current",
+        "unit": "regime"
+      },
+      {
+        "type": "policy",
+        "name": "federal_land_management",
+        "threshold": "balanced",
+        "unit": "posture"
+      },
+      {
+        "type": "infrastructure",
+        "name": "storage_deployment",
+        "threshold": 20,
+        "unit": "GWh"
+      },
+      {
+        "type": "infrastructure",
+        "name": "hydrogen_infrastructure",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "workforce_transition_program",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "regional_planning_authority",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "tribal_co_management",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "university_research_presence",
+        "threshold": 0,
+        "unit": "binary"
+      }
+    ],
+    "ecoregion_gaps": {
+      "Southern Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 7.524,
+        "Ec_baseline": 6.28,
+        "S_baseline": 5.385
+      },
+      "Middle Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 6.556,
+        "Ec_baseline": 5.845,
+        "S_baseline": 5.211
+      },
+      "High Plains": {
+        "E_gap": 0.604,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 2.396,
+        "Ec_baseline": 7.561,
+        "S_baseline": 5.433
+      },
+      "Northwestern Great Plains": {
+        "E_gap": 0.039,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 2.961,
+        "Ec_baseline": 5.824,
+        "S_baseline": 4.855
+      },
+      "Northern Basin and Range": {
+        "E_gap": 0.944,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 2.056,
+        "Ec_baseline": 5.995,
+        "S_baseline": 4.964
+      },
+      "Colorado Plateaus": {
+        "E_gap": 2.314,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 0.686,
+        "Ec_baseline": 6.036,
+        "S_baseline": 4.957
+      },
+      "Wyoming Basin": {
+        "E_gap": 2.402,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 0.598,
+        "Ec_baseline": 5.779,
+        "S_baseline": 4.855
+      }
+    },
+    "e4st_scenario_id": "carbon_tax_50",
+    "e4st_match_quality": "direct",
+    "energy_system_note": "$50/ton carbon tax scenario: CO2 drops 21% to 1060 Mt in 2025, median LMP rises to $37/MWh in 2035. Significant wind, battery, and gas CC buildout nationally; Wyoming LMP remains below national median."
+  },
+  "ira_renewable_boom": {
+    "scenario_name": "IRA Renewable Investment Boom",
+    "group": "transition",
+    "targets": {
+      "E": 5,
+      "Ec": 7,
+      "S": 5
+    },
+    "conditions": [
+      {
+        "type": "policy",
+        "name": "carbon_price",
+        "threshold": 0,
+        "unit": "$/ton"
+      },
+      {
+        "type": "policy",
+        "name": "ira_subsidies",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "policy",
+        "name": "clean_energy_standard",
+        "threshold": 40,
+        "unit": "pct_by_2035"
+      },
+      {
+        "type": "policy",
+        "name": "transmission_permitting",
+        "threshold": "reformed",
+        "unit": "regime"
+      },
+      {
+        "type": "policy",
+        "name": "federal_land_management",
+        "threshold": "balanced",
+        "unit": "posture"
+      },
+      {
+        "type": "infrastructure",
+        "name": "storage_deployment",
+        "threshold": 80,
+        "unit": "GWh"
+      },
+      {
+        "type": "infrastructure",
+        "name": "hydrogen_infrastructure",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "workforce_transition_program",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "regional_planning_authority",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "tribal_co_management",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "university_research_presence",
+        "threshold": 0,
+        "unit": "binary"
+      }
+    ],
+    "ecoregion_gaps": {
+      "Southern Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 0.72,
+        "S_gap": 0.0,
+        "E_baseline": 7.524,
+        "Ec_baseline": 6.28,
+        "S_baseline": 5.385
+      },
+      "Middle Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 1.155,
+        "S_gap": 0.0,
+        "E_baseline": 6.556,
+        "Ec_baseline": 5.845,
+        "S_baseline": 5.211
+      },
+      "High Plains": {
+        "E_gap": 2.604,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 2.396,
+        "Ec_baseline": 7.561,
+        "S_baseline": 5.433
+      },
+      "Northwestern Great Plains": {
+        "E_gap": 2.039,
+        "Ec_gap": 1.176,
+        "S_gap": 0.145,
+        "E_baseline": 2.961,
+        "Ec_baseline": 5.824,
+        "S_baseline": 4.855
+      },
+      "Northern Basin and Range": {
+        "E_gap": 2.944,
+        "Ec_gap": 1.005,
+        "S_gap": 0.036,
+        "E_baseline": 2.056,
+        "Ec_baseline": 5.995,
+        "S_baseline": 4.964
+      },
+      "Colorado Plateaus": {
+        "E_gap": 4.314,
+        "Ec_gap": 0.964,
+        "S_gap": 0.043,
+        "E_baseline": 0.686,
+        "Ec_baseline": 6.036,
+        "S_baseline": 4.957
+      },
+      "Wyoming Basin": {
+        "E_gap": 4.402,
+        "Ec_gap": 1.221,
+        "S_gap": 0.145,
+        "E_baseline": 0.598,
+        "Ec_baseline": 5.779,
+        "S_baseline": 4.855
+      }
+    },
+    "e4st_scenario_id": "ira_itc",
+    "e4st_match_quality": "partial",
+    "energy_system_note": "IRA investment tax credit scenario: ITC subsidies drive renewable and battery buildout but CO2 is unchanged (~1349 Mt) \u2014 new clean capacity displaces planned gas additions rather than existing coal. National LMP falls to $6/MWh in 2025 due to clean energy surplus."
+  },
+  "wyoming_sagebrush_restoration": {
+    "scenario_name": "Wyoming Sagebrush Restoration Initiative",
+    "group": "transition",
+    "targets": {
+      "E": 7,
+      "Ec": 4,
+      "S": 5
+    },
+    "conditions": [
+      {
+        "type": "policy",
+        "name": "carbon_price",
+        "threshold": 0,
+        "unit": "$/ton"
+      },
+      {
+        "type": "policy",
+        "name": "ira_subsidies",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "policy",
+        "name": "clean_energy_standard",
+        "threshold": 0,
+        "unit": "pct_by_2035"
+      },
+      {
+        "type": "policy",
+        "name": "transmission_permitting",
+        "threshold": "current",
+        "unit": "regime"
+      },
+      {
+        "type": "policy",
+        "name": "federal_land_management",
+        "threshold": "conservation_favoring",
+        "unit": "posture"
+      },
+      {
+        "type": "infrastructure",
+        "name": "storage_deployment",
+        "threshold": 15,
+        "unit": "GWh"
+      },
+      {
+        "type": "infrastructure",
+        "name": "hydrogen_infrastructure",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "workforce_transition_program",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "regional_planning_authority",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "tribal_co_management",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "university_research_presence",
+        "threshold": 0,
+        "unit": "binary"
+      }
+    ],
+    "ecoregion_gaps": {
+      "Southern Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 7.524,
+        "Ec_baseline": 6.28,
+        "S_baseline": 5.385
+      },
+      "Middle Rockies": {
+        "E_gap": 0.444,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 6.556,
+        "Ec_baseline": 5.845,
+        "S_baseline": 5.211
+      },
+      "High Plains": {
+        "E_gap": 4.604,
+        "Ec_gap": 0.0,
+        "S_gap": 0.0,
+        "E_baseline": 2.396,
+        "Ec_baseline": 7.561,
+        "S_baseline": 5.433
+      },
+      "Northwestern Great Plains": {
+        "E_gap": 4.039,
+        "Ec_gap": 0.0,
+        "S_gap": 0.145,
+        "E_baseline": 2.961,
+        "Ec_baseline": 5.824,
+        "S_baseline": 4.855
+      },
+      "Northern Basin and Range": {
+        "E_gap": 4.944,
+        "Ec_gap": 0.0,
+        "S_gap": 0.036,
+        "E_baseline": 2.056,
+        "Ec_baseline": 5.995,
+        "S_baseline": 4.964
+      },
+      "Colorado Plateaus": {
+        "E_gap": 6.314,
+        "Ec_gap": 0.0,
+        "S_gap": 0.043,
+        "E_baseline": 0.686,
+        "Ec_baseline": 6.036,
+        "S_baseline": 4.957
+      },
+      "Wyoming Basin": {
+        "E_gap": 6.402,
+        "Ec_gap": 0.0,
+        "S_gap": 0.145,
+        "E_baseline": 0.598,
+        "Ec_baseline": 5.779,
+        "S_baseline": 4.855
+      }
+    },
+    "e4st_scenario_id": "baseline",
+    "e4st_match_quality": "extrapolated",
+    "energy_system_note": "Baseline scenario: no carbon price, continued fossil dispatch dominance. National CO2 ~1349 Mt in 2025, median LMP ~$14/MWh in 2035. No net-new renewable investment triggered by policy."
+  },
+  "tribal_sovereignty_model": {
+    "scenario_name": "Tribal Sovereignty and Co-Management Model",
+    "group": "transition",
+    "targets": {
+      "E": 6,
+      "Ec": 4,
+      "S": 7
+    },
+    "conditions": [
+      {
+        "type": "policy",
+        "name": "carbon_price",
+        "threshold": 0,
+        "unit": "$/ton"
+      },
+      {
+        "type": "policy",
+        "name": "ira_subsidies",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "policy",
+        "name": "clean_energy_standard",
+        "threshold": 0,
+        "unit": "pct_by_2035"
+      },
+      {
+        "type": "policy",
+        "name": "transmission_permitting",
+        "threshold": "current",
+        "unit": "regime"
+      },
+      {
+        "type": "policy",
+        "name": "federal_land_management",
+        "threshold": "balanced",
+        "unit": "posture"
+      },
+      {
+        "type": "infrastructure",
+        "name": "storage_deployment",
+        "threshold": 20,
+        "unit": "GWh"
+      },
+      {
+        "type": "infrastructure",
+        "name": "hydrogen_infrastructure",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "workforce_transition_program",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "regional_planning_authority",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "tribal_co_management",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "university_research_presence",
+        "threshold": 1,
+        "unit": "binary"
+      }
+    ],
+    "ecoregion_gaps": {
+      "Southern Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 0.0,
+        "S_gap": 1.615,
+        "E_baseline": 7.524,
+        "Ec_baseline": 6.28,
+        "S_baseline": 5.385
+      },
+      "Middle Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 0.0,
+        "S_gap": 1.789,
+        "E_baseline": 6.556,
+        "Ec_baseline": 5.845,
+        "S_baseline": 5.211
+      },
+      "High Plains": {
+        "E_gap": 3.604,
+        "Ec_gap": 0.0,
+        "S_gap": 1.567,
+        "E_baseline": 2.396,
+        "Ec_baseline": 7.561,
+        "S_baseline": 5.433
+      },
+      "Northwestern Great Plains": {
+        "E_gap": 3.039,
+        "Ec_gap": 0.0,
+        "S_gap": 2.145,
+        "E_baseline": 2.961,
+        "Ec_baseline": 5.824,
+        "S_baseline": 4.855
+      },
+      "Northern Basin and Range": {
+        "E_gap": 3.944,
+        "Ec_gap": 0.0,
+        "S_gap": 2.036,
+        "E_baseline": 2.056,
+        "Ec_baseline": 5.995,
+        "S_baseline": 4.964
+      },
+      "Colorado Plateaus": {
+        "E_gap": 5.314,
+        "Ec_gap": 0.0,
+        "S_gap": 2.043,
+        "E_baseline": 0.686,
+        "Ec_baseline": 6.036,
+        "S_baseline": 4.957
+      },
+      "Wyoming Basin": {
+        "E_gap": 5.402,
+        "Ec_gap": 0.0,
+        "S_gap": 2.145,
+        "E_baseline": 0.598,
+        "Ec_baseline": 5.779,
+        "S_baseline": 4.855
+      }
+    },
+    "e4st_scenario_id": "ira_itc",
+    "e4st_match_quality": "direct",
+    "energy_system_note": "IRA investment tax credit scenario: ITC subsidies drive renewable and battery buildout but CO2 is unchanged (~1349 Mt) \u2014 new clean capacity displaces planned gas additions rather than existing coal. National LMP falls to $6/MWh in 2025 due to clean energy surplus."
+  },
+  "carbon_tax_high_wage": {
+    "scenario_name": "Carbon Tax with High-Wage Transition Jobs",
+    "group": "transition",
+    "targets": {
+      "E": 5,
+      "Ec": 6,
+      "S": 6
+    },
+    "conditions": [
+      {
+        "type": "policy",
+        "name": "carbon_price",
+        "threshold": 50,
+        "unit": "$/ton"
+      },
+      {
+        "type": "policy",
+        "name": "ira_subsidies",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "policy",
+        "name": "clean_energy_standard",
+        "threshold": 0,
+        "unit": "pct_by_2035"
+      },
+      {
+        "type": "policy",
+        "name": "transmission_permitting",
+        "threshold": "current",
+        "unit": "regime"
+      },
+      {
+        "type": "policy",
+        "name": "federal_land_management",
+        "threshold": "balanced",
+        "unit": "posture"
+      },
+      {
+        "type": "infrastructure",
+        "name": "storage_deployment",
+        "threshold": 30,
+        "unit": "GWh"
+      },
+      {
+        "type": "infrastructure",
+        "name": "hydrogen_infrastructure",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "workforce_transition_program",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "regional_planning_authority",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "tribal_co_management",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "university_research_presence",
+        "threshold": 0,
+        "unit": "binary"
+      }
+    ],
+    "ecoregion_gaps": {
+      "Southern Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 0.0,
+        "S_gap": 0.615,
+        "E_baseline": 7.524,
+        "Ec_baseline": 6.28,
+        "S_baseline": 5.385
+      },
+      "Middle Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 0.155,
+        "S_gap": 0.789,
+        "E_baseline": 6.556,
+        "Ec_baseline": 5.845,
+        "S_baseline": 5.211
+      },
+      "High Plains": {
+        "E_gap": 2.604,
+        "Ec_gap": 0.0,
+        "S_gap": 0.567,
+        "E_baseline": 2.396,
+        "Ec_baseline": 7.561,
+        "S_baseline": 5.433
+      },
+      "Northwestern Great Plains": {
+        "E_gap": 2.039,
+        "Ec_gap": 0.176,
+        "S_gap": 1.145,
+        "E_baseline": 2.961,
+        "Ec_baseline": 5.824,
+        "S_baseline": 4.855
+      },
+      "Northern Basin and Range": {
+        "E_gap": 2.944,
+        "Ec_gap": 0.005,
+        "S_gap": 1.036,
+        "E_baseline": 2.056,
+        "Ec_baseline": 5.995,
+        "S_baseline": 4.964
+      },
+      "Colorado Plateaus": {
+        "E_gap": 4.314,
+        "Ec_gap": 0.0,
+        "S_gap": 1.043,
+        "E_baseline": 0.686,
+        "Ec_baseline": 6.036,
+        "S_baseline": 4.957
+      },
+      "Wyoming Basin": {
+        "E_gap": 4.402,
+        "Ec_gap": 0.221,
+        "S_gap": 1.145,
+        "E_baseline": 0.598,
+        "Ec_baseline": 5.779,
+        "S_baseline": 4.855
+      }
+    },
+    "e4st_scenario_id": "carbon_tax_50",
+    "e4st_match_quality": "direct",
+    "energy_system_note": "$50/ton carbon tax scenario: CO2 drops 21% to 1060 Mt in 2025, median LMP rises to $37/MWh in 2035. Significant wind, battery, and gas CC buildout nationally; Wyoming LMP remains below national median."
+  },
+  "just_transition_target": {
+    "scenario_name": "Just Transition Target (Balanced with Social Emphasis)",
+    "group": "transition",
+    "targets": {
+      "E": 6,
+      "Ec": 6,
+      "S": 7
+    },
+    "conditions": [
+      {
+        "type": "policy",
+        "name": "carbon_price",
+        "threshold": 50,
+        "unit": "$/ton"
+      },
+      {
+        "type": "policy",
+        "name": "ira_subsidies",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "policy",
+        "name": "clean_energy_standard",
+        "threshold": 40,
+        "unit": "pct_by_2035"
+      },
+      {
+        "type": "policy",
+        "name": "transmission_permitting",
+        "threshold": "reformed",
+        "unit": "regime"
+      },
+      {
+        "type": "policy",
+        "name": "federal_land_management",
+        "threshold": "balanced",
+        "unit": "posture"
+      },
+      {
+        "type": "infrastructure",
+        "name": "storage_deployment",
+        "threshold": 80,
+        "unit": "GWh"
+      },
+      {
+        "type": "infrastructure",
+        "name": "hydrogen_infrastructure",
+        "threshold": 0,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "workforce_transition_program",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "regional_planning_authority",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "tribal_co_management",
+        "threshold": 1,
+        "unit": "binary"
+      },
+      {
+        "type": "institutional",
+        "name": "university_research_presence",
+        "threshold": 1,
+        "unit": "binary"
+      }
+    ],
+    "ecoregion_gaps": {
+      "Southern Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 0.0,
+        "S_gap": 1.615,
+        "E_baseline": 7.524,
+        "Ec_baseline": 6.28,
+        "S_baseline": 5.385
+      },
+      "Middle Rockies": {
+        "E_gap": 0.0,
+        "Ec_gap": 0.155,
+        "S_gap": 1.789,
+        "E_baseline": 6.556,
+        "Ec_baseline": 5.845,
+        "S_baseline": 5.211
+      },
+      "High Plains": {
+        "E_gap": 3.604,
+        "Ec_gap": 0.0,
+        "S_gap": 1.567,
+        "E_baseline": 2.396,
+        "Ec_baseline": 7.561,
+        "S_baseline": 5.433
+      },
+      "Northwestern Great Plains": {
+        "E_gap": 3.039,
+        "Ec_gap": 0.176,
+        "S_gap": 2.145,
+        "E_baseline": 2.961,
+        "Ec_baseline": 5.824,
+        "S_baseline": 4.855
+      },
+      "Northern Basin and Range": {
+        "E_gap": 3.944,
+        "Ec_gap": 0.005,
+        "S_gap": 2.036,
+        "E_baseline": 2.056,
+        "Ec_baseline": 5.995,
+        "S_baseline": 4.964
+      },
+      "Colorado Plateaus": {
+        "E_gap": 5.314,
+        "Ec_gap": 0.0,
+        "S_gap": 2.043,
+        "E_baseline": 0.686,
+        "Ec_baseline": 6.036,
+        "S_baseline": 4.957
+      },
+      "Wyoming Basin": {
+        "E_gap": 5.402,
+        "Ec_gap": 0.221,
+        "S_gap": 2.145,
+        "E_baseline": 0.598,
+        "Ec_baseline": 5.779,
+        "S_baseline": 4.855
+      }
+    },
+    "e4st_scenario_id": "carbon_tax_ira",
+    "e4st_match_quality": "direct",
+    "energy_system_note": "Combined carbon tax + IRA scenario: CO2 drops 22% to 1049 Mt in 2025, LMP $37/MWh in 2035. Maximum clean buildout nationally including SMR; Wyoming wind and solar investment highest of all scenarios."
+  },
+  "_coefficient_audit": {
+    "renewable_degraded_land": {
+      "new_source": "EPA RE-Powering America's Land Initiative (epa.gov/re-powering): brownfield-to-solar sites show 5\u201315% property value uplift post-remediation. NREL/TP-6A20-72470 (Lopez et al. 2019) documents reduced land competition with extractive uses. Coefficient conservatively represents land-use regime change, not property value proxy.",
+      "new_confidence": "medium",
+      "defensibility": "500 MW on previously disturbed land displaces ~3,000 acres of extraction footprint (based on NREL utility-scale solar land use: 5\u201310 acres/MW). EPA RE-Powering data support measurable environmental improvement at the site level. No study directly maps MW capacity to E-score, so coefficient retains uncertainty but is directionally supported and deliberately conservative.",
+      "new_delta": 0.05
+    },
+    "transmission_buildout": {
+      "new_source": "NREL/TP-5000-51346 (Liming & Tegen 2011): 180-mile 345kV line = 500 construction + 70 permanent jobs (2.78 jobs/mile). NREL JEDI Transmission Line Model (NREL/TP-5000-60250, 2014): 27 direct+indirect+induced jobs/mile. 500 miles \u00d7 27 = 13,500 job-years of construction activity + O&M.",
+      "new_confidence": "medium",
+      "defensibility": "NREL's 2.78\u201327 jobs/mile range (methodology-dependent) provides firm lower and upper bounds. +0.10 Ec per 500 miles is moderate within that range. Coefficient also captures market access and tax base effects beyond direct employment.",
+      "new_delta": 0.1
+    },
+    "coal_repowering": {
+      "new_source": "DOE/NETL 2022 coal-to-nuclear analysis: 650 net permanent jobs per large plant conversion (supply chain + induced). EIA 2021: >100 coal plants converted to gas since 2011. Intermountain Power Project (Utah) case data: 300-person coal plant \u2192 180-person gas/hydrogen facility (Utility Dive 2023). Coefficient captures employment-base stabilization, not net job growth.",
+      "new_confidence": "medium",
+      "defensibility": "IPP data show 60% of employment retained post-conversion (vs. 0% at closure). DOE supply-chain analysis shows 650 total permanent jobs per plant when indirect effects included. +0.05 Ec per plant is deliberately conservative \u2014 it represents the avoided Ec decline from closure, not a positive multiplier. Coefficient is appropriate for stabilization scenarios, not growth scenarios.",
+      "new_delta": 0.05
+    },
+    "clean_manufacturing": {
+      "new_source": "Advanced Clean Power 'America Builds Power' (2023, cleanpower.org): 2.68x economic multiplier on clean manufacturing investment ($67B output \u00f7 $25B worker earnings). IMPLAN 2024: 2.69x manufacturing sector multiplier per dollar spent. For 500-job facility: ~1,350 total (direct + indirect + induced) jobs in regional economy.",
+      "new_confidence": "medium",
+      "defensibility": "ACP and IMPLAN independently converge on 2.68\u20132.69x multiplier. 500-job facility with 2.7x \u2192 ~1,350 total jobs is a significant economic anchor in rural/transition ecoregions. +0.20 Ec per facility is supported by the multiplier evidence. The coefficient does not distinguish construction vs. operational phase \u2014 this is a known limitation flagged for Session 6 material ledger.",
+      "new_delta": 0.2
+    },
+    "workforce_retraining": {
+      "new_source": "DOL Trade Adjustment Assistance for Workers FY 2020 Annual Report (dol.gov/sites/dolgov/files/ETA/tradeact/pdfs/AnnualReport20.pdf): 85.4% wage replacement rate for program participants. Mathematica TAA Evaluation (2013): earnings gaps with comparison groups closed by Year 4 post-enrollment. Coefficient captures income-stability dimension of social capital.",
+      "new_confidence": "medium",
+      "defensibility": "DOL TAA data show 85.4% wage replacement \u2192 ~$15K restored annual earnings per worker (median TAA participant). +0.08 S per 1,000 workers captures the income-stability channel. Health insurance and educational attainment dimensions are not directly supported by available government data \u2014 this coefficient intentionally underweights the full social benefit. Program phaseout (ended June 2022) makes TAA the best available historical proxy; successor programs (WIOA Dislocated Worker) lack equivalent outcome evaluations.",
+      "new_delta": 0.08
+    },
+    "affordable_housing": {
+      "new_source": "National Low Income Housing Coalition 'The Gap' 2023 (nlihc.org/gap): 7.3M extremely low-income renter households face severe cost burden; each affordable unit removes one household from >50% income-to-housing burden. USDA Rural Development Section 515/521 program: ~280,000 rural rental units nationally (USDA RD 2022 Annual Progress Report). No government source directly quantifies S-score per housing unit; coefficient treated as policy assumption pending HUD outcome evaluation.",
+      "new_confidence": "medium",
+      "defensibility": "The +0.06 S per 500 units is intentionally the weakest coefficient in the table. Cost-burden reduction is empirically linked to health and social outcomes (NLIHC 2023), but the magnitude of S-score impact per unit is not quantified by any available government evaluation. The coefficient is framed as a conservative lower bound: housing enables other social outcomes (stable employment, school enrollment, healthcare access) without being sufficient on its own. This coefficient should be revisited when HUD CAPER granular outcome data becomes available or when a rural housing RCT is published.",
+      "new_delta": 0.06
+    }
+  }
+}

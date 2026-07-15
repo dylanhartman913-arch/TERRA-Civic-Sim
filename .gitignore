@@ -1,8 +1,8 @@
 # ── Raw and processed data ────────────────────────────────────────────────────
 # All raw inputs and derived outputs live outside version control.
 # See data/README.md for download instructions and notebook execution order.
-data/raw/
-data/processed/
+data/raw/*
+data/processed/*
 # But preserve directory skeletons so `git clone` produces the expected layout.
 !data/raw/.gitkeep
 !data/processed/.gitkeep
@@ -41,6 +41,12 @@ data/processed/osm_transmission_hv.geojson
 data/processed/combined_map.html
 data/processed/HTML/
 data/processed/figures/14_lmp_map.html
+
+# ── Tracked build deliverables (excepted from data/processed/ blanket ignore) ──
+# county_climate_projections.json: C1.6 build output — LOCA2/STAR-ESDM downscaled
+# county-level projections, NOAA CMRA tabulations, cross-checked NASA NEX-GDDP-CMIP6.
+# 38 MB JSON, under 50 MB threshold. Required by TERRA engine climate tests.
+!data/processed/county_climate_projections.json
 
 # ── Notebooks with embedded large outputs ────────────────────────────────────
 notebooks/14_e4st_results.ipynb
