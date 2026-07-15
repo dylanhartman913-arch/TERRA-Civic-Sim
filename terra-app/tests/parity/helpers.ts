@@ -88,6 +88,40 @@ export function loadInitialStateWithRetirements(): EngineState {
   return initializeState(baseline, crosswalk, actionLibrary, initialNetwork, countyCards, 2025, fiscalBaseline, fiscalCoefficients, retirementData, lifecycleCoefficients, housingBaselineData, loadPopulationProjections());
 }
 
+/** Load initial state with anchors + exposure tags (for C2 coverage and inertness tests). */
+export function loadInitialStateWithAnchorsAndTags(): EngineState {
+  const baseline: CountyEESBaseline[] = JSON.parse(readFileSync(resolve(DATA_DIR, 'county_ees_baseline.json'), 'utf-8'));
+  const crosswalk: CrosswalkRow[] = JSON.parse(readFileSync(resolve(DATA_DIR, 'county_crosswalk.json'), 'utf-8'));
+  const actionLibrary: ActionLibrary = JSON.parse(readFileSync(resolve(DATA_DIR, 'action_library_v3.json'), 'utf-8'));
+  const initialNetwork: InitialNetwork = JSON.parse(readFileSync(resolve(DATA_DIR, 'initial_network.json'), 'utf-8'));
+  const countyCards: Record<string, unknown> = JSON.parse(readFileSync(resolve(DATA_DIR, 'county_cards.json'), 'utf-8'));
+  let fiscalBaseline: FiscalBaseline | undefined;
+  let fiscalCoefficients: FiscalCoefficients | undefined;
+  try {
+    fiscalBaseline = JSON.parse(readFileSync(resolve(DATA_DIR, 'fiscal_baseline.json'), 'utf-8'));
+    fiscalCoefficients = JSON.parse(readFileSync(resolve(DATA_DIR, 'fiscal_coefficients.json'), 'utf-8'));
+  } catch { /* optional */ }
+  const retirements = JSON.parse(readFileSync(resolve(DATA_DIR, 'baseline_retirements.json'), 'utf-8'));
+  const { _meta, ...retirementData } = retirements;
+  let lifecycleCoefficients: Record<string, unknown> | undefined;
+  try {
+    lifecycleCoefficients = JSON.parse(readFileSync(resolve(DATA_DIR, 'lifecycle_coefficients.json'), 'utf-8'));
+  } catch { /* optional */ }
+  let housingBaselineData: Record<string, unknown> | undefined;
+  try {
+    const raw = JSON.parse(readFileSync(resolve(DATA_DIR, 'county_housing_baseline.json'), 'utf-8'));
+    housingBaselineData = raw.counties as Record<string, unknown>;
+  } catch { /* optional */ }
+  const anchorFacilities = JSON.parse(readFileSync(resolve(DATA_DIR, 'mw_anchor_facilities.geojson'), 'utf-8'));
+  const exposureTagData = JSON.parse(readFileSync(resolve(DATA_DIR, 'asset_exposure_tags.json'), 'utf-8'));
+
+  return initializeState(
+    baseline, crosswalk, actionLibrary, initialNetwork, countyCards, 2025,
+    fiscalBaseline, fiscalCoefficients, retirementData, lifecycleCoefficients,
+    housingBaselineData, loadPopulationProjections(), undefined, anchorFacilities, exposureTagData,
+  );
+}
+
 /**
  * Relative tolerance check matching the Python golden fixture contract.
  * |ts_value - py_value| / max(|py_value|, 1e-10) < tolerance

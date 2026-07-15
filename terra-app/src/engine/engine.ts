@@ -104,6 +104,8 @@ import type {
   ProductionAsset,
   AnyExistingAsset,
   AssetInstance,
+  ExposureTag,
+  ExposureTagSet,
 } from './types.js';
 import { EMPTY_CLIMATE_CONTEXT } from './types.js';
 
@@ -640,6 +642,53 @@ const EA_EXCLUDED_CLASSES = new Set<string>([
 // asset_class is the type of asset in the registry; site_class is a field on
 // spawned site assets that drives SITE_COMPAT lookup for succession actions.
 
+// ── C2: Exposure tag data schema ────────────────────────────────────────────
+
+/** Shape of asset_exposure_tags.json loaded from data/processed. */
+interface AssetExposureTagData {
+  schema_version: string;
+  class_defaults: Record<string, ExposureTagSet>;
+  assets: Array<{
+    asset_id: string;       // matches anchor_id on registry assets
+    asset_key_type: string;
+    asset_class: string;
+    tags: ExposureTagSet;
+  }>;
+}
+
+/**
+ * Apply hazard exposure tags to every asset in the registry.
+ * v4.4 (C2): read-only data field — excluded from all four digest surfaces.
+ *
+ * Lookup priority:
+ *  1. Per-asset row keyed by anchor_id (Tier 2 anchor facilities)
+ *  2. class_defaults[asset_class] (covers all other registry assets)
+ *  3. null (asset_class not covered, e.g. site)
+ *
+ * Mutates registry in place (same pattern as F1's anchor field attachment).
+ */
+function applyExposureTags(
+  registry: AssetInstance[],
+  exposureTagData: AssetExposureTagData,
+): void {
+  // Build anchor_id → tags lookup from per-asset rows
+  const byAnchorId: Record<string, ExposureTagSet> = {};
+  for (const entry of exposureTagData.assets) {
+    byAnchorId[entry.asset_id] = entry.tags;
+  }
+
+  for (const a of registry) {
+    const anchorId = a.anchor_id;
+    if (anchorId && byAnchorId[anchorId]) {
+      a.exposure_tags = byAnchorId[anchorId];
+    } else if (exposureTagData.class_defaults[a.asset_class]) {
+      a.exposure_tags = exposureTagData.class_defaults[a.asset_class];
+    } else {
+      a.exposure_tags = null;
+    }
+  }
+}
+
 interface AnchorFeatureProps {
   anchor_id?: string;
   name?: string;
@@ -881,6 +930,8 @@ function spawnSiteFromRetired(retired: AssetInstance, spawnYear: number): AssetI
     succession_site_id: null, ttd_reduction_applied: null,
     capex_discount_fraction: null, tx_waiver_mw: null,
     convert_source_asset_id: null,
+    // v4.4 (C2): inherit origin asset's exposure context (county/class already captured)
+    exposure_tags: retired.exposure_tags ?? null,
   };
 }
 
@@ -1152,6 +1203,7 @@ export function initializeState(
   populationProjections?: Record<string, PopulationProjection>,
   populationConfig?: Partial<PopulationConfig>,
   anchorFacilities?: { features: Array<{ properties: AnchorFeatureProps }> } | null,
+  exposureTagData?: AssetExposureTagData | null,  // v4.4 (C2) hazard exposure tags
 ): EngineState {
   const popProj = populationProjections ?? {};
   // County EES (primary capital store)
@@ -1310,6 +1362,13 @@ export function initializeState(
   // Generators get anchor_id + co2e_tpy attached (not re-seeded).
   // Anchors excluded from existing_assets view → digest-stable.
   asset_registry.push(...seedAnchorFacilities(anchorFacilities ?? null, asset_registry));
+
+  // ── v4.4 (C2): Apply hazard exposure tags ────────────────────────────────
+  // Tags are read-only data on registry rows. Excluded from all digest surfaces:
+  // ExistingAsset/ProductionAsset/IndicatorSnapshot do not carry exposure_tags.
+  if (exposureTagData) {
+    applyExposureTags(asset_registry, exposureTagData);
+  }
 
   const existing_assets = materializeExistingAssets(asset_registry);
 
