@@ -1,92 +1,18 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import type maplibregl from 'maplibre-gl';
 import { useTerraStore } from '../../state/store.js';
-import type { PinSnapTarget } from '../../state/store.js';
-import type { ActionRecord, CrosswalkRow, CountyFiscal, AssetInstance, EngineState } from '../../engine/types.js';
+import type { ActionRecord, CrosswalkRow, CountyFiscal } from '../../engine/types.js';
 import { Tooltip } from './Tooltip.js';
 import { computeConsumption, getBudgetShareString, isEraOverflow, getEraForYear } from '../../engine/budgets.js';
 import { computeFiscalDelta } from '../../engine/engine.js';
 import { JOBS_PER_MW, HOUSING_PRESSURE_THRESHOLD } from '../panels/CountyYields.js';
 import { DeltaProjectionStrip } from './DeltaProjectionStrip.js';
-import anchorFacilitiesData from '../../data/mw_anchor_facilities.geojson';
+import { findSnapTarget } from './snapTarget.js';
 
 // ── F3 constants ─────────────────────────────────────────────────────────────
 
 /** MapLibre zoom at which basemap towns become legible on Stadia Alidade Dark. */
 const PIN_ZOOM_THRESHOLD = 9.0;
-
-/** Snap radius in geographic degrees (~5.5 km at 43°N). Configurable here. */
-const SNAP_RADIUS_DEG = 0.05;
-
-// ── Anchor facility types ─────────────────────────────────────────────────────
-
-interface AnchorFeature {
-  geometry: { coordinates: [number, number] };
-  properties: { name: string; geoid: string; tier: number; type: string; capacity_mw: number };
-}
-
-const TIER2_ANCHORS: AnchorFeature[] = (
-  (anchorFacilitiesData as { features: AnchorFeature[] }).features ?? []
-).filter(f => f.properties.tier === 2);
-
-// ── Snap detection ────────────────────────────────────────────────────────────
-
-function getCountyCentroid(
-  geoid: string,
-  engineState: EngineState,
-): [number, number] | null {
-  const row = engineState.crosswalk.find(r => r.geoid === geoid && r.primary_bus);
-  if (!row) return null;
-  const bus = engineState.buses[String(row.bus_id)];
-  if (!bus) return null;
-  return [bus.lon, bus.lat];
-}
-
-function findSnapTarget(
-  lngLat: [number, number],
-  engineState: EngineState,
-): PinSnapTarget | null {
-  const [lon, lat] = lngLat;
-
-  // Sites first (higher priority — succession discount)
-  const sites = engineState.asset_registry.filter(
-    a => a.asset_class === 'site' && a.lifecycle === 'operating',
-  );
-  for (const site of sites) {
-    const centroid = getCountyCentroid(site.geoid, engineState);
-    if (!centroid) continue;
-    const dist = Math.sqrt(
-      Math.pow(lon - centroid[0], 2) + Math.pow(lat - centroid[1], 2),
-    );
-    if (dist < SNAP_RADIUS_DEG) {
-      return {
-        type: 'site',
-        id: site.asset_id,
-        name: site.name,
-        coords: centroid,
-        siteAssetId: site.asset_id,
-      };
-    }
-  }
-
-  // Tier-2 anchor facilities
-  for (const anchor of TIER2_ANCHORS) {
-    const [aLon, aLat] = anchor.geometry.coordinates;
-    const dist = Math.sqrt(
-      Math.pow(lon - aLon, 2) + Math.pow(lat - aLat, 2),
-    );
-    if (dist < SNAP_RADIUS_DEG) {
-      return {
-        type: 'anchor',
-        id: anchor.properties.name,
-        name: anchor.properties.name,
-        coords: [aLon, aLat],
-      };
-    }
-  }
-
-  return null;
-}
 
 // ── Existing layer IDs ────────────────────────────────────────────────────────
 

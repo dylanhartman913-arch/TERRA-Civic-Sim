@@ -305,11 +305,9 @@ _ACTION_ID_TO_MIGRATION_FUEL = {
     'industrial_load_flexible': 'data_center',
 }
 
-# ── v4.3 (F1): Anchor Facility Commodity Lookup ─────────────────────────────
-# DERIVED FIELD — inferred from facility name, NOT sourced from the geojson
-# (mw_anchor_facilities.geojson has no 'commodity' field). If NB 22 is ever
-# regenerated with different mine names or new mines added, this table must
-# be reviewed by a human.
+# ── v4.3 (F1): Anchor Facility Commodity Compatibility Fallback ─────────────
+# Compatibility fallback for older anchor GeoJSON files that predate the
+# MSHA-derived properties.commodity field. New data is authoritative.
 #
 # Key: MSHA mine ID (anchor_id in geojson). Value: commodity string.
 # Sources cited per group:
@@ -332,7 +330,7 @@ _ACTION_ID_TO_MIGRATION_FUEL = {
 #     Hot Springs (56017, 1): Lucerne Mill — bentonite processing.
 #     Natrona (56025, 3): Casper/Mills/HT — bentonite processing plants.
 #     Washakie (56043, 2): Tensleep Mine, Worland Plant — bentonite/gypsum extraction.
-ANCHOR_MINE_COMMODITY = {
+ANCHOR_MINE_COMMODITY_FALLBACK = {
     # ── Coal: Colorado ───────────────────────────────────────────────────────
     'msha_0502838': 'coal',   # Trapper Mine (08081)
     'msha_0502962': 'coal',   # Colowyo Mine (08081)
@@ -1064,7 +1062,10 @@ def _seed_anchor_facilities(data_dir, registry):
         # New asset classes: mine, industrial_load, commercial_anchor_load
         capacity_or_load = props.get('capacity_or_load_mw')
         employment = props.get('employment_est')
-        commodity = ANCHOR_MINE_COMMODITY.get(anchor_id) if ac == 'mine' else None
+        commodity = (
+            props.get('commodity') or ANCHOR_MINE_COMMODITY_FALLBACK.get(anchor_id)
+            if ac == 'mine' else None
+        )
 
         # Standard null block (all non-applicable fields)
         _null_block = {

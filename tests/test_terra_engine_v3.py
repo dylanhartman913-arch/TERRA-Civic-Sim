@@ -222,6 +222,47 @@ class TestExistingAssetsDigest:
         assert digest["md5"] == "a881df20643298394d53c2ac43012fe3"
 
 
+class TestAnchorCommodityField:
+    def test_seed_reads_msha_commodity_field(self):
+        state = load_state()
+        mine = find_asset(state["asset_registry"], lambda a: a.get("anchor_id") == "msha_4800152")
+        assert mine["commodity"] == "trona"
+
+    def test_seed_uses_compatibility_fallback_when_field_is_absent(self, tmp_path):
+        source = DATA_DIR / "mw_anchor_facilities.geojson"
+        data = json.loads(source.read_text())
+        mine = next(f for f in data["features"] if f["properties"].get("anchor_id") == "msha_4800152")
+        del mine["properties"]["commodity"]
+        (tmp_path / "mw_anchor_facilities.geojson").write_text(json.dumps(data))
+        seeded = te._seed_anchor_facilities(tmp_path, [])
+        trona = next(a for a in seeded if a.get("anchor_id") == "msha_4800152")
+        assert trona["commodity"] == "trona"
+
+    @pytest.mark.parametrize("migration_enabled", [True, False])
+    def test_anchor_field_does_not_change_existing_anchor_digest(self, migration_enabled, tmp_path):
+        state = load_state()
+        state["population_config"]["migration_enabled"] = migration_enabled
+        assert te.existing_assets_digest(state)["md5"] == "a881df20643298394d53c2ac43012fe3"
+        current = sorted(
+            ({k: v for k, v in a.items() if k != "exposure_tags"}
+             for a in state["asset_registry"] if a.get("anchor_id")),
+            key=lambda a: a["anchor_id"],
+        )
+        source = DATA_DIR / "mw_anchor_facilities.geojson"
+        data = json.loads(source.read_text())
+        for feature in data["features"]:
+            feature["properties"].pop("commodity", None)
+        (tmp_path / "mw_anchor_facilities.geojson").write_text(json.dumps(data))
+        fallback = sorted(
+            ({k: v for k, v in a.items() if k != "exposure_tags"}
+             for a in te._seed_anchor_facilities(tmp_path, [])
+             if a.get("anchor_id") and a.get("asset_class") == "mine"),
+            key=lambda a: a["anchor_id"],
+        )
+        current_mines = [a for a in current if a.get("asset_class") == "mine"]
+        assert current_mines == fallback
+
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # Golden G — Scheduled Baseline Retirements 2025→2045 (10 tests)
 # ═══════════════════════════════════════════════════════════════════════════════

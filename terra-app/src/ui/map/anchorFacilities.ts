@@ -15,6 +15,7 @@ export interface AnchorFeatureProperties {
   co2e_tpy?: number | null;
   source?: string | null;
   confidence?: string | null;
+  commodity?: string | null;
   coords_flag?: string | null;
 }
 
