@@ -50,6 +50,8 @@ import hashlib
 from pathlib import Path
 from datetime import datetime, timezone
 
+from hazard_events import sample_climate_hazard_events
+
 # v4.0: optional indicators module for per-year history snapshots
 try:
     from indicators import snapshot_indicators as _snapshot_indicators
@@ -128,6 +130,20 @@ FIRM_FUEL_TYPES = frozenset({'nuclear', 'gas', 'coal', 'hydro', 'geothermal', 's
 # Read-only, stateless. Coupling functions live in climate_couplings.py.
 EMPTY_CLIMATE_CONTEXT = {'lens': 'historical', 'tables': {}}
 VALID_CLIMATE_LENSES = frozenset({'historical', 'ssp245', 'ssp370'})
+
+
+def sample_hazard_events(state, *, seed, lens, years, county_baselines,
+                         projection_points):
+    """C4-i engine boundary: pure event sampling with zero consequence coupling."""
+    # Deliberately read no state fields: action history and decisions are exogenous.
+    del state
+    return sample_climate_hazard_events(
+        seed=seed,
+        lens=lens,
+        years=years,
+        county_baselines=county_baselines,
+        projection_points=projection_points,
+    )
 
 # ── Housing stock constants (v3.3) ────────────────────────────────────────────
 # Construction workforce per MW by asset type — for boomtown housing-pressure model.
