@@ -593,14 +593,12 @@ function seedHousingAssets(
   return assets;
 }
 
-// ── v4.3 (F1): Anchor Facility Commodity Lookup ─────────────────────────────
-// DERIVED FIELD — inferred from facility name, NOT sourced from the geojson
-// (mw_anchor_facilities.geojson has no 'commodity' field). If NB 22 is ever
-// regenerated with different mine names or new mines added, this table must
-// be reviewed by a human.
+// ── v4.3 (F1): Anchor Facility Commodity Compatibility Fallback ─────────────
+// Compatibility fallback for older anchor GeoJSON files that predate the
+// MSHA-derived properties.commodity field. New data is authoritative.
 // Key: MSHA mine ID (anchor_id in geojson). Value: commodity string.
 // See Python ANCHOR_MINE_COMMODITY for full citation block.
-const ANCHOR_MINE_COMMODITY: Record<string, string> = {
+const ANCHOR_MINE_COMMODITY_FALLBACK: Record<string, string> = {
   // Coal: Colorado (6)
   msha_0502838: 'coal', msha_0502962: 'coal', msha_0503505: 'coal',
   msha_0503672: 'coal', msha_0503836: 'coal', msha_0504864: 'coal',
@@ -700,6 +698,7 @@ interface AnchorFeatureProps {
   source?: string;
   display_sector?: string;
   confidence?: string;
+  commodity?: string | null;
 }
 
 /**
@@ -751,7 +750,9 @@ function seedAnchorFacilities(
     // New asset classes: mine, industrial_load, commercial_anchor_load
     const capacityOrLoad = props.capacity_or_load_mw ?? null;
     const employment = props.employment_est ?? null;
-    const commodity = ac === 'mine' ? (ANCHOR_MINE_COMMODITY[anchorId] ?? null) : null;
+    const commodity = ac === 'mine'
+      ? (props.commodity ?? ANCHOR_MINE_COMMODITY_FALLBACK[anchorId] ?? null)
+      : null;
 
     newAssets.push({
       asset_id: `anchor_${geoid}_${slugify(name)}`,

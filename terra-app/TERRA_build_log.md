@@ -2741,3 +2741,41 @@ Post-C2: **319 TS / 127 Python = 446 total**
 - **Housing exposure tags**: `housing_stock` assets get `exposure_tags: null` (no class default in v1 JSON). C4 should assign county-level tags from NRI HWAV/flood fields for housing vulnerability modeling.
 - **`asset_exposure_tags.json` in src/data/**: copied for TS test access; same known-debt note as anchor geojson — should be managed via build-time pipeline.
 - **node_modules symlink in worktree**: `terra-app/node_modules` → main worktree `node_modules`; git-ignored, not committed.
+
+---
+
+## Wave 4 close report — F2 real-browser frame gate (2026-07-15)
+
+**CARRIED FORWARD.** Headless Chrome `150.0.7871.116` launches and its DevTools
+connection to a local Vite `8.0.16` server was confirmed, but the F2 Free Play
+interaction could not render. Vite fails at browser transform with:
+
+```
+Failed to resolve import "./ui/tokens.css" from "src/main.tsx". Does the file exist?
+```
+
+The current worktree reports that tracked stylesheet as deleted. Consequently,
+the configured `1440x900` headless window never reached the 404-feature anchor
+fixture or map canvas: rAF sample size, dropped frames, and p95 are all
+unmeasured, and the 16 ms gate is not closed. No `perf_hooks` proxy was used.
+After the stylesheet is restored, rerun the local Vite + headless-Chrome rAF
+drag capture and record a nonzero sample, dropped-frame count, and p95.
+
+### Superseding disposition — CLOSED: FAIL (measured 2026-07-15)
+
+The stylesheet was available on the resumed attempt. Three independent real
+headless-Chrome captures reached Free Play and the MapLibre/deck.gl canvas,
+then recorded 179 consecutive rAF intervals during a 180-event canvas drag.
+
+| Run | Sample size | >16 ms intervals | p95 | Max |
+| --- | ---: | ---: | ---: | ---: |
+| 1 | 179 | 179 | 67.2 ms | 533.0 ms |
+| 2 | 179 | 179 | 66.7 ms | 333.3 ms |
+| 3 | 179 | 179 | 66.7 ms | 299.9 ms |
+
+The 16 ms F2 frame budget therefore fails reproducibly. Environment: commit
+`d5ea940`, Vite `8.0.16`, Node `v24.14.1`, Google Chrome `150.0.7871.116`,
+macOS `26.5.2` arm64; `--headless=new --enable-webgl --ignore-gpu-blocklist
+--use-angle=swiftshader`; configured window `1440x900`, CSS viewport
+`1440x813` at DPR 1, canvas `1180x705`; default initialized Free Play F2
+anchor-layer state. No `perf_hooks` proxy was used.

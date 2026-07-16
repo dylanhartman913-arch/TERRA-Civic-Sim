@@ -77,8 +77,10 @@ describe('F2 Tier 2 registry click-through lookup', () => {
     const registryAsset = state.asset_registry.find(asset => asset.anchor_id === tronaAnchor?.properties.anchor_id);
 
     expect(tronaAnchor?.properties.tier).toBe(2);
+    expect(tronaAnchor?.properties.commodity).toBe('trona');
     expect(registryAsset?.name).toBe('WE Soda @ WESTVACO');
     expect(registryAsset?.asset_class).toBe('mine');
+    expect(registryAsset?.commodity).toBe('trona');
     expect(registryAsset?.confidence).toBe('high');
   });
 });
