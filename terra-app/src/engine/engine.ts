@@ -104,7 +104,6 @@ import type {
   ProductionAsset,
   AnyExistingAsset,
   AssetInstance,
-  ExposureTag,
   ExposureTagSet,
 } from './types.js';
 import { EMPTY_CLIMATE_CONTEXT } from './types.js';
