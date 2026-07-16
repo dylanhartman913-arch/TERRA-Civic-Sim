@@ -939,6 +939,61 @@ export interface ClimateContext {
   readonly tables: Readonly<Record<string, Readonly<Record<string, Readonly<Record<string, number>>>>>>;
 }
 
+// ── Climate Hazard Events (C4-i) ───────────────────────────────────────────
+
+export type ClimateHazardKind =
+  | 'heat_wave'
+  | 'wildfire_smoke_proximity'
+  | 'drought_stress'
+  | 'severe_storm';
+
+/** C2 county hazard frequencies and risk scores consumed by the event sampler. */
+export interface ClimateHazardBaseline {
+  geoid: string;
+  heat_wave_frequency: number;
+  heat_wave_risk_score: number;
+  wildfire_frequency: number;
+  wildfire_risk_score: number;
+  drought_frequency: number;
+  drought_risk_score: number;
+  severe_storm_frequency: number;
+  severe_storm_risk_score: number;
+}
+
+/** C1 projection row. Only percentile="p50" participates in C4-i physics. */
+export interface ClimateProjectionPoint {
+  geoid: string;
+  lens: ClimateLens;
+  metric: string;
+  epoch: number;
+  percentile: string;
+  value: number;
+}
+
+/** Fixed-point fields make the event-stream byte contract cross-runtime exact. */
+export interface ClimateHazardEvent {
+  event_id: string;
+  year: number;
+  geoid: string;
+  hazard_kind: ClimateHazardKind;
+  severity_milli: number;
+  annual_probability_ppm: number;
+  baseline_frequency_micros: number;
+  projection_factor_ppm: number;
+  lens: Exclude<ClimateLens, 'historical'>;
+  seed: number;
+  /** C4-i is inert: consequence coupling remains exactly zero. */
+  consequence_multiplier_ppm: 0;
+}
+
+export interface ClimateHazardSamplingInput {
+  seed: number;
+  lens: ClimateLens;
+  years: readonly number[];
+  countyBaselines: readonly ClimateHazardBaseline[];
+  projectionPoints: readonly ClimateProjectionPoint[];
+}
+
 /** Sentinel: no climate modulation. All coupling hooks are no-ops with this context. */
 export const EMPTY_CLIMATE_CONTEXT: ClimateContext = Object.freeze({
   lens: 'historical' as const,

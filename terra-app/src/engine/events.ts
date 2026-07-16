@@ -4,10 +4,252 @@
  */
 
 import type {
+  ClimateHazardBaseline,
+  ClimateHazardEvent,
+  ClimateHazardKind,
+  ClimateHazardSamplingInput,
+  ClimateProjectionPoint,
   EngineState,
   GameEvent,
   GameEventCategory,
 } from './types.js';
+
+// ── C4-i Climate Hazard Event Stream ───────────────────────────────────────
+
+const PPM = 1_000_000;
+
+const CLIMATE_HAZARD_SPECS: ReadonlyArray<{
+  kind: ClimateHazardKind;
+  frequencyKey: keyof ClimateHazardBaseline;
+  riskKey: keyof ClimateHazardBaseline;
+  metric: string;
+}> = [
+  {
+    kind: 'heat_wave',
+    frequencyKey: 'heat_wave_frequency',
+    riskKey: 'heat_wave_risk_score',
+    metric: 'days_gt_95f',
+  },
+  {
+    kind: 'wildfire_smoke_proximity',
+    frequencyKey: 'wildfire_frequency',
+    riskKey: 'wildfire_risk_score',
+    metric: 'high_fire_danger_days',
+  },
+  {
+    kind: 'drought_stress',
+    frequencyKey: 'drought_frequency',
+    riskKey: 'drought_risk_score',
+    metric: 'max_consecutive_dry_days',
+  },
+  {
+    kind: 'severe_storm',
+    frequencyKey: 'severe_storm_frequency',
+    riskKey: 'severe_storm_risk_score',
+    metric: 'precip_99p_daily_in',
+  },
+];
+
+const CLIMATE_HAZARD_ORDER = new Map(
+  CLIMATE_HAZARD_SPECS.map((spec, index) => [spec.kind, index]),
+);
+
+const CLIMATE_EVENT_FIELDS: ReadonlyArray<keyof ClimateHazardEvent> = [
+  'event_id',
+  'year',
+  'geoid',
+  'hazard_kind',
+  'severity_milli',
+  'annual_probability_ppm',
+  'baseline_frequency_micros',
+  'projection_factor_ppm',
+  'lens',
+  'seed',
+  'consequence_multiplier_ppm',
+];
+
+function roundHalfUp(value: number): number {
+  return Math.floor(value + 0.5);
+}
+
+function roundRatio(numerator: number, denominator: number): number {
+  return Math.floor((numerator + Math.floor(denominator / 2)) / denominator);
+}
+
+function fnv1a32(value: string): number {
+  let result = 0x811c9dc5;
+  for (const byte of new TextEncoder().encode(value)) {
+    result ^= byte;
+    result = Math.imul(result, 0x01000193) >>> 0;
+  }
+  return result >>> 0;
+}
+
+type ProjectionIndex = Map<string, Array<[number, number]>>;
+
+function interpolate(points: Array<[number, number]>, year: number): number {
+  if (year <= points[0][0]) return points[0][1];
+  if (year >= points[points.length - 1][0]) return points[points.length - 1][1];
+  for (let index = 1; index < points.length; index++) {
+    const [upperYear, upperValue] = points[index];
+    if (year <= upperYear) {
+      const [lowerYear, lowerValue] = points[index - 1];
+      const weight = (year - lowerYear) / (upperYear - lowerYear);
+      return lowerValue + (upperValue - lowerValue) * weight;
+    }
+  }
+  throw new Error('projection interpolation did not find an interval');
+}
+
+function buildProjectionIndex(
+  points: readonly ClimateProjectionPoint[],
+  lens: string,
+): ProjectionIndex {
+  const index: ProjectionIndex = new Map();
+  const requiredMetrics = new Set(CLIMATE_HAZARD_SPECS.map((spec) => spec.metric));
+  for (const point of points) {
+    if (point.lens !== lens || point.percentile !== 'p50') continue;
+    if (!requiredMetrics.has(point.metric)) continue;
+    if (!Number.isInteger(point.epoch) || !Number.isFinite(point.value)) {
+      throw new Error('projection epoch/value must be finite numbers');
+    }
+    const geoid = point.geoid.padStart(5, '0');
+    const key = `${geoid}|${point.metric}`;
+    const metricPoints = index.get(key) ?? [];
+    metricPoints.push([point.epoch, point.value]);
+    index.set(key, metricPoints);
+  }
+  for (const metricPoints of index.values()) {
+    metricPoints.sort((left, right) => left[0] - right[0]);
+  }
+  return index;
+}
+
+function projectionFactorPpm(
+  index: ProjectionIndex,
+  geoid: string,
+  metric: string,
+  year: number,
+): number {
+  const points = index.get(`${geoid}|${metric}`);
+  if (!points) return PPM;
+  const reference = interpolate(points, 2030);
+  if (reference <= 0) return PPM;
+  const factor = interpolate(points, year) / reference;
+  return Math.min(4 * PPM, Math.max(PPM / 4, roundHalfUp(factor * PPM)));
+}
+
+function validateBaseline(baseline: ClimateHazardBaseline): string {
+  const geoid = baseline.geoid.padStart(5, '0');
+  if (!/^\d{5}$/.test(geoid)) throw new Error(`invalid county geoid ${baseline.geoid}`);
+  for (const spec of CLIMATE_HAZARD_SPECS) {
+    const frequency = baseline[spec.frequencyKey];
+    const risk = baseline[spec.riskKey];
+    if (typeof frequency !== 'number' || !Number.isFinite(frequency) || frequency < 0) {
+      throw new Error(`${String(spec.frequencyKey)} must be finite and non-negative`);
+    }
+    if (typeof risk !== 'number' || !Number.isFinite(risk) || risk < 0) {
+      throw new Error(`${String(spec.riskKey)} must be finite and non-negative`);
+    }
+  }
+  return geoid;
+}
+
+function compareClimateEvents(
+  left: ClimateHazardEvent,
+  right: ClimateHazardEvent,
+): number {
+  if (left.lens !== right.lens) return left.lens < right.lens ? -1 : 1;
+  if (left.seed !== right.seed) return left.seed - right.seed;
+  if (left.year !== right.year) return left.year - right.year;
+  if (left.geoid !== right.geoid) return left.geoid < right.geoid ? -1 : 1;
+  return (
+    (CLIMATE_HAZARD_ORDER.get(left.hazard_kind) ?? -1) -
+    (CLIMATE_HAZARD_ORDER.get(right.hazard_kind) ?? -1)
+  );
+}
+
+export function sampleClimateHazardEvents(
+  input: ClimateHazardSamplingInput,
+): ClimateHazardEvent[] {
+  if (!['historical', 'ssp245', 'ssp370'].includes(input.lens)) {
+    throw new Error(`invalid climate lens ${input.lens}`);
+  }
+  if (!Number.isInteger(input.seed)) throw new Error('seed must be an integer');
+  if (input.lens === 'historical') return [];
+
+  const years = [...new Set(input.years)].sort((left, right) => left - right);
+  if (years.length === 0 || years.some((year) => !Number.isInteger(year))) {
+    throw new Error('years must contain integers');
+  }
+  const baselines: Array<[string, ClimateHazardBaseline]> = [];
+  const seenGeoids = new Set<string>();
+  for (const baseline of input.countyBaselines) {
+    const geoid = validateBaseline(baseline);
+    if (seenGeoids.has(geoid)) throw new Error(`duplicate county baseline for ${geoid}`);
+    seenGeoids.add(geoid);
+    baselines.push([geoid, baseline]);
+  }
+  baselines.sort((left, right) => left[0].localeCompare(right[0]));
+  const projectionIndex = buildProjectionIndex(input.projectionPoints, input.lens);
+  const events: ClimateHazardEvent[] = [];
+
+  for (const year of years) {
+    for (const [geoid, baseline] of baselines) {
+      for (const spec of CLIMATE_HAZARD_SPECS) {
+        const factorPpm = projectionFactorPpm(
+          projectionIndex,
+          geoid,
+          spec.metric,
+          year,
+        );
+        const baselineFrequencyMicros = roundHalfUp(
+          (baseline[spec.frequencyKey] as number) * PPM,
+        );
+        const scaledFrequencyMicros = roundRatio(
+          baselineFrequencyMicros * factorPpm,
+          PPM,
+        );
+        const annualProbabilityPpm = roundRatio(
+          scaledFrequencyMicros * PPM,
+          PPM + scaledFrequencyMicros,
+        );
+        const eventKey = `${input.seed}|${input.lens}|${year}|${geoid}|${spec.kind}`;
+        if (fnv1a32(`${eventKey}|occurrence`) % PPM >= annualProbabilityPpm) {
+          continue;
+        }
+        const riskMilli = roundHalfUp((baseline[spec.riskKey] as number) * 1000);
+        const baselineSeverityMilli = 500 + roundRatio(riskMilli, 100);
+        const severityMilli =
+          roundRatio(baselineSeverityMilli * factorPpm, PPM) +
+          (fnv1a32(`${eventKey}|severity`) % 501);
+        events.push({
+          event_id: `c4i:${input.lens}:${input.seed}:${year}:${geoid}:${spec.kind}`,
+          year,
+          geoid,
+          hazard_kind: spec.kind,
+          severity_milli: severityMilli,
+          annual_probability_ppm: annualProbabilityPpm,
+          baseline_frequency_micros: baselineFrequencyMicros,
+          projection_factor_ppm: factorPpm,
+          lens: input.lens,
+          seed: input.seed,
+          consequence_multiplier_ppm: 0,
+        });
+      }
+    }
+  }
+  events.sort(compareClimateEvents);
+  return events;
+}
+
+export function canonicalClimateEventStream(events: readonly ClimateHazardEvent[]): string {
+  const ordered = [...events].sort(compareClimateEvents);
+  const normalized = ordered.map((event) =>
+    Object.fromEntries(CLIMATE_EVENT_FIELDS.map((field) => [field, event[field]])),
+  );
+  return `${JSON.stringify(normalized)}\n`;
+}
 
 // ── Seeded RNG (mulberry32) ────────────────────────────────────────────────
 

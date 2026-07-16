@@ -18,6 +18,7 @@ import {
   computeHeatDerate,
   THERMAL_DERATE_FUELS,
 } from './climate_couplings.js';
+import { sampleClimateHazardEvents } from './events.js';
 
 // ── Pure-JS MD5 (RFC 1321) — browser + Node compatible ─────────────────────
 // Produces byte-identical output to Node's createHash('md5').update(s).digest('hex').
@@ -104,8 +105,9 @@ import type {
   ProductionAsset,
   AnyExistingAsset,
   AssetInstance,
-  ExposureTag,
   ExposureTagSet,
+  ClimateHazardEvent,
+  ClimateHazardSamplingInput,
 } from './types.js';
 import { EMPTY_CLIMATE_CONTEXT } from './types.js';
 
@@ -114,6 +116,16 @@ import { EMPTY_CLIMATE_CONTEXT } from './types.js';
 const FIRM_FUEL_TYPES = new Set(['nuclear', 'gas', 'coal', 'hydro', 'geothermal', 'storage']);
 
 const PRB_COAL_TONS_PER_MW_YR = 3743.4; // EIA-923 heat-rate proxy (W2 severance source)
+
+/** C4-i engine boundary: pure event sampling, with no consequence coupling. */
+export function sampleHazardEvents(
+  state: EngineState,
+  input: ClimateHazardSamplingInput,
+): ClimateHazardEvent[] {
+  // Deliberately read no state fields: action history and decisions are exogenous.
+  void state;
+  return sampleClimateHazardEvents(input);
+}
 
 // EIA-7A / MSHA 2024 county coal production (X2 production_asset seeds)
 // Source: EIA Annual Coal Report Table 2 (2024); MSHA Form 7000-2; released Nov 2025
