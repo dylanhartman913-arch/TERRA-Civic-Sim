@@ -14,6 +14,7 @@ import { SiteMarkers } from './SiteMarkers.js';
 import { QueuedBuildMarkers } from './QueuedBuildMarkers.js';
 import { AnchorFacilityLayer } from './AnchorFacilityLayer.js';
 import { MarkerLegend } from './MarkerLegend.js';
+import { HazardChoroplethLayer } from './HazardChoroplethLayer.js';
 
 export function MapView() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -27,6 +28,7 @@ export function MapView() {
   const layers = useTerraStore(s => s.layers);
   const placementMode = useTerraStore(s => s.placementMode);
   const activeMetric = useTerraStore(s => s.activeMetric);
+  const climateLens = useTerraStore(s => s.climateLens);
   const countyCards = engineState.county_cards as Record<string, { county_name?: string; state?: string }>;
   const campaignFlyTarget = useTerraStore(s => s.campaignFlyTarget);
 
@@ -84,6 +86,8 @@ export function MapView() {
             activeMetric={activeMetric}
             onTooltip={setTooltipState}
           />
+          {/* eslint-disable-next-line react-hooks/refs -- sibling map layers receive the map after mapLoaded guards its initialization. */}
+          <HazardChoroplethLayer map={mapRef.current} visible={layers.climateHazards} lens={climateLens} />
           {placementMode && (
             <PlacementOverlay map={mapRef.current} />
           )}

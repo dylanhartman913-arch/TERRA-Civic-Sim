@@ -9,6 +9,7 @@ import type {
   ScenarioProfile,
   QuestCondition,
   ScenarioFile,
+  ClimateLens,
   SaveSlotMeta,
   Trajectory,
   MaterialLedgerSummary,
@@ -106,6 +107,7 @@ export interface LayerVisibility {
   yieldBadges: boolean;
   sites: boolean;
   anchors: boolean;
+  climateHazards: boolean;
 }
 
 // ── Era boundaries ─────────────────────────────────────────────────────────
@@ -431,6 +433,7 @@ interface TerraStore {
   activeMetric: ActiveMetric;
   placementMode: PlacementMode | null;
   layers: LayerVisibility;
+  climateLens: ClimateLens;
 
   // Undo / Redo
   redoStack: ActionLogEntry[];
@@ -472,6 +475,7 @@ interface TerraStore {
   setSelectedGeoid: (geoid: string | null) => void;
   setHoveredGeoid: (geoid: string | null) => void;
   setActiveMetric: (metric: ActiveMetric) => void;
+  setClimateLens: (lens: ClimateLens) => void;
   enterPlacementMode: (actionId: string) => void;
   exitPlacementMode: () => void;
   confirmPlacement: (geoid: string, magnitude: number) => void;
@@ -615,7 +619,9 @@ export const useTerraStore = create<TerraStore>((set, get) => ({
     yieldBadges: false,
     sites: true,
     anchors: true,
+    climateHazards: false,
   },
+  climateLens: 'historical',
 
   // Undo / Redo
   redoStack: [],
@@ -846,6 +852,7 @@ export const useTerraStore = create<TerraStore>((set, get) => ({
   setSelectedGeoid: (geoid) => set({ selectedGeoid: geoid }),
   setHoveredGeoid: (geoid) => set({ hoveredGeoid: geoid }),
   setActiveMetric: (metric) => set({ activeMetric: metric }),
+  setClimateLens: (climateLens) => set({ climateLens }),
 
   enterPlacementMode: (actionId) => {
     const { engineState } = get();
@@ -934,8 +941,8 @@ export const useTerraStore = create<TerraStore>((set, get) => ({
   },
 
   saveToSlot: (slot_id, name) => {
-    const { engineState, actionLog, eventHistory, activeScenario, gameSeed, sessionMeta, annotations } = get();
-    const digest = computeReplayDigest(engineState);
+    const { engineState, actionLog, eventHistory, activeScenario, gameSeed, sessionMeta, annotations, climateLens } = get();
+    const digest = computeReplayDigest(engineState, climateLens);
     const file: ScenarioFile = {
       schema_version: '3.1',
       terra_version: '1.0',
@@ -948,7 +955,7 @@ export const useTerraStore = create<TerraStore>((set, get) => ({
       eventHistory,
       year_reached: engineState.year,
       replay_digest: digest,
-      climate_lens: 'historical',
+      climate_lens: climateLens,
       ...(sessionMeta ? { session_meta: sessionMeta, annotations } : {}),
     };
     persistenceSaveToSlot(browserStorage, slot_id, file);
@@ -988,6 +995,7 @@ export const useTerraStore = create<TerraStore>((set, get) => ({
       canUndo: file.actionLog.length > 0,
       canRedo: false,
       pendingAutoPause: null,
+      climateLens: file.climate_lens ?? 'historical',
     });
   },
 
@@ -997,8 +1005,8 @@ export const useTerraStore = create<TerraStore>((set, get) => ({
   },
 
   exportScenario: () => {
-    const { engineState, actionLog, eventHistory, activeScenario, gameSeed, sessionMeta, annotations } = get();
-    const digest = computeReplayDigest(engineState);
+    const { engineState, actionLog, eventHistory, activeScenario, gameSeed, sessionMeta, annotations, climateLens } = get();
+    const digest = computeReplayDigest(engineState, climateLens);
     const file: ScenarioFile = {
       schema_version: '3.1',
       terra_version: '1.0',
@@ -1011,7 +1019,7 @@ export const useTerraStore = create<TerraStore>((set, get) => ({
       eventHistory,
       year_reached: engineState.year,
       replay_digest: digest,
-      climate_lens: 'historical',
+      climate_lens: climateLens,
       ...(sessionMeta ? { session_meta: sessionMeta, annotations } : {}),
     };
     const json = exportToJson(file);

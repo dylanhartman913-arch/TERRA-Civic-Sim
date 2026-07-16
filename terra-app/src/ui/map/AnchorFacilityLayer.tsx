@@ -13,6 +13,7 @@ import {
   resolveAnchorColor,
   visibleAnchorsForZoom,
 } from './anchorFacilities.js';
+import { ExposureBadges } from './ExposureBadges.js';
 
 interface Props {
   map: maplibregl.Map;
@@ -234,6 +235,7 @@ function AnchorCard({
               </>
             )}
           </div>
+          <ExposureBadges asset={asset} />
         </div>
       )}
     </div>

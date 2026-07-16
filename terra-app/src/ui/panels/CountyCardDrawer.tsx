@@ -9,6 +9,7 @@ import {
 import { CountyYields } from './CountyYields.js';
 import { ChartExpander } from './ChartExpander.js';
 import { anchorById, formatSectorName } from '../map/anchorFacilities.js';
+import { ClimatePanel } from './ClimatePanel.js';
 
 // ── Formatting helpers ────────────────────────────────────────────────────
 
@@ -603,6 +604,7 @@ export function CountyCardDrawer() {
   const engineState = useTerraStore(s => s.engineState) as EngineState;
   // F3: read actionLog to surface site_coords on queued-asset rows
   const actionLog = useTerraStore(s => s.actionLog);
+  const climateLens = useTerraStore(s => s.climateLens);
 
   const [reductionModal, setReductionModal] = useState<ReductionModalState | null>(null);
   const [retirementModal, setRetirementModal] = useState<RetirementModalState | null>(null);
@@ -704,6 +706,11 @@ export function CountyCardDrawer() {
 
         {/* Chart expand section — renders when a yield chip is tapped through */}
         <ChartExpander geoid={selectedGeoid} />
+
+        <div style={sectionStyle}>
+          <div style={labelStyle}>Climate trajectory · {climateLens}</div>
+          <ClimatePanel geoid={selectedGeoid} lens={climateLens} />
+        </div>
 
         {/* Section 1: Socioeconomic Baseline */}
         <div style={sectionStyle}>
