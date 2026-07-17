@@ -28,7 +28,6 @@ import type {
   FiscalBaseline,
   FiscalCoefficients,
   PopulationProjection,
-  PopulationConfig,
   EngineState,
   ScenarioFile,
 } from '../../src/engine/types.js';
@@ -73,6 +72,7 @@ function loadData() {
   try {
     const raw = JSON.parse(readFileSync(resolve(DATA_DIR, 'baseline_retirements.json'), 'utf-8'));
     const { _meta, ...rest } = raw;
+    void _meta;
     retirements = rest;
   } catch { /* optional */ }
 

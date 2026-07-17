@@ -126,7 +126,6 @@ describe('Golden J — history structure', () => {
 
   it('J-S6: main digest (state_digest) does not cover history', () => {
     // Advance a copy one more year and verify history doesn't affect digest
-    const s1 = state;
     // The digest function never reads history — just confirm the field isn't in the
     // existing digest helpers by checking state structure
     expect(state.history).toBeDefined();

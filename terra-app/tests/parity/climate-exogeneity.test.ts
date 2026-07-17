@@ -108,7 +108,7 @@ describe('C0 — Climate exogeneity', () => {
     state = queueAction(state, 'solar_utility', '56005', 300, 2026, undefined, syntheticCtx);
     state = advanceYear(state, syntheticCtx);
     [state] = applyAction(state, 'prairie_restoration', '56005', 1, false, syntheticCtx);
-    state = advanceYear(state, syntheticCtx);
+    advanceYear(state, syntheticCtx);
 
     // Tables must be bit-identical after all operations
     expect(JSON.stringify(syntheticCtx.tables)).toBe(tablesSnapshot);

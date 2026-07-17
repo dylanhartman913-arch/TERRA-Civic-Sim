@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect -- preserve existing tooltip synchronization. */
 import { useState, useEffect } from 'react';
 
 const TOOLTIPS = [

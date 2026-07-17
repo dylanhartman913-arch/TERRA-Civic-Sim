@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/refs, react-hooks/set-state-in-effect -- preserve existing map event lifecycle. */
 import { useEffect, useRef, useState, useCallback } from 'react';
 import type maplibregl from 'maplibre-gl';
 import { useTerraStore } from '../../state/store.js';
@@ -288,7 +289,7 @@ export function PlacementOverlay({ map }: PlacementOverlayProps) {
       map.off('mousemove', handleMouseMove);
       map.off('mouseout', handleMouseLeave);
     };
-  }, [map, placementMode, setPlacementPin, setGhostCursorCoords]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [map, placementMode, setPlacementPin, setGhostCursorCoords]);
 
   // ── Nudge helper ───────────────────────────────────────────────────────────
 
@@ -426,7 +427,7 @@ export function PlacementOverlay({ map }: PlacementOverlayProps) {
       map.off('click', ELIGIBLE_FILL, handleCountyClick);
       map.off('mousemove', ELIGIBLE_FILL, handleEligibleHover);
     };
-  }, [map, placementMode, showNudge, setPlacementPin]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [map, placementMode, showNudge, setPlacementPin]);
 
   // ── Derive helpers ─────────────────────────────────────────────────────────
 

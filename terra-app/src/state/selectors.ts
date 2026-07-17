@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps -- selectors intentionally memoize against stable store slices. */
 /**
  * Memoized selectors for chart data.
  * All values sourced from engine functions — zero UI-side arithmetic.
@@ -166,7 +167,7 @@ export function useDeltaProjection(
       setResult({ withAction, baseline });
     }, 150);
     return () => { if (timerRef.current) clearTimeout(timerRef.current); };
-  }, [engineState.year, engineState.timestamp, actionId, geoid, magnitude, indicatorId, nYears, scale]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [engineState.year, engineState.timestamp, actionId, geoid, magnitude, indicatorId, nYears, scale]);
 
   return result;
 }

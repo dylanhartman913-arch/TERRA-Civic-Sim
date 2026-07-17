@@ -71,6 +71,7 @@ export function loadInitialStateWithRetirements(): EngineState {
   const retirements = JSON.parse(readFileSync(resolve(DATA_DIR, 'baseline_retirements.json'), 'utf-8'));
   // Strip _meta key — only geoid keys pass through
   const { _meta, ...retirementData } = retirements;
+  void _meta;
 
   // v3.1 lifecycle coefficients
   let lifecycleCoefficients: Record<string, unknown> | undefined;
@@ -103,6 +104,7 @@ export function loadInitialStateWithAnchorsAndTags(): EngineState {
   } catch { /* optional */ }
   const retirements = JSON.parse(readFileSync(resolve(DATA_DIR, 'baseline_retirements.json'), 'utf-8'));
   const { _meta, ...retirementData } = retirements;
+  void _meta;
   let lifecycleCoefficients: Record<string, unknown> | undefined;
   try {
     lifecycleCoefficients = JSON.parse(readFileSync(resolve(DATA_DIR, 'lifecycle_coefficients.json'), 'utf-8'));

@@ -190,7 +190,7 @@ export function sampleClimateHazardEvents(
     seenGeoids.add(geoid);
     baselines.push([geoid, baseline]);
   }
-  baselines.sort((left, right) => left[0].localeCompare(right[0]));
+  baselines.sort((left, right) => left[0] < right[0] ? -1 : left[0] > right[0] ? 1 : 0);
   const projectionIndex = buildProjectionIndex(input.projectionPoints, input.lens);
   const events: ClimateHazardEvent[] = [];
 

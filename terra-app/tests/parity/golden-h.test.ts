@@ -228,7 +228,7 @@ describe('Golden H — Player B (retrofit + SMR) 2025→2034', () => {
   });
 
   it('(8o) housing_retrofit_affordable validates convertible_units cap', () => {
-    let state = loadInitialStateWithRetirements();
+    const state = loadInitialStateWithRetirements();
     const h = findHousing(state, LINCOLN);
     const available = h.housing_convertible_units!;
     // Requesting more than available should throw
