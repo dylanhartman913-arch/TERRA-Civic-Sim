@@ -3030,3 +3030,64 @@ Post-merge Python full suite (provisioned worktree): 168 passed
 **T6 constraint:** T6 (C5b) must look up the matching baseline via `baseline_key` (`[geoid, metric, percentile]`) on each delta record — not iterate `metrics` and assume county completeness. If a `baseline_key` lookup returns no match, that county/metric combination has no baseline and must be handled as absent, not defaulted.
 
 **Resolution path:** T6 implementation review must assert join-by-`baseline_key` pattern and reject any iteration of the `metrics` array as a county-complete source of truth. Expanding SNOTEL geographic coverage is a future source-data task outside this wave.
+
+---
+
+## Wave 5 — T5: C4-ii Consequence Coupling + Adaptation + Golden M (t5-c4ii)
+
+*Merged to main at `3a273c3` — 2026-07-16. Source: `build_log/wave5/t5-c4ii.md`.*
+
+### Scope
+
+Engine v4.6. Consequence coupling (`apply_hazard_event_consequences` / `applyHazardEventConsequences`) as an explicit delta step after pure sampling. Heat-wave consequences delegate to existing `inject_disturbance` / `injectDisturbance` handler core only. Wildfire-smoke, drought-stress, and severe-storm events return `skipped_no_existing_handler` records — no new damage/outage mechanics added. `heat_resilience_upgrade` action added to both action-library copies (schema 3.2, action count 50); only `climate_vulnerability_ppm` on tagged operating assets is writable. Golden M freezes four contracts across three lenses; A–L historical matrix reproduced exactly.
+
+### Classified implementation record (summary)
+
+- **VERIFIED:** raw C4-i cross-runtime event stream byte-identical (14,991 events, SHA-256 `6248f26a...`).
+- **VERIFIED:** unsupported events leave all four digest contracts unchanged.
+- **VERIFIED:** poisoned adaptation config containing `climate_context` throws in both runtimes.
+- **VERIFIED:** Golden M — historical emits zero events, matches pre-C4 control on all four contracts; SSP2-4.5 and SSP3-7.0 freeze distinct digests; both runtimes match frozen M values.
+- **VERIFIED:** complete A–L / G′ / J′ 224-cell matrix reproduced in both runtimes; no A–L fixture modified.
+- **VERIFIED:** `permitted_amendments = 4`, `amendments_used = 4`.
+- **INFERRED:** `low=0.25 / med=0.60 / high=1.00` vulnerability multipliers and 50% heat-vulnerability reduction are transparent scenario parameters, not measured loss functions.
+- **IMPLEMENTED / FLAGGED:** adaptation price `0` for all vintages, `confidence: flagged`, `cost_source` begins `FLAGGED —`.
+- **DEFERRED:** wildfire damage cost, drought outage, severe-storm outage — no qualifying current handler; each logged as skipped.
+
+### Acceptance tests (R14)
+
+All six ACs (AC1–AC6) verified discriminating in both Python and TypeScript.
+
+### Verification
+
+```text
+pytest -q (w5-engine provisioned worktree): 180 passed in 131.53s
+
+npm test -- --run (post-T3+T4+T5, energy-map provisioned):
+  Test Files  33 passed (33)
+  Tests       364 passed (364)
+
+npm run parity (post-T3+T4+T5, energy-map):
+  Test Files  29 passed (29)
+  Tests       332 passed (332)
+
+npm run lint: exit 0
+npm run build: exit 0 (Vite large-chunk advisory only)
+```
+
+Note: in unprovision energy-map checkout, 9 tests fail across 2 files (c4i-events + golden-m) — all due to missing gitignored CSV (`nri_wrc_county_hazard_summary.csv`). Pre-existing pattern; zero new regressions.
+
+### Gate verdict
+
+**PASS WITH FOLLOW-UP** — commits `ad271b3` + `0624549` on `w5-engine`. Merged to main at `3a273c3`.
+
+### Open follow-up — T5-FU-1: performance benchmark not a committed gate
+
+**Item:** The 14.228 ms sampling + coupling median (10-run max 14.452 ms on 314 year-2050 SSP3-7.0 events) is a one-time observation recorded in the build log. It is not committed as a regression gate. No automated benchmark is wired; a future run could produce a different result without any test failing.
+
+**Constraint:** Before T6 or any subsequent engine touch claims a performance pass on the consequence path, the measurement must be reproduced in the review environment and committed as a gate, not cited from this log entry. The current entry is evidence of a point-in-time measurement only.
+
+### Open follow-up — T5-FU-2: TS test-count reconciliation
+
+**Item:** The builder's log records `npm test -- --run` = 32 files, 356 tests and `npm run parity` = 29 files, 332 tests, run from the w5-engine worktree (branched from main @ `f50b3ec`, post-T2, pre-T3). Post-T3+T4+T5 main shows `npm test -- --run` = 33 files, 364 tests and `npm run parity` = 29 files, 332 tests.
+
+**Reconciliation:** The delta of +1 file / +8 tests in the full suite is exactly T3's `c5a-climate-ui.test.ts` (8 tests), which was not on the builder's baseline. The parity count (332) matches exactly. There is no unexplained discrepancy — the difference is a baseline mismatch, not missing or phantom tests. This entry documents the reconciliation so it is not left ambiguous at next touch.
