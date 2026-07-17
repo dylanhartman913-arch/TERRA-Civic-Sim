@@ -2781,3 +2781,92 @@ macOS `26.5.2` arm64; `--headless=new --enable-webgl --ignore-gpu-blocklist
 --use-angle=swiftshader`; configured window `1440x900`, CSS viewport
 `1440x813` at DPR 1, canvas `1180x705`; default initialized Free Play F2
 anchor-layer state. No `perf_hooks` proxy was used.
+
+---
+
+## Wave 5 P0 — Binding Decisions (appended 2026-07-16)
+
+*Appended by: Sonnet PM, Wave 5 P0 session. These entries are append-only per R3.*
+
+---
+
+### D1 — C5a choropleth FU-1 resolved as named deferral + ticket C2.1
+
+**Date:** 2026-07-16
+**Source:** C5a gate-review verdict (CHANGES REQUIRED, FU-1 through FU-6), Wave 5 P0.
+
+FU-1 (choropleth county baseline absent) is resolved as a **named deferral**, not
+an implementation task in T2. The C5a choropleth ships to main with its "2050 fire
+days" display — the deferral is stated plainly in the LayerToggle label and in this
+build log entry. The label does not imply a computed comparison; it names the
+displayed epoch-metric directly.
+
+**C2.1** (Wave 5 T4, worktree `w5-notebook`) computes the missing county baseline +
+per-lens/epoch delta surface: Δ(scenario, epoch) = scenario_value − historical_baseline
+for every hazard metric available in `county_climate_projections.json`. Output schema
+is documented in the T4 build log for T6 (C5b) consumption.
+
+**C5b** (Wave 5 T6) wires the full hazard choropleth using the T4 baseline + delta
+surface and C4-ii's consequence/event engine output.
+
+FU-1 is **closed in T2** by documenting this named deferral. No choropleth baseline
+computation in T2 scope.
+
+---
+
+### D2 — H1.3 commodity fallback retained
+
+**Date:** 2026-07-16
+**Source:** H1 gate-review OPEN item (H1.3 criterion 4), Wave 5 P0 PM disposition.
+
+The H1.3 roadmap mandate to "retire" the `ANCHOR_MINE_COMMODITY` name/ID lookup
+after the fallback is proven unneeded is resolved as: **retain as-is**, per the
+four-point rationale recorded in the H1 gate-review and `Wave4_closeout_report.md §5`:
+
+1. Retention decision is explicitly recorded with rationale (not a silent omission).
+2. Functional behavior is correct: seeders read `properties.commodity` first; fallback
+   is secondary; test suite confirms both paths.
+3. "Retire" language is satisfied by retiring the primary lookup *role* (field is now
+   primary, dict is fallback-only) — not by unconditional dict deletion.
+4. Deleting the fallback would require weakening `test_seed_uses_compatibility_fallback_when_field_is_absent`;
+   the test is a net safety property for future geojson versions and is worth keeping.
+
+No further action in Wave 5 for this item.
+
+---
+
+### D3 — Postmortem is a Wave 5 closeout condition
+
+**Date:** 2026-07-16
+**Source:** Wave 4 roadmap Part 8 §3; Wave 5 P0.
+
+The Wave 4 + Wave 5 combined process postmortem (`postmortem` skill) **must run and
+produce an artifact before Wave 5 closes**. The wave does not close — and
+`release-readiness` does not issue a final verdict — without the postmortem artifact
+present in the build log.
+
+Wave 4 was the first wave under the Codex-primary/skill-gate model. The learning
+pass on gate friction, verdict cycle times, skill routing gaps, and the Wave 4
+worktree incident (OneDrive sync; addressed in P0 of both Wave 4 and Wave 5) is a
+required deliverable to the orchestrator before this program's final release.
+
+---
+
+### D4 — F2 frame-timing debt carried, not fixed, this wave
+
+**Date:** 2026-07-16
+**Source:** H1.4 gate disposition, `Wave4_closeout_report.md §6`, Wave 5 P0.
+
+The F2 MapLibre/deck.gl canvas frame timing (p95 ~67 ms vs. 16 ms budget) is
+**pre-existing and predates every wave**. Confirmed pre-existing on clean `d5ea940`
+(p95 66.6 ms), Wave 4 worktree (p95 66.7–67.2 ms) — < 0.6 ms variance attributable
+to H1 changes. No wave has introduced or worsened this issue.
+
+This debt is **carried, not fixed**, in Wave 5. It appears by name in the
+`release-readiness` debt triage at wave close. Remediation requires hardware GPU
+rendering or rendering-path investigation; the headless SwiftShader environment
+used for CI is insufficient for the 16 ms budget at p95.
+
+Measurement environment: commit `d5ea940`, Vite `8.0.16`, Node `v24.14.1`,
+Chrome `150.0.7871.116`, macOS `26.5.2` arm64, `--use-angle=swiftshader`,
+canvas `1180x705`. No `perf_hooks` proxy used.
