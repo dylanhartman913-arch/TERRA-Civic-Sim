@@ -1,5 +1,5 @@
 {
-  "schema_version": "3.1",
+  "schema_version": "3.2",
   "changelog": [
     {
       "version": "3.0",
@@ -25,7 +25,7 @@
     "atb_vintage": "2024",
     "atb_version": "2024 v3.0.0",
     "atb_dollar_year": "2022",
-    "action_count": 49,
+    "action_count": 50,
     "disturbance_count": 21,
     "material_types_tracked": [
       "steel",
@@ -37,8 +37,8 @@
     ],
     "ees_coefficient_source": "Session 3 mw_marginal_actions.csv \u2014 cross-ecoregion medians",
     "atb_ec_recompute_note": "Attempted ATB-grounded Ec recomputation per spec. Formula (CAPEX \u00d7 1000 MW \u00d7 2.68x ACP multiplier / Mountain West labor market) yields units of $/worker, not a dimensionless EES coefficient. GDP-denominator alternative produces values below the [0.08, 0.25] guard range due to small regional investment fraction relative to ~$1.2T regional GDP. Session 3 Ec values retained for wind and solar per the spec guard clause. ATB data used to upgrade CAPEX trajectory confidence only.",
-    "schema_version": "3.0",
-    "last_updated": "2026-06-10",
+    "schema_version": "3.2",
+    "last_updated": "2026-07-16",
     "county_pivot": true,
     "new_buckets": [
       "energy_demand"
@@ -8400,6 +8400,39 @@
         "56043",
         "56045"
       ]
+    },
+    "heat_resilience_upgrade": {
+      "action_id": "heat_resilience_upgrade",
+      "action_name": "Asset Heat Resilience Upgrade",
+      "label": "Asset Heat Resilience Upgrade",
+      "bucket": "settlement_social",
+      "category": "climate_adaptation",
+      "subcategory": "asset_resilience",
+      "tier": "social",
+      "unit": "county program",
+      "unit_label": "county program",
+      "unit_scale": 1,
+      "time_to_deploy": 0,
+      "design_life": 20,
+      "placement_scale": "county",
+      "resolves_to": "county",
+      "cost_2024": 0,
+      "cost_2035": 0,
+      "cost_2050": 0,
+      "cost_unit": "USD per county program",
+      "cost_source": "FLAGGED — site-specific hardening scope and prices are not yet available; priced at 0 until a cited engineering estimate is approved",
+      "confidence": "flagged",
+      "ees_effects": {
+        "E": 0.0,
+        "Ec": 0.0,
+        "S": 0.0
+      },
+      "climate_adaptation": {
+        "hazard_kind": "heat_wave",
+        "writable_asset_field": "climate_vulnerability_ppm",
+        "vulnerability_reduction_ppm": 500000
+      },
+      "note": "C4-ii allowlisted adaptation: halves heat vulnerability for C2-tagged operating assets in the selected county. It cannot modify climate context, projection tables, baselines, seed, lens, years, or other event-sampling inputs. Price is explicitly flagged, not inferred."
     }
   },
   "coupling_rules": {

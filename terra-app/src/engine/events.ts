@@ -17,6 +17,7 @@ import type {
 // ── C4-i Climate Hazard Event Stream ───────────────────────────────────────
 
 const PPM = 1_000_000;
+export const CONSEQUENCE_SEVERITY_CEILING_MILLI = 3_000;
 
 const CLIMATE_HAZARD_SPECS: ReadonlyArray<{
   kind: ClimateHazardKind;

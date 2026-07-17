@@ -1,0 +1,71 @@
+{
+  "description": "C4-ii resilience fork; lens enters only through sampled events and existing-handler consequences",
+  "pre_c4_historical_control": {
+    "event_count": 0,
+    "event_stream_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "existing_assets_digest_md5": "18bdf3eb5fa5acb6b8960c350a19a018",
+    "fiscal_digest_md5": "58bd2636ea88f814328ecb24aad8a75a",
+    "history_digest_md5": "0b953d708f79c794cfcda2c1b259775f",
+    "state_digest_md5": "bc09a67e4b42e94d165b86fc751f4823",
+    "status_counts": {
+      "applied_existing_handler": 0,
+      "skipped_no_existing_handler": 0,
+      "skipped_no_exposed_assets": 0
+    }
+  },
+  "results": {
+    "historical": {
+      "event_count": 0,
+      "event_stream_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "existing_assets_digest_md5": "18bdf3eb5fa5acb6b8960c350a19a018",
+      "fiscal_digest_md5": "58bd2636ea88f814328ecb24aad8a75a",
+      "history_digest_md5": "0b953d708f79c794cfcda2c1b259775f",
+      "state_digest_md5": "bc09a67e4b42e94d165b86fc751f4823",
+      "status_counts": {
+        "applied_existing_handler": 0,
+        "skipped_no_existing_handler": 0,
+        "skipped_no_exposed_assets": 0
+      }
+    },
+    "ssp245": {
+      "event_count": 1506,
+      "event_stream_sha256": "c3472a7254110b124eabdde2a9e232acdc240ecd0ef8c766564282e1cf9a850f",
+      "existing_assets_digest_md5": "18bdf3eb5fa5acb6b8960c350a19a018",
+      "fiscal_digest_md5": "58bd2636ea88f814328ecb24aad8a75a",
+      "history_digest_md5": "eec3ebfb3affcea3a9ebe414f347e481",
+      "state_digest_md5": "56e2efa80b5960ff43b020b8633db637",
+      "status_counts": {
+        "applied_existing_handler": 50,
+        "skipped_no_existing_handler": 281,
+        "skipped_no_exposed_assets": 1175
+      }
+    },
+    "ssp370": {
+      "event_count": 1530,
+      "event_stream_sha256": "7e06cf0fa7f21b76a2f3869b7b851ef89bddd55e580426002e7d2ad72d8a9f6c",
+      "existing_assets_digest_md5": "18bdf3eb5fa5acb6b8960c350a19a018",
+      "fiscal_digest_md5": "58bd2636ea88f814328ecb24aad8a75a",
+      "history_digest_md5": "892e07bab0863ea95ba8687977fe4c56",
+      "state_digest_md5": "c0564963edb2fb836e486fc8a7f3bca7",
+      "status_counts": {
+        "applied_existing_handler": 47,
+        "skipped_no_existing_handler": 273,
+        "skipped_no_exposed_assets": 1210
+      }
+    }
+  },
+  "schema_version": "golden-m-v1",
+  "script": {
+    "action_sequence": [
+      {
+        "action_id": "heat_resilience_upgrade",
+        "geoid": "56037",
+        "magnitude": 1,
+        "year": 2025
+      }
+    ],
+    "baseline_retirements": true,
+    "seed": 42,
+    "years": [2026, 2027, 2028, 2029, 2030]
+  }
+}

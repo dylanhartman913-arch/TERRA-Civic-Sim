@@ -156,6 +156,13 @@ export interface EESEffects {
   S?: number;
 }
 
+/** C4-ii adaptation may write only this allowlisted asset vulnerability field. */
+export interface ClimateAdaptationEffect {
+  hazard_kind: ClimateHazardKind;
+  writable_asset_field: 'climate_vulnerability_ppm';
+  vulnerability_reduction_ppm: number;
+}
+
 export interface ActionRecord {
   action_id?: string;
   action_name?: string;
@@ -213,6 +220,7 @@ export interface ActionRecord {
   suitability_source?: string;
   session3_note?: string;
   dissertation_note?: string;
+  climate_adaptation?: ClimateAdaptationEffect;
 }
 
 export interface CouplingTrigger {
@@ -574,6 +582,8 @@ export interface AssetInstance {
   // v4.4 (C2) hazard exposure tags — read-only data field; excluded from all digest surfaces
   // (ExistingAsset/ProductionAsset/IndicatorSnapshot do not carry this field)
   exposure_tags?: ExposureTagSet | null;
+  /** C4-ii per-hazard vulnerability; adaptations may reduce it, samplers never read it. */
+  climate_vulnerability_ppm?: Partial<Record<ClimateHazardKind, number>>;
 }
 
 // ── Exposure Tags (C2 hazard data) ─────────────────────────────────────────
@@ -678,6 +688,12 @@ export interface DeltaSummary {
   material_consumed: Record<string, { quantity: number; unit: string }>;
   bus_id: string | null;
   fiscal_delta?: FiscalDelta | null;
+  adaptation_delta?: {
+    hazard_kind: ClimateHazardKind;
+    writable_asset_field: 'climate_vulnerability_ppm';
+    vulnerability_reduction_ppm: number;
+    affected_asset_ids: string[];
+  } | null;
 }
 
 export interface DisturbanceDeltaSummary {
@@ -984,6 +1000,24 @@ export interface ClimateHazardEvent {
   seed: number;
   /** C4-i is inert: consequence coupling remains exactly zero. */
   consequence_multiplier_ppm: 0;
+}
+
+export type ClimateConsequenceStatus =
+  | 'applied_existing_handler'
+  | 'skipped_no_exposed_assets'
+  | 'skipped_no_existing_handler';
+
+/** Audit record returned by C4-ii coupling; skipped events are explicit, never silent. */
+export interface ClimateConsequenceOutcome {
+  event_id: string;
+  hazard_kind: ClimateHazardKind;
+  geoid: string;
+  status: ClimateConsequenceStatus;
+  consequence_multiplier_ppm: number;
+  victim_asset_ids: string[];
+  handler: 'inject_disturbance' | null;
+  reason: string | null;
+  delta: DisturbanceDeltaSummary | null;
 }
 
 export interface ClimateHazardSamplingInput {
