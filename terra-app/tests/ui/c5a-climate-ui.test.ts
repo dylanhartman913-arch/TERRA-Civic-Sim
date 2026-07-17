@@ -1,5 +1,5 @@
 import React from 'react';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -7,6 +7,25 @@ import { AttributionPopover, ClimatePanel } from '../../src/ui/panels/ClimatePan
 import { climateRecordFor } from '../../src/ui/climate.js';
 import { ExposureBadges } from '../../src/ui/map/ExposureBadges.js';
 import type { AssetInstance } from '../../src/engine/types.js';
+
+const debriefRenderState = vi.hoisted(() => ({ enabled: false, calls: 0, replayed: [] as unknown[] }));
+
+vi.mock('react', async importOriginal => {
+  const actual = await importOriginal<typeof import('react')>();
+  return {
+    ...actual,
+    useState: ((initial: unknown) => {
+      if (!debriefRenderState.enabled) return actual.useState(initial);
+      const call = debriefRenderState.calls++;
+      if (call === 1) return [debriefRenderState.replayed, vi.fn()];
+      return actual.useState(initial);
+    }) as typeof actual.useState,
+  };
+});
+
+vi.mock('../../src/state/store.js', () => ({
+  useTerraStore: (selector: (state: { replaySessionFile: () => never }) => unknown) => selector({ replaySessionFile: vi.fn() }),
+}));
 
 const taggedAsset = { asset_id: 'eia860_467_08019' } as AssetInstance;
 const missingTagAsset = { asset_id: 'not-in-c2-exposure-tags' } as AssetInstance;
@@ -35,13 +54,20 @@ describe('C5a climate UI', () => {
     expect(html).toContain('low confidence');
   });
 
-  it('surfaces ssp245 in the debrief header from a loaded session', () => {
-    const loadedSsp245 = { session: { file: { climate_lens: 'ssp245' } } };
-    const source = readFileSync(resolve(process.cwd(), 'src/ui/panels/DebriefView.tsx'), 'utf8');
-    expect(loadedSsp245.session.file.climate_lens).toBe('ssp245');
-    expect(source).toContain('data-testid="debrief-climate-lens"');
-    expect(source).toContain("item.session.file.climate_lens ?? 'historical'");
-    expect(source).toContain('Climate lens:');
+  it('surfaces ssp245 in the debrief header from a loaded session', async () => {
+    debriefRenderState.enabled = true;
+    debriefRenderState.calls = 0;
+    debriefRenderState.replayed = [{
+      session: { file: { climate_lens: 'ssp245', annotations: [] }, label: 'Test session', code: 'TEST', finalYear: 2050 },
+      history: [],
+      outcome: {},
+    }];
+    const { DebriefView } = await import('../../src/ui/panels/DebriefView.js');
+    const html = renderToStaticMarkup(React.createElement(DebriefView, { onClose: () => undefined }));
+    debriefRenderState.enabled = false;
+
+    expect(html).toContain('data-testid="debrief-climate-lens"');
+    expect(html).toContain('Climate lens: ssp245');
   });
 
   it('renders C2 exposure badges from the asset tag values', () => {
