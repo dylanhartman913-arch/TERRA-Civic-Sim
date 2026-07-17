@@ -8,6 +8,12 @@ const SOURCE_ID = 'climate-hazard-counties';
 const LAYER_ID = 'climate-hazard-choropleth';
 const countyFeatures = (countiesGeoJson as unknown as { features: Array<{ properties?: { GEOID?: string }; [key: string]: unknown }> }).features;
 
+function resolvedChoroplethColor() {
+  const color = getComputedStyle(document.documentElement).getPropertyValue('--choro-3').trim();
+  if (!color) throw new Error('Missing required --choro-3 design token');
+  return color;
+}
+
 export function HazardChoroplethLayer({ map, visible, lens }: { map: maplibregl.Map; visible: boolean; lens: ClimateLens }) {
   const data = useMemo(() => ({
     ...(countiesGeoJson as object),
@@ -20,7 +26,7 @@ export function HazardChoroplethLayer({ map, visible, lens }: { map: maplibregl.
 
   useEffect(() => {
     if (!map.getSource(SOURCE_ID)) map.addSource(SOURCE_ID, { type: 'geojson', data: data as unknown as maplibregl.GeoJSONSourceSpecification['data'] });
-    if (!map.getLayer(LAYER_ID)) map.addLayer({ id: LAYER_ID, type: 'fill', source: SOURCE_ID, paint: { 'fill-color': 'var(--choro-3)', 'fill-opacity': 0.42 }, layout: { visibility: 'none' } });
+    if (!map.getLayer(LAYER_ID)) map.addLayer({ id: LAYER_ID, type: 'fill', source: SOURCE_ID, paint: { 'fill-color': resolvedChoroplethColor(), 'fill-opacity': 0.42 }, layout: { visibility: 'none' } });
     return () => {
       if (map.getLayer(LAYER_ID)) map.removeLayer(LAYER_ID);
       if (map.getSource(SOURCE_ID)) map.removeSource(SOURCE_ID);

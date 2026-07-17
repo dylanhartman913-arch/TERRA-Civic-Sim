@@ -2,13 +2,17 @@ import { useState } from 'react';
 import { CLIMATE_EPOCHS, CLIMATE_METRICS, climateRecordsFor, hasEagleBiasFlag } from '../climate.js';
 import type { ClimateLens, ClimateRecord } from '../climate.js';
 
+export function AttributionPopover({ record }: { record: ClimateRecord }) {
+  return <div role="dialog" aria-label="Climate record attribution" style={{ position: 'absolute', right: 0, zIndex: 4, width: 270, padding: 8, background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: 4, color: 'var(--text-secondary)', fontSize: 9, lineHeight: 1.4 }}>
+    <div>Scenario: {record.scenario}</div><div>Epoch: {record.epoch}</div><div>Percentile: {record.percentile}</div><div>Source: {record.source}</div><div>Method: {record.method}</div><div>Confidence: {record.confidence}</div>
+  </div>;
+}
+
 function Attribution({ record }: { record: ClimateRecord }) {
   const [open, setOpen] = useState(false);
   return <span style={{ position: 'relative' }}>
     <button aria-label={`Attribution for ${record.epoch} ${record.percentile}`} onClick={() => setOpen(value => !value)} style={{ background: 'transparent', border: '1px solid var(--border)', borderRadius: 3, color: 'var(--text-secondary)', cursor: 'pointer', fontFamily: 'var(--font-mono)', fontSize: 9 }}>i</button>
-    {open && <div role="dialog" aria-label="Climate record attribution" style={{ position: 'absolute', right: 0, zIndex: 4, width: 270, padding: 8, background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: 4, color: 'var(--text-secondary)', fontSize: 9, lineHeight: 1.4 }}>
-      <div>Scenario: {record.scenario}</div><div>Epoch: {record.epoch}</div><div>Percentile: {record.percentile}</div><div>Source: {record.source}</div><div>Method: {record.method}</div><div>Confidence: {record.confidence}</div>
-    </div>}
+    {open && <AttributionPopover record={record} />}
   </span>;
 }
 

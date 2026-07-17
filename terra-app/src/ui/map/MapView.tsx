@@ -86,7 +86,6 @@ export function MapView() {
             activeMetric={activeMetric}
             onTooltip={setTooltipState}
           />
-          {/* eslint-disable-next-line react-hooks/refs -- sibling map layers receive the map after mapLoaded guards its initialization. */}
           <HazardChoroplethLayer map={mapRef.current} visible={layers.climateHazards} lens={climateLens} />
           {placementMode && (
             <PlacementOverlay map={mapRef.current} />
