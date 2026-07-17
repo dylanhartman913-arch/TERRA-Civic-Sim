@@ -3140,3 +3140,71 @@ Note: in unprovision energy-map checkout, 9 tests fail across 2 files (c4i-event
 **Why:** MapLibre GL map expressions (`['case', ['get', 'climate_hazard_no_data'], ...]`) cannot be evaluated headlessly in a Vitest/JSDOM environment without a live map instance. The expression that drives the gray color is correct in code but the rendered pixel cannot be unit-tested.
 
 **Constraint:** Before a gray-fill render is claimed as tested, it must be covered by an e2e test (Playwright or similar) that instantiates a real MapLibre map and asserts the computed fill color for a no-data county. The current entry is evidence of data-layer correctness only, not render-layer coverage.
+
+---
+
+## Wave 5 — T7: Wave Close-out (release-readiness + postmortem + final entry)
+
+**Date:** 2026-07-17
+**Session:** w5-verify
+**Final main SHA:** `df552f2` (Post-merge T6: t6-c5b build log appended + T6-FU-2 debt entry)
+
+---
+
+### 1. Release-Readiness — Gate-Review Aggregate
+
+#### T1–T6 verdict summary
+
+| Ticket | Description | Verdict | Merge SHA |
+|--------|-------------|---------|-----------|
+| T1 | C4-i Closure Review (performance-review + integration-review) | **PASS** — dispatch gate clear, AC6 VERIFIED | (review-only; no main merge) |
+| T2 | UI lint-debt remediation | **PASS WITH FOLLOW-UP** | `d6f47d7` |
+| T3 | C5a follow-up resolution (FU-1 through FU-6) | **PASS** | `c7d5a18` |
+| T4 | C2.1 county hazard baseline + delta surface | **PASS WITH FOLLOW-UP** | `3c0bd1e` |
+| T5 | C4-ii consequence coupling + adaptation + Golden M | **PASS WITH FOLLOW-UP** | `3a273c3` |
+| T6 | C5b full climate choropleth integration | **PASS WITH FOLLOW-UP** | `662db69` |
+
+No blocking finding was issued at any gate. **Wave 5 release-readiness: SHIP.**
+
+#### T3 Test-1 / FU-5 status (confirmed closed)
+
+FU-5 (`HazardChoroplethLayer` CSS custom-property bridge) was closed by PM human verification before T3 merged: choropleth color updates on lens toggle confirmed live. FU-2 (MapView suppression removal) was IMPLEMENTED / VERIFIED in T3. All six T3 follow-ups (FU-1 through FU-6) are closed. T3 carries no open debt into Wave 6.
+
+#### D4 (F2 frame-timing debt) — confirmed carried
+
+Per the binding P0 decision (D4, appended 2026-07-16): F2 MapLibre/deck.gl canvas frame timing, p95 ~67 ms vs. 16 ms budget, is pre-existing and predates every wave. Measured stable across Wave 4 (66.7–67.2 ms, `d5ea940`) and Wave 5 (no new measurement; no regression; no worsening). Carried by name below.
+
+---
+
+### 2. Postmortem — D3 Binding Closeout Condition
+
+**Issue:** The w5-verify worktree served as the review coordination point for all six T1–T6 tickets but was never re-synced after Wave 5 P0. By the time T6 ran, w5-verify's branch-point (`9883f85`) was five merges behind main's HEAD (`662db69`). Its lint baseline remained the P0 state — 64 errors / 7 warnings — while post-T2 main had 0 errors / 0 warnings. A reviewer using w5-verify's own `npm run lint` output as authoritative would have seen a false lint finding on T6.
+
+**What let it go undetected through four prior review cycles (T2–T5):** Each gate review ran skills in the *implementation* worktree (w5-ui, w5-engine, w5-notebook, w5-c5b), not in w5-verify. The reviewer read w5-verify build-log files but did not execute lint or build in w5-verify itself. The staleness was invisible because no review step required w5-verify to produce a fresh lint/build result — it was used only as a document store and dispatch coordination point.
+
+**Why it surfaced on T6:** T6's lint check was explicitly compared against the w5-c5b worktree (correct). The discrepancy between w5-verify's recorded baseline and the actual post-T2 state was noticed during the T6 review session.
+
+**Process change — closure condition:**
+
+At the start of every gate-review dispatch (first ticket of any wave), the reviewer must:
+
+1. Confirm w5-verify's branch-point SHA against current main HEAD:
+   `git -C <verify-worktree> merge-base HEAD origin/main` must equal `git -C <main-worktree> rev-parse HEAD` — or the delta must be explicitly enumerated and accepted.
+2. Run `npm run lint` and `npm test -- --run` in the verify worktree itself and record the result as the **review-session baseline**. Any lint or build finding surfaced during a ticket review that is not also reproducible against this freshly recorded baseline is declared stale and excluded from the gate verdict.
+
+**Concrete closure condition:** This postmortem is complete. The process change above is the closure artifact required by D3. It takes effect at Wave 6 T-1 dispatch.
+
+---
+
+### 3. Consolidated Debt Table — Carried into Wave 6 Planning
+
+| ID | Source ticket | Description | Carry-forward constraint |
+|----|--------------|-------------|--------------------------|
+| **D4** | F2 (pre-Wave 4) | **F2 frame-timing debt.** MapLibre/deck.gl canvas p95 ~67 ms vs. 16 ms budget. Pre-existing; unchanged across Wave 4 and Wave 5. Remediation requires hardware GPU rendering or rendering-path investigation; headless SwiftShader environment is insufficient. | Must appear by name in every wave's release-readiness until fixed or budget revised. |
+| **T2-FU-DEAD** | T2 | **Build verification environment constraint.** `npm run build` could not write TypeScript incremental metadata in the review worktree because the shared `node_modules` symlink target is read-only (`TS5033`, `.tmp/tsconfig*.tsbuildinfo`). Build verification was achieved in T3 and T5 from properly provisioned worktrees; the blocking was worktree-specific, not a code defect. The shared-symlink provisioning pattern that produced this failure is a standing environment risk. | Any wave where the verify worktree relies on a shared `node_modules` symlink must confirm writable `.tsbuildinfo` paths before accepting `tsc -b` output as authoritative. |
+| **T4-FU-1** | T4 | **SNOTEL metrics-array annotation gap.** `county_climate_baseline.json` top-level `metrics` array lists all 12 metric keys without distinguishing full-coverage (157 counties) from partial-coverage (SNOTEL, 46 counties only). T6 correctly joins via `baseline_key` and derives coverage from actual baseline rows — the implementation constraint is satisfied. The schema annotation gap remains: a future consumer iterating `metrics` as a county-complete registry would silently miss SNOTEL baseline records for non-SNOTEL counties. | Any future consumer or C2.1 schema revision must document coverage tier per metric (full vs. partial) in the schema, not rely on the `baseline_key` join pattern being replicated correctly downstream. |
+| **T5-FU-1** | T5 | **Performance benchmark not a committed gate.** The 14.228 ms sampling + coupling median (10-run max 14.452 ms on 314 year-2050 SSP3-7.0 events) is a one-time logged observation in the T5 build log. No automated benchmark gate is wired; a future engine change could produce a different result without any test failing. | Before any subsequent engine touch claims a performance pass on the consequence path, the measurement must be reproduced in the review environment and committed as a regression gate, not cited from the T5 log entry. |
+| **T5-FU-2** | T5 | **TS test-count reconciliation (documented, closed).** Builder's log recorded 32 files / 356 tests from w5-engine (pre-T3 baseline); post-merge main showed 33 files / 364 tests. Reconciliation: delta is exactly T3's `c5a-climate-ui.test.ts` (+1 file, +8 tests); parity count (332) matches exactly. No missing or phantom tests. | Carry as closed documentation. No action required. |
+| **T6-FU-2** | T6 | **SNOTEL no-data gray-fill not render-verified.** `c5b-choropleth.test.ts` Test 2 asserts `climate_hazard_no_data=true` and `value=null` on feature properties but cannot evaluate the MapLibre fill-color expression (`['case', ['get', 'climate_hazard_no_data'], ...]`) in a headless JSDOM environment. Data-layer correctness is verified; render-layer correctness is not. | Before a SNOTEL gray-fill render is claimed as tested, it must be covered by an e2e test (Playwright or equivalent) that instantiates a real MapLibre map and asserts the computed fill color for a no-data county. |
+
+**Wave 5 is closed.** Nothing merges to main under this wave after `df552f2`. Wave 6 opens on a clean main with the six debt items above as its inherited planning input.
