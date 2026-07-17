@@ -187,6 +187,12 @@
 
 ## Commit evidence
 
-- **DEFERRED UNTIL FIRST COMMIT:** the implementation commit SHA/stat and clean
-  status will be appended in a follow-up evidence-only commit before review is
-  requested. This is explicit because a commit cannot contain its own SHA.
+- **VERIFIED:** implementation commit
+  `ad271b3a68c2bfd281563ecc2fa190ec8db652bc` —
+  `TERRA engine v4.6: couple hazard consequences and add Golden M`.
+- **VERIFIED:** `git log -1 --stat` reported the same 16 declared files,
+  1,559 insertions, and 20 deletions.
+- **VERIFIED:** `git status --short` immediately after the implementation
+  commit produced no output (clean worktree).
+- **IMPLEMENTED:** this commit evidence is appended in a follow-up log-only
+  commit because the implementation commit cannot contain its own SHA.
