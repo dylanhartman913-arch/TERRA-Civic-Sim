@@ -4,7 +4,7 @@ import type { ClimateLens, ClimateRecord } from '../climate.js';
 
 export function AttributionPopover({ record }: { record: ClimateRecord }) {
   return <div role="dialog" aria-label="Climate record attribution" style={{ position: 'absolute', right: 0, zIndex: 4, width: 270, padding: 8, background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: 4, color: 'var(--text-secondary)', fontSize: 9, lineHeight: 1.4 }}>
-    <div>Scenario: {record.scenario}</div><div>Epoch: {record.epoch}</div><div>Percentile: {record.percentile}</div><div>Source: {record.source}</div><div>Method: {record.method}</div><div>Confidence: {record.confidence}</div>
+    <div>Scenario: {record.scenario}</div><div>Epoch: {record.epoch}</div><div>Percentile: {record.percentile}</div><div>Source: {record.source}</div><div>Method: {record.method}</div><div>Confidence: {record.confidence}</div><div>Downscaling: {record.downscaling_method ?? 'not provided'}</div>
   </div>;
 }
 

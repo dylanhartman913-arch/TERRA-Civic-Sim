@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/refs -- map instance is initialized before child layers render. */
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import maplibregl from 'maplibre-gl';
 import { useTerraStore } from '../../state/store.js';
 import { CountyLayer } from './CountyLayer.js';
@@ -15,6 +15,8 @@ import { QueuedBuildMarkers } from './QueuedBuildMarkers.js';
 import { AnchorFacilityLayer } from './AnchorFacilityLayer.js';
 import { MarkerLegend } from './MarkerLegend.js';
 import { HazardChoroplethLayer } from './HazardChoroplethLayer.js';
+import { AttributionPopover } from '../panels/ClimatePanel.js';
+import type { ClimateRecord } from '../climate.js';
 
 export function MapView() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -23,12 +25,20 @@ export function MapView() {
   const [tooltipState, setTooltipState] = useState<{
     x: number; y: number; geoid: string;
   } | null>(null);
+  const [hazardAttribution, setHazardAttribution] = useState<ClimateRecord | null>(null);
+  const [hazardNoData, setHazardNoData] = useState(false);
+  const handleHazardAttribution = useCallback((record: ClimateRecord | null) => {
+    setHazardAttribution(record);
+    setHazardNoData(!record);
+  }, []);
 
   const engineState = useTerraStore(s => s.engineState);
   const layers = useTerraStore(s => s.layers);
   const placementMode = useTerraStore(s => s.placementMode);
   const activeMetric = useTerraStore(s => s.activeMetric);
   const climateLens = useTerraStore(s => s.climateLens);
+  const climateEpoch = useTerraStore(s => s.climateEpoch);
+  const climateMetric = useTerraStore(s => s.climateMetric);
   const countyCards = engineState.county_cards as Record<string, { county_name?: string; state?: string }>;
   const campaignFlyTarget = useTerraStore(s => s.campaignFlyTarget);
 
@@ -86,7 +96,7 @@ export function MapView() {
             activeMetric={activeMetric}
             onTooltip={setTooltipState}
           />
-          <HazardChoroplethLayer map={mapRef.current} visible={layers.climateHazards} lens={climateLens} />
+          <HazardChoroplethLayer map={mapRef.current} visible={layers.climateHazards} lens={climateLens} epoch={climateEpoch} metric={climateMetric} onAttribution={handleHazardAttribution} />
           {placementMode && (
             <PlacementOverlay map={mapRef.current} />
           )}
@@ -110,6 +120,8 @@ export function MapView() {
           countyCards={countyCards}
         />
       )}
+      {hazardAttribution && <div data-testid="choropleth-attribution" style={{ position: 'absolute', right: 42, bottom: 32, zIndex: 10 }}><AttributionPopover record={hazardAttribution} /></div>}
+      {hazardNoData && <div data-testid="choropleth-no-data" style={{ position: 'absolute', right: 42, bottom: 32, zIndex: 10, padding: 8, background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: 4, color: 'var(--warning)', fontSize: 10 }}>No climate data for this county and metric.</div>}
     </div>
   );
 }

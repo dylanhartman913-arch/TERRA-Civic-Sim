@@ -52,6 +52,7 @@ import {
   importFromJson,
 } from '../engine/persistence.js';
 import type { StorageAdapter } from '../engine/persistence.js';
+import type { ClimateEpoch, ClimateMetric } from '../ui/climate.js';
 
 // ── Static data imports ─────────────────────────────────────────────────────
 import baseline from '../data/county_ees_baseline.json';
@@ -434,6 +435,8 @@ interface TerraStore {
   placementMode: PlacementMode | null;
   layers: LayerVisibility;
   climateLens: ClimateLens;
+  climateEpoch: ClimateEpoch;
+  climateMetric: ClimateMetric;
 
   // Undo / Redo
   redoStack: ActionLogEntry[];
@@ -476,6 +479,8 @@ interface TerraStore {
   setHoveredGeoid: (geoid: string | null) => void;
   setActiveMetric: (metric: ActiveMetric) => void;
   setClimateLens: (lens: ClimateLens) => void;
+  setClimateEpoch: (epoch: ClimateEpoch) => void;
+  setClimateMetric: (metric: ClimateMetric) => void;
   enterPlacementMode: (actionId: string) => void;
   exitPlacementMode: () => void;
   confirmPlacement: (geoid: string, magnitude: number) => void;
@@ -622,6 +627,8 @@ export const useTerraStore = create<TerraStore>((set, get) => ({
     climateHazards: false,
   },
   climateLens: 'historical',
+  climateEpoch: '2050',
+  climateMetric: 'high_fire_danger_days',
 
   // Undo / Redo
   redoStack: [],
@@ -853,6 +860,8 @@ export const useTerraStore = create<TerraStore>((set, get) => ({
   setHoveredGeoid: (geoid) => set({ hoveredGeoid: geoid }),
   setActiveMetric: (metric) => set({ activeMetric: metric }),
   setClimateLens: (climateLens) => set({ climateLens }),
+  setClimateEpoch: (climateEpoch) => set({ climateEpoch }),
+  setClimateMetric: (climateMetric) => set({ climateMetric }),
 
   enterPlacementMode: (actionId) => {
     const { engineState } = get();
