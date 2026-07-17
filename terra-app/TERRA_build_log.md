@@ -2984,3 +2984,49 @@ Tests       353 passed (353)
 ### Gate verdict
 
 **PASS** — commits `046b96c` + `dad35a5` on `w5-ui`. FU-5 closed by PM human verification. Merged to main at `c7d5a188`.
+
+---
+
+## Wave 5 — T4: C2.1 County Hazard Baseline + Delta Surface (t4-c21)
+
+*Merged to main at `3c0bd1e` — 2026-07-16. Source: `build_log/wave5/t4-c21.md`.*
+
+### Scope and method
+
+Notebook 24 `## C2.1` addendum writes `data/processed/county_climate_baseline.json` (schema `C2.1.0`) from attributed C1.6 projection rows. No source observations fetched; no model or statistical fit added. Algebraically inverts the four C1.6 epoch-doctrine equations per `(GEOID, metric, percentile, lens)` to recover the 1991–2020 historical window; canonical baseline = arithmetic mean of separately recovered `ssp245`/`ssp370` values. Delta = `projected_value − canonical_historical_baseline`.
+
+### Data contract (C2.1.0)
+
+Output: `data/processed/county_climate_baseline.json`. Key top-level fields: `schema_version` (`C2.1.0`), `source_schema_version` (`C1.6`), `baseline_reference`, `units`, `metrics`, `lenses`, `epochs`, `baselines`, `deltas`. Each delta record carries `baseline_key` (`[geoid, metric, percentile]`), `baseline_value`, `projected_value`, and full C1.6 attribution fields. **C5b/T6 must join on `baseline_key` — see open follow-up below.**
+
+### Coverage
+
+| Claim | Status |
+|---|---|
+| Fire-danger baseline + SSP245/370 delta for all 157 C1.6 counties, 4 epochs, p10/p50/p90 | implemented / verified |
+| All 12 C1.6 metrics present with same additive shape | implemented / verified |
+| Two-lens historical mean represents 1991–2020 window | inferred (deterministic inversion of C1.6 epoch mapping) |
+| Baseline confidence/source unchanged from C1.6 | verified |
+| SNOTEL (`snotel_swe_*`) covers only 46 counties; absent counties not invented | verified / deferred |
+
+### Verification
+
+```text
+pytest tests/test_county_climate_baseline.py -q
+3 passed in 0.72s
+
+Post-merge TS suite: 353 tests / 31 files (no change — T4 is data+Python only)
+Post-merge Python full suite (provisioned worktree): 168 passed
+```
+
+### Gate verdict
+
+**PASS WITH FOLLOW-UP** — commit `1e9c9f2` on `w5-notebook`. Merged to main at `3c0bd1e`.
+
+### Open follow-up — T4-FU-1 (carried to T6)
+
+**Item:** The `metrics` top-level array in `county_climate_baseline.json` lists all 12 metric keys without annotating which are full-coverage (157 counties) and which are partial-coverage (SNOTEL, 46 counties only). A consumer iterating `metrics` as a county-complete registry would silently miss baseline records for SNOTEL metrics on non-SNOTEL counties.
+
+**T6 constraint:** T6 (C5b) must look up the matching baseline via `baseline_key` (`[geoid, metric, percentile]`) on each delta record — not iterate `metrics` and assume county completeness. If a `baseline_key` lookup returns no match, that county/metric combination has no baseline and must be handled as absent, not defaulted.
+
+**Resolution path:** T6 implementation review must assert join-by-`baseline_key` pattern and reject any iteration of the `metrics` array as a county-complete source of truth. Expanding SNOTEL geographic coverage is a future source-data task outside this wave.
