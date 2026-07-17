@@ -24,6 +24,9 @@ export type {
   IndicatorSnapshot,
   ClimateLens,
   ClimateContext,
+  ClimateHazardEvent,
+  ClimateConsequenceOutcome,
+  ClimateAdaptationEffect,
 } from './types.js';
 
 export { EMPTY_CLIMATE_CONTEXT } from './types.js';
@@ -34,6 +37,9 @@ export {
   queueAction,
   advanceYear,
   injectDisturbance,
+  applyHazardEventConsequences,
+  sampleHazardEvents,
+  CLIMATE_ADAPTATION_WRITABLE_FIELDS,
   computeEesSummary,
   getCountyCard,
   getMaterialLedger,

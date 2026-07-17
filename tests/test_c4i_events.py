@@ -13,7 +13,11 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 import terra_engine as te
-from hazard_events import canonical_event_stream, sample_climate_hazard_events
+from hazard_events import (
+    INERT_CONSEQUENCE_MULTIPLIER_PPM,
+    canonical_event_stream,
+    sample_climate_hazard_events,
+)
 
 from c4i_event_harness import (
     ACTIVE_LENSES,
@@ -45,7 +49,12 @@ def test_ac1_active_matrix_has_required_coverage_and_canonical_bytes():
     assert stream.endswith(b"\n")
     assert b" " not in stream
     assert json.loads(stream) == events
-    assert all(event["consequence_multiplier_ppm"] == 0 for event in events)
+    assert INERT_CONSEQUENCE_MULTIPLIER_PPM == 0
+    assert all(
+        event["consequence_multiplier_ppm"]
+        == INERT_CONSEQUENCE_MULTIPLIER_PPM
+        for event in events
+    )
 
 
 def test_ac2_seed_lens_determinism_and_seed_negative_control():

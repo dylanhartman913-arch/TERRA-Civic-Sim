@@ -1,6 +1,13 @@
 {
-  "registry_version": "1.0",
+  "registry_version": "1.1",
   "description": "Amendment log for TERRA Engine golden fixtures. Each entry records a fixture supersession and the engine change that drove it.",
+  "climate_lens_contract": {
+    "goldens_a_through_l": {
+      "historical": "Frozen four-contract bytes remain asserted under the historical lens.",
+      "non_historical": "Not asserted: A-L predate C4-ii event consequences and are not non-historical event fixtures."
+    },
+    "golden_m": "The designated non-historical resilience fork; ssp245, ssp370, and historical are frozen in golden_m.json."
+  },
   "permitted_amendments": 4,
   "amendments_used": 4,
   "fixtures": [
@@ -121,6 +128,37 @@
       "history_n_years": 15,
       "history_year_range": [2026, 2040],
       "note": "New fixture — no amendment consumed. Four-contract parity confirmed (Python ↔ TS, 12 tests)."
+    },
+    {
+      "fixture_id": "golden_m",
+      "engine_version": "4.6",
+      "location": "terra-app/tests/parity/fixtures/golden_m.json",
+      "superseded_by": null,
+      "status": "active",
+      "description": "Golden M — C4-ii resilience fork. One heat-resilience action, seed 42, years 2026-2030; lens enters only through sampled events and existing-handler consequences.",
+      "created": "2026-07-16",
+      "historical": {
+        "state_digest_md5": "bc09a67e4b42e94d165b86fc751f4823",
+        "fiscal_digest_md5": "58bd2636ea88f814328ecb24aad8a75a",
+        "existing_assets_digest_md5": "18bdf3eb5fa5acb6b8960c350a19a018",
+        "history_digest_md5": "0b953d708f79c794cfcda2c1b259775f",
+        "event_count": 0
+      },
+      "ssp245": {
+        "state_digest_md5": "56e2efa80b5960ff43b020b8633db637",
+        "fiscal_digest_md5": "58bd2636ea88f814328ecb24aad8a75a",
+        "existing_assets_digest_md5": "18bdf3eb5fa5acb6b8960c350a19a018",
+        "history_digest_md5": "eec3ebfb3affcea3a9ebe414f347e481",
+        "event_count": 1506
+      },
+      "ssp370": {
+        "state_digest_md5": "c0564963edb2fb836e486fc8a7f3bca7",
+        "fiscal_digest_md5": "58bd2636ea88f814328ecb24aad8a75a",
+        "existing_assets_digest_md5": "18bdf3eb5fa5acb6b8960c350a19a018",
+        "history_digest_md5": "892e07bab0863ea95ba8687977fe4c56",
+        "event_count": 1530
+      },
+      "note": "New fixture; no A-L fixture regenerated and no amendment consumed."
     }
   ]
 }

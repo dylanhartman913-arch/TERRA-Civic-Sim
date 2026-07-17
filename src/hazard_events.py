@@ -1,4 +1,17 @@
-"""Seeded, exogenous C4-i climate hazard event sampling."""
+"""Seeded, exogenous C4-i climate hazard event sampling.
+
+The annual occurrence conversion uses the first-order Padé approximation
+``p = λ / (1 + λ)``.  It is valid for rare hazards (``λ << 1``) and
+degrades once ``λ >= 0.5``; callers must revisit the approximation before
+introducing high-frequency baselines.
+
+``severity_milli`` intentionally has no finite *sampler* ceiling because the
+accepted risk score is only constrained to be finite and non-negative.  Its
+documented C4-ii consequence ceiling is 3,000 milli-severity (the existing
+disturbance handler's 0–3 scale); larger raw values remain in the event stream
+but are clamped only during consequence normalization.  Sampling is unchanged,
+so the C4-i event-stream contract is preserved.
+"""
 
 from __future__ import annotations
 
@@ -8,6 +21,8 @@ import math
 
 VALID_LENSES = frozenset({"historical", "ssp245", "ssp370"})
 PPM = 1_000_000
+INERT_CONSEQUENCE_MULTIPLIER_PPM = 0
+CONSEQUENCE_SEVERITY_CEILING_MILLI = 3_000
 HASH_MODULUS = 4_294_967_296
 EVENT_FIELDS = (
     "event_id",
@@ -207,7 +222,7 @@ def sample_climate_hazard_events(
                         "projection_factor_ppm": factor_ppm,
                         "lens": lens,
                         "seed": seed,
-                        "consequence_multiplier_ppm": 0,
+                        "consequence_multiplier_ppm": INERT_CONSEQUENCE_MULTIPLIER_PPM,
                     }
                 )
     events.sort(

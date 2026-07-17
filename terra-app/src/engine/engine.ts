@@ -18,7 +18,10 @@ import {
   computeHeatDerate,
   THERMAL_DERATE_FUELS,
 } from './climate_couplings.js';
-import { sampleClimateHazardEvents } from './events.js';
+import {
+  CONSEQUENCE_SEVERITY_CEILING_MILLI,
+  sampleClimateHazardEvents,
+} from './events.js';
 
 // ── Pure-JS MD5 (RFC 1321) — browser + Node compatible ─────────────────────
 // Produces byte-identical output to Node's createHash('md5').update(s).digest('hex').
@@ -107,13 +110,39 @@ import type {
   AssetInstance,
   ExposureTagSet,
   ClimateHazardEvent,
+  ClimateHazardKind,
   ClimateHazardSamplingInput,
+  ClimateConsequenceOutcome,
 } from './types.js';
 import { EMPTY_CLIMATE_CONTEXT } from './types.js';
 
 // ── Constants ───────────────────────────────────────────────────────────────
 
 const FIRM_FUEL_TYPES = new Set(['nuclear', 'gas', 'coal', 'hydro', 'geothermal', 'storage']);
+const CLIMATE_PPM = 1_000_000;
+
+/** Structural C4-ii write boundary: adaptation code may mutate only this asset field. */
+export const CLIMATE_ADAPTATION_WRITABLE_FIELDS = Object.freeze([
+  'climate_vulnerability_ppm',
+] as const);
+
+const HAZARD_EXPOSURE_FIELDS: Record<ClimateHazardKind, keyof ExposureTagSet> = {
+  heat_wave: 'heat_sensitivity',
+  wildfire_smoke_proximity: 'wildfire_exposure',
+  drought_stress: 'water_dependency',
+  severe_storm: 'flood_zone',
+};
+const EXPOSURE_VALUE_PPM: Record<string, number> = {
+  none: 0,
+  low: 250_000,
+  med: 600_000,
+  medium: 600_000,
+  dry: 250_000,
+  wet: 1_000_000,
+  not_screened_or_low_county_context: 250_000,
+  high_county_context: 1_000_000,
+  high: 1_000_000,
+};
 
 const PRB_COAL_TONS_PER_MW_YR = 3743.4; // EIA-923 heat-rate proxy (W2 severance source)
 
@@ -125,6 +154,109 @@ export function sampleHazardEvents(
   // Deliberately read no state fields: action history and decisions are exogenous.
   void state;
   return sampleClimateHazardEvents(input);
+}
+
+function climateEventVictims(
+  state: EngineState,
+  event: ClimateHazardEvent,
+): Array<{ asset: AssetInstance; exposurePpm: number }> {
+  const field = HAZARD_EXPOSURE_FIELDS[event.hazard_kind];
+  return state.asset_registry.flatMap((asset) => {
+    if (asset.geoid !== event.geoid || asset.lifecycle !== 'operating') return [];
+    const tag = asset.exposure_tags?.[field];
+    const exposurePpm = tag ? (EXPOSURE_VALUE_PPM[tag.value] ?? 0) : 0;
+    return exposurePpm > 0 ? [{ asset, exposurePpm }] : [];
+  });
+}
+
+/**
+ * C4-ii delta coupling. The only supported consequence delegates to the
+ * existing heat-wave disturbance handler. Unsupported hazards are explicit
+ * skipped audit records; this function never invents damage or outage state.
+ */
+export function applyHazardEventConsequences(
+  inputState: EngineState,
+  events: readonly ClimateHazardEvent[],
+): [EngineState, ClimateConsequenceOutcome[]] {
+  let state = inputState;
+  const outcomes: ClimateConsequenceOutcome[] = [];
+  let hasWorkingCopy = false;
+
+  for (const event of events) {
+    if (!Number.isInteger(event.severity_milli) || event.severity_milli < 0) {
+      throw new Error('severity_milli must be a non-negative integer');
+    }
+    if (event.consequence_multiplier_ppm !== 0) {
+      throw new Error('raw climate event must have an inert consequence multiplier');
+    }
+    const victims = climateEventVictims(state, event);
+    const victimAssetIds = [...new Set(victims.map(({ asset }) => asset.asset_id))].sort();
+    if (victims.length === 0) {
+      outcomes.push({
+        event_id: event.event_id,
+        hazard_kind: event.hazard_kind,
+        geoid: event.geoid,
+        status: 'skipped_no_exposed_assets',
+        consequence_multiplier_ppm: 0,
+        victim_asset_ids: [],
+        handler: null,
+        reason: 'C2 exposure tags selected no operating victims',
+        delta: null,
+      });
+      continue;
+    }
+    if (event.hazard_kind !== 'heat_wave') {
+      outcomes.push({
+        event_id: event.event_id,
+        hazard_kind: event.hazard_kind,
+        geoid: event.geoid,
+        status: 'skipped_no_existing_handler',
+        consequence_multiplier_ppm: 0,
+        victim_asset_ids: victimAssetIds,
+        handler: null,
+        reason: 'no existing derate/outage/damage handler can express this consequence',
+        delta: null,
+      });
+      continue;
+    }
+
+    const consequenceMultiplierPpm = Math.max(
+      ...victims.map(({ asset, exposurePpm }) => {
+        const vulnerabilityPpm = asset.climate_vulnerability_ppm?.heat_wave ?? CLIMATE_PPM;
+        if (!Number.isInteger(vulnerabilityPpm) ||
+            vulnerabilityPpm < 0 || vulnerabilityPpm > CLIMATE_PPM) {
+          throw new Error('climate vulnerability must be an integer in [0, 1000000]');
+        }
+        return Math.round(exposurePpm * vulnerabilityPpm / CLIMATE_PPM);
+      }),
+    );
+    const normalizedSeverity =
+      Math.min(event.severity_milli, CONSEQUENCE_SEVERITY_CEILING_MILLI) /
+      1000 * consequenceMultiplierPpm / CLIMATE_PPM;
+    if (!hasWorkingCopy) {
+      state = shallowCopyState(state);
+      hasWorkingCopy = true;
+    }
+    const [nextState, delta] = injectDisturbanceWorking(
+      state,
+      'heat_wave',
+      normalizedSeverity,
+      [event.geoid],
+    );
+    state = nextState;
+    outcomes.push({
+      event_id: event.event_id,
+      hazard_kind: event.hazard_kind,
+      geoid: event.geoid,
+      status: 'applied_existing_handler',
+      consequence_multiplier_ppm: consequenceMultiplierPpm,
+      victim_asset_ids: victimAssetIds,
+      handler: 'inject_disturbance',
+      reason: null,
+      delta,
+    });
+  }
+  return [state, outcomes];
 }
 
 // EIA-7A / MSHA 2024 county coal production (X2 production_asset seeds)
@@ -1422,6 +1554,59 @@ export function initializeState(
 
 // ── Apply Action ────────────────────────────────────────────────────────────
 
+function applyClimateAdaptation(
+  state: EngineState,
+  action: ActionRecord,
+  geoid: string,
+): NonNullable<DeltaSummary['adaptation_delta']> {
+  const effect = action.climate_adaptation;
+  if (!effect) throw new Error('climate adaptation action is missing climate_adaptation');
+  const allowedConfigKeys = new Set([
+    'hazard_kind',
+    'writable_asset_field',
+    'vulnerability_reduction_ppm',
+  ]);
+  const unknownKey = Object.keys(effect).find((key) => !allowedConfigKeys.has(key));
+  if (unknownKey) throw new Error(`climate adaptation config cannot write '${unknownKey}'`);
+  if (!CLIMATE_ADAPTATION_WRITABLE_FIELDS.includes(effect.writable_asset_field)) {
+    throw new Error(`climate adaptation cannot write '${effect.writable_asset_field}'`);
+  }
+  if (!Number.isInteger(effect.vulnerability_reduction_ppm) ||
+      effect.vulnerability_reduction_ppm < 0 ||
+      effect.vulnerability_reduction_ppm > CLIMATE_PPM) {
+    throw new Error('vulnerability_reduction_ppm must be an integer in [0, 1000000]');
+  }
+  if (!(effect.hazard_kind in HAZARD_EXPOSURE_FIELDS)) {
+    throw new Error(`invalid adaptation hazard_kind '${effect.hazard_kind}'`);
+  }
+
+  const exposureField = HAZARD_EXPOSURE_FIELDS[effect.hazard_kind];
+  const affectedAssetIds: string[] = [];
+  for (const asset of state.asset_registry) {
+    if (asset.geoid !== geoid || asset.lifecycle !== 'operating' ||
+        !asset.exposure_tags?.[exposureField]) continue;
+    const current = asset.climate_vulnerability_ppm?.[effect.hazard_kind] ?? CLIMATE_PPM;
+    if (!Number.isInteger(current) || current < 0 || current > CLIMATE_PPM) {
+      throw new Error('climate vulnerability must be an integer in [0, 1000000]');
+    }
+    const next = Math.round(
+      current * (CLIMATE_PPM - effect.vulnerability_reduction_ppm) / CLIMATE_PPM,
+    );
+    asset.climate_vulnerability_ppm = {
+      ...asset.climate_vulnerability_ppm,
+      [effect.hazard_kind]: next,
+    };
+    affectedAssetIds.push(asset.asset_id);
+  }
+  const uniqueAffectedAssetIds = [...new Set(affectedAssetIds)].sort();
+  return {
+    hazard_kind: effect.hazard_kind,
+    writable_asset_field: effect.writable_asset_field,
+    vulnerability_reduction_ppm: effect.vulnerability_reduction_ppm,
+    affected_asset_ids: uniqueAffectedAssetIds,
+  };
+}
+
 export function applyAction(
   inputState: EngineState,
   actionId: string,
@@ -1674,6 +1859,16 @@ export function applyAction(
     }
   }
 
+  // C4-ii: adaptation is an allowlisted asset-vulnerability delta only.
+  // The helper has no climate-context or sampling-input parameter by design.
+  let adaptationDelta: DeltaSummary['adaptation_delta'] = null;
+  if (action.climate_adaptation) {
+    if (!geoid || !(geoid in state.county_ees)) {
+      throw new Error(`climate adaptation requires a study-county GEOID, got '${locationStr}'`);
+    }
+    adaptationDelta = applyClimateAdaptation(state, action, geoid);
+  }
+
   // Update material ledger
   const materials = action.materials || {};
   const materialConsumed: Record<string, { quantity: number; unit: string }> = {};
@@ -1723,6 +1918,7 @@ export function applyAction(
     network_delta: networkDelta, material_consumed: materialConsumed,
     bus_id: busId,
     fiscal_delta: fiscalDelta,
+    adaptation_delta: adaptationDelta,
   };
   state.last_delta = deltaSummary;
 
@@ -2445,7 +2641,18 @@ export function injectDisturbance(
   severity: number,
   geoids?: string[],
 ): [EngineState, DisturbanceDeltaSummary] {
-  const state = shallowCopyState(inputState);
+  return injectDisturbanceWorking(
+    shallowCopyState(inputState), disturbanceType, severity, geoids,
+  );
+}
+
+/** Internal existing-handler core operating on an already copied state. */
+function injectDisturbanceWorking(
+  state: EngineState,
+  disturbanceType: string,
+  severity: number,
+  geoids?: string[],
+): [EngineState, DisturbanceDeltaSummary] {
 
   const coeffs = DISTURBANCE_COEFFICIENTS[disturbanceType];
   if (!coeffs) {

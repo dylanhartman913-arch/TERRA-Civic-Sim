@@ -50,7 +50,10 @@ import hashlib
 from pathlib import Path
 from datetime import datetime, timezone
 
-from hazard_events import sample_climate_hazard_events
+from hazard_events import (
+    CONSEQUENCE_SEVERITY_CEILING_MILLI,
+    sample_climate_hazard_events,
+)
 
 # v4.0: optional indicators module for per-year history snapshots
 try:
@@ -130,6 +133,25 @@ FIRM_FUEL_TYPES = frozenset({'nuclear', 'gas', 'coal', 'hydro', 'geothermal', 's
 # Read-only, stateless. Coupling functions live in climate_couplings.py.
 EMPTY_CLIMATE_CONTEXT = {'lens': 'historical', 'tables': {}}
 VALID_CLIMATE_LENSES = frozenset({'historical', 'ssp245', 'ssp370'})
+CLIMATE_PPM = 1_000_000
+CLIMATE_ADAPTATION_WRITABLE_FIELDS = frozenset({'climate_vulnerability_ppm'})
+HAZARD_EXPOSURE_FIELDS = {
+    'heat_wave': 'heat_sensitivity',
+    'wildfire_smoke_proximity': 'wildfire_exposure',
+    'drought_stress': 'water_dependency',
+    'severe_storm': 'flood_zone',
+}
+EXPOSURE_VALUE_PPM = {
+    'none': 0,
+    'low': 250_000,
+    'med': 600_000,
+    'medium': 600_000,
+    'dry': 250_000,
+    'wet': 1_000_000,
+    'not_screened_or_low_county_context': 250_000,
+    'high_county_context': 1_000_000,
+    'high': 1_000_000,
+}
 
 
 def sample_hazard_events(state, *, seed, lens, years, county_baselines,
@@ -1963,6 +1985,62 @@ def initialize_state(data_dir=None, county_ees_path=None, crosswalk_path=None,
 # PART 3 — apply_action()
 # ═══════════════════════════════════════════════════════════════════════════════
 
+def _apply_climate_adaptation(state, action, geoid):
+    """Apply an allowlisted asset-vulnerability delta; no hazard input is accepted."""
+    effect = action.get('climate_adaptation')
+    if not isinstance(effect, dict):
+        raise ValueError('climate adaptation action is missing climate_adaptation')
+    allowed_config_keys = {
+        'hazard_kind',
+        'writable_asset_field',
+        'vulnerability_reduction_ppm',
+    }
+    unknown_keys = set(effect) - allowed_config_keys
+    if unknown_keys:
+        raise ValueError(
+            f"climate adaptation config cannot write {sorted(unknown_keys)!r}"
+        )
+    writable_field = effect.get('writable_asset_field')
+    if writable_field not in CLIMATE_ADAPTATION_WRITABLE_FIELDS:
+        raise ValueError(f"climate adaptation cannot write {writable_field!r}")
+    hazard_kind = effect.get('hazard_kind')
+    if hazard_kind not in HAZARD_EXPOSURE_FIELDS:
+        raise ValueError(f"invalid adaptation hazard_kind {hazard_kind!r}")
+    reduction_ppm = effect.get('vulnerability_reduction_ppm')
+    if (not isinstance(reduction_ppm, int) or isinstance(reduction_ppm, bool)
+            or not 0 <= reduction_ppm <= CLIMATE_PPM):
+        raise ValueError(
+            'vulnerability_reduction_ppm must be an integer in [0, 1000000]'
+        )
+
+    exposure_field = HAZARD_EXPOSURE_FIELDS[hazard_kind]
+    affected_asset_ids = []
+    for asset in state.get('asset_registry', []):
+        tags = asset.get('exposure_tags') or {}
+        if (asset.get('geoid') != geoid
+                or asset.get('lifecycle') != 'operating'
+                or not tags.get(exposure_field)):
+            continue
+        vulnerability = dict(asset.get(writable_field) or {})
+        current = vulnerability.get(hazard_kind, CLIMATE_PPM)
+        if (not isinstance(current, int) or isinstance(current, bool)
+                or not 0 <= current <= CLIMATE_PPM):
+            raise ValueError(
+                'climate vulnerability must be an integer in [0, 1000000]'
+            )
+        vulnerability[hazard_kind] = (
+            current * (CLIMATE_PPM - reduction_ppm) + CLIMATE_PPM // 2
+        ) // CLIMATE_PPM
+        asset[writable_field] = vulnerability
+        affected_asset_ids.append(asset['asset_id'])
+    affected_asset_ids = sorted(set(affected_asset_ids))
+    return {
+        'hazard_kind': hazard_kind,
+        'writable_asset_field': writable_field,
+        'vulnerability_reduction_ppm': reduction_ppm,
+        'affected_asset_ids': affected_asset_ids,
+    }
+
 def apply_action(state, action_id, location, magnitude, _skip_coupling=False,
                  climate_context=None):
     """
@@ -2230,6 +2308,16 @@ def apply_action(state, action_id, location, magnitude, _skip_coupling=False,
                 (housing.get('housing_affordable_added') or 0.0) + units, 2
             )
 
+    # C4-ii: adaptation is an allowlisted asset-vulnerability delta only.
+    # The helper has no climate-context or sampling-input parameter by design.
+    adaptation_delta = None
+    if action.get('climate_adaptation') is not None:
+        if not geoid or geoid not in state['county_ees']:
+            raise ValueError(
+                f"climate adaptation requires a study-county GEOID, got {location_str!r}"
+            )
+        adaptation_delta = _apply_climate_adaptation(state, action, geoid)
+
     # ── Update material ledger ───────────────────────────────────────────────
     materials = action.get("materials", {})
     material_consumed = {}
@@ -2275,6 +2363,7 @@ def apply_action(state, action_id, location, magnitude, _skip_coupling=False,
         "magnitude": magnitude, "ees_delta": ees_delta,
         "network_delta": network_delta, "material_consumed": material_consumed,
         "bus_id": bus_id, "fiscal_delta": fiscal_delta,
+        "adaptation_delta": adaptation_delta,
     }
     state["last_delta"] = delta_summary
 
@@ -2993,7 +3082,13 @@ def inject_disturbance(state, disturbance_type, severity, geoids=None):
     For v2 calls with geoids: severity is a float multiplier (1.0-3.0σ).
     Flexible loads (industrial_load_flexible) shed first before firm load.
     """
-    state = _shallow_copy_state(state)
+    return _inject_disturbance_working(
+        _shallow_copy_state(state), disturbance_type, severity, geoids
+    )
+
+
+def _inject_disturbance_working(state, disturbance_type, severity, geoids=None):
+    """Internal existing-handler core operating on an already copied state."""
 
     # ── Handle legacy v1 call signature ──────────────────────────────────────
     if isinstance(severity, dict):
@@ -3140,6 +3235,120 @@ def inject_disturbance(state, disturbance_type, severity, geoids=None):
     }
 
     return state, delta_summary
+
+
+def _climate_event_victims(state, event):
+    exposure_field = HAZARD_EXPOSURE_FIELDS[event['hazard_kind']]
+    victims = []
+    for asset in state.get('asset_registry', []):
+        if (asset.get('geoid') != event['geoid']
+                or asset.get('lifecycle') != 'operating'):
+            continue
+        tag = (asset.get('exposure_tags') or {}).get(exposure_field)
+        exposure_ppm = EXPOSURE_VALUE_PPM.get((tag or {}).get('value'), 0)
+        if exposure_ppm > 0:
+            victims.append((asset, exposure_ppm))
+    return victims
+
+
+def apply_hazard_event_consequences(state, events):
+    """
+    Apply C4-ii event deltas through existing handlers only.
+
+    Heat waves delegate to ``inject_disturbance`` after C2 tags select the
+    operating victims. Other hazards return explicit skip records because the
+    engine has no qualifying damage-cost or outage-day handler. Raw
+    ``severity_milli`` is normalized to the existing handler's 0–3 severity
+    scale with ``CONSEQUENCE_SEVERITY_CEILING_MILLI``; sampling is unchanged.
+    """
+    outcomes = []
+    has_working_copy = False
+    for event in events:
+        hazard_kind = event.get('hazard_kind')
+        if hazard_kind not in HAZARD_EXPOSURE_FIELDS:
+            raise ValueError(f"unknown climate hazard kind {hazard_kind!r}")
+        severity_milli = event.get('severity_milli')
+        if (not isinstance(severity_milli, int) or isinstance(severity_milli, bool)
+                or severity_milli < 0):
+            raise ValueError('severity_milli must be a non-negative integer')
+        if event.get('consequence_multiplier_ppm') != 0:
+            raise ValueError('raw climate event must have an inert consequence multiplier')
+        victims = _climate_event_victims(state, event)
+        victim_asset_ids = sorted({asset['asset_id'] for asset, _ppm in victims})
+        if not victims:
+            outcomes.append({
+                'event_id': event['event_id'],
+                'hazard_kind': hazard_kind,
+                'geoid': event['geoid'],
+                'status': 'skipped_no_exposed_assets',
+                'consequence_multiplier_ppm': 0,
+                'victim_asset_ids': [],
+                'handler': None,
+                'reason': 'C2 exposure tags selected no operating victims',
+                'delta': None,
+            })
+            continue
+        if hazard_kind != 'heat_wave':
+            outcomes.append({
+                'event_id': event['event_id'],
+                'hazard_kind': hazard_kind,
+                'geoid': event['geoid'],
+                'status': 'skipped_no_existing_handler',
+                'consequence_multiplier_ppm': 0,
+                'victim_asset_ids': victim_asset_ids,
+                'handler': None,
+                'reason': (
+                    'no existing derate/outage/damage handler can express '
+                    'this consequence'
+                ),
+                'delta': None,
+            })
+            continue
+
+        victim_multipliers = []
+        for asset, exposure_ppm in victims:
+            vulnerability_ppm = (
+                asset.get('climate_vulnerability_ppm') or {}
+            ).get('heat_wave', CLIMATE_PPM)
+            if (not isinstance(vulnerability_ppm, int)
+                    or isinstance(vulnerability_ppm, bool)
+                    or not 0 <= vulnerability_ppm <= CLIMATE_PPM):
+                raise ValueError(
+                    'climate vulnerability must be an integer in [0, 1000000]'
+                )
+            victim_multipliers.append(
+                (
+                    exposure_ppm * vulnerability_ppm + CLIMATE_PPM // 2
+                ) // CLIMATE_PPM
+            )
+        consequence_multiplier_ppm = max(victim_multipliers)
+        normalized_severity = (
+            min(severity_milli, CONSEQUENCE_SEVERITY_CEILING_MILLI)
+            / 1000
+            * consequence_multiplier_ppm
+            / CLIMATE_PPM
+        )
+        if not has_working_copy:
+            state = _shallow_copy_state(state)
+            has_working_copy = True
+        state, delta = _inject_disturbance_working(
+            state,
+            'heat_wave',
+            normalized_severity,
+            [event['geoid']],
+        )
+        outcomes.append({
+            'event_id': event['event_id'],
+            'hazard_kind': hazard_kind,
+            'geoid': event['geoid'],
+            'status': 'applied_existing_handler',
+            'consequence_multiplier_ppm': consequence_multiplier_ppm,
+            'victim_asset_ids': victim_asset_ids,
+            'handler': 'inject_disturbance',
+            'reason': None,
+            'delta': delta,
+        })
+    return state, outcomes
 
 
 def _inject_disturbance_v1(state, disturbance_id, parameters):
