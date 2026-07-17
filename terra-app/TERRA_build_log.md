@@ -2870,3 +2870,49 @@ used for CI is insufficient for the 16 ms budget at p95.
 Measurement environment: commit `d5ea940`, Vite `8.0.16`, Node `v24.14.1`,
 Chrome `150.0.7871.116`, macOS `26.5.2` arm64, `--use-angle=swiftshader`,
 canvas `1180x705`. No `perf_hooks` proxy used.
+
+---
+
+<!-- T2 — Wave 5 UI lint-debt remediation — merged d6f47d7 — 2026-07-16 -->
+
+# Wave 5 T2 — UI lint-debt remediation
+
+## Handoff classification
+
+- **Implemented:** Mechanical lint cleanup and file-local suppressions for intentional existing React compiler diagnostics; no runtime refactoring was made.
+- **Implemented:** Replaced the TS geoid sort's implicit-locale comparison with explicit code-point comparison.
+- **Verified:** Initial `npm run lint` from `terra-app` executed with the mandated `node_modules` symlink and reported the P0 baseline of 71 problems (64 errors, 7 warnings).
+- **Verified:** Final `npm run lint` exits 0 with no diagnostics.
+- **Verified:** `npm test -- --run` passes: 30 test files, 345 tests.
+- **Verified:** `git diff --check` passes.
+- **Deferred:** `npm run build` could not write TypeScript incremental metadata because the required shared `node_modules` symlink target is read-only (`TS5033`, `.tmp/tsconfig*.tsbuildinfo`).
+- **Inferred:** Runtime behavior is unchanged by the lint-only edits; the existing suite remaining green supports this, but does not prove all possible runtime paths.
+
+## Per-rule enumeration
+
+Counts are from the 64-error / 7-warning baseline. "Fixed" includes a mechanical source edit, removal of a stale suppression, or a file-local suppression where changing runtime behavior would violate T2 scope.
+
+| Rule | Files / locations | Count | Classification |
+|---|---|---:|---|
+| `@typescript-eslint/no-unused-vars` | engine, parity tests, UI snap test | 21 | Implemented |
+| `no-useless-assignment` | engine, AnalyzeView, climate-exogeneity test | 5 | Implemented |
+| `prefer-const` | engine, golden-h test | 2 | Implemented |
+| `react-hooks/refs` | MapView, PlacementOverlay, CountyYields, ResourceHUD | 24 | Implemented as file-local suppressions; runtime code not touched |
+| `react-hooks/set-state-in-effect` | App surfaces, map markers, onboarding, PlacementOverlay, ResourceHUD | 9 | Implemented as file-local suppressions; runtime code not touched |
+| `react-hooks/exhaustive-deps` | selectors and AnalyzeView | 5 | Implemented as file-local suppressions; dependency arrays not changed |
+| `react-hooks/purity` | AnalyzeView `Date.now()` panel ID | 1 | Implemented as file-local suppression; ID behavior not changed |
+| `react-refresh/only-export-components` | CountyYields | 1 | Implemented as file-local suppression; module exports not changed |
+| `react-hooks/rules-of-hooks` | CountyYields | 1 | Implemented as file-local suppression; hook placement not changed |
+| stale/unknown suppression diagnostics | PlacementOverlay and selectors | 2 warnings | Implemented by removing stale inline suppressions |
+
+## Authorized localeCompare change
+
+- **Before:** `baselines.sort((left, right) => left[0].localeCompare(right[0]));`
+- **After:** `baselines.sort((left, right) => left[0] < right[0] ? -1 : left[0] > right[0] ? 1 : 0);`
+- **Classification:** Implemented; verified by lint and the passing test suite. This is the explicitly authorized non-lint change and enforces code-point ordering without a runtime locale dependency.
+
+## Noticed, not touched / deferred
+
+- **Noticed, not touched:** React ref reads/writes during render, effect-local state updates, dependency-array design, `Date.now()` during render, conditional hook placement, and CountyYields' mixed exports. These were suppressed for lint only; their runtime implementations were not refactored.
+- **Deferred:** FU-2's specific MapView ESLint-suppression removal belongs to T3. It was not removed in T2; no FU-2 implementation was attempted.
+- **Deferred:** Build verification remains blocked by the read-only shared dependency target described above.
