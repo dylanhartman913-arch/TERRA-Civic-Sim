@@ -3091,3 +3091,52 @@ Note: in unprovision energy-map checkout, 9 tests fail across 2 files (c4i-event
 **Item:** The builder's log records `npm test -- --run` = 32 files, 356 tests and `npm run parity` = 29 files, 332 tests, run from the w5-engine worktree (branched from main @ `f50b3ec`, post-T2, pre-T3). Post-T3+T4+T5 main shows `npm test -- --run` = 33 files, 364 tests and `npm run parity` = 29 files, 332 tests.
 
 **Reconciliation:** The delta of +1 file / +8 tests in the full suite is exactly T3's `c5a-climate-ui.test.ts` (8 tests), which was not on the builder's baseline. The parity count (332) matches exactly. There is no unexplained discrepancy — the difference is a baseline mismatch, not missing or phantom tests. This entry documents the reconciliation so it is not left ambiguous at next touch.
+
+---
+
+## T6 / C5b — Full climate choropleth integration
+
+### Source
+
+`build_log/wave5/t6-c5b.md` — commit `9b81f42` on `w5-c5b`.
+
+### Implemented
+
+- **C2.1.0 resolver:** `climateSurfaceRecordFor` reads
+  `county_climate_baseline.json`, validates the `C2.1.0` shape, renders
+  historical baseline values or scenario delta values, and validates every
+  delta row against the baseline record named by its `baseline_key`. It does
+  not treat the top-level `metrics` array as a county-complete registry.
+- **Full selector surface:** global lens, epoch, and metric controls drive the
+  choropleth source. Metric coverage labels are calculated from actual baseline
+  rows; no coverage claim is inferred from the metrics array.
+- **Attribution:** clicking a populated cell opens the existing attribution
+  popover with the selected C2.1 record's scenario, epoch, percentile, source,
+  method, confidence, and downscaling method.
+- **SNOTEL absence:** counties without a matching `baseline_key` emit an
+  explicit no-data map cell (gray) and a click message. The selector identifies
+  partial coverage (46 counties) for both SNOTEL metrics.
+- **Fallback:** invalid/unavailable C2.1 data retains the C5a non-historical,
+  2050, high-fire-danger-days surface; other combinations remain unavailable.
+
+### Verification
+
+| Claim | Status | Evidence |
+|---|---|---|
+| Lens/epoch/metric selection changes map-cell data and C2.1 attribution. | verified | `tests/ui/c5b-choropleth.test.ts`: SSP245/2030 and SSP370/2065 values differ for Adams County; popover rendered via `renderToStaticMarkup` and asserted. |
+| Missing SNOTEL county is a no-data cell. | verified | Same test: `08001` has `climate_hazard_no_data=true`, `value=null`; covered `08007` is populated. |
+| Historical/fire-only C5a fallback when C2.1 unavailable. | verified | Same test: resolver with `surfaceAvailable=false` returns fire-danger record and rejects other metric/lens combos. |
+| Resolver joins on `baseline_key`, not `metrics` array. | verified | `climateSurfaceRecordFor` uses `baselineByKey.get(delta.baseline_key.join('|'))` join; coverage derived from baselines, not metrics registry. |
+| Lint (0 errors), build, and full suite. | verified | `npm run lint` exit 0 (0 errors, 0 warnings) on w5-c5b; `npm run build` pass; 34 files / 367 tests pass post-merge on main. |
+
+### Gate verdict
+
+**PASS WITH FOLLOW-UP** — commit `9b81f42` on `w5-c5b`. Merged to main at `662db69`.
+
+### Open follow-up — T6-FU-2: SNOTEL no-data gray-fill not render-verified
+
+**Item:** The discriminating test for SNOTEL no-data (`c5b-choropleth.test.ts` Test 2) asserts `climate_hazard_no_data=true` and `value=null` on the feature properties output by `hazardFeaturesFor()`. It does not render the MapLibre fill-color expression to confirm the gray fill is actually applied.
+
+**Why:** MapLibre GL map expressions (`['case', ['get', 'climate_hazard_no_data'], ...]`) cannot be evaluated headlessly in a Vitest/JSDOM environment without a live map instance. The expression that drives the gray color is correct in code but the rendered pixel cannot be unit-tested.
+
+**Constraint:** Before a gray-fill render is claimed as tested, it must be covered by an e2e test (Playwright or similar) that instantiates a real MapLibre map and asserts the computed fill color for a no-data county. The current entry is evidence of data-layer correctness only, not render-layer coverage.
