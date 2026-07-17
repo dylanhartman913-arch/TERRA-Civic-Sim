@@ -5,6 +5,7 @@ import { ActionPalette } from './panels/ActionPalette.js';
 import { CountyCardDrawer } from './panels/CountyCardDrawer.js';
 import { MetricSelector } from './panels/MetricSelector.js';
 import { LayerToggle } from './panels/LayerToggle.js';
+import { ClimateLensSelector } from './panels/ClimateLensSelector.js';
 import { BuildQueue } from './panels/BuildQueue.js';
 import { YearControls } from './panels/YearControls.js';
 import { QuestTracker } from './panels/QuestTracker.js';
@@ -272,6 +273,7 @@ export default function App() {
           }}>
             <EesGauges />
             <MetricSelector />
+            <ClimateLensSelector />
             <LayerToggle />
             <BuildQueue />
             <QuestTracker />

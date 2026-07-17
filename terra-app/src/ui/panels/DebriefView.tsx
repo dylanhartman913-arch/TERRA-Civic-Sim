@@ -426,6 +426,9 @@ export function DebriefView({ onClose }: { onClose: () => void }) {
             {replayed.length} session{replayed.length !== 1 ? 's' : ''} loaded
             {sharedSeed != null ? ` · shared seed ${sharedSeed}` : ''}
           </span>
+          <span data-testid="debrief-climate-lens" style={{ fontSize: 10, color: 'var(--text-secondary)' }}>
+            Climate lens: {replayed.length === 0 ? 'awaiting session file' : [...new Set(replayed.map(item => item.session.file.climate_lens ?? 'historical'))].join(', ')}
+          </span>
         </div>
         <button
           onClick={onClose}

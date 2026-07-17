@@ -8,6 +8,7 @@ const LAYERS: { key: keyof LayerVisibility; label: string }[] = [
   { key: 'oracle',      label: 'Oracle' },
   { key: 'yieldBadges', label: 'Yield badges' },
   { key: 'anchors',     label: 'Anchor facilities' },
+  { key: 'climateHazards', label: 'Climate hazards (2050 fire days)' },
   { key: 'sites',       label: 'Site markers' },
 ];
 
