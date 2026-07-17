@@ -2916,3 +2916,71 @@ Counts are from the 64-error / 7-warning baseline. "Fixed" includes a mechanical
 - **Noticed, not touched:** React ref reads/writes during render, effect-local state updates, dependency-array design, `Date.now()` during render, conditional hook placement, and CountyYields' mixed exports. These were suppressed for lint only; their runtime implementations were not refactored.
 - **Deferred:** FU-2's specific MapView ESLint-suppression removal belongs to T3. It was not removed in T2; no FU-2 implementation was attempted.
 - **Deferred:** Build verification remains blocked by the read-only shared dependency target described above.
+
+---
+
+## Wave 5 — T3: C5a Follow-up Resolution (c5a-r)
+
+*Merged to main at `c7d5a188` — 2026-07-16. Source: `build_log/wave5/c5a-r.md`.*
+
+### Stage 0
+
+**Verified:** `pwd` reported `/Users/dylanhartman/projects/Energy Modeling/w5-ui` and
+`git branch --show-current` reported `w5-ui`. `git show --stat ede5149` and direct
+inspection verified that the cherry-pick contains non-empty `MapView.tsx` and
+`HazardChoroplethLayer.tsx` climate UI work.
+
+**Verified PM disposition (FU-1):** `terra-app/TERRA_build_log.md` D1 says C5a ships
+as **"2050 fire days"** and explicitly reserves the T4 baseline+delta wiring for
+T6/C5b. `LayerToggle.tsx` already uses the required label. **Deferred:** no T4 data
+surface was wired in this ticket.
+
+### Implemented follow-ups
+
+| Item | Classification | Disposition |
+|---|---|---|
+| FU-1 | DEFERRED / VERIFIED | The existing `Climate hazards (2050 fire days)` LayerToggle label implements the PM's named deferral; full baseline+delta remains T6/C5b. |
+| FU-2 | IMPLEMENTED / VERIFIED | Removed the local `react-hooks/refs` suppression from the choropleth call; it now follows the sibling-layer `map={mapRef.current}` pattern without an exception. |
+| FU-3 | IMPLEMENTED / VERIFIED | This section records what actually ships and makes all proxy/deferred claims explicit. |
+| FU-4 | IMPLEMENTED / VERIFIED | Performance disposition below follows the H1.4 precedent: a measured limitation is not represented as a pass. |
+| FU-5 | IMPLEMENTED / CLOSED (PM) | `HazardChoroplethLayer` resolves `--choro-3` with browser `getComputedStyle` before passing the value to MapLibre. PM human-verified: choropleth color updates on lens toggle when the hazard layer is enabled; default-off LayerToggle explains the build-environment "nothing happens" report. Closed. |
+| FU-6 | IMPLEMENTED / VERIFIED | Six discriminating tests: loaded-`ssp245` DebriefView render; tagged badge rendering; badge provenance; missing-tag absence; C4 scope boundary; all-six-field attribution. |
+
+### Implementation-stage disposition
+
+**Implemented:** C5a's existing climate selector, projection panel, attribution
+popover, exposure badges, 2050 fire-day layer label, and choropleth were present
+from `ede5149`; this rework changes only FU-2/FU-5 code paths and FU-6 coverage.
+
+**Verified:** targeted C5a UI tests pass (8 tests: 6 new discriminators plus two
+existing climate regressions); `npm run build` and `npm run lint` pass.
+
+**Deferred:** county baseline+delta integration is T6/C5b per D1; C4 exposure
+stress rows and event feeds remain out of the C5a surface.
+
+### Performance disposition
+
+**VERIFIED FAIL / carried debt:** `docs/orchestration/Wave4_closeout_report.md` §6
+records three headless-Chrome captures at p95 66.7–67.2 ms against a 16 ms budget.
+Gate CLOSED: FAIL. Pre-existing; carried as D4 into Wave 5 release-readiness.
+
+**PROXY — not a frame-time pass:** production build 2.12 s, 45.1 MB JS bundle (5.22 MB gzip). Build artifacts only; no frame-time pass inferred.
+
+### Verification evidence
+
+```text
+npm test -- --run tests/ui/c5a-climate-ui.test.ts
+Test Files  1 passed (1)
+Tests       8 passed (8)
+
+npm run build  ✓ built in 2.12s
+npm run lint   (exit 0)
+
+Post-merge full suite (energy-map main, provisioned worktree):
+Test Files  31 passed (31)
+Tests       353 passed (353)
+```
+
+### Gate verdict
+
+**PASS** — commits `046b96c` + `dad35a5` on `w5-ui`. FU-5 closed by PM human verification. Merged to main at `c7d5a188`.
