@@ -3208,3 +3208,65 @@ At the start of every gate-review dispatch (first ticket of any wave), the revie
 | **T6-FU-2** | T6 | **SNOTEL no-data gray-fill not render-verified.** `c5b-choropleth.test.ts` Test 2 asserts `climate_hazard_no_data=true` and `value=null` on feature properties but cannot evaluate the MapLibre fill-color expression (`['case', ['get', 'climate_hazard_no_data'], ...]`) in a headless JSDOM environment. Data-layer correctness is verified; render-layer correctness is not. | Before a SNOTEL gray-fill render is claimed as tested, it must be covered by an e2e test (Playwright or equivalent) that instantiates a real MapLibre map and asserts the computed fill color for a no-data county. |
 
 **Wave 5 is closed.** Nothing merges to main under this wave after `df552f2`. Wave 6 opens on a clean main with the six debt items above as its inherited planning input.
+
+---
+
+## Wave 5 — T7 Corrections (appended 2026-07-17, after fb2ef4c)
+
+*Per R4/R13 — append only. Two rows in the fb2ef4c debt table are incorrect and are superseded here. The fb2ef4c entry is not edited or deleted.*
+
+---
+
+### Correction 1 — T2-FU-DEAD: wrong item described in fb2ef4c
+
+**Error:** The fb2ef4c entry for `T2-FU-DEAD` described the build verification / read-only symlink blockage (`TS5033`, `.tmp/tsconfig*.tsbuildinfo`). That item was **resolved before T2 merged** — the symlink was converted to a writable local directory in `terra-app/node_modules` and `tsc -b` exited 0 (confirmed in Prompt 5 of T2). It is not debt.
+
+**Corrected item:**
+
+| ID | Source ticket | Description | Carry-forward constraint |
+|----|--------------|-------------|--------------------------|
+| **T2-FU-DEAD** | T2 | **`replayFixtureActions` dead code in `c3-inertness-gate.test.ts`.** The function is defined (lines 32–80) but never called in any test. T2 added `void replayFixtureActions;` (line 82) to suppress the `no-unused-vars` lint error rather than removing the dead code — the removal was out of T2 scope (lint-only), and the function was left as future housekeeping. Non-blocking: no test is gated on the function, and its presence does not affect runtime behavior or test coverage. | Before any refactor of `c3-inertness-gate.test.ts`, remove `replayFixtureActions` and its `void` suppression — or wire it into an actual test if replay coverage is wanted. Do not simply carry the suppression forward indefinitely. |
+
+The symlink/build description from fb2ef4c is **withdrawn**; it was not debt and should not appear in Wave 6 planning.
+
+---
+
+### Correction 2 — T5-FU-2: "closed" status not supported; item remains OPEN
+
+**Error:** The fb2ef4c entry marked T5-FU-2 as "Documented, closed." What was actually reconciled in fb2ef4c was a *different* comparison: the file/test-count change pre/post T3 merge (32→33 files, 356→364 tests, delta = T3's `c5a-climate-ui.test.ts`). The **original open item** at T5's gate review was a 27-test reproduction gap between the T5 builder's claim and an independent reviewer's count (305 parity tests vs. the builder's 332).
+
+**Fresh reproduction against current main (2026-07-17):**
+
+```
+npm run parity   →  Test Files 29 passed (29) / Tests 332 passed (332)
+npm test -- --run →  Test Files 34 passed (34) / Tests 367 passed (367)
+```
+
+**Comparison against T5 builder's claim (w5-engine, pre-T3):**
+
+| Metric | T5 builder | Current main | Delta | Explanation |
+|--------|-----------|-------------|-------|-------------|
+| `npm run parity` (files) | 29 | 29 | 0 | No parity files added since T5 |
+| `npm run parity` (tests) | 332 | 332 | 0 | **Match — parity count is reproducible** |
+| `npm test -- --run` (files) | 32 | 34 | +2 | T3 (`c5a-climate-ui.test.ts`) + T6 (`c5b-choropleth.test.ts`) |
+| `npm test -- --run` (tests) | 356 | 367 | +11 | T3 (+8 tests) + T6 (+3 tests) |
+
+T5 builder's parity count (332) is **exactly reproduced** on current main. The full-suite delta (+11 tests) is fully accounted for by post-T5 ticket additions (T3 and T6).
+
+**Investigation of the original 305 vs. 332 gap:**
+
+The gap of 27 cannot be reconstructed from current codebase state. Investigation steps ruled out:
+- **Data-file dependency:** Running `npm run parity` without `nri_wrc_county_hazard_summary.csv` produces `9 failed | 323 passed (332)` — total still 332, not 305. Failed tests are counted, not hidden.
+- **Dynamic test generation:** No `it.each`, `describe.each`, or `forEach`-based test generation exists anywhere in `tests/parity/`. All test counts are static.
+- **File-set differences:** At P0 baseline `9883f85` (pre-T5), 27 parity files existed (T5 added `c4ii-consequences.test.ts` [7 tests] and `golden-m.test.ts` [4 tests]). Running on 27 files would produce 321 tests — not 305. The gap remains 16 tests unexplained.
+- **T2 modifications to test files:** T2 made lint-only changes to parity test files (removed unused imports, added `void` suppressions). No test was added or removed.
+
+**Conclusion:** The 305 count cannot be traced to any reconstructable state of the test suite. The original discrepancy may have been caused by an environment-specific failure mode (e.g., a test-file import throwing during collection, preventing vitest from counting tests in that file) or a worktree state not captured in the build log. The chain from 305 to 332 cannot be closed from available evidence.
+
+**Corrected status:**
+
+| ID | Source ticket | Description | Status |
+|----|--------------|-------------|--------|
+| **T5-FU-2** | T5 | **TS test-count reproduction gap (original 305 vs. 332, OPEN).** T5 builder's parity claim (332) is reproduced on current main (332 ✓). Full-suite delta post-T5 (+11) is explained by T3 and T6 additions. The original independent-reviewer count of 305 cannot be reconstructed: missing-CSV removes 9 passing tests (still counted as total 332), no dynamic generation exists, and the 27-file P0 baseline yields 321 (not 305). The mechanism that produced 305 is unresolved. | **OPEN — gap unexplained; do not mark closed until 305 origin is identified** |
+
+The fb2ef4c "Documented, closed" status for T5-FU-2 is **superseded by this entry**.
