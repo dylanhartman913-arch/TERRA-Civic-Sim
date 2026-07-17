@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect -- preserve existing campaign-overlay state transition. */
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { MapView } from './ui/map/MapView.js';
 import { ActionPalette } from './ui/panels/ActionPalette.js';

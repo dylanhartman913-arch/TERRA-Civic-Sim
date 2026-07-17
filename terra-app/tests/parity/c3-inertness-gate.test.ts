@@ -21,7 +21,6 @@ import {
   queueAction,
   applyAction,
   scheduleRetirement,
-  historyDigest,
 } from '../../src/engine/engine.js';
 import { EMPTY_CLIMATE_CONTEXT } from '../../src/engine/types.js';
 import type { EngineState } from '../../src/engine/types.js';
@@ -80,6 +79,8 @@ function replayFixtureActions(
   return state;
 }
 
+void replayFixtureActions;
+
 describe('C3 Inertness Gate', () => {
   // Test that Golden A (simplest golden) state digest is unchanged under EMPTY_CLIMATE_CONTEXT
   it('Golden A state digest unchanged under historical lens', () => {
@@ -97,8 +98,6 @@ describe('C3 Inertness Gate', () => {
   it('Golden L historical digests match frozen fixture', () => {
     const fixture = loadFixture('golden_l') as Record<string, unknown>;
     const digests = fixture['digests_historical'] as Record<string, string>;
-    const tables = (fixture['climate_table_slice'] as Record<string, unknown>)['ssp370'] as Record<string, Record<string, Record<string, number>>>;
-
     // Replay under historical lens
     let state = loadInitialStateWithRetirements();
     const actionLog = fixture['action_log'] as Array<Record<string, unknown>>;

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect -- preserve existing badge synchronization. */
 /**
  * YieldBadges — Civ-style icon badges at county centroids for counties
  * with active yields (deficit, housing pressure, positive revenue delta).

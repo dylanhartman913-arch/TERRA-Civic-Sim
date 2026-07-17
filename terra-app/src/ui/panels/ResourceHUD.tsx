@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect, react-hooks/refs -- preserve existing HUD synchronization and refs. */
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { useTerraStore } from '../../state/store.js';
 import { computeConsumption, getEraForYear } from '../../engine/budgets.js';

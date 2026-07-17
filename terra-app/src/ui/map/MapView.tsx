@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/refs -- map instance is initialized before child layers render. */
 import { useEffect, useRef, useState } from 'react';
 import maplibregl from 'maplibre-gl';
 import { useTerraStore } from '../../state/store.js';

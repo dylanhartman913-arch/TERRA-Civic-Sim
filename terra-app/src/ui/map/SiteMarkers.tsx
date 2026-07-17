@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect -- preserve existing marker synchronization. */
 /**
  * SiteMarkers — Retired-asset site markers on the map
  *

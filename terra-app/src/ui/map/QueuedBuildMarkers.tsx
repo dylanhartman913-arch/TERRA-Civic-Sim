@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect -- preserve existing marker synchronization. */
 /**
  * QueuedBuildMarkers — F3 sub-county pin rendering
  *

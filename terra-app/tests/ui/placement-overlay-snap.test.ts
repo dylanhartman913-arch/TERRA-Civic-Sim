@@ -11,7 +11,7 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import { findSnapTarget, SNAP_RADIUS_DEG } from '../../src/ui/map/snapTarget.js';
+import { findSnapTarget } from '../../src/ui/map/snapTarget.js';
 import type { SnapEngineSlice } from '../../src/ui/map/snapTarget.js';
 import anchorFacilitiesData from '../../src/data/mw_anchor_facilities.geojson';
 

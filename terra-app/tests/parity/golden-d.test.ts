@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { loadFixture, loadInitialState, relClose, computeDigestMd5, computeFiscalDigestMd5 } from './helpers.js';
-import { applyAction, queueAction, advanceYear, getCountyFiscal } from '../../src/engine/engine.js';
+import { applyAction, queueAction, advanceYear } from '../../src/engine/engine.js';
 import type { EngineState } from '../../src/engine/types.js';
 
 const fixture = loadFixture('golden_d') as {
@@ -77,8 +77,6 @@ describe('Golden D — Campbell & Laramie Fiscal Arcs', () => {
   it('(4a) Campbell Ledger A declines monotonically at each retirement commission', () => {
     const expected = fixture.assertions['4a_ledger_a_at_commissions'] as number[];
     // Get Campbell fiscal state
-    const campbellFiscal = getCountyFiscal(state, '56005')!;
-    const aTrajectory = campbellFiscal.ledger_a_trajectory as { year: number; level: number }[];
 
     // Filter to coal_to_solar commission years — fiscal_actions from coal_to_solar only
     const cf = state.county_fiscal['56005'];

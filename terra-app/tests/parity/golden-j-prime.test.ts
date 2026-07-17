@@ -15,7 +15,7 @@ import {
   historyDigest,
   project,
 } from '../../src/engine/engine.js';
-import { computeIndicator, snapshotIndicators } from '../../src/engine/indicators.js';
+import { computeIndicator } from '../../src/engine/indicators.js';
 import type { EngineState, IndicatorSnapshot } from '../../src/engine/types.js';
 
 // ── Fixtures ─────────────────────────────────────────────────────────────────

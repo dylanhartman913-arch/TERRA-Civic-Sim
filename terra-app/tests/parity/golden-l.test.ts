@@ -32,7 +32,6 @@ import {
 import {
   advanceYear,
   queueAction,
-  historyDigest,
 } from '../../src/engine/engine.js';
 import { EMPTY_CLIMATE_CONTEXT } from '../../src/engine/types.js';
 import type { ClimateContext, EngineState } from '../../src/engine/types.js';

@@ -473,12 +473,9 @@ function seedAssetRegistry(
           coal_tons_yr = Math.round(capacity_mw * PRB_COAL_TONS_PER_MW_YR * 100) / 100;
           production_proxy = coal_tons_yr;
         }
-        let fiscal_action_id: string | null = null;
-        if (assetType === 'data_center') {
-          fiscal_action_id = capacity_mw >= 150 ? 'data_center_campus_phase' : 'data_center_hyperscale';
-        } else {
-          fiscal_action_id = ASSET_TYPE_TO_FISCAL_ACTION[assetType] ?? null;
-        }
+        const fiscal_action_id = assetType === 'data_center'
+          ? capacity_mw >= 150 ? 'data_center_campus_phase' : 'data_center_hyperscale'
+          : ASSET_TYPE_TO_FISCAL_ACTION[assetType] ?? null;
         registry.push({
           asset_id: `baseline_${geoid}_${slugify(name)}`,
           origin: 'baseline',
@@ -1435,6 +1432,7 @@ export function applyAction(
   // C0: climate_context accepted but unused under historical lens.
   // C3 will add demand modulation coupling here (CDD/HDD × population).
 ): [EngineState, DeltaSummary] {
+  void _climateContext;
   const state = shallowCopyState(inputState);
 
   const actions = state.action_library.actions;
@@ -1681,8 +1679,8 @@ export function applyAction(
   const materialConsumed: Record<string, { quantity: number; unit: string }> = {};
   for (const [matType, matSpec] of Object.entries(materials)) {
     if (['primary_input', 'unit', 'source'].includes(matType)) continue;
-    let qtyPerUnit = 0;
-    let unitLabel = 'tonnes';
+    let qtyPerUnit: number;
+    let unitLabel: string;
     if (typeof matSpec === 'object' && matSpec !== null && !Array.isArray(matSpec)) {
       qtyPerUnit = (matSpec as Record<string, unknown>).tonnes_per_unit as number || 0;
       unitLabel = (matSpec as Record<string, unknown>).unit as string || 'tonnes';
@@ -1819,6 +1817,7 @@ export function queueAction(
   _climateContext: ClimateContext = EMPTY_CLIMATE_CONTEXT,
   // C0: climate_context accepted but unused under historical lens.
 ): EngineState {
+  void _climateContext;
   const state = shallowCopyState(inputState);
 
   const actions = state.action_library.actions;
@@ -2015,6 +2014,7 @@ function countPlayerOpsJobs(state: EngineState, geoid: string): number {
  * Called by advanceYear BEFORE snapshotIndicators so history reflects end-of-year state.
  */
 function advancePopulation(state: EngineState, _year: number): void {
+  void _year;
   const config = state.population_config;
   const migrationEnabled = config?.migration_enabled !== false;
   const laborMult = config?.labor_migration_multiplier ?? ECONOMIC_BASE_MULTIPLIER;
@@ -2603,6 +2603,7 @@ export function injectDisturbance(
 // ── Compute EES Summary ─────────────────────────────────────────────────────
 
 function nearestScenario(_state: EngineState): NearestScenario | null {
+  void _state;
   // Scenario profiles not included in TS data export — return null
   return null;
 }
@@ -2822,6 +2823,7 @@ export function getMaterialLedger(state: EngineState): MaterialLedgerSummary {
 // ── Get Pathway Conditions ──────────────────────────────────────────────────
 
 export function getPathwayConditions(state: EngineState, _scenarioProfile?: ScenarioProfile): PathwayConditions {
+  void _scenarioProfile;
   const nearest = nearestScenario(state);
 
   const countyVals = Object.values(state.county_ees);
@@ -2847,7 +2849,7 @@ export function getPathwayConditions(state: EngineState, _scenarioProfile?: Scen
     S: Math.round(sCurr * 10000) / 10000,
   };
 
-  let targets: Record<string, TargetGap> = {};
+  const targets: Record<string, TargetGap> = {};
   let conditions: Record<string, unknown>[] = [];
   let ecoregionGaps: Record<string, unknown> = {};
   let scenarioSummary: PathwayConditions['nearest_scenario'] = null;

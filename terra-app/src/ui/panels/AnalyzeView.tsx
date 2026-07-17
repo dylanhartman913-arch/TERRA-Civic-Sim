@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps, react-hooks/purity -- preserve existing analysis memo and panel-id behavior. */
 /**
  * AnalyzeView — /analyze Tradeoff Workspace
  *
@@ -230,9 +231,8 @@ function RatioCard({
 function PaybackCard({ geoid, currentYear }: { geoid: string; currentYear: number }) {
   const { cumulativeRevenue, totalCapex } = usePaybackChartData(geoid);
   const paybackYear = useMemo(() => {
-    let cumRev = 0;
     for (const d of cumulativeRevenue) {
-      cumRev = d.value ?? 0;
+      const cumRev = d.value ?? 0;
       if (cumRev >= totalCapex && totalCapex > 0) return d.year;
     }
     return null;

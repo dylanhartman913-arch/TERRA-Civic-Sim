@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components, react-hooks/rules-of-hooks, react-hooks/refs -- preserve existing yield-popover behavior. */
 /**
  * CountyYields — compact per-county yields strip + expandable breakdowns
  *

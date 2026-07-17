@@ -7,7 +7,6 @@ import {
   cancelQueued,
   queueAction,
   advanceYear,
-  getExistingAssets,
 } from '../../src/engine/engine.js';
 import type { AssetInstance } from '../../src/engine/types.js';
 

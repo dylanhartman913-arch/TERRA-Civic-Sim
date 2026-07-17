@@ -368,6 +368,7 @@ function assetDisplayName(a: AssetInstance): string {
 }
 
 function assetSubtitle(a: AssetInstance, _year: number): string {
+  void _year;
   const parts: string[] = [];
   if (a.capacity_mw != null && a.capacity_mw > 0) parts.push(`${a.capacity_mw} MW`);
   if (a.magnitude != null && a.origin === 'player') parts.push(`${a.magnitude} units`);

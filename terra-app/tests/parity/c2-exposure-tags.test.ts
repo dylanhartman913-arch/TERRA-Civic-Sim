@@ -17,7 +17,6 @@ import { readFileSync } from 'fs';
 import { resolve } from 'path';
 import {
   loadFixture,
-  loadInitialStateWithRetirements,
   loadInitialStateWithAnchorsAndTags,
   computeDigestMd5,
   computeFiscalDigestMd5,
@@ -60,6 +59,7 @@ function loadInitialStateWithAnchorsNoTags(): EngineState {
   } catch { /* optional */ }
   const retirements = JSON.parse(readFileSync(resolve(DATA_DIR, 'baseline_retirements.json'), 'utf-8'));
   const { _meta, ...retirementData } = retirements;
+  void _meta;
   let lifecycleCoefficients: Record<string, unknown> | undefined;
   try {
     lifecycleCoefficients = JSON.parse(readFileSync(resolve(DATA_DIR, 'lifecycle_coefficients.json'), 'utf-8'));
