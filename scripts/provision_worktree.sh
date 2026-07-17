@@ -107,6 +107,36 @@ else
   echo "  SKIP (not found in source): build_log/wave4/_baseline.md" >&2
 fi
 
+# ── Hash-verified W6-A data outputs ──────────────────────────────────────────
+# Files added by W6-A must remain byte-identical when provisioned. Each entry
+# is `repo-relative path|SHA-256`; fail closed if a source changes without a
+# corresponding manifest update.
+HASH_VERIFIED_DATA_MANIFEST=(
+  "data/processed/wy_county_ag_baseline.json|909300ead76ec31fe28afe9c8bb202f8a4ab107f20d6675f39ccd565a5930030"
+  "data/processed/wy_grazing_allotments.csv|35550012ad0538394cb481f49bf298fa7b7a2afef7df60dda8b060359642d08a"
+  "data/processed/wy_ag_sources.csv|dabd8edafdd1774d3456e1db24a877164218ee5c86751030d267b30e2fedb414"
+)
+
+echo ""
+echo "Hash-verified data manifest"
+for entry in "${HASH_VERIFIED_DATA_MANIFEST[@]}"; do
+  relative_path="${entry%%|*}"
+  expected_hash="${entry##*|}"
+  source_path="$REPO_ROOT/$relative_path"
+  destination_path="$TARGET/$relative_path"
+  if [[ ! -f "$source_path" || ! -f "$destination_path" ]]; then
+    echo "  ERROR (manifest file missing): $relative_path" >&2
+    exit 1
+  fi
+  actual_hash="$(shasum -a 256 "$source_path" | awk '{print $1}')"
+  copied_hash="$(shasum -a 256 "$destination_path" | awk '{print $1}')"
+  if [[ "$actual_hash" != "$expected_hash" || "$copied_hash" != "$expected_hash" ]]; then
+    echo "  ERROR (SHA-256 mismatch): $relative_path" >&2
+    exit 1
+  fi
+  echo "  verified: $relative_path $expected_hash"
+done
+
 echo ""
 echo "Done. All copied files are untracked in the worktree (.gitignore or"
 echo "unlisted). Re-run this script if the source files are updated."
