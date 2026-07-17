@@ -1,0 +1,5207 @@
+{
+  "schema_version": "wy_county_ag_baseline_v1",
+  "vintage": "2026-07-17",
+  "status": "partial_nass_coa2022_populated",
+  "consumers": [
+    "AG1 Dispatch \u2014 Wave 6 agricultural scenario layer"
+  ],
+  "contract_notes": [
+    "Water is represented only as separate diversion and consumptive-use fields.",
+    "Ag economics use only Census of Agriculture operations/producers and BEA farm proprietor income (D4).",
+    "DOR productive-value fields are coefficients and link to the fiscal ledger; assessed values are not duplicated."
+  ],
+  "counties": {
+    "56001": {
+      "geoid": "56001",
+      "county_name": "Albany",
+      "state": "WY",
+      "land_by_use": {
+        "county_area_acres": {
+          "value": 2735569,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "cropland_acres": {
+          "value": 113517,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "irrigated_acres": {
+          "value": 94846,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "pastureland_acres": {
+          "value": 1194227,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "rangeland_acres": {
+          "value": 16798,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "AG LAND excl cropland/pastureland/woodland. Excludes pastureland (see pastureland_acres)."
+        },
+        "woodland_acres": {
+          "value": 22759,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "land_in_farms_acres": {
+          "value": 1347301,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "FARM OPERATIONS - ACRES OPERATED (2022 COA); sum of cropland+pastureland+woodland+other_ag."
+        },
+        "other_land_acres": {
+          "value": 1388268,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "is_residual_pool": true,
+          "derivation": "county_area_acres - land_in_farms_acres; never absorbs reconciliation error.",
+          "notes": null
+        },
+        "reconciliation_error_acres": {
+          "value": 0,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "(cropland + pastureland + woodland + other_ag) - land_in_farms. Must be 0 or near 0."
+        }
+      },
+      "cattle_and_forage": {
+        "beef_cows_head": {
+          "value": 28081,
+          "unit": "head",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "forage_acres": {
+          "value": 1211025,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "low",
+          "notes": "Derived: pastureland(excl cropland+woodland) + other_ag_land(excl cropland+pasture+woodland). Proxy only."
+        },
+        "stocking_rate_aum_per_acre": {
+          "value": 0.0333,
+          "unit": "AUM/acre",
+          "year": 2022,
+          "source": "nrcs_wy_technical_note",
+          "confidence": "low",
+          "notes": "State-average estimate: 30 ac/AUM = 0.0333 AUM/ac (NRCS WY Grazing Lands Technical Note range: 20-40 ac/AUM)."
+        },
+        "aum_capacity": {
+          "value": 40368,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+        }
+      },
+      "federal_aums": {
+        "blm_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "blm_ras",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "federal_aum_share": {
+          "value": null,
+          "unit": "fraction",
+          "year": null,
+          "source": "blm_ras + usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "water": {
+        "diversion_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "consumptive_use_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "rap_invasive_cover": {
+        "current_cover_pct": {
+          "value": null,
+          "unit": "percent",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "ten_year_trend_pct_points": {
+          "value": null,
+          "unit": "percentage-points/10-years",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "geography": "county aggregate only; no sub-county invasive claim"
+      },
+      "ag_economics": {
+        "operations_count": {
+          "value": 362,
+          "unit": "operations",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "producers_count": {
+          "value": 733,
+          "unit": "producers",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "farm_proprietor_income_usd": {
+          "value": null,
+          "unit": "USD/year",
+          "year": null,
+          "source": "bea_farm_proprietor_income",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "dor_ag_productive_value_coefficients_usd_per_acre": {
+        "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
+        "irrigated": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "dryland": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "grazing_land": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      }
+    },
+    "56003": {
+      "geoid": "56003",
+      "county_name": "Big Horn",
+      "state": "WY",
+      "land_by_use": {
+        "county_area_acres": {
+          "value": 2007361,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "cropland_acres": {
+          "value": 107765,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "irrigated_acres": {
+          "value": 84839,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "pastureland_acres": {
+          "value": 303292,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "rangeland_acres": {
+          "value": 27904,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "AG LAND excl cropland/pastureland/woodland. Excludes pastureland (see pastureland_acres)."
+        },
+        "woodland_acres": {
+          "value": 17574,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "land_in_farms_acres": {
+          "value": 456535,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "FARM OPERATIONS - ACRES OPERATED (2022 COA); sum of cropland+pastureland+woodland+other_ag."
+        },
+        "other_land_acres": {
+          "value": 1550826,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "is_residual_pool": true,
+          "derivation": "county_area_acres - land_in_farms_acres; never absorbs reconciliation error.",
+          "notes": null
+        },
+        "reconciliation_error_acres": {
+          "value": 0,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "(cropland + pastureland + woodland + other_ag) - land_in_farms. Must be 0 or near 0."
+        }
+      },
+      "cattle_and_forage": {
+        "beef_cows_head": {
+          "value": 26646,
+          "unit": "head",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "forage_acres": {
+          "value": 331196,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "low",
+          "notes": "Derived: pastureland(excl cropland+woodland) + other_ag_land(excl cropland+pasture+woodland). Proxy only."
+        },
+        "stocking_rate_aum_per_acre": {
+          "value": 0.0333,
+          "unit": "AUM/acre",
+          "year": 2022,
+          "source": "nrcs_wy_technical_note",
+          "confidence": "low",
+          "notes": "State-average estimate: 30 ac/AUM = 0.0333 AUM/ac (NRCS WY Grazing Lands Technical Note range: 20-40 ac/AUM)."
+        },
+        "aum_capacity": {
+          "value": 11040,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+        }
+      },
+      "federal_aums": {
+        "blm_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "blm_ras",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "federal_aum_share": {
+          "value": null,
+          "unit": "fraction",
+          "year": null,
+          "source": "blm_ras + usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "water": {
+        "diversion_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "consumptive_use_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "rap_invasive_cover": {
+        "current_cover_pct": {
+          "value": null,
+          "unit": "percent",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "ten_year_trend_pct_points": {
+          "value": null,
+          "unit": "percentage-points/10-years",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "geography": "county aggregate only; no sub-county invasive claim"
+      },
+      "ag_economics": {
+        "operations_count": {
+          "value": 551,
+          "unit": "operations",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "producers_count": {
+          "value": 1099,
+          "unit": "producers",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "farm_proprietor_income_usd": {
+          "value": null,
+          "unit": "USD/year",
+          "year": null,
+          "source": "bea_farm_proprietor_income",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "dor_ag_productive_value_coefficients_usd_per_acre": {
+        "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
+        "irrigated": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "dryland": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "grazing_land": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      }
+    },
+    "56005": {
+      "geoid": "56005",
+      "county_name": "Campbell",
+      "state": "WY",
+      "land_by_use": {
+        "county_area_acres": {
+          "value": 3073315,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "cropland_acres": {
+          "value": 131367,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "irrigated_acres": {
+          "value": 5200,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "pastureland_acres": {
+          "value": 2423921,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "rangeland_acres": {
+          "value": 13039,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "AG LAND excl cropland/pastureland/woodland. Excludes pastureland (see pastureland_acres)."
+        },
+        "woodland_acres": {
+          "value": 30797,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "land_in_farms_acres": {
+          "value": 2599124,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "FARM OPERATIONS - ACRES OPERATED (2022 COA); sum of cropland+pastureland+woodland+other_ag."
+        },
+        "other_land_acres": {
+          "value": 474191,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "is_residual_pool": true,
+          "derivation": "county_area_acres - land_in_farms_acres; never absorbs reconciliation error.",
+          "notes": null
+        },
+        "reconciliation_error_acres": {
+          "value": 0,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "(cropland + pastureland + woodland + other_ag) - land_in_farms. Must be 0 or near 0."
+        }
+      },
+      "cattle_and_forage": {
+        "beef_cows_head": {
+          "value": 42930,
+          "unit": "head",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "forage_acres": {
+          "value": 2436960,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "low",
+          "notes": "Derived: pastureland(excl cropland+woodland) + other_ag_land(excl cropland+pasture+woodland). Proxy only."
+        },
+        "stocking_rate_aum_per_acre": {
+          "value": 0.0333,
+          "unit": "AUM/acre",
+          "year": 2022,
+          "source": "nrcs_wy_technical_note",
+          "confidence": "low",
+          "notes": "State-average estimate: 30 ac/AUM = 0.0333 AUM/ac (NRCS WY Grazing Lands Technical Note range: 20-40 ac/AUM)."
+        },
+        "aum_capacity": {
+          "value": 81232,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+        }
+      },
+      "federal_aums": {
+        "blm_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "blm_ras",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "federal_aum_share": {
+          "value": null,
+          "unit": "fraction",
+          "year": null,
+          "source": "blm_ras + usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "water": {
+        "diversion_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "consumptive_use_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "rap_invasive_cover": {
+        "current_cover_pct": {
+          "value": null,
+          "unit": "percent",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "ten_year_trend_pct_points": {
+          "value": null,
+          "unit": "percentage-points/10-years",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "geography": "county aggregate only; no sub-county invasive claim"
+      },
+      "ag_economics": {
+        "operations_count": {
+          "value": 548,
+          "unit": "operations",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "producers_count": {
+          "value": 1074,
+          "unit": "producers",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "farm_proprietor_income_usd": {
+          "value": null,
+          "unit": "USD/year",
+          "year": null,
+          "source": "bea_farm_proprietor_income",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "dor_ag_productive_value_coefficients_usd_per_acre": {
+        "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
+        "irrigated": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "dryland": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "grazing_land": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      }
+    },
+    "56007": {
+      "geoid": "56007",
+      "county_name": "Carbon",
+      "state": "WY",
+      "land_by_use": {
+        "county_area_acres": {
+          "value": 5054594,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "cropland_acres": {
+          "value": 186334,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "irrigated_acres": {
+          "value": 157301,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "pastureland_acres": {
+          "value": 2630818,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "rangeland_acres": {
+          "value": 16682,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "AG LAND excl cropland/pastureland/woodland. Excludes pastureland (see pastureland_acres)."
+        },
+        "woodland_acres": {
+          "value": 32606,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "land_in_farms_acres": {
+          "value": 2866440,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "FARM OPERATIONS - ACRES OPERATED (2022 COA); sum of cropland+pastureland+woodland+other_ag."
+        },
+        "other_land_acres": {
+          "value": 2188154,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "is_residual_pool": true,
+          "derivation": "county_area_acres - land_in_farms_acres; never absorbs reconciliation error.",
+          "notes": null
+        },
+        "reconciliation_error_acres": {
+          "value": 0,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "(cropland + pastureland + woodland + other_ag) - land_in_farms. Must be 0 or near 0."
+        }
+      },
+      "cattle_and_forage": {
+        "beef_cows_head": {
+          "value": 56154,
+          "unit": "head",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "forage_acres": {
+          "value": 2647500,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "low",
+          "notes": "Derived: pastureland(excl cropland+woodland) + other_ag_land(excl cropland+pasture+woodland). Proxy only."
+        },
+        "stocking_rate_aum_per_acre": {
+          "value": 0.0333,
+          "unit": "AUM/acre",
+          "year": 2022,
+          "source": "nrcs_wy_technical_note",
+          "confidence": "low",
+          "notes": "State-average estimate: 30 ac/AUM = 0.0333 AUM/ac (NRCS WY Grazing Lands Technical Note range: 20-40 ac/AUM)."
+        },
+        "aum_capacity": {
+          "value": 88250,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+        }
+      },
+      "federal_aums": {
+        "blm_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "blm_ras",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "federal_aum_share": {
+          "value": null,
+          "unit": "fraction",
+          "year": null,
+          "source": "blm_ras + usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "water": {
+        "diversion_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "consumptive_use_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "rap_invasive_cover": {
+        "current_cover_pct": {
+          "value": null,
+          "unit": "percent",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "ten_year_trend_pct_points": {
+          "value": null,
+          "unit": "percentage-points/10-years",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "geography": "county aggregate only; no sub-county invasive claim"
+      },
+      "ag_economics": {
+        "operations_count": {
+          "value": 311,
+          "unit": "operations",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "producers_count": {
+          "value": 630,
+          "unit": "producers",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "farm_proprietor_income_usd": {
+          "value": null,
+          "unit": "USD/year",
+          "year": null,
+          "source": "bea_farm_proprietor_income",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "dor_ag_productive_value_coefficients_usd_per_acre": {
+        "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
+        "irrigated": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "dryland": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "grazing_land": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      }
+    },
+    "56009": {
+      "geoid": "56009",
+      "county_name": "Converse",
+      "state": "WY",
+      "land_by_use": {
+        "county_area_acres": {
+          "value": 2723164,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "cropland_acres": {
+          "value": 53590,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "irrigated_acres": {
+          "value": 39235,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "pastureland_acres": {
+          "value": 2293550,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "rangeland_acres": {
+          "value": 15024,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "AG LAND excl cropland/pastureland/woodland. Excludes pastureland (see pastureland_acres)."
+        },
+        "woodland_acres": {
+          "value": 32793,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "land_in_farms_acres": {
+          "value": 2394957,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "FARM OPERATIONS - ACRES OPERATED (2022 COA); sum of cropland+pastureland+woodland+other_ag."
+        },
+        "other_land_acres": {
+          "value": 328207,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "is_residual_pool": true,
+          "derivation": "county_area_acres - land_in_farms_acres; never absorbs reconciliation error.",
+          "notes": null
+        },
+        "reconciliation_error_acres": {
+          "value": 0,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "(cropland + pastureland + woodland + other_ag) - land_in_farms. Must be 0 or near 0."
+        }
+      },
+      "cattle_and_forage": {
+        "beef_cows_head": {
+          "value": 33205,
+          "unit": "head",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "forage_acres": {
+          "value": 2308574,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "low",
+          "notes": "Derived: pastureland(excl cropland+woodland) + other_ag_land(excl cropland+pasture+woodland). Proxy only."
+        },
+        "stocking_rate_aum_per_acre": {
+          "value": 0.0333,
+          "unit": "AUM/acre",
+          "year": 2022,
+          "source": "nrcs_wy_technical_note",
+          "confidence": "low",
+          "notes": "State-average estimate: 30 ac/AUM = 0.0333 AUM/ac (NRCS WY Grazing Lands Technical Note range: 20-40 ac/AUM)."
+        },
+        "aum_capacity": {
+          "value": 76952,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+        }
+      },
+      "federal_aums": {
+        "blm_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "blm_ras",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "federal_aum_share": {
+          "value": null,
+          "unit": "fraction",
+          "year": null,
+          "source": "blm_ras + usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "water": {
+        "diversion_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "consumptive_use_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "rap_invasive_cover": {
+        "current_cover_pct": {
+          "value": null,
+          "unit": "percent",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "ten_year_trend_pct_points": {
+          "value": null,
+          "unit": "percentage-points/10-years",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "geography": "county aggregate only; no sub-county invasive claim"
+      },
+      "ag_economics": {
+        "operations_count": {
+          "value": 314,
+          "unit": "operations",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "producers_count": {
+          "value": 650,
+          "unit": "producers",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "farm_proprietor_income_usd": {
+          "value": null,
+          "unit": "USD/year",
+          "year": null,
+          "source": "bea_farm_proprietor_income",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "dor_ag_productive_value_coefficients_usd_per_acre": {
+        "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
+        "irrigated": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "dryland": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "grazing_land": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      }
+    },
+    "56011": {
+      "geoid": "56011",
+      "county_name": "Crook",
+      "state": "WY",
+      "land_by_use": {
+        "county_area_acres": {
+          "value": 1826867,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "cropland_acres": {
+          "value": 151456,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "irrigated_acres": {
+          "value": 12277,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "pastureland_acres": {
+          "value": 1129646,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "rangeland_acres": {
+          "value": 28240,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "AG LAND excl cropland/pastureland/woodland. Excludes pastureland (see pastureland_acres)."
+        },
+        "woodland_acres": {
+          "value": 195301,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "land_in_farms_acres": {
+          "value": 1504643,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "FARM OPERATIONS - ACRES OPERATED (2022 COA); sum of cropland+pastureland+woodland+other_ag."
+        },
+        "other_land_acres": {
+          "value": 322224,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "is_residual_pool": true,
+          "derivation": "county_area_acres - land_in_farms_acres; never absorbs reconciliation error.",
+          "notes": null
+        },
+        "reconciliation_error_acres": {
+          "value": 0,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "(cropland + pastureland + woodland + other_ag) - land_in_farms. Must be 0 or near 0."
+        }
+      },
+      "cattle_and_forage": {
+        "beef_cows_head": {
+          "value": 41776,
+          "unit": "head",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "forage_acres": {
+          "value": 1157886,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "low",
+          "notes": "Derived: pastureland(excl cropland+woodland) + other_ag_land(excl cropland+pasture+woodland). Proxy only."
+        },
+        "stocking_rate_aum_per_acre": {
+          "value": 0.0333,
+          "unit": "AUM/acre",
+          "year": 2022,
+          "source": "nrcs_wy_technical_note",
+          "confidence": "low",
+          "notes": "State-average estimate: 30 ac/AUM = 0.0333 AUM/ac (NRCS WY Grazing Lands Technical Note range: 20-40 ac/AUM)."
+        },
+        "aum_capacity": {
+          "value": 38596,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+        }
+      },
+      "federal_aums": {
+        "blm_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "blm_ras",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "federal_aum_share": {
+          "value": null,
+          "unit": "fraction",
+          "year": null,
+          "source": "blm_ras + usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "water": {
+        "diversion_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "consumptive_use_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "rap_invasive_cover": {
+        "current_cover_pct": {
+          "value": null,
+          "unit": "percent",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "ten_year_trend_pct_points": {
+          "value": null,
+          "unit": "percentage-points/10-years",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "geography": "county aggregate only; no sub-county invasive claim"
+      },
+      "ag_economics": {
+        "operations_count": {
+          "value": 549,
+          "unit": "operations",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "producers_count": {
+          "value": 1022,
+          "unit": "producers",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "farm_proprietor_income_usd": {
+          "value": null,
+          "unit": "USD/year",
+          "year": null,
+          "source": "bea_farm_proprietor_income",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "dor_ag_productive_value_coefficients_usd_per_acre": {
+        "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
+        "irrigated": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "dryland": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "grazing_land": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      }
+    },
+    "56013": {
+      "geoid": "56013",
+      "county_name": "Fremont",
+      "state": "WY",
+      "land_by_use": {
+        "county_area_acres": {
+          "value": 5877391,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "cropland_acres": {
+          "value": 109749,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "irrigated_acres": {
+          "value": 101050,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "pastureland_acres": {
+          "value": 1052549,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "rangeland_acres": {
+          "value": 30243,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "AG LAND excl cropland/pastureland/woodland. Excludes pastureland (see pastureland_acres)."
+        },
+        "woodland_acres": {
+          "value": 10556,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "land_in_farms_acres": {
+          "value": 1203097,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "FARM OPERATIONS - ACRES OPERATED (2022 COA); sum of cropland+pastureland+woodland+other_ag."
+        },
+        "other_land_acres": {
+          "value": 4674294,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "is_residual_pool": true,
+          "derivation": "county_area_acres - land_in_farms_acres; never absorbs reconciliation error.",
+          "notes": null
+        },
+        "reconciliation_error_acres": {
+          "value": 0,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "(cropland + pastureland + woodland + other_ag) - land_in_farms. Must be 0 or near 0."
+        }
+      },
+      "cattle_and_forage": {
+        "beef_cows_head": {
+          "value": 54022,
+          "unit": "head",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "forage_acres": {
+          "value": 1082792,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "low",
+          "notes": "Derived: pastureland(excl cropland+woodland) + other_ag_land(excl cropland+pasture+woodland). Proxy only."
+        },
+        "stocking_rate_aum_per_acre": {
+          "value": 0.0333,
+          "unit": "AUM/acre",
+          "year": 2022,
+          "source": "nrcs_wy_technical_note",
+          "confidence": "low",
+          "notes": "State-average estimate: 30 ac/AUM = 0.0333 AUM/ac (NRCS WY Grazing Lands Technical Note range: 20-40 ac/AUM)."
+        },
+        "aum_capacity": {
+          "value": 36093,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+        }
+      },
+      "federal_aums": {
+        "blm_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "blm_ras",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "federal_aum_share": {
+          "value": null,
+          "unit": "fraction",
+          "year": null,
+          "source": "blm_ras + usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "water": {
+        "diversion_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "consumptive_use_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "rap_invasive_cover": {
+        "current_cover_pct": {
+          "value": null,
+          "unit": "percent",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "ten_year_trend_pct_points": {
+          "value": null,
+          "unit": "percentage-points/10-years",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "geography": "county aggregate only; no sub-county invasive claim"
+      },
+      "ag_economics": {
+        "operations_count": {
+          "value": 987,
+          "unit": "operations",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "producers_count": {
+          "value": 1839,
+          "unit": "producers",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "farm_proprietor_income_usd": {
+          "value": null,
+          "unit": "USD/year",
+          "year": null,
+          "source": "bea_farm_proprietor_income",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "dor_ag_productive_value_coefficients_usd_per_acre": {
+        "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
+        "irrigated": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "dryland": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "grazing_land": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      }
+    },
+    "56015": {
+      "geoid": "56015",
+      "county_name": "Goshen",
+      "state": "WY",
+      "land_by_use": {
+        "county_area_acres": {
+          "value": 1424392,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "cropland_acres": {
+          "value": 241931,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "irrigated_acres": {
+          "value": 80336,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "pastureland_acres": {
+          "value": 953886,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "rangeland_acres": {
+          "value": 41298,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "AG LAND excl cropland/pastureland/woodland. Excludes pastureland (see pastureland_acres)."
+        },
+        "woodland_acres": {
+          "value": 19037,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "land_in_farms_acres": {
+          "value": 1256152,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "FARM OPERATIONS - ACRES OPERATED (2022 COA); sum of cropland+pastureland+woodland+other_ag."
+        },
+        "other_land_acres": {
+          "value": 168240,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "is_residual_pool": true,
+          "derivation": "county_area_acres - land_in_farms_acres; never absorbs reconciliation error.",
+          "notes": null
+        },
+        "reconciliation_error_acres": {
+          "value": 0,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "(cropland + pastureland + woodland + other_ag) - land_in_farms. Must be 0 or near 0."
+        }
+      },
+      "cattle_and_forage": {
+        "beef_cows_head": {
+          "value": 35146,
+          "unit": "head",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "forage_acres": {
+          "value": 995184,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "low",
+          "notes": "Derived: pastureland(excl cropland+woodland) + other_ag_land(excl cropland+pasture+woodland). Proxy only."
+        },
+        "stocking_rate_aum_per_acre": {
+          "value": 0.0333,
+          "unit": "AUM/acre",
+          "year": 2022,
+          "source": "nrcs_wy_technical_note",
+          "confidence": "low",
+          "notes": "State-average estimate: 30 ac/AUM = 0.0333 AUM/ac (NRCS WY Grazing Lands Technical Note range: 20-40 ac/AUM)."
+        },
+        "aum_capacity": {
+          "value": 33173,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+        }
+      },
+      "federal_aums": {
+        "blm_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "blm_ras",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "federal_aum_share": {
+          "value": null,
+          "unit": "fraction",
+          "year": null,
+          "source": "blm_ras + usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "water": {
+        "diversion_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "consumptive_use_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "rap_invasive_cover": {
+        "current_cover_pct": {
+          "value": null,
+          "unit": "percent",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "ten_year_trend_pct_points": {
+          "value": null,
+          "unit": "percentage-points/10-years",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "geography": "county aggregate only; no sub-county invasive claim"
+      },
+      "ag_economics": {
+        "operations_count": {
+          "value": 736,
+          "unit": "operations",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "producers_count": {
+          "value": 1422,
+          "unit": "producers",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "farm_proprietor_income_usd": {
+          "value": null,
+          "unit": "USD/year",
+          "year": null,
+          "source": "bea_farm_proprietor_income",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "dor_ag_productive_value_coefficients_usd_per_acre": {
+        "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
+        "irrigated": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "dryland": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "grazing_land": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      }
+    },
+    "56017": {
+      "geoid": "56017",
+      "county_name": "Hot Springs",
+      "state": "WY",
+      "land_by_use": {
+        "county_area_acres": {
+          "value": 1282623,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "cropland_acres": {
+          "value": 22254,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "irrigated_acres": {
+          "value": 15174,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "pastureland_acres": {
+          "value": 519237,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "rangeland_acres": {
+          "value": 11920,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "AG LAND excl cropland/pastureland/woodland. Excludes pastureland (see pastureland_acres)."
+        },
+        "woodland_acres": {
+          "value": 295,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "land_in_farms_acres": {
+          "value": 553706,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "FARM OPERATIONS - ACRES OPERATED (2022 COA); sum of cropland+pastureland+woodland+other_ag."
+        },
+        "other_land_acres": {
+          "value": 728917,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "is_residual_pool": true,
+          "derivation": "county_area_acres - land_in_farms_acres; never absorbs reconciliation error.",
+          "notes": null
+        },
+        "reconciliation_error_acres": {
+          "value": 0,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "(cropland + pastureland + woodland + other_ag) - land_in_farms. Must be 0 or near 0."
+        }
+      },
+      "cattle_and_forage": {
+        "beef_cows_head": {
+          "value": null,
+          "unit": "head",
+          "year": null,
+          "source": "nass_quickstats",
+          "confidence": "low",
+          "notes": "Suppressed in 2022 COA (disclosure protection D)."
+        },
+        "forage_acres": {
+          "value": 531157,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "low",
+          "notes": "Derived: pastureland(excl cropland+woodland) + other_ag_land(excl cropland+pasture+woodland). Proxy only."
+        },
+        "stocking_rate_aum_per_acre": {
+          "value": 0.0333,
+          "unit": "AUM/acre",
+          "year": 2022,
+          "source": "nrcs_wy_technical_note",
+          "confidence": "low",
+          "notes": "State-average estimate: 30 ac/AUM = 0.0333 AUM/ac (NRCS WY Grazing Lands Technical Note range: 20-40 ac/AUM)."
+        },
+        "aum_capacity": {
+          "value": 17705,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+        }
+      },
+      "federal_aums": {
+        "blm_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "blm_ras",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "federal_aum_share": {
+          "value": null,
+          "unit": "fraction",
+          "year": null,
+          "source": "blm_ras + usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "water": {
+        "diversion_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "consumptive_use_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "rap_invasive_cover": {
+        "current_cover_pct": {
+          "value": null,
+          "unit": "percent",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "ten_year_trend_pct_points": {
+          "value": null,
+          "unit": "percentage-points/10-years",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "geography": "county aggregate only; no sub-county invasive claim"
+      },
+      "ag_economics": {
+        "operations_count": {
+          "value": 163,
+          "unit": "operations",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "producers_count": {
+          "value": 290,
+          "unit": "producers",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "farm_proprietor_income_usd": {
+          "value": null,
+          "unit": "USD/year",
+          "year": null,
+          "source": "bea_farm_proprietor_income",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "dor_ag_productive_value_coefficients_usd_per_acre": {
+        "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
+        "irrigated": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "dryland": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "grazing_land": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      }
+    },
+    "56019": {
+      "geoid": "56019",
+      "county_name": "Johnson",
+      "state": "WY",
+      "land_by_use": {
+        "county_area_acres": {
+          "value": 2658659,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "cropland_acres": {
+          "value": 47087,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "irrigated_acres": {
+          "value": 36760,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "pastureland_acres": {
+          "value": 1968968,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "rangeland_acres": {
+          "value": 8280,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "AG LAND excl cropland/pastureland/woodland. Excludes pastureland (see pastureland_acres)."
+        },
+        "woodland_acres": {
+          "value": 9763,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "land_in_farms_acres": {
+          "value": 2034098,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "FARM OPERATIONS - ACRES OPERATED (2022 COA); sum of cropland+pastureland+woodland+other_ag."
+        },
+        "other_land_acres": {
+          "value": 624561,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "is_residual_pool": true,
+          "derivation": "county_area_acres - land_in_farms_acres; never absorbs reconciliation error.",
+          "notes": null
+        },
+        "reconciliation_error_acres": {
+          "value": 0,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "(cropland + pastureland + woodland + other_ag) - land_in_farms. Must be 0 or near 0."
+        }
+      },
+      "cattle_and_forage": {
+        "beef_cows_head": {
+          "value": 38294,
+          "unit": "head",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "forage_acres": {
+          "value": 1977248,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "low",
+          "notes": "Derived: pastureland(excl cropland+woodland) + other_ag_land(excl cropland+pasture+woodland). Proxy only."
+        },
+        "stocking_rate_aum_per_acre": {
+          "value": 0.0333,
+          "unit": "AUM/acre",
+          "year": 2022,
+          "source": "nrcs_wy_technical_note",
+          "confidence": "low",
+          "notes": "State-average estimate: 30 ac/AUM = 0.0333 AUM/ac (NRCS WY Grazing Lands Technical Note range: 20-40 ac/AUM)."
+        },
+        "aum_capacity": {
+          "value": 65908,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+        }
+      },
+      "federal_aums": {
+        "blm_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "blm_ras",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "federal_aum_share": {
+          "value": null,
+          "unit": "fraction",
+          "year": null,
+          "source": "blm_ras + usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "water": {
+        "diversion_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "consumptive_use_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "rap_invasive_cover": {
+        "current_cover_pct": {
+          "value": null,
+          "unit": "percent",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "ten_year_trend_pct_points": {
+          "value": null,
+          "unit": "percentage-points/10-years",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "geography": "county aggregate only; no sub-county invasive claim"
+      },
+      "ag_economics": {
+        "operations_count": {
+          "value": 402,
+          "unit": "operations",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "producers_count": {
+          "value": 797,
+          "unit": "producers",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "farm_proprietor_income_usd": {
+          "value": null,
+          "unit": "USD/year",
+          "year": null,
+          "source": "bea_farm_proprietor_income",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "dor_ag_productive_value_coefficients_usd_per_acre": {
+        "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
+        "irrigated": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "dryland": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "grazing_land": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      }
+    },
+    "56021": {
+      "geoid": "56021",
+      "county_name": "Laramie",
+      "state": "WY",
+      "land_by_use": {
+        "county_area_acres": {
+          "value": 1718984,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "cropland_acres": {
+          "value": 292019,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "irrigated_acres": {
+          "value": 34315,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "pastureland_acres": {
+          "value": 1109904,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "rangeland_acres": {
+          "value": 20839,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "AG LAND excl cropland/pastureland/woodland. Excludes pastureland (see pastureland_acres)."
+        },
+        "woodland_acres": {
+          "value": 8954,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "land_in_farms_acres": {
+          "value": 1431716,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "FARM OPERATIONS - ACRES OPERATED (2022 COA); sum of cropland+pastureland+woodland+other_ag."
+        },
+        "other_land_acres": {
+          "value": 287268,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "is_residual_pool": true,
+          "derivation": "county_area_acres - land_in_farms_acres; never absorbs reconciliation error.",
+          "notes": null
+        },
+        "reconciliation_error_acres": {
+          "value": 0,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "(cropland + pastureland + woodland + other_ag) - land_in_farms. Must be 0 or near 0."
+        }
+      },
+      "cattle_and_forage": {
+        "beef_cows_head": {
+          "value": null,
+          "unit": "head",
+          "year": null,
+          "source": "nass_quickstats",
+          "confidence": "low",
+          "notes": "Suppressed in 2022 COA (disclosure protection D)."
+        },
+        "forage_acres": {
+          "value": 1130743,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "low",
+          "notes": "Derived: pastureland(excl cropland+woodland) + other_ag_land(excl cropland+pasture+woodland). Proxy only."
+        },
+        "stocking_rate_aum_per_acre": {
+          "value": 0.0333,
+          "unit": "AUM/acre",
+          "year": 2022,
+          "source": "nrcs_wy_technical_note",
+          "confidence": "low",
+          "notes": "State-average estimate: 30 ac/AUM = 0.0333 AUM/ac (NRCS WY Grazing Lands Technical Note range: 20-40 ac/AUM)."
+        },
+        "aum_capacity": {
+          "value": 37691,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+        }
+      },
+      "federal_aums": {
+        "blm_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "blm_ras",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "federal_aum_share": {
+          "value": null,
+          "unit": "fraction",
+          "year": null,
+          "source": "blm_ras + usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "water": {
+        "diversion_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "consumptive_use_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "rap_invasive_cover": {
+        "current_cover_pct": {
+          "value": null,
+          "unit": "percent",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "ten_year_trend_pct_points": {
+          "value": null,
+          "unit": "percentage-points/10-years",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "geography": "county aggregate only; no sub-county invasive claim"
+      },
+      "ag_economics": {
+        "operations_count": {
+          "value": 859,
+          "unit": "operations",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "producers_count": {
+          "value": 1592,
+          "unit": "producers",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "farm_proprietor_income_usd": {
+          "value": null,
+          "unit": "USD/year",
+          "year": null,
+          "source": "bea_farm_proprietor_income",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "dor_ag_productive_value_coefficients_usd_per_acre": {
+        "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
+        "irrigated": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "dryland": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "grazing_land": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      }
+    },
+    "56023": {
+      "geoid": "56023",
+      "county_name": "Lincoln",
+      "state": "WY",
+      "land_by_use": {
+        "county_area_acres": {
+          "value": 2608216,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "cropland_acres": {
+          "value": 85996,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "irrigated_acres": {
+          "value": 66977,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "pastureland_acres": {
+          "value": 195043,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "rangeland_acres": {
+          "value": 6988,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "AG LAND excl cropland/pastureland/woodland. Excludes pastureland (see pastureland_acres)."
+        },
+        "woodland_acres": {
+          "value": 7521,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "land_in_farms_acres": {
+          "value": 295548,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "FARM OPERATIONS - ACRES OPERATED (2022 COA); sum of cropland+pastureland+woodland+other_ag."
+        },
+        "other_land_acres": {
+          "value": 2312668,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "is_residual_pool": true,
+          "derivation": "county_area_acres - land_in_farms_acres; never absorbs reconciliation error.",
+          "notes": null
+        },
+        "reconciliation_error_acres": {
+          "value": 0,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "(cropland + pastureland + woodland + other_ag) - land_in_farms. Must be 0 or near 0."
+        }
+      },
+      "cattle_and_forage": {
+        "beef_cows_head": {
+          "value": null,
+          "unit": "head",
+          "year": null,
+          "source": "nass_quickstats",
+          "confidence": "low",
+          "notes": "Suppressed in 2022 COA (disclosure protection D)."
+        },
+        "forage_acres": {
+          "value": 202031,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "low",
+          "notes": "Derived: pastureland(excl cropland+woodland) + other_ag_land(excl cropland+pasture+woodland). Proxy only."
+        },
+        "stocking_rate_aum_per_acre": {
+          "value": 0.0333,
+          "unit": "AUM/acre",
+          "year": 2022,
+          "source": "nrcs_wy_technical_note",
+          "confidence": "low",
+          "notes": "State-average estimate: 30 ac/AUM = 0.0333 AUM/ac (NRCS WY Grazing Lands Technical Note range: 20-40 ac/AUM)."
+        },
+        "aum_capacity": {
+          "value": 6734,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+        }
+      },
+      "federal_aums": {
+        "blm_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "blm_ras",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "federal_aum_share": {
+          "value": null,
+          "unit": "fraction",
+          "year": null,
+          "source": "blm_ras + usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "water": {
+        "diversion_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "consumptive_use_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "rap_invasive_cover": {
+        "current_cover_pct": {
+          "value": null,
+          "unit": "percent",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "ten_year_trend_pct_points": {
+          "value": null,
+          "unit": "percentage-points/10-years",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "geography": "county aggregate only; no sub-county invasive claim"
+      },
+      "ag_economics": {
+        "operations_count": {
+          "value": 605,
+          "unit": "operations",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "producers_count": {
+          "value": 1103,
+          "unit": "producers",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "farm_proprietor_income_usd": {
+          "value": null,
+          "unit": "USD/year",
+          "year": null,
+          "source": "bea_farm_proprietor_income",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "dor_ag_productive_value_coefficients_usd_per_acre": {
+        "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
+        "irrigated": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "dryland": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "grazing_land": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      }
+    },
+    "56025": {
+      "geoid": "56025",
+      "county_name": "Natrona",
+      "state": "WY",
+      "land_by_use": {
+        "county_area_acres": {
+          "value": 3417949,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "cropland_acres": {
+          "value": 62071,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "irrigated_acres": {
+          "value": 38555,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "pastureland_acres": {
+          "value": 1954934,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "rangeland_acres": {
+          "value": 22384,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "AG LAND excl cropland/pastureland/woodland. Excludes pastureland (see pastureland_acres)."
+        },
+        "woodland_acres": {
+          "value": 11842,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "land_in_farms_acres": {
+          "value": 2051231,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "FARM OPERATIONS - ACRES OPERATED (2022 COA); sum of cropland+pastureland+woodland+other_ag."
+        },
+        "other_land_acres": {
+          "value": 1366718,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "is_residual_pool": true,
+          "derivation": "county_area_acres - land_in_farms_acres; never absorbs reconciliation error.",
+          "notes": null
+        },
+        "reconciliation_error_acres": {
+          "value": 0,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "(cropland + pastureland + woodland + other_ag) - land_in_farms. Must be 0 or near 0."
+        }
+      },
+      "cattle_and_forage": {
+        "beef_cows_head": {
+          "value": null,
+          "unit": "head",
+          "year": null,
+          "source": "nass_quickstats",
+          "confidence": "low",
+          "notes": "Suppressed in 2022 COA (disclosure protection D)."
+        },
+        "forage_acres": {
+          "value": 1977318,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "low",
+          "notes": "Derived: pastureland(excl cropland+woodland) + other_ag_land(excl cropland+pasture+woodland). Proxy only."
+        },
+        "stocking_rate_aum_per_acre": {
+          "value": 0.0333,
+          "unit": "AUM/acre",
+          "year": 2022,
+          "source": "nrcs_wy_technical_note",
+          "confidence": "low",
+          "notes": "State-average estimate: 30 ac/AUM = 0.0333 AUM/ac (NRCS WY Grazing Lands Technical Note range: 20-40 ac/AUM)."
+        },
+        "aum_capacity": {
+          "value": 65911,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+        }
+      },
+      "federal_aums": {
+        "blm_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "blm_ras",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "federal_aum_share": {
+          "value": null,
+          "unit": "fraction",
+          "year": null,
+          "source": "blm_ras + usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "water": {
+        "diversion_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "consumptive_use_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "rap_invasive_cover": {
+        "current_cover_pct": {
+          "value": null,
+          "unit": "percent",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "ten_year_trend_pct_points": {
+          "value": null,
+          "unit": "percentage-points/10-years",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "geography": "county aggregate only; no sub-county invasive claim"
+      },
+      "ag_economics": {
+        "operations_count": {
+          "value": 402,
+          "unit": "operations",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "producers_count": {
+          "value": 768,
+          "unit": "producers",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "farm_proprietor_income_usd": {
+          "value": null,
+          "unit": "USD/year",
+          "year": null,
+          "source": "bea_farm_proprietor_income",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "dor_ag_productive_value_coefficients_usd_per_acre": {
+        "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
+        "irrigated": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "dryland": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "grazing_land": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      }
+    },
+    "56027": {
+      "geoid": "56027",
+      "county_name": "Niobrara",
+      "state": "WY",
+      "land_by_use": {
+        "county_area_acres": {
+          "value": 1680658,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "cropland_acres": {
+          "value": 55547,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "irrigated_acres": {
+          "value": 10295,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "pastureland_acres": {
+          "value": 1232626,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "rangeland_acres": {
+          "value": 14132,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "AG LAND excl cropland/pastureland/woodland. Excludes pastureland (see pastureland_acres)."
+        },
+        "woodland_acres": {
+          "value": 15534,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "land_in_farms_acres": {
+          "value": 1317839,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "FARM OPERATIONS - ACRES OPERATED (2022 COA); sum of cropland+pastureland+woodland+other_ag."
+        },
+        "other_land_acres": {
+          "value": 362819,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "is_residual_pool": true,
+          "derivation": "county_area_acres - land_in_farms_acres; never absorbs reconciliation error.",
+          "notes": null
+        },
+        "reconciliation_error_acres": {
+          "value": 0,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "(cropland + pastureland + woodland + other_ag) - land_in_farms. Must be 0 or near 0."
+        }
+      },
+      "cattle_and_forage": {
+        "beef_cows_head": {
+          "value": null,
+          "unit": "head",
+          "year": null,
+          "source": "nass_quickstats",
+          "confidence": "low",
+          "notes": "Suppressed in 2022 COA (disclosure protection D)."
+        },
+        "forage_acres": {
+          "value": 1246758,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "low",
+          "notes": "Derived: pastureland(excl cropland+woodland) + other_ag_land(excl cropland+pasture+woodland). Proxy only."
+        },
+        "stocking_rate_aum_per_acre": {
+          "value": 0.0333,
+          "unit": "AUM/acre",
+          "year": 2022,
+          "source": "nrcs_wy_technical_note",
+          "confidence": "low",
+          "notes": "State-average estimate: 30 ac/AUM = 0.0333 AUM/ac (NRCS WY Grazing Lands Technical Note range: 20-40 ac/AUM)."
+        },
+        "aum_capacity": {
+          "value": 41559,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+        }
+      },
+      "federal_aums": {
+        "blm_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "blm_ras",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "federal_aum_share": {
+          "value": null,
+          "unit": "fraction",
+          "year": null,
+          "source": "blm_ras + usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "water": {
+        "diversion_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "consumptive_use_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "rap_invasive_cover": {
+        "current_cover_pct": {
+          "value": null,
+          "unit": "percent",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "ten_year_trend_pct_points": {
+          "value": null,
+          "unit": "percentage-points/10-years",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "geography": "county aggregate only; no sub-county invasive claim"
+      },
+      "ag_economics": {
+        "operations_count": {
+          "value": 220,
+          "unit": "operations",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "producers_count": {
+          "value": 459,
+          "unit": "producers",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "farm_proprietor_income_usd": {
+          "value": null,
+          "unit": "USD/year",
+          "year": null,
+          "source": "bea_farm_proprietor_income",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "dor_ag_productive_value_coefficients_usd_per_acre": {
+        "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
+        "irrigated": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "dryland": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "grazing_land": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      }
+    },
+    "56029": {
+      "geoid": "56029",
+      "county_name": "Park",
+      "state": "WY",
+      "land_by_use": {
+        "county_area_acres": {
+          "value": 4441510,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "cropland_acres": {
+          "value": 129215,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "irrigated_acres": {
+          "value": 104747,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "pastureland_acres": {
+          "value": 533746,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "rangeland_acres": {
+          "value": 19136,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "AG LAND excl cropland/pastureland/woodland. Excludes pastureland (see pastureland_acres)."
+        },
+        "woodland_acres": {
+          "value": 4876,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "land_in_farms_acres": {
+          "value": 686973,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "FARM OPERATIONS - ACRES OPERATED (2022 COA); sum of cropland+pastureland+woodland+other_ag."
+        },
+        "other_land_acres": {
+          "value": 3754537,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "is_residual_pool": true,
+          "derivation": "county_area_acres - land_in_farms_acres; never absorbs reconciliation error.",
+          "notes": null
+        },
+        "reconciliation_error_acres": {
+          "value": 0,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "(cropland + pastureland + woodland + other_ag) - land_in_farms. Must be 0 or near 0."
+        }
+      },
+      "cattle_and_forage": {
+        "beef_cows_head": {
+          "value": null,
+          "unit": "head",
+          "year": null,
+          "source": "nass_quickstats",
+          "confidence": "low",
+          "notes": "Suppressed in 2022 COA (disclosure protection D)."
+        },
+        "forage_acres": {
+          "value": 552882,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "low",
+          "notes": "Derived: pastureland(excl cropland+woodland) + other_ag_land(excl cropland+pasture+woodland). Proxy only."
+        },
+        "stocking_rate_aum_per_acre": {
+          "value": 0.0333,
+          "unit": "AUM/acre",
+          "year": 2022,
+          "source": "nrcs_wy_technical_note",
+          "confidence": "low",
+          "notes": "State-average estimate: 30 ac/AUM = 0.0333 AUM/ac (NRCS WY Grazing Lands Technical Note range: 20-40 ac/AUM)."
+        },
+        "aum_capacity": {
+          "value": 18429,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+        }
+      },
+      "federal_aums": {
+        "blm_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "blm_ras",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "federal_aum_share": {
+          "value": null,
+          "unit": "fraction",
+          "year": null,
+          "source": "blm_ras + usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "water": {
+        "diversion_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "consumptive_use_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "rap_invasive_cover": {
+        "current_cover_pct": {
+          "value": null,
+          "unit": "percent",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "ten_year_trend_pct_points": {
+          "value": null,
+          "unit": "percentage-points/10-years",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "geography": "county aggregate only; no sub-county invasive claim"
+      },
+      "ag_economics": {
+        "operations_count": {
+          "value": 871,
+          "unit": "operations",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "producers_count": {
+          "value": 1654,
+          "unit": "producers",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "farm_proprietor_income_usd": {
+          "value": null,
+          "unit": "USD/year",
+          "year": null,
+          "source": "bea_farm_proprietor_income",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "dor_ag_productive_value_coefficients_usd_per_acre": {
+        "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
+        "irrigated": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "dryland": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "grazing_land": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      }
+    },
+    "56031": {
+      "geoid": "56031",
+      "county_name": "Platte",
+      "state": "WY",
+      "land_by_use": {
+        "county_area_acres": {
+          "value": 1333880,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "cropland_acres": {
+          "value": 127961,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "irrigated_acres": {
+          "value": 50312,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "pastureland_acres": {
+          "value": 1087705,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "rangeland_acres": {
+          "value": 10539,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "AG LAND excl cropland/pastureland/woodland. Excludes pastureland (see pastureland_acres)."
+        },
+        "woodland_acres": {
+          "value": 6722,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "land_in_farms_acres": {
+          "value": 1232927,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "FARM OPERATIONS - ACRES OPERATED (2022 COA); sum of cropland+pastureland+woodland+other_ag."
+        },
+        "other_land_acres": {
+          "value": 100953,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "is_residual_pool": true,
+          "derivation": "county_area_acres - land_in_farms_acres; never absorbs reconciliation error.",
+          "notes": null
+        },
+        "reconciliation_error_acres": {
+          "value": 0,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "(cropland + pastureland + woodland + other_ag) - land_in_farms. Must be 0 or near 0."
+        }
+      },
+      "cattle_and_forage": {
+        "beef_cows_head": {
+          "value": 30542,
+          "unit": "head",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "forage_acres": {
+          "value": 1098244,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "low",
+          "notes": "Derived: pastureland(excl cropland+woodland) + other_ag_land(excl cropland+pasture+woodland). Proxy only."
+        },
+        "stocking_rate_aum_per_acre": {
+          "value": 0.0333,
+          "unit": "AUM/acre",
+          "year": 2022,
+          "source": "nrcs_wy_technical_note",
+          "confidence": "low",
+          "notes": "State-average estimate: 30 ac/AUM = 0.0333 AUM/ac (NRCS WY Grazing Lands Technical Note range: 20-40 ac/AUM)."
+        },
+        "aum_capacity": {
+          "value": 36608,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+        }
+      },
+      "federal_aums": {
+        "blm_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "blm_ras",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "federal_aum_share": {
+          "value": null,
+          "unit": "fraction",
+          "year": null,
+          "source": "blm_ras + usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "water": {
+        "diversion_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "consumptive_use_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "rap_invasive_cover": {
+        "current_cover_pct": {
+          "value": null,
+          "unit": "percent",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "ten_year_trend_pct_points": {
+          "value": null,
+          "unit": "percentage-points/10-years",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "geography": "county aggregate only; no sub-county invasive claim"
+      },
+      "ag_economics": {
+        "operations_count": {
+          "value": 490,
+          "unit": "operations",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "producers_count": {
+          "value": 938,
+          "unit": "producers",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "farm_proprietor_income_usd": {
+          "value": null,
+          "unit": "USD/year",
+          "year": null,
+          "source": "bea_farm_proprietor_income",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "dor_ag_productive_value_coefficients_usd_per_acre": {
+        "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
+        "irrigated": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "dryland": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "grazing_land": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      }
+    },
+    "56033": {
+      "geoid": "56033",
+      "county_name": "Sheridan",
+      "state": "WY",
+      "land_by_use": {
+        "county_area_acres": {
+          "value": 1614951,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "cropland_acres": {
+          "value": 90691,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "irrigated_acres": {
+          "value": 50834,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "pastureland_acres": {
+          "value": 1121249,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "rangeland_acres": {
+          "value": 9511,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "AG LAND excl cropland/pastureland/woodland. Excludes pastureland (see pastureland_acres)."
+        },
+        "woodland_acres": {
+          "value": 6343,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "land_in_farms_acres": {
+          "value": 1227794,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "FARM OPERATIONS - ACRES OPERATED (2022 COA); sum of cropland+pastureland+woodland+other_ag."
+        },
+        "other_land_acres": {
+          "value": 387157,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "is_residual_pool": true,
+          "derivation": "county_area_acres - land_in_farms_acres; never absorbs reconciliation error.",
+          "notes": null
+        },
+        "reconciliation_error_acres": {
+          "value": 0,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "(cropland + pastureland + woodland + other_ag) - land_in_farms. Must be 0 or near 0."
+        }
+      },
+      "cattle_and_forage": {
+        "beef_cows_head": {
+          "value": 33109,
+          "unit": "head",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "forage_acres": {
+          "value": 1130760,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "low",
+          "notes": "Derived: pastureland(excl cropland+woodland) + other_ag_land(excl cropland+pasture+woodland). Proxy only."
+        },
+        "stocking_rate_aum_per_acre": {
+          "value": 0.0333,
+          "unit": "AUM/acre",
+          "year": 2022,
+          "source": "nrcs_wy_technical_note",
+          "confidence": "low",
+          "notes": "State-average estimate: 30 ac/AUM = 0.0333 AUM/ac (NRCS WY Grazing Lands Technical Note range: 20-40 ac/AUM)."
+        },
+        "aum_capacity": {
+          "value": 37692,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+        }
+      },
+      "federal_aums": {
+        "blm_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "blm_ras",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "federal_aum_share": {
+          "value": null,
+          "unit": "fraction",
+          "year": null,
+          "source": "blm_ras + usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "water": {
+        "diversion_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "consumptive_use_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "rap_invasive_cover": {
+        "current_cover_pct": {
+          "value": null,
+          "unit": "percent",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "ten_year_trend_pct_points": {
+          "value": null,
+          "unit": "percentage-points/10-years",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "geography": "county aggregate only; no sub-county invasive claim"
+      },
+      "ag_economics": {
+        "operations_count": {
+          "value": 747,
+          "unit": "operations",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "producers_count": {
+          "value": 1342,
+          "unit": "producers",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "farm_proprietor_income_usd": {
+          "value": null,
+          "unit": "USD/year",
+          "year": null,
+          "source": "bea_farm_proprietor_income",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "dor_ag_productive_value_coefficients_usd_per_acre": {
+        "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
+        "irrigated": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "dryland": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "grazing_land": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      }
+    },
+    "56035": {
+      "geoid": "56035",
+      "county_name": "Sublette",
+      "state": "WY",
+      "land_by_use": {
+        "county_area_acres": {
+          "value": 3127348,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "cropland_acres": {
+          "value": 120319,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "irrigated_acres": {
+          "value": 120242,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "pastureland_acres": {
+          "value": 361742,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "rangeland_acres": {
+          "value": 9096,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "AG LAND excl cropland/pastureland/woodland. Excludes pastureland (see pastureland_acres)."
+        },
+        "woodland_acres": {
+          "value": 8137,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "land_in_farms_acres": {
+          "value": 499294,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "FARM OPERATIONS - ACRES OPERATED (2022 COA); sum of cropland+pastureland+woodland+other_ag."
+        },
+        "other_land_acres": {
+          "value": 2628054,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "is_residual_pool": true,
+          "derivation": "county_area_acres - land_in_farms_acres; never absorbs reconciliation error.",
+          "notes": null
+        },
+        "reconciliation_error_acres": {
+          "value": 0,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "(cropland + pastureland + woodland + other_ag) - land_in_farms. Must be 0 or near 0."
+        }
+      },
+      "cattle_and_forage": {
+        "beef_cows_head": {
+          "value": 23826,
+          "unit": "head",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "forage_acres": {
+          "value": 370838,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "low",
+          "notes": "Derived: pastureland(excl cropland+woodland) + other_ag_land(excl cropland+pasture+woodland). Proxy only."
+        },
+        "stocking_rate_aum_per_acre": {
+          "value": 0.0333,
+          "unit": "AUM/acre",
+          "year": 2022,
+          "source": "nrcs_wy_technical_note",
+          "confidence": "low",
+          "notes": "State-average estimate: 30 ac/AUM = 0.0333 AUM/ac (NRCS WY Grazing Lands Technical Note range: 20-40 ac/AUM)."
+        },
+        "aum_capacity": {
+          "value": 12361,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+        }
+      },
+      "federal_aums": {
+        "blm_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "blm_ras",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "federal_aum_share": {
+          "value": null,
+          "unit": "fraction",
+          "year": null,
+          "source": "blm_ras + usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "water": {
+        "diversion_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "consumptive_use_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "rap_invasive_cover": {
+        "current_cover_pct": {
+          "value": null,
+          "unit": "percent",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "ten_year_trend_pct_points": {
+          "value": null,
+          "unit": "percentage-points/10-years",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "geography": "county aggregate only; no sub-county invasive claim"
+      },
+      "ag_economics": {
+        "operations_count": {
+          "value": 274,
+          "unit": "operations",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "producers_count": {
+          "value": 528,
+          "unit": "producers",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "farm_proprietor_income_usd": {
+          "value": null,
+          "unit": "USD/year",
+          "year": null,
+          "source": "bea_farm_proprietor_income",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "dor_ag_productive_value_coefficients_usd_per_acre": {
+        "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
+        "irrigated": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "dryland": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "grazing_land": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      }
+    },
+    "56037": {
+      "geoid": "56037",
+      "county_name": "Sweetwater",
+      "state": "WY",
+      "land_by_use": {
+        "county_area_acres": {
+          "value": 6673263,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "cropland_acres": {
+          "value": 36859,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "irrigated_acres": {
+          "value": 43781,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "pastureland_acres": {
+          "value": 1329219,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "rangeland_acres": {
+          "value": null,
+          "unit": "acres",
+          "year": null,
+          "source": "census_ag_2022",
+          "confidence": "low",
+          "notes": "Suppressed in 2022 COA (disclosure protection D)."
+        },
+        "woodland_acres": {
+          "value": null,
+          "unit": "acres",
+          "year": null,
+          "source": "census_ag_2022",
+          "confidence": "low",
+          "notes": "Suppressed in 2022 COA (disclosure protection D)."
+        },
+        "land_in_farms_acres": {
+          "value": 1372065,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "FARM OPERATIONS - ACRES OPERATED (2022 COA); sum of cropland+pastureland+woodland+other_ag."
+        },
+        "other_land_acres": {
+          "value": 5301198,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "is_residual_pool": true,
+          "derivation": "county_area_acres - land_in_farms_acres; never absorbs reconciliation error.",
+          "notes": null
+        },
+        "reconciliation_error_acres": {
+          "value": -5987,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "(cropland + pastureland + woodland + other_ag) - land_in_farms. Must be 0 or near 0. Missing sub-categories for this county."
+        }
+      },
+      "cattle_and_forage": {
+        "beef_cows_head": {
+          "value": null,
+          "unit": "head",
+          "year": null,
+          "source": "nass_quickstats",
+          "confidence": "low",
+          "notes": "Suppressed in 2022 COA (disclosure protection D)."
+        },
+        "forage_acres": {
+          "value": 1329219,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "low",
+          "notes": "Derived: pastureland(excl cropland+woodland) + other_ag_land(excl cropland+pasture+woodland). Proxy only."
+        },
+        "stocking_rate_aum_per_acre": {
+          "value": 0.0333,
+          "unit": "AUM/acre",
+          "year": 2022,
+          "source": "nrcs_wy_technical_note",
+          "confidence": "low",
+          "notes": "State-average estimate: 30 ac/AUM = 0.0333 AUM/ac (NRCS WY Grazing Lands Technical Note range: 20-40 ac/AUM)."
+        },
+        "aum_capacity": {
+          "value": 44307,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+        }
+      },
+      "federal_aums": {
+        "blm_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "blm_ras",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "federal_aum_share": {
+          "value": null,
+          "unit": "fraction",
+          "year": null,
+          "source": "blm_ras + usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "water": {
+        "diversion_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "consumptive_use_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "rap_invasive_cover": {
+        "current_cover_pct": {
+          "value": null,
+          "unit": "percent",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "ten_year_trend_pct_points": {
+          "value": null,
+          "unit": "percentage-points/10-years",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "geography": "county aggregate only; no sub-county invasive claim"
+      },
+      "ag_economics": {
+        "operations_count": {
+          "value": 183,
+          "unit": "operations",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "producers_count": {
+          "value": 341,
+          "unit": "producers",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "farm_proprietor_income_usd": {
+          "value": null,
+          "unit": "USD/year",
+          "year": null,
+          "source": "bea_farm_proprietor_income",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "dor_ag_productive_value_coefficients_usd_per_acre": {
+        "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
+        "irrigated": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "dryland": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "grazing_land": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      }
+    },
+    "56039": {
+      "geoid": "56039",
+      "county_name": "Teton",
+      "state": "WY",
+      "land_by_use": {
+        "county_area_acres": {
+          "value": 2557982,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "cropland_acres": {
+          "value": 13888,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "irrigated_acres": {
+          "value": 12949,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "pastureland_acres": {
+          "value": 20356,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "rangeland_acres": {
+          "value": null,
+          "unit": "acres",
+          "year": null,
+          "source": "census_ag_2022",
+          "confidence": "low",
+          "notes": "Suppressed in 2022 COA (disclosure protection D)."
+        },
+        "woodland_acres": {
+          "value": null,
+          "unit": "acres",
+          "year": null,
+          "source": "census_ag_2022",
+          "confidence": "low",
+          "notes": "Suppressed in 2022 COA (disclosure protection D)."
+        },
+        "land_in_farms_acres": {
+          "value": 38130,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "FARM OPERATIONS - ACRES OPERATED (2022 COA); sum of cropland+pastureland+woodland+other_ag."
+        },
+        "other_land_acres": {
+          "value": 2519852,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "is_residual_pool": true,
+          "derivation": "county_area_acres - land_in_farms_acres; never absorbs reconciliation error.",
+          "notes": null
+        },
+        "reconciliation_error_acres": {
+          "value": -3886,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "(cropland + pastureland + woodland + other_ag) - land_in_farms. Must be 0 or near 0. Missing sub-categories for this county."
+        }
+      },
+      "cattle_and_forage": {
+        "beef_cows_head": {
+          "value": 2172,
+          "unit": "head",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "forage_acres": {
+          "value": 20356,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "low",
+          "notes": "Derived: pastureland(excl cropland+woodland) + other_ag_land(excl cropland+pasture+woodland). Proxy only."
+        },
+        "stocking_rate_aum_per_acre": {
+          "value": 0.0333,
+          "unit": "AUM/acre",
+          "year": 2022,
+          "source": "nrcs_wy_technical_note",
+          "confidence": "low",
+          "notes": "State-average estimate: 30 ac/AUM = 0.0333 AUM/ac (NRCS WY Grazing Lands Technical Note range: 20-40 ac/AUM)."
+        },
+        "aum_capacity": {
+          "value": 679,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+        }
+      },
+      "federal_aums": {
+        "blm_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "blm_ras",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "federal_aum_share": {
+          "value": null,
+          "unit": "fraction",
+          "year": null,
+          "source": "blm_ras + usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "water": {
+        "diversion_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "consumptive_use_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "rap_invasive_cover": {
+        "current_cover_pct": {
+          "value": null,
+          "unit": "percent",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "ten_year_trend_pct_points": {
+          "value": null,
+          "unit": "percentage-points/10-years",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "geography": "county aggregate only; no sub-county invasive claim"
+      },
+      "ag_economics": {
+        "operations_count": {
+          "value": 111,
+          "unit": "operations",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "producers_count": {
+          "value": 220,
+          "unit": "producers",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "farm_proprietor_income_usd": {
+          "value": null,
+          "unit": "USD/year",
+          "year": null,
+          "source": "bea_farm_proprietor_income",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "dor_ag_productive_value_coefficients_usd_per_acre": {
+        "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
+        "irrigated": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "dryland": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "grazing_land": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      }
+    },
+    "56041": {
+      "geoid": "56041",
+      "county_name": "Uinta",
+      "state": "WY",
+      "land_by_use": {
+        "county_area_acres": {
+          "value": 1332371,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "cropland_acres": {
+          "value": 60227,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "irrigated_acres": {
+          "value": 64393,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "pastureland_acres": {
+          "value": 651079,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "rangeland_acres": {
+          "value": 5086,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "AG LAND excl cropland/pastureland/woodland. Excludes pastureland (see pastureland_acres)."
+        },
+        "woodland_acres": {
+          "value": 19317,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "land_in_farms_acres": {
+          "value": 735709,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "FARM OPERATIONS - ACRES OPERATED (2022 COA); sum of cropland+pastureland+woodland+other_ag."
+        },
+        "other_land_acres": {
+          "value": 596662,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "is_residual_pool": true,
+          "derivation": "county_area_acres - land_in_farms_acres; never absorbs reconciliation error.",
+          "notes": null
+        },
+        "reconciliation_error_acres": {
+          "value": 0,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "(cropland + pastureland + woodland + other_ag) - land_in_farms. Must be 0 or near 0."
+        }
+      },
+      "cattle_and_forage": {
+        "beef_cows_head": {
+          "value": 23367,
+          "unit": "head",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "forage_acres": {
+          "value": 656165,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "low",
+          "notes": "Derived: pastureland(excl cropland+woodland) + other_ag_land(excl cropland+pasture+woodland). Proxy only."
+        },
+        "stocking_rate_aum_per_acre": {
+          "value": 0.0333,
+          "unit": "AUM/acre",
+          "year": 2022,
+          "source": "nrcs_wy_technical_note",
+          "confidence": "low",
+          "notes": "State-average estimate: 30 ac/AUM = 0.0333 AUM/ac (NRCS WY Grazing Lands Technical Note range: 20-40 ac/AUM)."
+        },
+        "aum_capacity": {
+          "value": 21872,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+        }
+      },
+      "federal_aums": {
+        "blm_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "blm_ras",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "federal_aum_share": {
+          "value": null,
+          "unit": "fraction",
+          "year": null,
+          "source": "blm_ras + usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "water": {
+        "diversion_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "consumptive_use_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "rap_invasive_cover": {
+        "current_cover_pct": {
+          "value": null,
+          "unit": "percent",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "ten_year_trend_pct_points": {
+          "value": null,
+          "unit": "percentage-points/10-years",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "geography": "county aggregate only; no sub-county invasive claim"
+      },
+      "ag_economics": {
+        "operations_count": {
+          "value": 391,
+          "unit": "operations",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "producers_count": {
+          "value": 812,
+          "unit": "producers",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "farm_proprietor_income_usd": {
+          "value": null,
+          "unit": "USD/year",
+          "year": null,
+          "source": "bea_farm_proprietor_income",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "dor_ag_productive_value_coefficients_usd_per_acre": {
+        "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
+        "irrigated": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "dryland": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "grazing_land": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      }
+    },
+    "56043": {
+      "geoid": "56043",
+      "county_name": "Washakie",
+      "state": "WY",
+      "land_by_use": {
+        "county_area_acres": {
+          "value": 1432747,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "cropland_acres": {
+          "value": 49270,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "irrigated_acres": {
+          "value": 38025,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "pastureland_acres": {
+          "value": 313942,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "rangeland_acres": {
+          "value": 4067,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "AG LAND excl cropland/pastureland/woodland. Excludes pastureland (see pastureland_acres)."
+        },
+        "woodland_acres": {
+          "value": 1225,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "land_in_farms_acres": {
+          "value": 368504,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "FARM OPERATIONS - ACRES OPERATED (2022 COA); sum of cropland+pastureland+woodland+other_ag."
+        },
+        "other_land_acres": {
+          "value": 1064243,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "is_residual_pool": true,
+          "derivation": "county_area_acres - land_in_farms_acres; never absorbs reconciliation error.",
+          "notes": null
+        },
+        "reconciliation_error_acres": {
+          "value": 0,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "(cropland + pastureland + woodland + other_ag) - land_in_farms. Must be 0 or near 0."
+        }
+      },
+      "cattle_and_forage": {
+        "beef_cows_head": {
+          "value": 14885,
+          "unit": "head",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "forage_acres": {
+          "value": 318009,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "low",
+          "notes": "Derived: pastureland(excl cropland+woodland) + other_ag_land(excl cropland+pasture+woodland). Proxy only."
+        },
+        "stocking_rate_aum_per_acre": {
+          "value": 0.0333,
+          "unit": "AUM/acre",
+          "year": 2022,
+          "source": "nrcs_wy_technical_note",
+          "confidence": "low",
+          "notes": "State-average estimate: 30 ac/AUM = 0.0333 AUM/ac (NRCS WY Grazing Lands Technical Note range: 20-40 ac/AUM)."
+        },
+        "aum_capacity": {
+          "value": 10600,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+        }
+      },
+      "federal_aums": {
+        "blm_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "blm_ras",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "federal_aum_share": {
+          "value": null,
+          "unit": "fraction",
+          "year": null,
+          "source": "blm_ras + usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "water": {
+        "diversion_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "consumptive_use_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "rap_invasive_cover": {
+        "current_cover_pct": {
+          "value": null,
+          "unit": "percent",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "ten_year_trend_pct_points": {
+          "value": null,
+          "unit": "percentage-points/10-years",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "geography": "county aggregate only; no sub-county invasive claim"
+      },
+      "ag_economics": {
+        "operations_count": {
+          "value": 206,
+          "unit": "operations",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "producers_count": {
+          "value": 389,
+          "unit": "producers",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "farm_proprietor_income_usd": {
+          "value": null,
+          "unit": "USD/year",
+          "year": null,
+          "source": "bea_farm_proprietor_income",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "dor_ag_productive_value_coefficients_usd_per_acre": {
+        "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
+        "irrigated": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "dryland": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "grazing_land": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      }
+    },
+    "56045": {
+      "geoid": "56045",
+      "county_name": "Weston",
+      "state": "WY",
+      "land_by_use": {
+        "county_area_acres": {
+          "value": 1534723,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "cropland_acres": {
+          "value": 36992,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "irrigated_acres": {
+          "value": 10162,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "pastureland_acres": {
+          "value": 1224182,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "rangeland_acres": {
+          "value": 4651,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "AG LAND excl cropland/pastureland/woodland. Excludes pastureland (see pastureland_acres)."
+        },
+        "woodland_acres": {
+          "value": 36713,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "land_in_farms_acres": {
+          "value": 1302538,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "FARM OPERATIONS - ACRES OPERATED (2022 COA); sum of cropland+pastureland+woodland+other_ag."
+        },
+        "other_land_acres": {
+          "value": 232185,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "is_residual_pool": true,
+          "derivation": "county_area_acres - land_in_farms_acres; never absorbs reconciliation error.",
+          "notes": null
+        },
+        "reconciliation_error_acres": {
+          "value": 0,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium",
+          "notes": "(cropland + pastureland + woodland + other_ag) - land_in_farms. Must be 0 or near 0."
+        }
+      },
+      "cattle_and_forage": {
+        "beef_cows_head": {
+          "value": 27568,
+          "unit": "head",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "forage_acres": {
+          "value": 1228833,
+          "unit": "acres",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "low",
+          "notes": "Derived: pastureland(excl cropland+woodland) + other_ag_land(excl cropland+pasture+woodland). Proxy only."
+        },
+        "stocking_rate_aum_per_acre": {
+          "value": 0.0333,
+          "unit": "AUM/acre",
+          "year": 2022,
+          "source": "nrcs_wy_technical_note",
+          "confidence": "low",
+          "notes": "State-average estimate: 30 ac/AUM = 0.0333 AUM/ac (NRCS WY Grazing Lands Technical Note range: 20-40 ac/AUM)."
+        },
+        "aum_capacity": {
+          "value": 40961,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+        }
+      },
+      "federal_aums": {
+        "blm_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "blm_ras",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "federal_aum_share": {
+          "value": null,
+          "unit": "fraction",
+          "year": null,
+          "source": "blm_ras + usfs_grazing",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "water": {
+        "diversion_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "consumptive_use_acre_feet": {
+          "value": null,
+          "unit": "acre-feet/year",
+          "year": null,
+          "source": "wy_water_rights",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "rap_invasive_cover": {
+        "current_cover_pct": {
+          "value": null,
+          "unit": "percent",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "ten_year_trend_pct_points": {
+          "value": null,
+          "unit": "percentage-points/10-years",
+          "year": null,
+          "source": "rap",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "geography": "county aggregate only; no sub-county invasive claim"
+      },
+      "ag_economics": {
+        "operations_count": {
+          "value": 262,
+          "unit": "operations",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "producers_count": {
+          "value": 490,
+          "unit": "producers",
+          "year": 2022,
+          "source": "census_ag_2022",
+          "confidence": "medium"
+        },
+        "farm_proprietor_income_usd": {
+          "value": null,
+          "unit": "USD/year",
+          "year": null,
+          "source": "bea_farm_proprietor_income",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      },
+      "dor_ag_productive_value_coefficients_usd_per_acre": {
+        "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
+        "irrigated": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "dryland": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "grazing_land": {
+          "value": null,
+          "unit": "USD/acre",
+          "year": null,
+          "source": "wy_dor_ag_valuation",
+          "confidence": "low",
+          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        }
+      }
+    }
+  },
+  "credibility_gate": {
+    "status": "BLOCKED",
+    "rows": [
+      {
+        "check": "Fremont and Park lead irrigated acreage",
+        "result": "BLOCKED",
+        "investigation": "Requires Census 2022 county irrigated acreage."
+      },
+      {
+        "check": "Campbell and Carbon are rangeland-dominated with large federal AUM shares",
+        "result": "BLOCKED",
+        "investigation": "Requires Census land use plus BLM/USFS AUMs."
+      },
+      {
+        "check": "Teton land-in-farms is a small fraction of county area",
+        "result": "BLOCKED",
+        "investigation": "Requires Census county area and land-in-farms fields."
+      },
+      {
+        "check": "Statewide beef cows within 10% of NASS state total",
+        "result": "BLOCKED",
+        "investigation": "Requires NASS county and state beef-cow series."
+      }
+    ]
+  },
+  "fetch_notes": {
+    "census_ag_2022": "SUCCESS \u2014 qs.census2022.txt.gz bulk download, filtered for WY county data (2026-07-17). All land-use, cattle, operations, producers fields populated.",
+    "nass_quickstats": "BLOCKED \u2014 API returns 401; API key required. No DEMO_KEY access.",
+    "blm_ras": "BLOCKED \u2014 BLM ArcGIS endpoints 404; BLM ArcGIS empty service list. Infrastructure finding: BLM RAS reports.blm.gov reachable (200) but no programmatic download.",
+    "usfs_grazing": "BLOCKED \u2014 USFS EDW Box.com links not attempted (50MB shapefile requires direct download; Claude Code network confirmed reachable). Log for manual fetch.",
+    "wy_water_rights": "BLOCKED \u2014 seo.wyo.gov/divisions/water-rights returns 404. Infrastructure finding: URL invalid/changed.",
+    "rap": "BLOCKED \u2014 rangelands.app/api/ 404, api.rangelands.app DNS not found. RAP main site reachable. API endpoint not publicly documented at time of fetch.",
+    "bea_farm_proprietor_income": "BLOCKED \u2014 BEA API returns error for DEMO_KEY (code 1: Invalid API UserId). Requires registered BEA API key.",
+    "wy_dor_ag_valuation": "BLOCKED \u2014 dptax.wyo.gov DNS not found. Infrastructure finding: domain invalid/changed."
+  },
+  "sanity_investigations": {
+    "check_1_fremont_park_lead_irrigated": {
+      "status": "INVESTIGATION_REQUIRED",
+      "finding": "2022 COA ranks Carbon (157,301 ac) and Sublette (120,242 ac) above Park (104,747) and Fremont (101,050). Expectation 'Fremont and Park lead' not confirmed for 2022 vintage.",
+      "investigation": "Carbon County: North Platte and Encampment River systems support large irrigated hay production; 157K ac is plausible. Sublette County: near-total cropland irrigation (cropland=120,319 ac, irrigated=120,242 ac) consistent with high-altitude semi-arid climate. Fremont/Park: 2022 was a severe drought year for Wyoming \u2014 Wind River Indian Reservation (Fremont) and Shoshone/Bighorn Basin (Park) systems likely had below-average diversions. Finding documented, not annotated around."
+    },
+    "check_2_campbell_carbon_rangeland_federal_aum": {
+      "status": "PARTIAL_PASS",
+      "finding": "Campbell (93.3% pastureland/land-in-farms) and Carbon (91.8%) are confirmed pastureland-dominated. Federal AUM share BLOCKED \u2014 BLM RAS and USFS endpoints unavailable."
+    },
+    "check_3_teton_small_land_in_farms": {
+      "status": "PASS",
+      "finding": "Teton land-in-farms 38,130 ac = 1.5% of county area (2,557,982 ac). Expectation confirmed."
+    },
+    "check_4_statewide_beef_cows": {
+      "status": "PARTIAL",
+      "finding": "2022 COA WY state total: 681,534 beef cows. County sum (16/23, 7 suppressed): 511,723. Suppressed counties (D): Hot Springs, Laramie, Lincoln, Natrona, Niobrara, Park, Sweetwater. County sum = 75% of state total, consistent with 7 suppressed counties. Reference value from same source (COA 2022) so full cross-source validation deferred to next vintage."
+    }
+  }
+}
