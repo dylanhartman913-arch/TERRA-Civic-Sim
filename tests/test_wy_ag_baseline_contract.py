@@ -41,7 +41,12 @@ def test_allotment_and_source_contracts_keep_subcounty_detail_and_blocked_source
             "authorized_aum", "authorized_use_acres", "source_url", "vintage", "status",
             "manual_fetch_id",
         ]
-        assert list(reader) == []
+        rows = list(reader)
+        assert len(rows) > 0, "Expected allotment rows after USFS fetch (W6-FU/AG2)"
+        for row in rows:
+            assert row["agency"] == "USFS"
+            assert row["county_geoid"].startswith("56")
+            assert row["manual_fetch_id"] == "usfs_grazing"
     with SOURCES.open(newline="") as handle:
         rows = list(csv.DictReader(handle))
     assert {row["source_id"] for row in rows} >= {

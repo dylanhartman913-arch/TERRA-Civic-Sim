@@ -112,9 +112,9 @@ fi
 # is `repo-relative path|SHA-256`; fail closed if a source changes without a
 # corresponding manifest update.
 HASH_VERIFIED_DATA_MANIFEST=(
-  "data/processed/wy_county_ag_baseline.json|3285ce266b2533b2e78b363511d2679c4c5c93a490a0959babf4e140b3cf8ab5"
-  "data/processed/wy_grazing_allotments.csv|35550012ad0538394cb481f49bf298fa7b7a2afef7df60dda8b060359642d08a"
-  "data/processed/wy_ag_sources.csv|b38a327dcdaf96c8440ce65f461da17491bc4b470c684003fe1fe1120012d8d8"
+  "data/processed/wy_county_ag_baseline.json|a3fd810d419cef32ce5f61037ca4b58b44bb26ced81c0a77b0d181b0db89a3d8"
+  "data/processed/wy_grazing_allotments.csv|9ee046773c2b47860908d68c4a975c3df9437db94a4589c5b5547a7e9dd29ba1"
+  "data/processed/wy_ag_sources.csv|1cf20a9bdf35b808052724e06b8a8002e10f2eded00045e455d50362ba172a0e"
   "data/processed/mw_action_library_v3.json|a96d536a703e7283e7263c1f1813000ebdedcb187e4dc5286604852522731704"
   "data/processed/wy_fiscal_coefficients.json|199a3724a11c5ca81c2d0a02166134354386fa97bf7b74d2386a8acc20b1c44e"
 )

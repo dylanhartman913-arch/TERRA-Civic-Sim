@@ -1,1 +1,687 @@
 allotment_id,agency,allotment_name,county_geoid,county_name,authorized_aum,authorized_use_acres,source_url,vintage,status,manual_fetch_id
+00502,USFS,EAST FORK SMITHS FORK,56041,Uinta,,16445.043,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00516,USFS,WALKER (VACANT),56041,Uinta,,167.429,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT,usfs_grazing
+00515,USFS,GILBERT CREEK,56041,Uinta,,14013.415,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00371,USFS,WALLROCK-HIDDEN TEPEE,56033,Sheridan,,8878.337,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00452,USFS,SHELL BASIN,56003,Big Horn,,21073.222,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00619,USFS,LOWER DRY FORK,56033,Sheridan,,14635.933,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00115,USFS,LOST CANYON,56011,Crook,,7553.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00104,USFS,GROMMUND SOURDOUGH,56019,Johnson,,19387.195,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00658,USFS,OWEN CREEK,56033,Sheridan,,4651.066,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00353,USFS,BEAR/CRYSTAL CREEK,56003,Big Horn,,7311.563,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00107,USFS,ROCK CREEK,56019,Johnson,,28729.202,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00301,USFS,DEVILS CANYON,56003,Big Horn,,35171.317,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00621,USFS,NICKLEMINE,56033,Sheridan,,6597.171,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00118,USFS,LYTLE CREEK,56011,Crook,,3107.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00107,USFS,BLACKTAIL,56011,Crook,,10240.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00120,USFS,PHEASANT DRAW,56011,Crook,,393.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00412,USFS,LOWER BEAVER,56045,Weston,,33041.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00304,USFS,MEDICINE MOUNTAIN,56003,Big Horn,,26349.123,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00372,USFS,WHALEY CREEK,56003,Big Horn,,6474.59,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00620,USFS,WEST LOWER TONGUE,56033,Sheridan,,6793.91,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00105,USFS,REDWATER,56011,Crook,,9319.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00117,USFS,DIVIDE,56011,Crook,,3374.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00614,USFS,EAST LOWER TONGUE,56033,Sheridan,,4790.637,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00653,USFS,BULL/WOODROCK,56033,Sheridan,,16398.078,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00106,USFS,TOGUS,56011,Crook,,5522.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00119,USFS,WARREN PEAK,56011,Crook,,8059.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00109,USFS,OAK CREEK,56011,Crook,,5759.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00126,USFS,COLE,56011,Crook,,357.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00111,USFS,HUETT SPRINGS,56011,Crook,,2594.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00123,USFS,BLACK HAW,56011,Crook,,1070.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00407,USFS,ELK MOUNTAIN,56045,Weston,,23311.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00110,USFS,MIDDLE FORK,56011,Crook,,12052.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00108,USFS,OGDEN,56011,Crook,,8397.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00622,USFS,PASS CREEK,56033,Sheridan,,12657.381,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00354,USFS,BEAVER CREEK,56003,Big Horn,,4180.048,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00559,USFS,BABYWAGON,56019,Johnson,,15581.406,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00302,USFS,SUNLIGHT MESA,56003,Big Horn,,12865.203,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00112,USFS,WILLOW SPRINGS,56011,Crook,,11727.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00125,USFS,SAND CREEK,56011,Crook,,19634.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00612,USFS,EAST FREEZEOUT,56033,Sheridan,,5831.133,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00156,USFS,CLOUD PEAK,56019,Johnson,,5498.797,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT,usfs_grazing
+00600,USFS,TONGUE CANYON ELK RESERVE,56033,Sheridan,,3136.496,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT,usfs_grazing
+00603,USFS,LITTLE GOOSE,56019,Johnson,,29017.067,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00114,USFS,STEARNS PARK,56011,Crook,,10915.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00710,USFS,BEAR RIDGE,56011,Crook,,5376.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00417,USFS,STOVEHOLE,56045,Weston,,9634.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00374,USFS,WYOMING GULCH,56033,Sheridan,,8300.648,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00351,USFS,ANTELOPE RIDGE,56033,Sheridan,,3099.405,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00312,USFS,WILEY CREEK,56003,Big Horn,,13874.447,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00503,USFS,POWDER RIVER,56019,Johnson,,8874.085,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00103,USFS,CLEAR CREEK,56019,Johnson,,16394.663,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00124,USFS,IDOL,56011,Crook,,10445.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00406,USFS,DRY BEAVER,56045,Weston,,2888.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00416,USFS,SOLDIER CREEK,56045,Weston,,3324.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00403,USFS,COLD CREEK,56045,Weston,,13844.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00657,USFS,LOOKOUT MOUNTAIN,56033,Sheridan,,5180.589,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT,usfs_grazing
+00306,USFS,RED SPRINGS C&H,56033,Sheridan,,24435.675,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00308,USFS,LITTLE HORN C&H,56033,Sheridan,,10467.901,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00601,USFS,SOUTH FORK,56033,Sheridan,,1623.201,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00105,USFS,MUDDY CREEK,56019,Johnson,,31392.68,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00106,USFS,POISON CREEK,56019,Johnson,,12252.905,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00153,USFS,DOYLE CREEK,56019,Johnson,,15184.834,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00711,USFS,CEMENT RIDGE,56011,Crook,,4179.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00113,USFS,SILVER CREEK,56011,Crook,,11924.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00624,USFS,UPPER TONGUE,56033,Sheridan,,10100.005,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00362,USFS,LITTLE HORN S&G,56033,Sheridan,,5033.992,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00623,USFS,COPPER CREEK,56033,Sheridan,,21144.264,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00409,USFS,SOUTHSIDE,56003,Big Horn,,9236.18,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00415,USFS,MEDICINE LODGE-TRAPPER CRK CSH,56003,Big Horn,,25242.85,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00408,USFS,SOUTH PARK,56003,Big Horn,,1170.242,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00455,USFS,CROOKED CREEK,56003,Big Horn,,3316.426,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00401,USFS,GRANITE,56003,Big Horn,,7436.903,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00404,USFS,SALT CREEK,56003,Big Horn,,15521.314,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00659,USFS,PROSPECT CEDAR,56033,Sheridan,,4641.615,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00101,USFS,STONEY POINT,56011,Crook,,9070.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00102,USFS,NORTH BEARLODGE,56011,Crook,,8419.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00121,USFS,LAME JONES,56011,Crook,,428.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00103,USFS,TAYLOR DIVIDE,56011,Crook,,3595.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00608,USFS,RAPID CREEK,56033,Sheridan,,14376.922,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00307,USFS,SAGE BASIN C&H,56033,Sheridan,,7385.566,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00310,USFS,FISHER MOUNTAIN,56033,Sheridan,,1777.241,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT,usfs_grazing
+00626,USFS,WOLF CREEK,56033,Sheridan,,5241.8,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00405,USFS,PAINTROCK BASIN,56003,Big Horn,,43517.616,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00501,USFS,BATTLE PARK,56003,Big Horn,,28956.037,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00116,USFS,INYAN KARA,56011,Crook,,1548.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00406,USFS,SHELL CREEK,56003,Big Horn,,9785.368,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00365,USFS,POLE CREEK,56033,Sheridan,,3054.852,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00402,USFS,FORKS,56003,Big Horn,,11489.217,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00553,USFS,HAZELTON,56019,Johnson,,4243.612,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00651,USFS,STULL LAKES,56033,Sheridan,,16206.13,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT,usfs_grazing
+00311,USFS,MEXICAN HILL,56003,Big Horn,,3525.102,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00552,USFS,GARNET CREEK,56003,Big Horn,,4562.34,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00104,USFS,FARRALL,56011,Crook,,9046.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00617,USFS,WEST FREEZEOUT,56033,Sheridan,,19634.797,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00558,USFS,UPPER MEADOWS,56003,Big Horn,,17689.621,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00157,USFS,ELK LAKE,56019,Johnson,,6150.91,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT,usfs_grazing
+00607,USFS,PINEY,56019,Johnson,,12551.933,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00610,USFS,WALKER PRAIRIE,56033,Sheridan,,30522.07,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00625,USFS,WEST PASS,56033,Sheridan,,2503.015,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT,usfs_grazing
+00122,USFS,GRAND CANYON,56011,Crook,,16058.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00656,USFS,FISHHOOK/FOOL CREEK,56033,Sheridan,,9118.465,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00627,USFS,LAKE CREEK,56033,Sheridan,,32235.049,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00557,USFS,MISTY MOON,56003,Big Horn,,4628.189,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,CLOSED,usfs_grazing
+00305,USFS,RED CANYON C&H,56003,Big Horn,,6453.758,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00502,USFS,DRY TENSLEEP,56043,Washakie,,7354.778,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00618,USFS,LITTLE TONGUE,56033,Sheridan,,25349.643,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00605,USFS,LITTLE PINEY,56019,Johnson,,9353.862,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00404,USFS,CROWS NEST UPPER BEAVER,56045,Weston,,40384.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00505,USFS,SOUTH CANYON,56043,Washakie,,13198.815,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00508,USFS,MONUMENT,56043,Washakie,,2693.306,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00504,USFS,NORTH CANYON,56043,Washakie,,11829.743,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00611,USFS,WILLOW PARK,56019,Johnson,,10701.552,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00403,USFS,MATTHEW'S RIDGE,56003,Big Horn,,596.049,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00613,USFS,AMSDEN,56033,Sheridan,,2972.923,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00604,USFS,LITTLE GOOSE CANYON,56033,Sheridan,,1152.223,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT,usfs_grazing
+05511,USFS,NORTH FORK,56007,Carbon,,33441.262,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+05512,USFS,NORTH PASTURE,56001,Albany,,3402.494,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+05513,USFS,PLATTE RIVER,56007,Carbon,,62852.008,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06626,USFS,INDIAN CREEK,56001,Albany,,4108.788,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT,usfs_grazing
+02416,USFS,LITTLE SANDSTONE,56007,Carbon,,5842.262,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02419,USFS,NORTH FORK,56007,Carbon,,16729.659,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02420,USFS,ROARING FORK,56007,Carbon,,16253.586,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02422,USFS,HARTT CREEK,56007,Carbon,,27252.127,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+05501,USFS,BEACON,56001,Albany,,6220.702,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+05504,USFS,CROW CREEK,56001,Albany,,10131.438,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+05506,USFS,FOXPARK,56001,Albany,,45508.818,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+05502,USFS,BOSWELL,56001,Albany,,38222.082,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+05514,USFS,TABLE MOUNTAIN,56001,Albany,,4632.55,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02425,USFS,LOVERS CABIN,56007,Carbon,,980.75,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+05515,USFS,WEST BEAVER,56001,Albany,,25165.652,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+05509,USFS,HORSE CREEK,56001,Albany,,6502.965,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+05507,USFS,GREEN MOUNTAIN,56001,Albany,,9293.245,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+05508,USFS,HOLMES,56001,Albany,,13748.433,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+05523,USFS,HAT PARK,56001,Albany,,1708.846,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT-UNAVAILABLE,usfs_grazing
+06622,USFS,HAYSTACK,56001,Albany,,1300.047,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+05521,USFS,CINNABAR PARK,56001,Albany,,7868.742,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT-UNAVAILABLE,usfs_grazing
+05522,USFS,ELK CREEK,56001,Albany,,2819.824,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT-UNAVAILABLE,usfs_grazing
+05510,USFS,LODGEPOLE,56001,Albany,,14288.944,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+05524,USFS,WARREN,56001,Albany,,4118.675,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+04406,USFS,CAMP CREEK,56001,Albany,,17326.929,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+04408,USFS,FOOTHILLS,56001,Albany,,10721.95,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02724,USFS,SAWMILL CREEK,56007,Carbon,,3285.123,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02406,USFS,COTTONWOOD,56007,Carbon,,6776.76,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02409,USFS,COPPERTON,56007,Carbon,,15694.659,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02405,USFS,BLAKE,56007,Carbon,,18552.323,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09305,USFS,MCGEE,56045,Weston,,646.883,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02427,USFS,THREE FORKS,56007,Carbon,,8191.975,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02429,USFS,WOOD MOUNTAIN,56007,Carbon,,43868.639,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02701,USFS,CEDAR CREEK,56007,Carbon,,6795.202,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02703,USFS,LINCOLN CREEK,56007,Carbon,,16880.971,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06623,USFS,HELD CREEK,56001,Albany,,2856.002,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02702,USFS,BARRETT RIDGE,56007,Carbon,,26127.467,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09366,USFS,DEEP CREEK,56045,Weston,,809.838,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09115,USFS,SNYDER,56005,Campbell,,4887.992,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02704,USFS,NORTH BRUSH CREEK,56007,Carbon,,20651.511,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02707,USFS,BOW RIVER,56007,Carbon,,12593.47,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06656,USFS,TRAIL CREEK,56009,Converse,,2075.805,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02705,USFS,LAKE CREEK,56007,Carbon,,8630.47,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02723,USFS,COOK,56007,Carbon,,367.785,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09261,USFS,WEISS,56009,Converse,,4003.323,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02706,USFS,PASS CREEK,56007,Carbon,,20603.742,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02401,USFS,BATTLE MTN,56007,Carbon,,3027.64,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02402,USFS,BEAVER CR,56007,Carbon,,34929.287,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09234,USFS,KEYTON CREEK,56009,Converse,,2978.137,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06657,USFS,AUNT AG,56009,Converse,,2270.705,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02408,USFS,CANYON TRAIL,56007,Carbon,,13241.254,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09112,USFS,MCMANAMEN,56005,Campbell,,2568.98,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02403,USFS,BIG CREEK,56007,Carbon,,19781.516,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02404,USFS,BIG SANDSTONE,56007,Carbon,,11630.944,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+05503,USFS,CENTENNIAL RIDGE,56001,Albany,,8355.566,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02411,USFS,COW CREEK,56007,Carbon,,13345.481,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02412,USFS,ENCAMPMENT,56007,Carbon,,37463.093,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02413,USFS,FORKS,56007,Carbon,,8581.734,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09232,USFS,DULL CENTER,56009,Converse,,1740.71,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02414,USFS,HOG PARK,56007,Carbon,,8703.596,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT-UNAVAILABLE,usfs_grazing
+02415,USFS,JACK CREEK,56007,Carbon,,38975.91,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06646,USFS,SOLDIER CREEK,56001,Albany,,10049.178,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09221,USFS,BATES CREEK,56005,Campbell,,23244.467,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09219,USFS,KETELSON,56009,Converse,,44896.495,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09220,USFS,SMALL,56005,Campbell,,5496.415,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09313,USFS,BRUCE,56045,Weston,,16409.055,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09314,USFS,STANTON,56045,Weston,,121.881,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09320,USFS,SMITH,56045,Weston,,4509.108,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09317,USFS,CHRISTENSEN,56045,Weston,,11538.857,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06602,USFS,BAR M,56001,Albany,,7682.035,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06607,USFS,BOXELDER,56009,Converse,,35608.884,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09111,USFS,BROWN-KENNEDY,56005,Campbell,,9135.504,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09319,USFS,RIESLAND,56045,Weston,,4991.443,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09330,USFS,DARLINGTON,56045,Weston,,1434.208,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09324,USFS,SWEET RANCH,56045,Weston,,2697.42,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09325,USFS,CRANSTON,56045,Weston,,528.908,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09318,USFS,CLYDE,56045,Weston,,1421.642,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09327,USFS,PATTON,56045,Weston,,2206.821,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09274,USFS,LITTLE THUNDER,56005,Campbell,,13323.489,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09275,USFS,UPPER BASIN,56005,Campbell,,2948.391,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09326,USFS,SAUNDERS,56045,Weston,,7332.344,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09277,USFS,LIGHTNING CREEK,56027,Niobrara,,3789.737,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06654,USFS,YANKEE FLATS,56001,Albany,,8286.127,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06614,USFS,EAGLE PEAK,56001,Albany,,9049.962,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06615,USFS,FLETCHER PARK,56001,Albany,,2259.461,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06621,USFS,HARRIS PARK,56001,Albany,,2942.951,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09280,USFS,BOOSTER,56005,Campbell,,1600.943,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09281,USFS,SOUTH TURNER,56005,Campbell,,1887.671,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09282,USFS,NORTH TURNER,56005,Campbell,,752.984,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09284,USFS,TANNER DRAW,56005,Campbell,,1532.251,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09278,USFS,ROGERS DRAW,56005,Campbell,,2780.387,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09286,USFS,BRIGGS DRAW,56005,Campbell,,1583.298,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09298,USFS,TECKLA,56005,Campbell,,6882.13,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09371,USFS,STELLWAGON,56045,Weston,,3087.184,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09385,USFS,POPHAM   .,56045,Weston,,3013.886,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09369,USFS,X-RING,56045,Weston,,5862.182,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09370,USFS,MATERI,56045,Weston,,1921.171,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06658,USFS,JOHN CREEK,56009,Converse,,7182.224,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06659,USFS,MARBLE QUARRY,56031,Platte,,1331.845,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06619,USFS,GREEN MOUNTAIN,56001,Albany,,7120.261,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06660,USFS,ASHENFELDER,56009,Converse,,9251.468,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06617,USFS,FRENCH JOE,56009,Converse,,8012.176,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06618,USFS,FRIEND CREEK,56001,Albany,,4691.337,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06640,USFS,ROCK CREEK,56009,Converse,,9552.97,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09332,USFS,COTTON,56045,Weston,,178.695,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09287,USFS,CALAMITY GULCH,56009,Converse,,17230.617,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09288,USFS,RED SPRING,56005,Campbell,,8288.923,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09333,USFS,MAY,56011,Crook,,1440.258,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09299,USFS,ROSECRANS,56045,Weston,,12002.516,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09372,USFS,MIRICH,56045,Weston,,3838.21,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09373,USFS,SHEPPERSON,56045,Weston,,4017.323,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09374,USFS,MUSH CREEK,56045,Weston,,4916.4,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09376,USFS,SHANNON,56045,Weston,,1314.777,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09378,USFS,NORRIS,56045,Weston,,398.507,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06661,USFS,HOBBS CREEK,56031,Platte,,1447.69,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06604,USFS,BEAR CREEK,56001,Albany,,16320.562,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06641,USFS,SAGEBRUSH,56025,Natrona,,6956.917,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06642,USFS,SALTLICK,56001,Albany,,5335.091,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06643,USFS,SAWTOOTH,56009,Converse,,9635.749,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06644,USFS,CURRY CREEK,56009,Converse,,4295.953,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09346,USFS,FULTON,56045,Weston,,3363.803,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09347,USFS,GEORGE,56045,Weston,,1573.938,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09348,USFS,MENDENHALL,56045,Weston,,3530.866,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09349,USFS,M D RANCH,56045,Weston,,2558.602,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09350,USFS,TOWNSEND ESTATE,56045,Weston,,1751.243,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09351,USFS,GOSE,56045,Weston,,723.129,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09383,USFS,PETERSON,56045,Weston,,970.454,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09384,USFS,POLLAT,56045,Weston,,1966.439,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09388,USFS,RANKIN,56045,Weston,,1051.603,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09380,USFS,OLIVER,56045,Weston,,3631.779,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09392,USFS,SCHUETTE,56045,Weston,,954.454,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09394,USFS,SEWELL,56045,Weston,,10932.005,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06600,USFS,ALBANY PEAK,56001,Albany,,6319.216,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT,usfs_grazing
+06650,USFS,WARBONNET,56001,Albany,,29569.804,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06652,USFS,WHITE HOUND,56001,Albany,,4349.577,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09244,USFS,TENA CREEK,56009,Converse,,6502.64,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09245,USFS,SHELDON DRAW,56009,Converse,,5056.502,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09352,USFS,GRIEVES,56045,Weston,,12638.956,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09353,USFS,HANSON,56027,Niobrara,,2822.592,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09357,USFS,WEBSTER,56045,Weston,,1839.283,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09354,USFS,TOWNSEND CO.,56045,Weston,,13134.796,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09334,USFS,SLAGLE,56045,Weston,,1606.547,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09335,USFS,SWEET,56045,Weston,,2336.512,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09329,USFS,D & W LIVESTOCK,56045,Weston,,29145.173,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09337,USFS,COSSART,56045,Weston,,5570.985,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09338,USFS,DRISKELL,56045,Weston,,2915.676,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02423,USFS,SIX MILE,56007,Carbon,,6380.106,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06601,USFS,ANTELOPE,56001,Albany,,940.831,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06603,USFS,BATES CREEK,56025,Natrona,,8540.766,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09246,USFS,ROTHLEUTNER,56009,Converse,,14447.814,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09247,USFS,EAST UNDERWOOD,56005,Campbell,,1081.663,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09249,USFS,FROG CREEK,56045,Weston,,16407.288,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09250,USFS,SPENCER,56045,Weston,,12302.09,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09355,USFS,WATT,56045,Weston,,1414.671,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09356,USFS,ARLEDGE,56045,Weston,,16032.125,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09358,USFS,COWGER,56045,Weston,,1311.703,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09359,USFS,PICKREL,56045,Weston,,10610.289,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09360,USFS,WHITNEY,56045,Weston,,445.638,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09361,USFS,CHILDS,56045,Weston,,727.218,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06628,USFS,LABONTE CANYON,56001,Albany,,3864.91,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02424,USFS,SPRING CREEK,56007,Carbon,,10312.254,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02426,USFS,VICTORIA,56007,Carbon,,12141.778,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06606,USFS,BOUNDARY,56009,Converse,,2323.298,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT,usfs_grazing
+09251,USFS,SPRACKLEN,56009,Converse,,3270.757,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09252,USFS,STECKLEY,56009,Converse,,1322.197,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09255,USFS,STODDARD,56009,Converse,,17460.608,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09256,USFS,STUART,56005,Campbell,,8236.694,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09362,USFS,KUEMMERLE,56045,Weston,,1844.171,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09363,USFS,RAWHOUSER,56045,Weston,,1260.208,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09364,USFS,SIXMILE BASIN,56045,Weston,,26767.268,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09365,USFS,AU7,56045,Weston,,28455.368,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06629,USFS,LAPRELE,56009,Converse,,11639.103,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02428,USFS,WEST SHEEP MTN,56007,Carbon,,9482.245,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09257,USFS,BELL,56009,Converse,,7256.9,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09001,USFS,KARA COMMUNITY,56045,Weston,,2150.264,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09002,USFS,BROWN COMMUNITY,56045,Weston,,2091.095,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09003,USFS,FOLTZ COMMUNITY,56045,Weston,,1653.052,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09004,USFS,EAST UPTON-OSAGE,56045,Weston,,5509.599,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09005,USFS,MIDDLE UPTON-OSAGE,56045,Weston,,10122.948,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09222,USFS,LYNCH,56045,Weston,,10709.119,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09223,USFS,MACKEY,56005,Campbell,,4687.561,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09224,USFS,MANNING,56009,Converse,,5662.63,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09225,USFS,SOUTH BAKER,56009,Converse,,3530.084,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09226,USFS,NORTH BAKER,56009,Converse,,2831.418,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09227,USFS,TILLARD,56009,Converse,,17109.776,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06630,USFS,LARAMIE PEAK,56001,Albany,,3038.454,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06648,USFS,TEXAS CREEK,56009,Converse,,689.59,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09116,USFS,TURNQUIST,56011,Crook,,1282.593,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09231,USFS,FIDDLEBACK,56009,Converse,,70647.312,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+04402,USFS,BEAVER CREEK,56007,Carbon,,4299.96,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09006,USFS,WEST UPTON-OSAGE,56045,Weston,,4643.41,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09007,USFS,DORFLER-CELLERS,56045,Weston,,2765.3,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09010,USFS,WEST CELLARS COMMUNITY,56045,Weston,,10659.391,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09101,USFS,JENKINS,56005,Campbell,,1531.601,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09102,USFS,BOARDMAN,56005,Campbell,,6058.301,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09103,USFS,BROWN,56005,Campbell,,2126.418,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09259,USFS,THOMSON,56009,Converse,,6863.793,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09262,USFS,GORDON,56045,Weston,,11530.744,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09264,USFS,WILKINSON,56005,Campbell,,4472.035,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09265,USFS,BLACK THUNDER,56005,Campbell,,1046.432,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09258,USFS,TAYLOR,56005,Campbell,,1480.014,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09248,USFS,SADLER,56009,Converse,,3250.835,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06649,USFS,TOLTEC,56001,Albany,,4561.474,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09105,USFS,DICKINSON,56005,Campbell,,7845.482,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09106,USFS,GLEASON,56005,Campbell,,11357.918,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09107,USFS,HARRIS,56005,Campbell,,930.226,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09109,USFS,HEALD,56005,Campbell,,6712.174,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09266,USFS,EDWARDS,56005,Campbell,,6213.87,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09268,USFS,NORTH ROCHELLE HILLS,56045,Weston,,3400.48,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09269,USFS,UNDERWOOD,56005,Campbell,,4868.729,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09270,USFS,OSTLUND,56005,Campbell,,14497.902,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09271,USFS,KEELINE,56045,Weston,,56272.342,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09368,USFS,MARTENS,56045,Weston,,3354.554,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06631,USFS,LATHAM CREEK,56009,Converse,,4742.756,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09254,USFS,WILD BILL,56009,Converse,,228.231,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09253,USFS,STEINLE,56009,Converse,,2367.016,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09113,USFS,NORFOLK,56005,Campbell,,14488.702,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09235,USFS,PELLATZ,56009,Converse,,1245.065,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06624,USFS,HORSE CREEK,56009,Converse,,10225.26,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09272,USFS,SOUTH ROCHELLE HILLS,56045,Weston,,4627.949,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09273,USFS,STRINGER,56005,Campbell,,1087.529,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09114,USFS,PICKREL,56005,Campbell,,14107.998,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09117,USFS,WENANDE,56005,Campbell,,2676.068,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09118,USFS,YORK,56005,Campbell,,4327.708,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06612,USFS,CURTIS GULCH,56001,Albany,,3171.125,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06625,USFS,HORSESHOE,56009,Converse,,13511.967,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09237,USFS,BETTY DON,56009,Converse,,3058.713,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09233,USFS,MILLER HILLS,56009,Converse,,10132.954,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09238,USFS,REED,56009,Converse,,3369.223,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09242,USFS,SOUTH WRIGHT,56005,Campbell,,1006.918,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,CLOSED,usfs_grazing
+09206,USFS,DOWNS,56009,Converse,,7675.2,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09201,USFS,ALEXANDER,56009,Converse,,16609.144,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09375,USFS,MURRAY,56045,Weston,,2571.274,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09204,USFS,DARLINGTON,56045,Weston,,13894.978,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06653,USFS,WINDY MOUNTAIN,56009,Converse,,5145.027,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09240,USFS,SCHOOL CREEK,56005,Campbell,,22761.284,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09241,USFS,SPRING CREEK,56005,Campbell,,8773.579,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09207,USFS,FIELD,56045,Weston,,21988.76,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09303,USFS,REYNOLDS,56045,Weston,,1853.126,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09205,USFS,NORTH ANTELOPE,56005,Campbell,,13636.552,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09301,USFS,ADKINS,56045,Weston,,1673.342,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09304,USFS,BURR,56045,Weston,,221.437,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09306,USFS,JONES DRAW,56045,Weston,,1428.417,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09008,USFS,MIDDLE CELLARS COMMUNITY,56045,Weston,,4500.639,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06633,USFS,MEADOW CREEK,56009,Converse,,9676.173,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06635,USFS,NORTH LARAMIE RIVER,56001,Albany,,16330.833,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06610,USFS,COW CREEK,56001,Albany,,7510.534,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09208,USFS,SHERWIN,56045,Weston,,12677.68,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09212,USFS,IRWIN,56009,Converse,,20206.951,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09215,USFS,BLOW OUT,56005,Campbell,,923.479,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09216,USFS,JOHNSON,56009,Converse,,4591.151,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09307,USFS,PINE RIDGE,56045,Weston,,17187.424,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09308,USFS,PIPELINE,56045,Weston,,3260.785,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09309,USFS,HARKNESS DRAW,56045,Weston,,1472.273,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09310,USFS,BORGIALLI,56045,Weston,,8004.372,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09311,USFS,WHISLER,56045,Weston,,407.335,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06636,USFS,PASTURE,56009,Converse,,4314.203,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06637,USFS,RATTLESNAKE,56001,Albany,,1674.702,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06639,USFS,ROARING FORK,56009,Converse,,6436.003,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09213,USFS,JACOBS,56009,Converse,,10224.916,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09214,USFS,KERR-MCGEE,56005,Campbell,,13292.058,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09218,USFS,BACON CREEK,56005,Campbell,,34568.38,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09312,USFS,ALKALI,56045,Weston,,14546.369,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09315,USFS,BUTCHER ROAD,56045,Weston,,7161.139,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09316,USFS,HANS,56045,Weston,,1637.847,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09321,USFS,COORDINGLY,56045,Weston,,1994.695,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09323,USFS,BUFFALO CREEK,56045,Weston,,339.086,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09328,USFS,KRAFT,56045,Weston,,571.847,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06613,USFS,DEER CREEK,56001,Albany,,6153.487,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09009,USFS,EAST CELLARS COMMUNITY,56045,Weston,,6696.819,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06627,USFS,INDIAN FLAT,56009,Converse,,3831.812,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06611,USFS,CUMMINGS PARK,56009,Converse,,1514.582,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02711,USFS,SNOWY RANGE S&G,56007,Carbon,,114649.368,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT,usfs_grazing
+06645,USFS,SHEEP MOUNTAIN,56031,Platte,,3415.626,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06664,USFS,BIGHORN,56001,Albany,,3820.611,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT-UNAVAILABLE,usfs_grazing
+00501,USFS,BEEBE-MARKEY,56027,Niobrara,,3342.523,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02400,USFS,BATTLE CREEK,56007,Carbon,,8437.934,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00504,USFS,ELLISON DAM,56027,Niobrara,,4555.309,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00516,USFS,PFISTER,56027,Niobrara,,6398.38,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00511,USFS,HONADEL,56027,Niobrara,,2093.616,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00382,USFS,BRUSH CREEK,56027,Niobrara,,6002.065,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00551,USFS,ANTELOPE,56027,Niobrara,,10443.715,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00563,USFS,WEST ASSOCIATION,56027,Niobrara,,6353.22,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09340,USFS,ELLIOTT,56045,Weston,,6242.863,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09341,USFS,TURNER CREEK,56045,Weston,,2123.564,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09342,USFS,TODD,56045,Weston,,13696.918,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09343,USFS,FORDYCE,56045,Weston,,1952.44,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09344,USFS,NORTH FORK,56045,Weston,,4075.116,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09339,USFS,ROCK CREEK,56045,Weston,,2532.437,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00001,USFS,INDIAN BRUSH,56027,Niobrara,,10385.075,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00004,USFS,SHERRILL HILLS,56027,Niobrara,,2536.597,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09345,USFS,HAGERMAN,56045,Weston,,2301.865,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09395,USFS,SHAW,56045,Weston,,14038.796,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09397,USFS,HUCKINS,56045,Weston,,635.8,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09398,USFS,WILDCAT CREEK,56045,Weston,,9656.019,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06647,USFS,SOUTH END,56001,Albany,,6149.797,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+09399,USFS,PRAIRIE CREEK,56045,Weston,,462.093,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06651,USFS,WEST FORK,56009,Converse,,1876.578,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06605,USFS,BLACKTAIL,56001,Albany,,3529.784,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT-UNAVAILABLE,usfs_grazing
+09263,USFS,DILTS,56009,Converse,,3694.154,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+03334,USFS,FIRELINE,56007,Carbon,,9425.39,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00518,USFS,SIMONS,56027,Niobrara,,1551.52,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+90058,USFS,POSTON,56021,Laramie,,560.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00512,USFS,GRACE CREEK,56001,Albany,,33301.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00510,USFS,GABRIELSON,56001,Albany,,1696.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00524,USFS,SCHAFFER,56001,Albany,,2068.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00501,USFS,BOULDER RIDGE,56001,Albany,,5882.0,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,CLOSED,usfs_grazing
+03095,USFS,HAYS PARK,56013,Fremont,,8673.456,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+01008,USFS,LITTLE ROCK,56029,Park,,4902.913,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+01009,USFS,TABLE MOUNTAIN,56029,Park,,13902.028,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+01004,USFS,REEF CREEK,56029,Park,,11454.839,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02066,USFS,TWIN PEAKS,56017,Hot Springs,,4821.198,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+04143,USFS,HARDPAN/TABLE MOUNTAIN,56029,Park,,15218.64,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+01012,USFS,BURNT MOUNTAIN,56029,Park,,4416.972,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT-UNAVAILABLE,usfs_grazing
+02042,USFS,GOOSEBERRY CREEK,56017,Hot Springs,,9920.38,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+01018,USFS,PEAT BEDS,56029,Park,,5846.208,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT-UNAVAILABLE,usfs_grazing
+03097,USFS,MEADOW CREEK,56013,Fremont,,1351.38,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+03099,USFS,SAWMILL,56013,Fremont,,9378.302,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+03091,USFS,BAYER MOUNTAIN,56013,Fremont,,5264.565,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+03096,USFS,MAXON BASIN,56013,Fremont,,5841.192,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+04134,USFS,BOBCAT,56029,Park,,6579.582,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+04145,USFS,ISHAWOOA HILLS,56029,Park,,1470.323,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+01003,USFS,BENCH,56029,Park,,28758.941,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+05196,USFS,SALT CREEK,56013,Fremont,,10094.163,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+05187,USFS,UNION PASS,56013,Fremont,,48054.528,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+03101,USFS,SOUTH PASS,56013,Fremont,,6943.484,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+03111,USFS,BEAVER CREEK,56013,Fremont,,1332.71,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+04140,USFS,RAND CREEK,56029,Park,,1588.407,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02055,USFS,COTTONWOOD,56017,Hot Springs,,7718.126,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT,usfs_grazing
+03092,USFS,DICKINSON PARK,56013,Fremont,,22142.654,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+04131,USFS,BELKNAP,56029,Park,,11310.494,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+04138,USFS,DUNN CREEK,56029,Park,,4541.404,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+01002,USFS,BASIN,56029,Park,,73155.892,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+03094,USFS,FRYE LAKE,56013,Fremont,,20533.611,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+03098,USFS,MIDDLE FORK,56013,Fremont,,27411.251,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+03112,USFS,ATLANTIC CITY,56013,Fremont,,1008.182,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+03109,USFS,SLATE CREEK,56013,Fremont,,7543.619,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+04153,USFS,RATTLESNAKE,56029,Park,,4453.054,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+04150,USFS,LOGAN MOUNTAIN,56029,Park,,12474.311,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+05191,USFS,WIND RIVER,56013,Fremont,,45048.026,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02045,USFS,KIRWIN,56029,Park,,21790.988,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+04156,USFS,VALLEY/BOULDER,56029,Park,,3371.957,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+01005,USFS,FACE OF THE MOUNTAIN,56029,Park,,8561.973,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+01007,USFS,LAKE CREEK,56029,Park,,19827.172,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+04154,USFS,ROCK CREEK,56029,Park,,16889.569,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+04135,USFS,COMMUNITY,56029,Park,,14986.364,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+04158,USFS,CARTER CREEK ON/OFF,56029,Park,,600.904,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+01011,USFS,BENNETT CREEK,56029,Park,,6686.399,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT-UNAVAILABLE,usfs_grazing
+01006,USFS,GHOST CREEK,56029,Park,,11372.776,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+01027,USFS,CRANDALL II,56029,Park,,18650.904,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+04167,USFS,BULL CREEK ON/OFF,56029,Park,,1172.121,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+01030,USFS,PAT OHARA ON/OFF,56029,Park,,1990.452,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02054,USFS,CARTER MOUNTAIN,56029,Park,,2411.273,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02043,USFS,GREYBULL,56029,Park,,36506.785,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02057,USFS,SUGARLOAF,56017,Hot Springs,,9334.199,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02040,USFS,DEER CREEK,56029,Park,,4418.274,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02044,USFS,GUARD STATION,56029,Park,,7043.948,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+01016,USFS,LINE CREEK WEST,56029,Park,,5139.968,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT-UNAVAILABLE,usfs_grazing
+02059,USFS,FRANCS PEAK,56029,Park,,19169.313,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+04155,USFS,TROUT CREEK,56029,Park,,21058.874,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+04152,USFS,PEARSON,56029,Park,,12283.332,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+01019,USFS,STOCKADE,56029,Park,,4912.429,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT-UNAVAILABLE,usfs_grazing
+02041,USFS,DICK CREEK,56029,Park,,10963.361,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02050,USFS,TIMBER CREEK,56029,Park,,10011.574,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+01017,USFS,LITTLE ROCK CREEK,56029,Park,,3496.361,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT-UNAVAILABLE,usfs_grazing
+01014,USFS,DEEP CREEK,56029,Park,,3791.967,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT-UNAVAILABLE,usfs_grazing
+04144,USFS,HUNTER CREEK,56029,Park,,1688.754,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02076,USFS,PINEY,56029,Park,,14297.59,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02046,USFS,PICKETT CREEK,56029,Park,,15548.71,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+05192,USFS,BEAR CREEK,56013,Fremont,,19506.661,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+05185,USFS,RAMSHORN,56013,Fremont,,16221.455,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+05184,USFS,PARQUE CREEK,56013,Fremont,,13436.858,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02047,USFS,RENNERBERG,56029,Park,,1348.697,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+05183,USFS,HORSE CREEK,56013,Fremont,,28266.609,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+05190,USFS,WIGGINS FORK,56013,Fremont,,59982.586,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02074,USFS,WASHAKIE NEEDLES,56017,Hot Springs,,7775.073,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+05188,USFS,WARM SPRINGS,56013,Fremont,,17038.397,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+05182,USFS,FISH LAKE,56013,Fremont,,13342.31,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+05189,USFS,WHISKEY MOUNTAIN,56013,Fremont,,12429.453,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02081,USFS,MEETEETSE,56029,Park,,3679.003,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02048,USFS,SAGE CREEK ON/OFF,56029,Park,,919.65,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02078,USFS,SWING,56029,Park,,6187.932,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02080,USFS,ASPEN CREEK,56029,Park,,2092.453,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02049,USFS,SUGARLOAF/THREE PEAKS,56017,Hot Springs,,1971.699,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+03108,USFS,PINE/WILLOW,56013,Fremont,,18295.031,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+03093,USFS,ED YOUNG BASIN,56013,Fremont,,11326.556,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+03102,USFS,COLE SPRING,56013,Fremont,,6916.782,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+01001,USFS,BALD RIDGE,56029,Park,,23400.999,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+07041,USFS,TOSI CREEK,56035,Sublette,,14099.836,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT-UNAVAILABLE,usfs_grazing
+04006,USFS,MOSQUITO-FALL CRK,56039,Teton,,45748.815,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT-UNAVAILABLE,usfs_grazing
+07013,USFS,UPPER GREEN RIVER,56035,Sublette,,140449.944,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+40113,USFS,SNAKE RIVER O/O,56039,Teton,,417.015,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,CLOSED,usfs_grazing
+02018,USFS,JACK CREEK C&H,56035,Sublette,,32411.487,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+07002,USFS,BEAVER-TWIN,56035,Sublette,,22094.129,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02012,USFS,FISHERMAN CRK C&H,56035,Sublette,,47711.655,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+03100,USFS,BIG GREYS RIVER,56023,Lincoln,,23352.049,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+01006,USFS,SPRUCE CREEK,56023,Lincoln,,6117.33,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+40102,USFS,LOWER SLIDE LAKE,56039,Teton,,39.483,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+01013,USFS,LITTLE HORNET,56023,Lincoln,,11691.027,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+01001,USFS,ASPEN SPRINGS,56023,Lincoln,,5743.513,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+03029,USFS,VIRGINIA PEAK,56023,Lincoln,,13054.126,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+03008,USFS,CORRAL CREEK,56023,Lincoln,,11280.753,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+03005,USFS,BLIND BULL,56023,Lincoln,,5148.351,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT-UNAVAILABLE,usfs_grazing
+00132,USFS,SUGAR LOAF (BLM ADMIN),56037,Sweetwater,,8404.997,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+03016,USFS,NORTH MIDDLE RIDGE,56023,Lincoln,,8767.89,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+04076,USFS,LEEKS CANYON C&H,56039,Teton,,1554.952,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+07017,USFS,BUNION CREEK,56035,Sublette,,16813.273,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT-UNAVAILABLE,usfs_grazing
+03009,USFS,COTTONWOOD,56023,Lincoln,,37220.358,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+07040,USFS,TEMPLE CREEK,56035,Sublette,,24296.272,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT-UNAVAILABLE,usfs_grazing
+02003,USFS,INDIAN-SPRINGMAN C&H,56035,Sublette,,6097.151,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+40096,USFS,RED ROCK RANCH,56039,Teton,,109.253,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00117,USFS,LINWOOD/SOUTH VALLEY,56037,Sweetwater,,3685.806,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+01011,USFS,LAKE ALICE,56023,Lincoln,,14065.987,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+01015,USFS,LOWER SALT CREEK,56023,Lincoln,,7140.909,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02038,USFS,GRAVEYARD HILL C&H,56035,Sublette,,1222.442,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+03015,USFS,MINK CREEK,56023,Lincoln,,19512.481,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+07072,USFS,BLAIR CREEK,56013,Fremont,,20504.276,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT-UNAVAILABLE,usfs_grazing
+02004,USFS,MIDDLE PINEY C&H,56035,Sublette,,3334.769,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT-UNAVAILABLE,usfs_grazing
+04003,USFS,GRANITE CREEK C&H,56039,Teton,,24583.934,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00104,USFS,GOSLIN MT (BLM ADMIN),56037,Sweetwater,,14234.666,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+01014,USFS,LITTLE WHITE CREEK,56023,Lincoln,,7678.929,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+01028,USFS,LABARGE CREEK,56023,Lincoln,,49610.952,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+01012,USFS,LAKE MOUNTAIN,56023,Lincoln,,16028.81,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+03028,USFS,STEWART,56023,Lincoln,,8805.652,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT,usfs_grazing
+07014,USFS,BALDY LAKE,56035,Sublette,,21209.433,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,CLOSED,usfs_grazing
+01030,USFS,POISON HOLLOW,56023,Lincoln,,3738.049,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+03017,USFS,NORTH SALT RIVER,56023,Lincoln,,11140.431,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+03023,USFS,SOUTH SALT RIVER,56023,Lincoln,,15702.222,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+03104,USFS,SPRING CREEK,56023,Lincoln,,21618.04,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+03011,USFS,BAILEY LAKE,56023,Lincoln,,16545.989,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+01010,USFS,INDIAN CREEK,56023,Lincoln,,10539.697,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+01005,USFS,DEVILS HOLE,56023,Lincoln,,19683.785,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02017,USFS,HOBACK C&H,56035,Sublette,,109413.053,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+03018,USFS,PICKLE PASS BIGHORN SHEEP,56023,Lincoln,,9693.921,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,CLOSED,usfs_grazing
+40103,USFS,KOHL RANCH,56039,Teton,,255.948,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,CLOSED,usfs_grazing
+03103,USFS,LITTLE GREYS RIVER,56023,Lincoln,,16490.078,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+07010,USFS,SILVER CREEK,56035,Sublette,,43427.449,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+07012,USFS,SWEETWATER,56013,Fremont,,17170.127,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+40101,USFS,TAYLOR,56039,Teton,,88.95,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+07031,USFS,MUDDY CANYON,56035,Sublette,,4596.893,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+40092,USFS,MINERS CREEK,56039,Teton,,9764.453,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+40098,USFS,BIG COW CREEK,56039,Teton,,10653.695,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+04083,USFS,TWIN CREEK TA,56039,Teton,,19.931,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,CLOSED,usfs_grazing
+02011,USFS,CORRAL CREEK BIGHORN SHEEP,56023,Lincoln,,4499.284,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,CLOSED,usfs_grazing
+04014,USFS,PHILLIPS CANYON S&G,56039,Teton,,2719.162,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,CLOSED,usfs_grazing
+01008,USFS,GIRAFFE CREEK,56023,Lincoln,,8589.392,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+01020,USFS,SHEEP MOUNTAIN,56023,Lincoln,,2451.438,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+01026,USFS,FONTENELLE,56023,Lincoln,,8486.004,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02001,USFS,BEAVER-HORSE C&H,56035,Sublette,,25378.391,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+40095,USFS,UPPER GROS VENTRE,56039,Teton,,35186.636,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+07070,USFS,WAGON CR HORSE ALLOT,56035,Sublette,,186.529,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+07025,USFS,LAMREAUX MEADOW,56035,Sublette,,7746.782,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+07028,USFS,LOWER DUTCH JOE,56035,Sublette,,6715.341,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+07029,USFS,MIDDLE FORK,56035,Sublette,,10945.413,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,CLOSED,usfs_grazing
+40097,USFS,ROBINSON RANCH,56039,Teton,,170.377,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+03020,USFS,SNAKE RIVER,56023,Lincoln,,6580.214,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+03001,USFS,BEAR CREEK,56023,Lincoln,,22388.477,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+07003,USFS,BIG FLATTOP,56035,Sublette,,20704.449,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+01007,USFS,ELK CREEK,56023,Lincoln,,12378.496,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+03107,USFS,CEDAR CREEK,56023,Lincoln,,1152.646,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+01019,USFS,SAMS ALLEN CREEK,56023,Lincoln,,18876.786,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02006,USFS,NORTH PINEY C&H,56035,Sublette,,13855.171,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02035,USFS,FORTRESS HILL C&H,56035,Sublette,,388.842,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02005,USFS,NORTH COTTONWOOD C&H,56035,Sublette,,40152.608,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+07005,USFS,LITTLE FLATTOP,56035,Sublette,,4742.223,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+01016,USFS,POLE CREEK,56023,Lincoln,,6223.931,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+07004,USFS,BURNT LAKE,56035,Sublette,,35246.447,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+04010,USFS,WILLOW CREEK,56023,Lincoln,,37745.62,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,CLOSED,usfs_grazing
+01017,USFS,PORCUPINE CREEK,56023,Lincoln,,7296.773,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00130,USFS,SPRING CREEK (BLM ADMIN),56037,Sweetwater,,5801.473,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00116,USFS,ROCK SPRINGS (BLM ADMIN),56037,Sweetwater,,39689.629,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00102,USFS,CEDAR MOUNTAIN (BLM ADMIN),56037,Sweetwater,,18852.544,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+01002,USFS,BUCKSKIN KNOLL,56023,Lincoln,,13069.788,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00133,USFS,HENRYS FORK BOTTOM,56037,Sweetwater,,60.872,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00134,USFS,EAST HENRYS FORK,56037,Sweetwater,,135.19,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,CLOSED,usfs_grazing
+01031,USFS,TRESPASS CREEK,56023,Lincoln,,3826.32,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+04007,USFS,MUNGER MTN C&H,56039,Teton,,14610.808,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT-UNAVAILABLE,usfs_grazing
+40104,USFS,KINKY CREEK,56039,Teton,,10587.077,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,CLOSED,usfs_grazing
+07037,USFS,ROCK CREEK,56035,Sublette,,5151.221,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT-UNAVAILABLE,usfs_grazing
+07018,USFS,CROSS LAKE,56035,Sublette,,7769.967,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT-UNAVAILABLE,usfs_grazing
+04074,USFS,SPOTTED HORSE TA,56039,Teton,,957.192,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+07024,USFS,IRISH CANYON,56035,Sublette,,9452.88,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06021,USFS,LAVA CR.,56039,Teton,,2296.831,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+07069,USFS,NOBLE PASTURE,56035,Sublette,,762.556,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+06044,USFS,BLACKROCK-SPREAD CREEK C&H (CLOSED),56039,Teton,,74613.172,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,CLOSED,usfs_grazing
+01021,USFS,SMITHS FORK,56023,Lincoln,,7948.619,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+04002,USFS,GAME CREEK,56039,Teton,,8288.377,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,CLOSED,usfs_grazing
+02002,USFS,FISH CREEK C&H,56035,Sublette,,7711.715,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+03101,USFS,DRY CREEK,56023,Lincoln,,4874.382,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+04043,USFS,PFAFF PASTURE,56039,Teton,,3.628,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,CLOSED,usfs_grazing
+03013,USFS,ELK MOUNTAIN,56023,Lincoln,,7197.964,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02027,USFS,NORTH LABARGE COMMON C&H (BLM ADMIN,56035,Sublette,,11546.482,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+03031,USFS,WHITE CR-MAN PEAK (FORAGE RESERVE),56023,Lincoln,,5231.816,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT,usfs_grazing
+01009,USFS,GREEN KNOLL,56023,Lincoln,,12078.933,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+03014,USFS,GRIZZLY BASIN,56023,Lincoln,,8222.86,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT-UNAVAILABLE,usfs_grazing
+40090,USFS,DITCH CREEK,56039,Teton,,35279.931,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT-UNAVAILABLE,usfs_grazing
+03006,USFS,BLIND TRAIL,56023,Lincoln,,15078.091,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT-UNAVAILABLE,usfs_grazing
+40094,USFS,BRIDGE CREEK,56039,Teton,,162.488,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,CLOSED,usfs_grazing
+07001,USFS,BADGER CREEK,56035,Sublette,,7259.121,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+03021,USFS,STRAWBERRY CANYON C&H,56023,Lincoln,,350.442,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+03007,USFS,CABIN CREEK,56023,Lincoln,,7659.683,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT-UNAVAILABLE,usfs_grazing
+07033,USFS,NORTH FORK,56035,Sublette,,18146.485,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,CLOSED,usfs_grazing
+06022,USFS,PACIFIC CR. C&H,56039,Teton,,11976.09,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT-UNAVAILABLE,usfs_grazing
+07011,USFS,SODA LAKE,56035,Sublette,,12766.263,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+07015,USFS,BLUCHER CREEK,56035,Sublette,,11552.853,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02033,USFS,UPPER GRAYBACK-PHOSPHATE BIGHORN,56023,Lincoln,,13559.844,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,CLOSED,usfs_grazing
+03102,USFS,GROVER BLANEY,56023,Lincoln,,8733.736,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02024,USFS,SOUTH PINEY BIGHORN SHEEP,56023,Lincoln,,5699.124,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,CLOSED,usfs_grazing
+07034,USFS,PIPESTONE,56035,Sublette,,16457.535,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,CLOSED,usfs_grazing
+03012,USFS,THREE FORKS,56023,Lincoln,,26255.661,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+07044,USFS,WEST SAGEBRUSH CREEK,56035,Sublette,,3830.83,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+40107,USFS,BREAKNECK UNIT,56039,Teton,,1017.007,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,CLOSED,usfs_grazing
+04038,USFS,KARNS RANCH,56039,Teton,,37.431,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,CLOSED,usfs_grazing
+40087,USFS,FISH CREEK (CLOSED),56039,Teton,,76269.93,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,CLOSED,usfs_grazing
+07007,USFS,POLE CREEK,56035,Sublette,,24708.232,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+07036,USFS,RAID LAKE,56035,Sublette,,10835.415,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT-UNAVAILABLE,usfs_grazing
+03010,USFS,DEADMAN,56023,Lincoln,,6719.317,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT-UNAVAILABLE,usfs_grazing
+07023,USFS,ELK RIDGE,56035,Sublette,,6369.671,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT-UNAVAILABLE,usfs_grazing
+40088,USFS,BACON CREEK (CLOSED),56039,Teton,,16335.726,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,CLOSED,usfs_grazing
+07021,USFS,EAST FORK,56035,Sublette,,8585.727,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT-UNAVAILABLE,usfs_grazing
+02013,USFS,MT DARBY BIGHORN SHEEP,56035,Sublette,,6682.8,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,CLOSED,usfs_grazing
+01022,USFS,BASIN CREEK,56023,Lincoln,,4864.934,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02007,USFS,SHERMAN C&H,56035,Sublette,,17382.929,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+07006,USFS,NEW FORK-BOULDER,56035,Sublette,,10982.485,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02026,USFS,TWIN PEAKS BIGHORN SHEEP,56023,Lincoln,,11674.78,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,CLOSED,usfs_grazing
+07022,USFS,EAST SAGEBRUSH CREEK,56035,Sublette,,5119.272,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+03004,USFS,BLACK CANYON,56023,Lincoln,,15803.617,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT-UNAVAILABLE,usfs_grazing
+07026,USFS,LIME CREEK,56035,Sublette,,4976.697,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT-UNAVAILABLE,usfs_grazing
+02023,USFS,GRIZZLY CREEK BIGHORN SHEEP,56035,Sublette,,14144.681,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,CLOSED,usfs_grazing
+03106,USFS,FOREST DELL,56023,Lincoln,,11789.936,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+03105,USFS,STRAWBERRY,56023,Lincoln,,19881.937,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+07008,USFS,POT CREEK,56035,Sublette,,4882.614,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+04008,USFS,PORCUPINE/SQ___ CREEK C&H,56039,Teton,,3241.642,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT-UNAVAILABLE,usfs_grazing
+40100,USFS,REDMOND/BIERER CREEK C&H,56039,Teton,,7113.832,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+01024,USFS,SOUTH FONTENELLE,56023,Lincoln,,15484.913,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+02008,USFS,SNYDER BASIN C&H,56035,Sublette,,16767.946,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+07016,USFS,BOUNDARY CREEK,56035,Sublette,,4172.642,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+01027,USFS,HAMS FORK,56023,Lincoln,,3030.596,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00426,USFS,SOUTH INDIAN-COTTONWOOD,56023,Lincoln,,20078.222,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+30014,USFS,MONTPELIER-ELK VALLEY C&H,56023,Lincoln,,86877.418,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00412,USFS,AUSTIN CANYON,56039,Teton,,26420.761,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00316,USFS,MIDDLE BITCH,56039,Teton,,8597.538,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,CLOSED,usfs_grazing
+44005,USFS,ALPINE,56023,Lincoln,,2156.591,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00414,USFS,BOX CANYON-NEEDLE PEAK S&G (CLOSED),56039,Teton,,8527.931,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,CLOSED,usfs_grazing
+00404,USFS,INDIAN CREEK,56023,Lincoln,,4313.927,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+20109,USFS,TINCUP C&H,56023,Lincoln,,8992.982,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+40280,USFS,TROUT CREEK,56023,Lincoln,,7586.293,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+20107,USFS,STUMP CREEK C&H,56023,Lincoln,,16919.946,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00506,USFS,MILL CREEK - TETON,56039,Teton,,5730.542,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+44006,USFS,BLOWOUT,56023,Lincoln,,11524.059,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00416,USFS,DOG CREEK,56023,Lincoln,,18403.464,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+44003,USFS,SOUTH ELK,56039,Teton,,21049.845,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00422,USFS,PALISADES,56039,Teton,,24454.95,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+54005,USFS,KING CREEK,56023,Lincoln,,6621.988,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+20108,USFS,JACKKNIFE C&H,56023,Lincoln,,7256.271,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+20296,USFS,SMITH CREEK S&G,56023,Lincoln,,4084.646,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00302,USFS,FALL RIVER RIDGE C&H,56039,Teton,,28453.956,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00504,USFS,LEIGH CREEK,56039,Teton,,9496.628,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00536,USFS,PINNACLE,56039,Teton,,1618.412,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,VACANT-UNAVAILABLE,usfs_grazing
+00303,USFS,SQUIRREL MEADOWS C&H,56039,Teton,,28811.551,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00509,USFS,TEPEE CREEK,56039,Teton,,22154.824,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00508,USFS,SPRING CREEK,56039,Teton,,5455.875,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00503,USFS,GAME CREEK,56039,Teton,,1262.929,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00501,USFS,WEST FORK SMITH FORK,56041,Uinta,,37105.717,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00503,USFS,RED MOUNTAIN,56041,Uinta,,33853.452,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00406,USFS,LITTLE WEST FORK,56041,Uinta,,10582.178,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00402,USFS,BLACKS FORK CATTLE,56041,Uinta,,6508.502,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+54008,USFS,STATION CREEK,56023,Lincoln,,9917.842,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00431,USFS,BURBANK,56039,Teton,,24947.751,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+00420,USFS,GRAND VALLEY,56023,Lincoln,,5924.423,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,ACTIVE,usfs_grazing
+40116,USFS,PALISADES C&H (CLOSED),56023,Lincoln,,1964.29,https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.Allotment.zip,2026-07-19,CLOSED,usfs_grazing
