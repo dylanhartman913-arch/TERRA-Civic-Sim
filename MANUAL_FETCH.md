@@ -111,3 +111,60 @@ Overall result: PARTIAL (0/6 comparisons)
 
 - `data/processed/county_climate_projections.json` is required for the Python climate tests to pass, but it is not currently tracked in git. Independent C2-merge verification initially failed three Python tests from a clean archived tree until this local file was restored. Keep this file present when running the full Python suite, or track/regenerate it before expecting a fresh clone to pass out of the box.
   - **Resolved 2026-07-15 by P0.1 (commit 626ed95):** file now tracked in git via `!` exception in `.gitignore`. Fresh clones and worktrees will have it.
+
+## W6-A Follow-Up Patch (2026-07-19)
+
+NASS_API_KEY and BEA_API_KEY now available. Resolved items 1, 6, 7; URL-corrected item 4; items 2, 3, 5 remain deferred per dispatch.
+
+### Item 1 — NASS QuickStats (nass_quickstats)
+**Resolved (partial).** Endpoint: `https://quickstats.nass.usda.gov/api/api_GET/`
+- 12/23 counties populated from SURVEY 2022 (CATTLE, COWS, BEEF - INVENTORY).
+- 11 counties QuickStats-suppressed (D): Albany, Goshen, Hot Springs, Laramie, Park, Platte, Teton, and others.
+  Census 2022 COA values retained for suppressed counties.
+- NASS 2022 survey state total: 691,000 beef cows (Census COA: 681,534; <1.5% difference, consistent).
+- No county exceeds 25% divergence between QuickStats and Census COA.
+
+### Item 4 — WY Water Rights (wy_water_rights)
+**URL corrected; data still blocked.**
+- Old (404): `https://seo.wyo.gov/divisions/water-rights`
+- Current SEO documents page (200 OK): `https://seo.wyo.gov/documents-and-data`
+- County-level diversion/consumptive-use data requires authentication via:
+  `https://seoweb.wyo.gov/e-Permit/` (account required, no public bulk download found).
+- `water.diversion_acre_feet` and `water.consumptive_use_acre_feet` remain null in all 23 counties.
+- Manual action: obtain SEO e-Permit credentials or request county summary report directly from SEO Water Divisions.
+
+### Item 6 — BEA Farm Proprietors Income (bea_farm_proprietor_income)
+**Resolved.** Endpoint: `https://apps.bea.gov/api/data/` (CAINC4, LineCode 71)
+- 23/23 counties populated. No suppression. Year: 2022.
+- County sum = $317,803,000 = BEA WY state total (0.0% difference). PASS.
+- Anomaly investigated: Fremont ($48.8M total) flagged at >3× county average.
+  INVESTIGATED — NOT a data error: Fremont has 987 farm operations (most in state);
+  income/operation is $49,416 (6th statewide, vs avg $33,325). Structurally valid.
+  Secondary finding: Carbon County has 157,301 irrigated acres (highest in state)
+  but only $82/irrigated-acre income vs Fremont's $483/acre — consistent with
+  Carbon's low-productivity riparian hay meadows (North Platte/Encampment systems)
+  vs. Fremont's Wind River basin intensive operations.
+
+### Item 7 — WY DOR Ag Valuation (wy_dor_ag_valuation)
+**Resolved.** Domain corrected from `dptax.wyo.gov` (DNS fail) to `wyo-prop-div.wyo.gov`.
+- 2026 Agricultural Land Valuation Study downloaded from:
+  `https://wyo-prop-div.wyo.gov/agricultural` (via Google Drive; file ID: 1o_xnIDGabAg0c9pdHX6fQgsWezUwPoJO)
+- Cached at: `data/raw/wy_dor_ag_valuation_2026.pdf`
+- Productive-value coefficients populated for all 23 counties (statewide representative, LRA IV):
+  - irrigated: $1,767/acre (range $589–$3,239 across LRAs/soil classes)
+  - dryland: $376/acre (range $134–$617)
+  - grazing_land: $126/acre (range $10–$1,006)
+- Assessment rate is 9.5% of productive value (W.S. 39-11-102(b)).
+- Source: October 2025 publication, 2026 assessment year.
+
+### Items 2, 3, 5 — Deferred (no PM sign-off)
+- Item 2 (blm_ras): no programmatic API; BLM GIS portal only. Deferred.
+- Item 3 (usfs_grazing): 50MB shapefile; full aggregation deferred per dispatch.
+- Item 5 (rap): no public API (rangelands.app/api/ 404). Deferred.
+
+### Sanity table — affected rows
+- Check 1 (Carbon/Sublette-vs-Fremont/Park irrigated): unchanged finding, still documented.
+- Check 2 (BEA statewide): county sum = state total, 0.0% difference. PASS.
+- Check 3 (DOR coverage): 23/23. PASS.
+- Check 4 (BEA anomaly): Fremont investigated and cleared (see Item 6 above).
+- Check 5 (NASS vs Census): no county >25% divergence. PASS.

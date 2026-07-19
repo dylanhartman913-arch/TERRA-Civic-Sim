@@ -112,9 +112,9 @@ fi
 # is `repo-relative path|SHA-256`; fail closed if a source changes without a
 # corresponding manifest update.
 HASH_VERIFIED_DATA_MANIFEST=(
-  "data/processed/wy_county_ag_baseline.json|909300ead76ec31fe28afe9c8bb202f8a4ab107f20d6675f39ccd565a5930030"
+  "data/processed/wy_county_ag_baseline.json|3285ce266b2533b2e78b363511d2679c4c5c93a490a0959babf4e140b3cf8ab5"
   "data/processed/wy_grazing_allotments.csv|35550012ad0538394cb481f49bf298fa7b7a2afef7df60dda8b060359642d08a"
-  "data/processed/wy_ag_sources.csv|dabd8edafdd1774d3456e1db24a877164218ee5c86751030d267b30e2fedb414"
+  "data/processed/wy_ag_sources.csv|1232d0a567265602dab55837aa84e35a0c618bf2538e865363f6afce65576049"
 )
 
 echo ""
