@@ -7,7 +7,7 @@
  *   3. Fremont vs Campbell produce materially different competition previews
  *      (different industrial valuations, verifiable asymmetry)
  *
- * Uses server-side rendering (renderToStaticMarkup) — no real browser required.
+ * Exercises pure engine preview functions — no browser or React rendering required.
  * Replaces D5's visual-verification role per gate-change logged in ticket T6.
  */
 

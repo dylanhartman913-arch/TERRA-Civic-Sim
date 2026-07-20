@@ -732,7 +732,7 @@ export function PlacementOverlay({ map }: PlacementOverlayProps) {
                   if (abs >= 1e3) return `${sign}$${(abs / 1e3).toFixed(0)}k`;
                   return `${sign}$${Math.round(abs)}`;
                 };
-                const agPreview = getAgPlacementPreview(engineState, action.action_id ?? '', showModal.geoid, modalMagnitude);
+                const agPreview = agPreviewModal;
                 if (!agPreview) return null;
                 if (agPreview.converted_acres === 0 && agPreview.shared_acres === 0) return null;
 

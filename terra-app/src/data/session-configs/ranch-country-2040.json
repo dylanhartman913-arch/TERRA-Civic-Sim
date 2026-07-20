@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0",
+  "session_code": "RANCH2040",
+  "title": "Ranch Country 2040",
+  "description": "A seeded agriculture and drought session focused on land, water, and energy tradeoffs.",
+  "fixed_seed": 42,
+  "climate_lens": "ssp370",
+  "ag_category": true,
+  "drought": true,
+  "max_year": 2040,
+  "annotation_prompts": [
+    { "trigger": "drought_onset", "prompt": "How are you responding?" },
+    { "trigger": "irrigated_conversion", "prompt": "Why here?" },
+    { "trigger": "build_decision", "prompt": "Why this investment in this county?" }
+  ],
+  "locked_settings": {
+    "disable_stress_test": false,
+    "disable_comparison": false
+  }
+}
