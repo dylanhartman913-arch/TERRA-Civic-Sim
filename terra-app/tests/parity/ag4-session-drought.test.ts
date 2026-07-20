@@ -7,7 +7,7 @@ import { agDigest } from '../../src/engine/engine.js';
 import { applySessionDrought } from '../../src/engine/session_drought.js';
 import { computeReplayDigest, replayScenario } from '../../src/engine/replay.js';
 import { exportToJson, importFromJson } from '../../src/engine/persistence.js';
-import type { ActionLibrary, CountyEESBaseline, CrosswalkRow, InitialNetwork, ScenarioFile, SessionConfig } from '../../src/engine/types.js';
+import type { ActionLibrary, CountyEESBaseline, CrosswalkRow, FiscalBaseline, FiscalCoefficients, InitialNetwork, ScenarioFile, SessionConfig } from '../../src/engine/types.js';
 import { loadInitialStateWithAnchorsAndTags } from './helpers.js';
 
 const ROOT = resolve(__dirname, '../..');
@@ -75,17 +75,30 @@ describe('AG4 Ranch Country drought session', () => {
     expect(agDigest(after).md5).toBe(agDigest(before).md5);
   });
 
-  it('leaves an energy-only replay digest unchanged when drought is omitted', () => {
-    const file: ScenarioFile = {
+  it('replays the Ranch Country base scenario without AG4 drought effects when AG flags are off', () => {
+    const droughtEnabledFile: ScenarioFile = {
       schema_version: '3.1', terra_version: '1.0', exported_at: '2026-01-01T00:00:00.000Z',
-      name: 'Energy only', gameSeed: 42, start_year: 2025, activeScenario: null,
-      actionLog: [], eventHistory: [], year_reached: 2030, replay_digest: '', climate_lens: 'historical',
+      name: config.title, gameSeed: config.fixed_seed!, start_year: 2025, activeScenario: null,
+      actionLog: [], eventHistory: [], year_reached: config.max_year!, replay_digest: '',
+      climate_lens: config.climate_lens, session_config: config,
     };
-    const stateBefore = replayScenario(file, ...replayInputs());
-    const stateAfter = replayScenario({ ...file, session_config: undefined }, ...replayInputs());
-    expect(computeReplayDigest(stateAfter)).toBe(computeReplayDigest(stateBefore));
+    const energyOnlyConfig: SessionConfig = { ...config, ag_category: false, drought: false };
+    const energyOnlyFile: ScenarioFile = { ...droughtEnabledFile, session_config: energyOnlyConfig };
+
+    const droughtEnabledState = replayScenario(droughtEnabledFile, ...replayInputs());
+    const energyOnlyState = replayScenario(energyOnlyFile, ...replayInputs());
+
+    expect(droughtEnabledState.year).toBe(config.max_year);
+    expect(Object.keys(energyOnlyState.county_ag)).not.toEqual([]);
+    expect(Object.values(droughtEnabledState.county_ag).some(ag => ag.drought_events.length > 0)).toBe(true);
+    expect(Object.values(energyOnlyState.county_ag).every(ag => ag.drought_events.length === 0)).toBe(true);
+    // Pre-AG4 baseline for Ranch Country's identical base replay with AG flags disabled.
+    expect(computeReplayDigest(energyOnlyState, energyOnlyFile.climate_lens)).toBe('beafdb2f2f64657b3ecf7680e2188b91');
+    expect(agDigest(energyOnlyState).md5).toBe('756ec0d2d5ddf481be1331a48b38a1cb');
   });
 });
+
+// TODO(AG4-debt): Add a golden replay-digest fixture for Ranch Country 2040.
 
 function replayInputs() {
   const data = resolve(ROOT, 'src/data');
@@ -95,5 +108,7 @@ function replayInputs() {
     JSON.parse(readFileSync(resolve(data, 'action_library_v3.json'), 'utf-8')) as ActionLibrary,
     JSON.parse(readFileSync(resolve(data, 'initial_network.json'), 'utf-8')) as InitialNetwork,
     JSON.parse(readFileSync(resolve(data, 'county_cards.json'), 'utf-8')) as Record<string, unknown>,
+    JSON.parse(readFileSync(resolve(data, 'fiscal_baseline.json'), 'utf-8')) as FiscalBaseline,
+    JSON.parse(readFileSync(resolve(data, 'fiscal_coefficients.json'), 'utf-8')) as FiscalCoefficients,
   ] as const;
 }

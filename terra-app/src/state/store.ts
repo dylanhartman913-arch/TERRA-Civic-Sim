@@ -406,6 +406,7 @@ function detectAutoPause(
     return { reason: 'event_fired', event: engineEvents[0], detail: engineEvents[0].title };
   }
 
+  // TODO(AG4-debt): Add direct detectAutoPause coverage for drought_onset and irrigated_conversion paths.
   for (const [geoid, ag] of Object.entries(newState.county_ag)) {
     const previous = prevState.county_ag[geoid];
     if (ag.drought.years_remaining > 0 && (previous?.drought.years_remaining ?? 0) === 0) {

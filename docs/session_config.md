@@ -42,7 +42,7 @@ appear at auto-pause moments.
       "trigger": "era_transition",    // fires on era_transition pause
       "prompt":  "What's your priority for the next era?"
     }
-    // trigger values: "build_decision" | "disturbance_event" | "era_transition" | "manual"
+    // trigger values: "build_decision" | "disturbance_event" | "era_transition" | "manual" | "drought_onset" | "irrigated_conversion"
   ],
 
   // Panel / feature locks (all default to false / unlocked)
@@ -68,8 +68,9 @@ appear at auto-pause moments.
 | `max_year` | integer | no | Year at which the reflection card is automatically shown and the game pauses |
 | `ag_category` | boolean | no | Enables agriculture actions in the palette; omitted preserves energy-only sessions |
 | `drought` | boolean | no | Enables seeded AG2 drought sampling and consequences during yearly play |
+| `climate_lens` | `"historical"` \| `"ssp245"` \| `"ssp370"` | no | Climate projection lens used for replay and, when drought is enabled, drought modulation |
 | `annotation_prompts` | array | no | Each entry maps a trigger type to a one-line prompt text |
-| `annotation_prompts[].trigger` | string | yes | One of `build_decision`, `disturbance_event`, `era_transition`, `manual` |
+| `annotation_prompts[].trigger` | string | yes | One of `build_decision`, `disturbance_event`, `era_transition`, `manual`, `drought_onset`, `irrigated_conversion` |
 | `annotation_prompts[].prompt` | string | yes | The question shown in the auto-pause modal |
 | `locked_settings.disable_stress_test` | bool | no | Hides the stress-test panel |
 | `locked_settings.disable_comparison` | bool | no | Hides comparison mode |
