@@ -146,12 +146,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_use_acres": {
-          "value": 455972,
+          "value": 439895,
           "unit": "acres",
           "year": 2024,
           "source": "usfs_grazing",
           "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment.zip; 50 allotments assigned to county by centroid join."
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (59 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -378,12 +378,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_use_acres": {
-          "value": 320427,
+          "value": 309813,
           "unit": "acres",
           "year": 2024,
           "source": "usfs_grazing",
           "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment.zip; 24 allotments assigned to county by centroid join."
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (35 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -610,12 +610,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_use_acres": {
-          "value": 301711,
+          "value": 314199,
           "unit": "acres",
           "year": 2024,
           "source": "usfs_grazing",
           "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment.zip; 43 allotments assigned to county by centroid join."
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (50 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -842,12 +842,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_use_acres": {
-          "value": 737181,
+          "value": 641208,
           "unit": "acres",
           "year": 2024,
           "source": "usfs_grazing",
           "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment.zip; 39 allotments assigned to county by centroid join."
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (42 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -1074,12 +1074,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_use_acres": {
-          "value": 483278,
+          "value": 496089,
           "unit": "acres",
           "year": 2024,
           "source": "usfs_grazing",
           "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment.zip; 53 allotments assigned to county by centroid join."
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (71 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -1306,12 +1306,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_use_acres": {
-          "value": 202883,
+          "value": 184376,
           "unit": "acres",
           "year": 2024,
           "source": "usfs_grazing",
           "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment.zip; 30 allotments assigned to county by centroid join."
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (36 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -1538,12 +1538,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_use_acres": {
-          "value": 475058,
+          "value": 476483,
           "unit": "acres",
           "year": 2024,
           "source": "usfs_grazing",
           "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment.zip; 28 allotments assigned to county by centroid join."
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (40 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -1775,7 +1775,7 @@
           "year": 2024,
           "source": "usfs_grazing",
           "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment.zip; 0 allotments assigned to county by centroid join."
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (0 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -2002,12 +2002,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_use_acres": {
-          "value": 41541,
+          "value": 41364,
           "unit": "acres",
           "year": 2024,
           "source": "usfs_grazing",
           "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment.zip; 6 allotments assigned to county by centroid join."
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (8 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -2234,12 +2234,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_use_acres": {
-          "value": 225315,
+          "value": 221110,
           "unit": "acres",
           "year": 2024,
           "source": "usfs_grazing",
           "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment.zip; 15 allotments assigned to county by centroid join."
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (23 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -2466,12 +2466,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_use_acres": {
-          "value": 560,
+          "value": 0,
           "unit": "acres",
           "year": 2024,
           "source": "usfs_grazing",
           "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment.zip; 1 allotments assigned to county by centroid join."
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (0 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -2698,12 +2698,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_use_acres": {
-          "value": 948700,
+          "value": 768365,
           "unit": "acres",
           "year": 2024,
           "source": "usfs_grazing",
           "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment.zip; 75 allotments assigned to county by centroid join."
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (82 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -2930,12 +2930,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_use_acres": {
-          "value": 15498,
+          "value": 14667,
           "unit": "acres",
           "year": 2024,
           "source": "usfs_grazing",
           "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment.zip; 2 allotments assigned to county by centroid join."
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (4 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -3162,12 +3162,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_use_acres": {
-          "value": 60274,
+          "value": 16988,
           "unit": "acres",
           "year": 2024,
           "source": "usfs_grazing",
           "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment.zip; 12 allotments assigned to county by centroid join."
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (11 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -3394,12 +3394,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_use_acres": {
-          "value": 536347,
+          "value": 536868,
           "unit": "acres",
           "year": 2024,
           "source": "usfs_grazing",
           "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment.zip; 49 allotments assigned to county by centroid join."
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (52 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -3626,12 +3626,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_use_acres": {
-          "value": 6195,
+          "value": 6027,
           "unit": "acres",
           "year": 2024,
           "source": "usfs_grazing",
           "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment.zip; 3 allotments assigned to county by centroid join."
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (6 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -3858,12 +3858,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_use_acres": {
-          "value": 349928,
+          "value": 367807,
           "unit": "acres",
           "year": 2024,
           "source": "usfs_grazing",
           "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment.zip; 34 allotments assigned to county by centroid join."
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (45 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -4090,12 +4090,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_use_acres": {
-          "value": 901259,
+          "value": 902986,
           "unit": "acres",
           "year": 2024,
           "source": "usfs_grazing",
           "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment.zip; 50 allotments assigned to county by centroid join."
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (60 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -4323,12 +4323,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_use_acres": {
-          "value": 90865,
+          "value": 72723,
           "unit": "acres",
           "year": 2024,
           "source": "usfs_grazing",
           "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment.zip; 8 allotments assigned to county by centroid join."
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (6 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -4556,12 +4556,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_use_acres": {
-          "value": 611087,
+          "value": 508185,
           "unit": "acres",
           "year": 2024,
           "source": "usfs_grazing",
           "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment.zip; 44 allotments assigned to county by centroid join."
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (52 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -4788,12 +4788,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_use_acres": {
-          "value": 118676,
+          "value": 41815,
           "unit": "acres",
           "year": 2024,
           "source": "usfs_grazing",
           "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment.zip; 7 allotments assigned to county by centroid join."
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (5 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -5020,12 +5020,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_use_acres": {
-          "value": 35077,
+          "value": 33089,
           "unit": "acres",
           "year": 2024,
           "source": "usfs_grazing",
           "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment.zip; 4 allotments assigned to county by centroid join."
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (6 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -5252,12 +5252,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_use_acres": {
-          "value": 752697,
+          "value": 602549,
           "unit": "acres",
           "year": 2024,
           "source": "usfs_grazing",
           "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment.zip; 109 allotments assigned to county by centroid join."
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (115 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
