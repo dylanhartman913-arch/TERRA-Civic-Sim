@@ -98,3 +98,4 @@ julia/Manifest.toml
 # ── Jupyter ───────────────────────────────────────────────────────────────────
 .ipynb_checkpoints/
 notebooks/.claude/
+.claude/settings.local.json
