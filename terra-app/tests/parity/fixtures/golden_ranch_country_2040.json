@@ -1,7 +1,7 @@
 {
   "description": "Ranch Country 2040 — drought + ag flags on, full session lifecycle to max_year=2040",
   "freeze_date": "2026-07-20",
-  "freeze_commit": "generated",
+  "freeze_commit": "e746042",
   "session_code": "RANCH2040",
   "climate_lens": "ssp370",
   "max_year": 2040,
