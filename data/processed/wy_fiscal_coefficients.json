@@ -33041,5 +33041,41 @@
         }
       }
     }
+  },
+  "_ag_fiscal_coefficients": {
+    "_schema_note": "AG1 ag fiscal coefficients. References existing 11.5%-FMV industrial pipeline for conversion delta \u2014 does not duplicate it. Net shown as property-tax INCREASE because ag-to-industrial conversion almost always raises assessed value substantially.",
+    "ag_productive_value_by_class_usd_per_acre": {
+      "irrigated": 1767,
+      "dryland": 376,
+      "grazing_land": 126,
+      "source": "WY DOR 2026 Agricultural Land Valuation Study; wyo-prop-div.wyo.gov",
+      "year": 2026,
+      "statute": "W.S. 39-11-102(b)"
+    },
+    "ag_assessed_value_by_class_usd_per_acre": {
+      "irrigated": 167.87,
+      "dryland": 35.72,
+      "grazing_land": 11.97,
+      "assessment_rate": 0.095,
+      "note": "assessed = productive_value \u00d7 9.5%"
+    },
+    "conversion_delta_to_industrial": {
+      "description": "When ag land is converted to industrial use (e.g., solar farm, transmission ROW), the assessed value changes from ag (9.5% \u00d7 productive value) to industrial (11.5% \u00d7 FMV). The delta is almost always a LARGE INCREASE. FMV proxies for industrial are action-specific (see wy_fiscal_coefficients.json per-action blocks). This coefficient encodes the ag-side baseline only.",
+      "ag_assessed_value_irrigated_per_acre": 167.87,
+      "ag_assessed_value_dryland_per_acre": 35.72,
+      "ag_assessed_value_grazing_land_per_acre": 11.97,
+      "industrial_assessment_rate": 0.115,
+      "industrial_pipeline_reference": "See existing action blocks (wind_utility, solar_utility, etc.) in wy_fiscal_coefficients.json for the industrial assessed_delta_usd values. Net property-tax delta = industrial_assessed_delta - ag_assessed_baseline.",
+      "net_direction": "INCREASE \u2014 ag assessed value is typically orders of magnitude below industrial FMV.",
+      "example_irrigated_vs_wind": {
+        "ag_baseline_per_acre": 167.87,
+        "wind_direct_acres_per_1000mw": 250,
+        "ag_assessed_displaced": 41966.0,
+        "wind_industrial_assessed_delta": 164450000,
+        "net_increase_usd": 164408034.0,
+        "note": "Wind industrial assessed ($164.5M) >> 250 acres ag assessed (~$41.9K irrigated). Net = +$164.4M increase."
+      },
+      "source": "WY DOR 2026 Ag Valuation Study (ag side); W.S. 39-13-103 (industrial side); existing wy_fiscal_coefficients.json per-action blocks."
+    }
   }
 }

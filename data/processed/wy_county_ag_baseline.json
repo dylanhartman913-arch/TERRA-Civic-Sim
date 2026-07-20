@@ -1,9 +1,9 @@
 {
   "schema_version": "wy_county_ag_baseline_v1",
-  "vintage": "2026-07-17",
-  "status": "partial_nass_coa2022_populated",
+  "vintage": "2026-07-19",
+  "status": "partial_nass_bea_dor_populated_water_still_blocked",
   "consumers": [
-    "AG1 Dispatch \u2014 Wave 6 agricultural scenario layer"
+    "AG1 Dispatch — Wave 6 agricultural scenario layer"
   ],
   "contract_notes": [
     "Water is represented only as separate diversion and consumptive-use fields.",
@@ -92,7 +92,8 @@
           "unit": "head",
           "year": 2022,
           "source": "census_ag_2022",
-          "confidence": "medium"
+          "confidence": "medium",
+          "notes": "Census 2022 COA value retained; NASS QuickStats 2022 survey value suppressed (D)."
         },
         "forage_acres": {
           "value": 1211025,
@@ -116,7 +117,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -129,12 +130,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_aum": {
-          "value": null,
+          "value": 0,
           "unit": "AUM/year",
-          "year": null,
+          "year": 2024,
           "source": "usfs_grazing",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
         },
         "federal_aum_share": {
           "value": null,
@@ -143,6 +144,14 @@
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_use_acres": {
+          "value": 439895,
+          "unit": "acres",
+          "year": 2024,
+          "source": "usfs_grazing",
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (59 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -152,7 +161,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         },
         "consumptive_use_acre_feet": {
           "value": null,
@@ -160,7 +169,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         }
       },
       "rap_invasive_cover": {
@@ -198,39 +207,39 @@
           "confidence": "medium"
         },
         "farm_proprietor_income_usd": {
-          "value": null,
+          "value": 5740000,
           "unit": "USD/year",
-          "year": null,
-          "source": "bea_farm_proprietor_income",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2022,
+          "source": "bea_cainc4_line71",
+          "confidence": "high",
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
         "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
         "irrigated": {
-          "value": null,
+          "value": 1767,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
-          "value": null,
+          "value": 376,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
-          "value": null,
+          "value": 126,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
         }
       }
     },
@@ -311,11 +320,12 @@
       },
       "cattle_and_forage": {
         "beef_cows_head": {
-          "value": 26646,
+          "value": 23000,
           "unit": "head",
           "year": 2022,
-          "source": "census_ag_2022",
-          "confidence": "medium"
+          "source": "nass_quickstats",
+          "confidence": "high",
+          "notes": "NASS QuickStats 2022 Survey (CATTLE, COWS, BEEF - INVENTORY). Census 2022 COA value was 26646."
         },
         "forage_acres": {
           "value": 331196,
@@ -339,7 +349,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -352,12 +362,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_aum": {
-          "value": null,
+          "value": 0,
           "unit": "AUM/year",
-          "year": null,
+          "year": 2024,
           "source": "usfs_grazing",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
         },
         "federal_aum_share": {
           "value": null,
@@ -366,6 +376,14 @@
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_use_acres": {
+          "value": 309813,
+          "unit": "acres",
+          "year": 2024,
+          "source": "usfs_grazing",
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (35 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -375,7 +393,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         },
         "consumptive_use_acre_feet": {
           "value": null,
@@ -383,7 +401,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         }
       },
       "rap_invasive_cover": {
@@ -421,39 +439,39 @@
           "confidence": "medium"
         },
         "farm_proprietor_income_usd": {
-          "value": null,
+          "value": 15895000,
           "unit": "USD/year",
-          "year": null,
-          "source": "bea_farm_proprietor_income",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2022,
+          "source": "bea_cainc4_line71",
+          "confidence": "high",
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
         "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
         "irrigated": {
-          "value": null,
+          "value": 1767,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
-          "value": null,
+          "value": 376,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
-          "value": null,
+          "value": 126,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
         }
       }
     },
@@ -534,11 +552,12 @@
       },
       "cattle_and_forage": {
         "beef_cows_head": {
-          "value": 42930,
+          "value": 46000,
           "unit": "head",
           "year": 2022,
-          "source": "census_ag_2022",
-          "confidence": "medium"
+          "source": "nass_quickstats",
+          "confidence": "high",
+          "notes": "NASS QuickStats 2022 Survey (CATTLE, COWS, BEEF - INVENTORY). Census 2022 COA value was 42930."
         },
         "forage_acres": {
           "value": 2436960,
@@ -562,7 +581,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -575,12 +594,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_aum": {
-          "value": null,
+          "value": 0,
           "unit": "AUM/year",
-          "year": null,
+          "year": 2024,
           "source": "usfs_grazing",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
         },
         "federal_aum_share": {
           "value": null,
@@ -589,6 +608,14 @@
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_use_acres": {
+          "value": 314199,
+          "unit": "acres",
+          "year": 2024,
+          "source": "usfs_grazing",
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (50 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -598,7 +625,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         },
         "consumptive_use_acre_feet": {
           "value": null,
@@ -606,7 +633,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         }
       },
       "rap_invasive_cover": {
@@ -644,39 +671,39 @@
           "confidence": "medium"
         },
         "farm_proprietor_income_usd": {
-          "value": null,
+          "value": 17348000,
           "unit": "USD/year",
-          "year": null,
-          "source": "bea_farm_proprietor_income",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2022,
+          "source": "bea_cainc4_line71",
+          "confidence": "high",
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
         "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
         "irrigated": {
-          "value": null,
+          "value": 1767,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
-          "value": null,
+          "value": 376,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
-          "value": null,
+          "value": 126,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
         }
       }
     },
@@ -757,11 +784,12 @@
       },
       "cattle_and_forage": {
         "beef_cows_head": {
-          "value": 56154,
+          "value": 53000,
           "unit": "head",
           "year": 2022,
-          "source": "census_ag_2022",
-          "confidence": "medium"
+          "source": "nass_quickstats",
+          "confidence": "high",
+          "notes": "NASS QuickStats 2022 Survey (CATTLE, COWS, BEEF - INVENTORY). Census 2022 COA value was 56154."
         },
         "forage_acres": {
           "value": 2647500,
@@ -785,7 +813,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -798,12 +826,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_aum": {
-          "value": null,
+          "value": 0,
           "unit": "AUM/year",
-          "year": null,
+          "year": 2024,
           "source": "usfs_grazing",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
         },
         "federal_aum_share": {
           "value": null,
@@ -812,6 +840,14 @@
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_use_acres": {
+          "value": 641208,
+          "unit": "acres",
+          "year": 2024,
+          "source": "usfs_grazing",
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (42 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -821,7 +857,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         },
         "consumptive_use_acre_feet": {
           "value": null,
@@ -829,7 +865,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         }
       },
       "rap_invasive_cover": {
@@ -867,39 +903,39 @@
           "confidence": "medium"
         },
         "farm_proprietor_income_usd": {
-          "value": null,
+          "value": 12916000,
           "unit": "USD/year",
-          "year": null,
-          "source": "bea_farm_proprietor_income",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2022,
+          "source": "bea_cainc4_line71",
+          "confidence": "high",
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
         "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
         "irrigated": {
-          "value": null,
+          "value": 1767,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
-          "value": null,
+          "value": 376,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
-          "value": null,
+          "value": 126,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
         }
       }
     },
@@ -980,11 +1016,12 @@
       },
       "cattle_and_forage": {
         "beef_cows_head": {
-          "value": 33205,
+          "value": 35500,
           "unit": "head",
           "year": 2022,
-          "source": "census_ag_2022",
-          "confidence": "medium"
+          "source": "nass_quickstats",
+          "confidence": "high",
+          "notes": "NASS QuickStats 2022 Survey (CATTLE, COWS, BEEF - INVENTORY). Census 2022 COA value was 33205."
         },
         "forage_acres": {
           "value": 2308574,
@@ -1008,7 +1045,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -1021,12 +1058,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_aum": {
-          "value": null,
+          "value": 0,
           "unit": "AUM/year",
-          "year": null,
+          "year": 2024,
           "source": "usfs_grazing",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
         },
         "federal_aum_share": {
           "value": null,
@@ -1035,6 +1072,14 @@
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_use_acres": {
+          "value": 496089,
+          "unit": "acres",
+          "year": 2024,
+          "source": "usfs_grazing",
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (71 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -1044,7 +1089,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         },
         "consumptive_use_acre_feet": {
           "value": null,
@@ -1052,7 +1097,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         }
       },
       "rap_invasive_cover": {
@@ -1090,39 +1135,39 @@
           "confidence": "medium"
         },
         "farm_proprietor_income_usd": {
-          "value": null,
+          "value": 5698000,
           "unit": "USD/year",
-          "year": null,
-          "source": "bea_farm_proprietor_income",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2022,
+          "source": "bea_cainc4_line71",
+          "confidence": "high",
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
         "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
         "irrigated": {
-          "value": null,
+          "value": 1767,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
-          "value": null,
+          "value": 376,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
-          "value": null,
+          "value": 126,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
         }
       }
     },
@@ -1203,11 +1248,12 @@
       },
       "cattle_and_forage": {
         "beef_cows_head": {
-          "value": 41776,
+          "value": 40000,
           "unit": "head",
           "year": 2022,
-          "source": "census_ag_2022",
-          "confidence": "medium"
+          "source": "nass_quickstats",
+          "confidence": "high",
+          "notes": "NASS QuickStats 2022 Survey (CATTLE, COWS, BEEF - INVENTORY). Census 2022 COA value was 41776."
         },
         "forage_acres": {
           "value": 1157886,
@@ -1231,7 +1277,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -1244,12 +1290,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_aum": {
-          "value": null,
+          "value": 0,
           "unit": "AUM/year",
-          "year": null,
+          "year": 2024,
           "source": "usfs_grazing",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
         },
         "federal_aum_share": {
           "value": null,
@@ -1258,6 +1304,14 @@
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_use_acres": {
+          "value": 184376,
+          "unit": "acres",
+          "year": 2024,
+          "source": "usfs_grazing",
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (36 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -1267,7 +1321,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         },
         "consumptive_use_acre_feet": {
           "value": null,
@@ -1275,7 +1329,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         }
       },
       "rap_invasive_cover": {
@@ -1313,39 +1367,39 @@
           "confidence": "medium"
         },
         "farm_proprietor_income_usd": {
-          "value": null,
+          "value": 12190000,
           "unit": "USD/year",
-          "year": null,
-          "source": "bea_farm_proprietor_income",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2022,
+          "source": "bea_cainc4_line71",
+          "confidence": "high",
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
         "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
         "irrigated": {
-          "value": null,
+          "value": 1767,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
-          "value": null,
+          "value": 376,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
-          "value": null,
+          "value": 126,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
         }
       }
     },
@@ -1426,11 +1480,12 @@
       },
       "cattle_and_forage": {
         "beef_cows_head": {
-          "value": 54022,
+          "value": 54000,
           "unit": "head",
           "year": 2022,
-          "source": "census_ag_2022",
-          "confidence": "medium"
+          "source": "nass_quickstats",
+          "confidence": "high",
+          "notes": "NASS QuickStats 2022 Survey (CATTLE, COWS, BEEF - INVENTORY). Census 2022 COA value was 54022."
         },
         "forage_acres": {
           "value": 1082792,
@@ -1454,7 +1509,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -1467,12 +1522,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_aum": {
-          "value": null,
+          "value": 0,
           "unit": "AUM/year",
-          "year": null,
+          "year": 2024,
           "source": "usfs_grazing",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
         },
         "federal_aum_share": {
           "value": null,
@@ -1481,6 +1536,14 @@
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_use_acres": {
+          "value": 476483,
+          "unit": "acres",
+          "year": 2024,
+          "source": "usfs_grazing",
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (40 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -1490,7 +1553,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         },
         "consumptive_use_acre_feet": {
           "value": null,
@@ -1498,7 +1561,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         }
       },
       "rap_invasive_cover": {
@@ -1536,39 +1599,39 @@
           "confidence": "medium"
         },
         "farm_proprietor_income_usd": {
-          "value": null,
+          "value": 48774000,
           "unit": "USD/year",
-          "year": null,
-          "source": "bea_farm_proprietor_income",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2022,
+          "source": "bea_cainc4_line71",
+          "confidence": "high",
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
         "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
         "irrigated": {
-          "value": null,
+          "value": 1767,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
-          "value": null,
+          "value": 376,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
-          "value": null,
+          "value": 126,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
         }
       }
     },
@@ -1653,7 +1716,8 @@
           "unit": "head",
           "year": 2022,
           "source": "census_ag_2022",
-          "confidence": "medium"
+          "confidence": "medium",
+          "notes": "Census 2022 COA value retained; NASS QuickStats 2022 survey value suppressed (D)."
         },
         "forage_acres": {
           "value": 995184,
@@ -1677,7 +1741,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -1690,12 +1754,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_aum": {
-          "value": null,
+          "value": 0,
           "unit": "AUM/year",
-          "year": null,
+          "year": 2024,
           "source": "usfs_grazing",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
         },
         "federal_aum_share": {
           "value": null,
@@ -1704,6 +1768,14 @@
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_use_acres": {
+          "value": 0,
+          "unit": "acres",
+          "year": 2024,
+          "source": "usfs_grazing",
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (0 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -1713,7 +1785,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         },
         "consumptive_use_acre_feet": {
           "value": null,
@@ -1721,7 +1793,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         }
       },
       "rap_invasive_cover": {
@@ -1759,39 +1831,39 @@
           "confidence": "medium"
         },
         "farm_proprietor_income_usd": {
-          "value": null,
+          "value": 12485000,
           "unit": "USD/year",
-          "year": null,
-          "source": "bea_farm_proprietor_income",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2022,
+          "source": "bea_cainc4_line71",
+          "confidence": "high",
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
         "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
         "irrigated": {
-          "value": null,
+          "value": 1767,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
-          "value": null,
+          "value": 376,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
-          "value": null,
+          "value": 126,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
         }
       }
     },
@@ -1877,7 +1949,7 @@
           "year": null,
           "source": "nass_quickstats",
           "confidence": "low",
-          "notes": "Suppressed in 2022 COA (disclosure protection D)."
+          "notes": "Suppressed in 2022 COA (disclosure protection D). NASS QuickStats 2022 suppressed (D)."
         },
         "forage_acres": {
           "value": 531157,
@@ -1901,7 +1973,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -1914,12 +1986,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_aum": {
-          "value": null,
+          "value": 0,
           "unit": "AUM/year",
-          "year": null,
+          "year": 2024,
           "source": "usfs_grazing",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
         },
         "federal_aum_share": {
           "value": null,
@@ -1928,6 +2000,14 @@
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_use_acres": {
+          "value": 41364,
+          "unit": "acres",
+          "year": 2024,
+          "source": "usfs_grazing",
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (8 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -1937,7 +2017,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         },
         "consumptive_use_acre_feet": {
           "value": null,
@@ -1945,7 +2025,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         }
       },
       "rap_invasive_cover": {
@@ -1983,39 +2063,39 @@
           "confidence": "medium"
         },
         "farm_proprietor_income_usd": {
-          "value": null,
+          "value": 885000,
           "unit": "USD/year",
-          "year": null,
-          "source": "bea_farm_proprietor_income",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2022,
+          "source": "bea_cainc4_line71",
+          "confidence": "high",
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
         "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
         "irrigated": {
-          "value": null,
+          "value": 1767,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
-          "value": null,
+          "value": 376,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
-          "value": null,
+          "value": 126,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
         }
       }
     },
@@ -2096,11 +2176,12 @@
       },
       "cattle_and_forage": {
         "beef_cows_head": {
-          "value": 38294,
+          "value": 40500,
           "unit": "head",
           "year": 2022,
-          "source": "census_ag_2022",
-          "confidence": "medium"
+          "source": "nass_quickstats",
+          "confidence": "high",
+          "notes": "NASS QuickStats 2022 Survey (CATTLE, COWS, BEEF - INVENTORY). Census 2022 COA value was 38294."
         },
         "forage_acres": {
           "value": 1977248,
@@ -2124,7 +2205,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -2137,12 +2218,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_aum": {
-          "value": null,
+          "value": 0,
           "unit": "AUM/year",
-          "year": null,
+          "year": 2024,
           "source": "usfs_grazing",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
         },
         "federal_aum_share": {
           "value": null,
@@ -2151,6 +2232,14 @@
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_use_acres": {
+          "value": 221110,
+          "unit": "acres",
+          "year": 2024,
+          "source": "usfs_grazing",
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (23 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -2160,7 +2249,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         },
         "consumptive_use_acre_feet": {
           "value": null,
@@ -2168,7 +2257,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         }
       },
       "rap_invasive_cover": {
@@ -2206,39 +2295,39 @@
           "confidence": "medium"
         },
         "farm_proprietor_income_usd": {
-          "value": null,
+          "value": 8972000,
           "unit": "USD/year",
-          "year": null,
-          "source": "bea_farm_proprietor_income",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2022,
+          "source": "bea_cainc4_line71",
+          "confidence": "high",
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
         "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
         "irrigated": {
-          "value": null,
+          "value": 1767,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
-          "value": null,
+          "value": 376,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
-          "value": null,
+          "value": 126,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
         }
       }
     },
@@ -2324,7 +2413,7 @@
           "year": null,
           "source": "nass_quickstats",
           "confidence": "low",
-          "notes": "Suppressed in 2022 COA (disclosure protection D)."
+          "notes": "Suppressed in 2022 COA (disclosure protection D). NASS QuickStats 2022 suppressed (D)."
         },
         "forage_acres": {
           "value": 1130743,
@@ -2348,7 +2437,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -2361,12 +2450,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_aum": {
-          "value": null,
+          "value": 0,
           "unit": "AUM/year",
-          "year": null,
+          "year": 2024,
           "source": "usfs_grazing",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
         },
         "federal_aum_share": {
           "value": null,
@@ -2375,6 +2464,14 @@
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_use_acres": {
+          "value": 0,
+          "unit": "acres",
+          "year": 2024,
+          "source": "usfs_grazing",
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (0 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -2384,7 +2481,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         },
         "consumptive_use_acre_feet": {
           "value": null,
@@ -2392,7 +2489,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         }
       },
       "rap_invasive_cover": {
@@ -2430,39 +2527,39 @@
           "confidence": "medium"
         },
         "farm_proprietor_income_usd": {
-          "value": null,
+          "value": 14490000,
           "unit": "USD/year",
-          "year": null,
-          "source": "bea_farm_proprietor_income",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2022,
+          "source": "bea_cainc4_line71",
+          "confidence": "high",
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
         "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
         "irrigated": {
-          "value": null,
+          "value": 1767,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
-          "value": null,
+          "value": 376,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
-          "value": null,
+          "value": 126,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
         }
       }
     },
@@ -2543,12 +2640,12 @@
       },
       "cattle_and_forage": {
         "beef_cows_head": {
-          "value": null,
+          "value": 29000,
           "unit": "head",
-          "year": null,
+          "year": 2022,
           "source": "nass_quickstats",
-          "confidence": "low",
-          "notes": "Suppressed in 2022 COA (disclosure protection D)."
+          "confidence": "high",
+          "notes": "NASS QuickStats 2022 Survey (CATTLE, COWS, BEEF - INVENTORY). Census 2022 COA value was None."
         },
         "forage_acres": {
           "value": 202031,
@@ -2572,7 +2669,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -2585,12 +2682,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_aum": {
-          "value": null,
+          "value": 0,
           "unit": "AUM/year",
-          "year": null,
+          "year": 2024,
           "source": "usfs_grazing",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
         },
         "federal_aum_share": {
           "value": null,
@@ -2599,6 +2696,14 @@
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_use_acres": {
+          "value": 768365,
+          "unit": "acres",
+          "year": 2024,
+          "source": "usfs_grazing",
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (82 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -2608,7 +2713,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         },
         "consumptive_use_acre_feet": {
           "value": null,
@@ -2616,7 +2721,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         }
       },
       "rap_invasive_cover": {
@@ -2654,39 +2759,39 @@
           "confidence": "medium"
         },
         "farm_proprietor_income_usd": {
-          "value": null,
+          "value": 14305000,
           "unit": "USD/year",
-          "year": null,
-          "source": "bea_farm_proprietor_income",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2022,
+          "source": "bea_cainc4_line71",
+          "confidence": "high",
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
         "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
         "irrigated": {
-          "value": null,
+          "value": 1767,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
-          "value": null,
+          "value": 376,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
-          "value": null,
+          "value": 126,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
         }
       }
     },
@@ -2767,12 +2872,12 @@
       },
       "cattle_and_forage": {
         "beef_cows_head": {
-          "value": null,
+          "value": 37000,
           "unit": "head",
-          "year": null,
+          "year": 2022,
           "source": "nass_quickstats",
-          "confidence": "low",
-          "notes": "Suppressed in 2022 COA (disclosure protection D)."
+          "confidence": "high",
+          "notes": "NASS QuickStats 2022 Survey (CATTLE, COWS, BEEF - INVENTORY). Census 2022 COA value was None."
         },
         "forage_acres": {
           "value": 1977318,
@@ -2796,7 +2901,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -2809,12 +2914,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_aum": {
-          "value": null,
+          "value": 0,
           "unit": "AUM/year",
-          "year": null,
+          "year": 2024,
           "source": "usfs_grazing",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
         },
         "federal_aum_share": {
           "value": null,
@@ -2823,6 +2928,14 @@
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_use_acres": {
+          "value": 14667,
+          "unit": "acres",
+          "year": 2024,
+          "source": "usfs_grazing",
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (4 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -2832,7 +2945,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         },
         "consumptive_use_acre_feet": {
           "value": null,
@@ -2840,7 +2953,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         }
       },
       "rap_invasive_cover": {
@@ -2878,39 +2991,39 @@
           "confidence": "medium"
         },
         "farm_proprietor_income_usd": {
-          "value": null,
+          "value": 5182000,
           "unit": "USD/year",
-          "year": null,
-          "source": "bea_farm_proprietor_income",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2022,
+          "source": "bea_cainc4_line71",
+          "confidence": "high",
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
         "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
         "irrigated": {
-          "value": null,
+          "value": 1767,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
-          "value": null,
+          "value": 376,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
-          "value": null,
+          "value": 126,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
         }
       }
     },
@@ -2991,12 +3104,12 @@
       },
       "cattle_and_forage": {
         "beef_cows_head": {
-          "value": null,
+          "value": 30500,
           "unit": "head",
-          "year": null,
+          "year": 2022,
           "source": "nass_quickstats",
-          "confidence": "low",
-          "notes": "Suppressed in 2022 COA (disclosure protection D)."
+          "confidence": "high",
+          "notes": "NASS QuickStats 2022 Survey (CATTLE, COWS, BEEF - INVENTORY). Census 2022 COA value was None."
         },
         "forage_acres": {
           "value": 1246758,
@@ -3020,7 +3133,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -3033,12 +3146,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_aum": {
-          "value": null,
+          "value": 0,
           "unit": "AUM/year",
-          "year": null,
+          "year": 2024,
           "source": "usfs_grazing",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
         },
         "federal_aum_share": {
           "value": null,
@@ -3047,6 +3160,14 @@
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_use_acres": {
+          "value": 16988,
+          "unit": "acres",
+          "year": 2024,
+          "source": "usfs_grazing",
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (11 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -3056,7 +3177,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         },
         "consumptive_use_acre_feet": {
           "value": null,
@@ -3064,7 +3185,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         }
       },
       "rap_invasive_cover": {
@@ -3102,39 +3223,39 @@
           "confidence": "medium"
         },
         "farm_proprietor_income_usd": {
-          "value": null,
+          "value": 7758000,
           "unit": "USD/year",
-          "year": null,
-          "source": "bea_farm_proprietor_income",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2022,
+          "source": "bea_cainc4_line71",
+          "confidence": "high",
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
         "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
         "irrigated": {
-          "value": null,
+          "value": 1767,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
-          "value": null,
+          "value": 376,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
-          "value": null,
+          "value": 126,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
         }
       }
     },
@@ -3220,7 +3341,7 @@
           "year": null,
           "source": "nass_quickstats",
           "confidence": "low",
-          "notes": "Suppressed in 2022 COA (disclosure protection D)."
+          "notes": "Suppressed in 2022 COA (disclosure protection D). NASS QuickStats 2022 suppressed (D)."
         },
         "forage_acres": {
           "value": 552882,
@@ -3244,7 +3365,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -3257,12 +3378,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_aum": {
-          "value": null,
+          "value": 0,
           "unit": "AUM/year",
-          "year": null,
+          "year": 2024,
           "source": "usfs_grazing",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
         },
         "federal_aum_share": {
           "value": null,
@@ -3271,6 +3392,14 @@
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_use_acres": {
+          "value": 536868,
+          "unit": "acres",
+          "year": 2024,
+          "source": "usfs_grazing",
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (52 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -3280,7 +3409,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         },
         "consumptive_use_acre_feet": {
           "value": null,
@@ -3288,7 +3417,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         }
       },
       "rap_invasive_cover": {
@@ -3326,39 +3455,39 @@
           "confidence": "medium"
         },
         "farm_proprietor_income_usd": {
-          "value": null,
+          "value": 38846000,
           "unit": "USD/year",
-          "year": null,
-          "source": "bea_farm_proprietor_income",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2022,
+          "source": "bea_cainc4_line71",
+          "confidence": "high",
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
         "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
         "irrigated": {
-          "value": null,
+          "value": 1767,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
-          "value": null,
+          "value": 376,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
-          "value": null,
+          "value": 126,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
         }
       }
     },
@@ -3443,7 +3572,8 @@
           "unit": "head",
           "year": 2022,
           "source": "census_ag_2022",
-          "confidence": "medium"
+          "confidence": "medium",
+          "notes": "Census 2022 COA value retained; NASS QuickStats 2022 survey value suppressed (D)."
         },
         "forage_acres": {
           "value": 1098244,
@@ -3467,7 +3597,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -3480,12 +3610,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_aum": {
-          "value": null,
+          "value": 0,
           "unit": "AUM/year",
-          "year": null,
+          "year": 2024,
           "source": "usfs_grazing",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
         },
         "federal_aum_share": {
           "value": null,
@@ -3494,6 +3624,14 @@
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_use_acres": {
+          "value": 6027,
+          "unit": "acres",
+          "year": 2024,
+          "source": "usfs_grazing",
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (6 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -3503,7 +3641,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         },
         "consumptive_use_acre_feet": {
           "value": null,
@@ -3511,7 +3649,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         }
       },
       "rap_invasive_cover": {
@@ -3549,39 +3687,39 @@
           "confidence": "medium"
         },
         "farm_proprietor_income_usd": {
-          "value": null,
+          "value": 29109000,
           "unit": "USD/year",
-          "year": null,
-          "source": "bea_farm_proprietor_income",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2022,
+          "source": "bea_cainc4_line71",
+          "confidence": "high",
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
         "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
         "irrigated": {
-          "value": null,
+          "value": 1767,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
-          "value": null,
+          "value": 376,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
-          "value": null,
+          "value": 126,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
         }
       }
     },
@@ -3662,11 +3800,12 @@
       },
       "cattle_and_forage": {
         "beef_cows_head": {
-          "value": 33109,
+          "value": 35500,
           "unit": "head",
           "year": 2022,
-          "source": "census_ag_2022",
-          "confidence": "medium"
+          "source": "nass_quickstats",
+          "confidence": "high",
+          "notes": "NASS QuickStats 2022 Survey (CATTLE, COWS, BEEF - INVENTORY). Census 2022 COA value was 33109."
         },
         "forage_acres": {
           "value": 1130760,
@@ -3690,7 +3829,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -3703,12 +3842,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_aum": {
-          "value": null,
+          "value": 0,
           "unit": "AUM/year",
-          "year": null,
+          "year": 2024,
           "source": "usfs_grazing",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
         },
         "federal_aum_share": {
           "value": null,
@@ -3717,6 +3856,14 @@
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_use_acres": {
+          "value": 367807,
+          "unit": "acres",
+          "year": 2024,
+          "source": "usfs_grazing",
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (45 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -3726,7 +3873,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         },
         "consumptive_use_acre_feet": {
           "value": null,
@@ -3734,7 +3881,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         }
       },
       "rap_invasive_cover": {
@@ -3772,39 +3919,39 @@
           "confidence": "medium"
         },
         "farm_proprietor_income_usd": {
-          "value": null,
+          "value": 4378000,
           "unit": "USD/year",
-          "year": null,
-          "source": "bea_farm_proprietor_income",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2022,
+          "source": "bea_cainc4_line71",
+          "confidence": "high",
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
         "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
         "irrigated": {
-          "value": null,
+          "value": 1767,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
-          "value": null,
+          "value": 376,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
-          "value": null,
+          "value": 126,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
         }
       }
     },
@@ -3885,11 +4032,12 @@
       },
       "cattle_and_forage": {
         "beef_cows_head": {
-          "value": 23826,
+          "value": 28500,
           "unit": "head",
           "year": 2022,
-          "source": "census_ag_2022",
-          "confidence": "medium"
+          "source": "nass_quickstats",
+          "confidence": "high",
+          "notes": "NASS QuickStats 2022 Survey (CATTLE, COWS, BEEF - INVENTORY). Census 2022 COA value was 23826."
         },
         "forage_acres": {
           "value": 370838,
@@ -3913,7 +4061,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -3926,12 +4074,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_aum": {
-          "value": null,
+          "value": 0,
           "unit": "AUM/year",
-          "year": null,
+          "year": 2024,
           "source": "usfs_grazing",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
         },
         "federal_aum_share": {
           "value": null,
@@ -3940,6 +4088,14 @@
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_use_acres": {
+          "value": 902986,
+          "unit": "acres",
+          "year": 2024,
+          "source": "usfs_grazing",
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (60 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -3949,7 +4105,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         },
         "consumptive_use_acre_feet": {
           "value": null,
@@ -3957,7 +4113,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         }
       },
       "rap_invasive_cover": {
@@ -3995,39 +4151,39 @@
           "confidence": "medium"
         },
         "farm_proprietor_income_usd": {
-          "value": null,
+          "value": 17309000,
           "unit": "USD/year",
-          "year": null,
-          "source": "bea_farm_proprietor_income",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2022,
+          "source": "bea_cainc4_line71",
+          "confidence": "high",
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
         "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
         "irrigated": {
-          "value": null,
+          "value": 1767,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
-          "value": null,
+          "value": 376,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
-          "value": null,
+          "value": 126,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
         }
       }
     },
@@ -4109,12 +4265,12 @@
       },
       "cattle_and_forage": {
         "beef_cows_head": {
-          "value": null,
+          "value": 13900,
           "unit": "head",
-          "year": null,
+          "year": 2022,
           "source": "nass_quickstats",
-          "confidence": "low",
-          "notes": "Suppressed in 2022 COA (disclosure protection D)."
+          "confidence": "high",
+          "notes": "NASS QuickStats 2022 Survey (CATTLE, COWS, BEEF - INVENTORY). Census 2022 COA value was None."
         },
         "forage_acres": {
           "value": 1329219,
@@ -4138,7 +4294,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -4151,12 +4307,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_aum": {
-          "value": null,
+          "value": 0,
           "unit": "AUM/year",
-          "year": null,
+          "year": 2024,
           "source": "usfs_grazing",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
         },
         "federal_aum_share": {
           "value": null,
@@ -4165,6 +4321,14 @@
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_use_acres": {
+          "value": 72723,
+          "unit": "acres",
+          "year": 2024,
+          "source": "usfs_grazing",
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (6 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -4174,7 +4338,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         },
         "consumptive_use_acre_feet": {
           "value": null,
@@ -4182,7 +4346,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         }
       },
       "rap_invasive_cover": {
@@ -4220,39 +4384,39 @@
           "confidence": "medium"
         },
         "farm_proprietor_income_usd": {
-          "value": null,
+          "value": 19588000,
           "unit": "USD/year",
-          "year": null,
-          "source": "bea_farm_proprietor_income",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2022,
+          "source": "bea_cainc4_line71",
+          "confidence": "high",
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
         "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
         "irrigated": {
-          "value": null,
+          "value": 1767,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
-          "value": null,
+          "value": 376,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
-          "value": null,
+          "value": 126,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
         }
       }
     },
@@ -4338,7 +4502,8 @@
           "unit": "head",
           "year": 2022,
           "source": "census_ag_2022",
-          "confidence": "medium"
+          "confidence": "medium",
+          "notes": "Census 2022 COA value retained; NASS QuickStats 2022 survey value suppressed (D)."
         },
         "forage_acres": {
           "value": 20356,
@@ -4362,7 +4527,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -4375,12 +4540,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_aum": {
-          "value": null,
+          "value": 0,
           "unit": "AUM/year",
-          "year": null,
+          "year": 2024,
           "source": "usfs_grazing",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
         },
         "federal_aum_share": {
           "value": null,
@@ -4389,6 +4554,14 @@
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_use_acres": {
+          "value": 508185,
+          "unit": "acres",
+          "year": 2024,
+          "source": "usfs_grazing",
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (52 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -4398,7 +4571,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         },
         "consumptive_use_acre_feet": {
           "value": null,
@@ -4406,7 +4579,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         }
       },
       "rap_invasive_cover": {
@@ -4444,39 +4617,39 @@
           "confidence": "medium"
         },
         "farm_proprietor_income_usd": {
-          "value": null,
+          "value": 8180000,
           "unit": "USD/year",
-          "year": null,
-          "source": "bea_farm_proprietor_income",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2022,
+          "source": "bea_cainc4_line71",
+          "confidence": "high",
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
         "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
         "irrigated": {
-          "value": null,
+          "value": 1767,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
-          "value": null,
+          "value": 376,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
-          "value": null,
+          "value": 126,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
         }
       }
     },
@@ -4557,11 +4730,12 @@
       },
       "cattle_and_forage": {
         "beef_cows_head": {
-          "value": 23367,
+          "value": 24000,
           "unit": "head",
           "year": 2022,
-          "source": "census_ag_2022",
-          "confidence": "medium"
+          "source": "nass_quickstats",
+          "confidence": "high",
+          "notes": "NASS QuickStats 2022 Survey (CATTLE, COWS, BEEF - INVENTORY). Census 2022 COA value was 23367."
         },
         "forage_acres": {
           "value": 656165,
@@ -4585,7 +4759,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -4598,12 +4772,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_aum": {
-          "value": null,
+          "value": 0,
           "unit": "AUM/year",
-          "year": null,
+          "year": 2024,
           "source": "usfs_grazing",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
         },
         "federal_aum_share": {
           "value": null,
@@ -4612,6 +4786,14 @@
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_use_acres": {
+          "value": 41815,
+          "unit": "acres",
+          "year": 2024,
+          "source": "usfs_grazing",
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (5 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -4621,7 +4803,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         },
         "consumptive_use_acre_feet": {
           "value": null,
@@ -4629,7 +4811,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         }
       },
       "rap_invasive_cover": {
@@ -4667,39 +4849,39 @@
           "confidence": "medium"
         },
         "farm_proprietor_income_usd": {
-          "value": null,
+          "value": 5645000,
           "unit": "USD/year",
-          "year": null,
-          "source": "bea_farm_proprietor_income",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2022,
+          "source": "bea_cainc4_line71",
+          "confidence": "high",
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
         "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
         "irrigated": {
-          "value": null,
+          "value": 1767,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
-          "value": null,
+          "value": 376,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
-          "value": null,
+          "value": 126,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
         }
       }
     },
@@ -4780,11 +4962,12 @@
       },
       "cattle_and_forage": {
         "beef_cows_head": {
-          "value": 14885,
+          "value": 13900,
           "unit": "head",
           "year": 2022,
-          "source": "census_ag_2022",
-          "confidence": "medium"
+          "source": "nass_quickstats",
+          "confidence": "high",
+          "notes": "NASS QuickStats 2022 Survey (CATTLE, COWS, BEEF - INVENTORY). Census 2022 COA value was 14885."
         },
         "forage_acres": {
           "value": 318009,
@@ -4808,7 +4991,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -4821,12 +5004,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_aum": {
-          "value": null,
+          "value": 0,
           "unit": "AUM/year",
-          "year": null,
+          "year": 2024,
           "source": "usfs_grazing",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
         },
         "federal_aum_share": {
           "value": null,
@@ -4835,6 +5018,14 @@
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_use_acres": {
+          "value": 33089,
+          "unit": "acres",
+          "year": 2024,
+          "source": "usfs_grazing",
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (6 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -4844,7 +5035,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         },
         "consumptive_use_acre_feet": {
           "value": null,
@@ -4852,7 +5043,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         }
       },
       "rap_invasive_cover": {
@@ -4890,39 +5081,39 @@
           "confidence": "medium"
         },
         "farm_proprietor_income_usd": {
-          "value": null,
+          "value": 10616000,
           "unit": "USD/year",
-          "year": null,
-          "source": "bea_farm_proprietor_income",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2022,
+          "source": "bea_cainc4_line71",
+          "confidence": "high",
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
         "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
         "irrigated": {
-          "value": null,
+          "value": 1767,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
-          "value": null,
+          "value": 376,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
-          "value": null,
+          "value": 126,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
         }
       }
     },
@@ -5003,11 +5194,12 @@
       },
       "cattle_and_forage": {
         "beef_cows_head": {
-          "value": 27568,
+          "value": 29000,
           "unit": "head",
           "year": 2022,
-          "source": "census_ag_2022",
-          "confidence": "medium"
+          "source": "nass_quickstats",
+          "confidence": "high",
+          "notes": "NASS QuickStats 2022 Survey (CATTLE, COWS, BEEF - INVENTORY). Census 2022 COA value was 27568."
         },
         "forage_acres": {
           "value": 1228833,
@@ -5031,7 +5223,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -5044,12 +5236,12 @@
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
         },
         "usfs_authorized_aum": {
-          "value": null,
+          "value": 0,
           "unit": "AUM/year",
-          "year": null,
+          "year": 2024,
           "source": "usfs_grazing",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
         },
         "federal_aum_share": {
           "value": null,
@@ -5058,6 +5250,14 @@
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
           "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+        },
+        "usfs_authorized_use_acres": {
+          "value": 602549,
+          "unit": "acres",
+          "year": 2024,
+          "source": "usfs_grazing",
+          "confidence": "medium",
+          "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (115 polygon pieces). 5 invalid geometries repaired via buffer(0)."
         }
       },
       "water": {
@@ -5067,7 +5267,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         },
         "consumptive_use_acre_feet": {
           "value": null,
@@ -5075,7 +5275,7 @@
           "year": null,
           "source": "wy_water_rights",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "County-level diversion/consumptive-use data blocked: SEO e-Permit system (https://seoweb.wyo.gov/e-Permit/) requires authentication. SEO documents page: https://seo.wyo.gov/documents-and-data. See MANUAL_FETCH.md item 4."
         }
       },
       "rap_invasive_cover": {
@@ -5113,39 +5313,39 @@
           "confidence": "medium"
         },
         "farm_proprietor_income_usd": {
-          "value": null,
+          "value": 1494000,
           "unit": "USD/year",
-          "year": null,
-          "source": "bea_farm_proprietor_income",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2022,
+          "source": "bea_cainc4_line71",
+          "confidence": "high",
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
         "linked_ledger": "data/processed/wy_fiscal_coefficients.json",
         "irrigated": {
-          "value": null,
+          "value": 1767,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
-          "value": null,
+          "value": 376,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
-          "value": null,
+          "value": 126,
           "unit": "USD/acre",
-          "year": null,
-          "source": "wy_dor_ag_valuation",
-          "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "year": 2026,
+          "source": "wy_dor_2026_ag_valuation_study",
+          "confidence": "medium",
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
         }
       }
     }
@@ -5176,24 +5376,24 @@
     ]
   },
   "fetch_notes": {
-    "census_ag_2022": "SUCCESS \u2014 qs.census2022.txt.gz bulk download, filtered for WY county data (2026-07-17). All land-use, cattle, operations, producers fields populated.",
-    "nass_quickstats": "BLOCKED \u2014 API returns 401; API key required. No DEMO_KEY access.",
-    "blm_ras": "BLOCKED \u2014 BLM ArcGIS endpoints 404; BLM ArcGIS empty service list. Infrastructure finding: BLM RAS reports.blm.gov reachable (200) but no programmatic download.",
-    "usfs_grazing": "BLOCKED \u2014 USFS EDW Box.com links not attempted (50MB shapefile requires direct download; Claude Code network confirmed reachable). Log for manual fetch.",
-    "wy_water_rights": "BLOCKED \u2014 seo.wyo.gov/divisions/water-rights returns 404. Infrastructure finding: URL invalid/changed.",
-    "rap": "BLOCKED \u2014 rangelands.app/api/ 404, api.rangelands.app DNS not found. RAP main site reachable. API endpoint not publicly documented at time of fetch.",
-    "bea_farm_proprietor_income": "BLOCKED \u2014 BEA API returns error for DEMO_KEY (code 1: Invalid API UserId). Requires registered BEA API key.",
-    "wy_dor_ag_valuation": "BLOCKED \u2014 dptax.wyo.gov DNS not found. Infrastructure finding: domain invalid/changed."
+    "census_ag_2022": "SUCCESS — qs.census2022.txt.gz bulk download, filtered for WY county data (2026-07-17). All land-use, cattle, operations, producers fields populated.",
+    "nass_quickstats": "BLOCKED — API returns 401; API key required. No DEMO_KEY access.",
+    "blm_ras": "BLOCKED — BLM ArcGIS endpoints 404; BLM ArcGIS empty service list. Infrastructure finding: BLM RAS reports.blm.gov reachable (200) but no programmatic download.",
+    "usfs_grazing": "BLOCKED — USFS EDW Box.com links not attempted (50MB shapefile requires direct download; Claude Code network confirmed reachable). Log for manual fetch.",
+    "wy_water_rights": "BLOCKED — seo.wyo.gov/divisions/water-rights returns 404. Infrastructure finding: URL invalid/changed.",
+    "rap": "BLOCKED — rangelands.app/api/ 404, api.rangelands.app DNS not found. RAP main site reachable. API endpoint not publicly documented at time of fetch.",
+    "bea_farm_proprietor_income": "BLOCKED — BEA API returns error for DEMO_KEY (code 1: Invalid API UserId). Requires registered BEA API key.",
+    "wy_dor_ag_valuation": "BLOCKED — dptax.wyo.gov DNS not found. Infrastructure finding: domain invalid/changed."
   },
   "sanity_investigations": {
     "check_1_fremont_park_lead_irrigated": {
       "status": "INVESTIGATION_REQUIRED",
       "finding": "2022 COA ranks Carbon (157,301 ac) and Sublette (120,242 ac) above Park (104,747) and Fremont (101,050). Expectation 'Fremont and Park lead' not confirmed for 2022 vintage.",
-      "investigation": "Carbon County: North Platte and Encampment River systems support large irrigated hay production; 157K ac is plausible. Sublette County: near-total cropland irrigation (cropland=120,319 ac, irrigated=120,242 ac) consistent with high-altitude semi-arid climate. Fremont/Park: 2022 was a severe drought year for Wyoming \u2014 Wind River Indian Reservation (Fremont) and Shoshone/Bighorn Basin (Park) systems likely had below-average diversions. Finding documented, not annotated around."
+      "investigation": "Carbon County: North Platte and Encampment River systems support large irrigated hay production; 157K ac is plausible. Sublette County: near-total cropland irrigation (cropland=120,319 ac, irrigated=120,242 ac) consistent with high-altitude semi-arid climate. Fremont/Park: 2022 was a severe drought year for Wyoming — Wind River Indian Reservation (Fremont) and Shoshone/Bighorn Basin (Park) systems likely had below-average diversions. Finding documented, not annotated around."
     },
     "check_2_campbell_carbon_rangeland_federal_aum": {
       "status": "PARTIAL_PASS",
-      "finding": "Campbell (93.3% pastureland/land-in-farms) and Carbon (91.8%) are confirmed pastureland-dominated. Federal AUM share BLOCKED \u2014 BLM RAS and USFS endpoints unavailable."
+      "finding": "Campbell (93.3% pastureland/land-in-farms) and Carbon (91.8%) are confirmed pastureland-dominated. Federal AUM share BLOCKED — BLM RAS and USFS endpoints unavailable."
     },
     "check_3_teton_small_land_in_farms": {
       "status": "PASS",
