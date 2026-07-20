@@ -19,67 +19,8 @@ import {
 import {
   advanceYear,
   queueAction,
-  applyAction,
-  scheduleRetirement,
 } from '../../src/engine/engine.js';
 import { EMPTY_CLIMATE_CONTEXT } from '../../src/engine/types.js';
-import type { EngineState } from '../../src/engine/types.js';
-
-/**
- * Replay a golden fixture action log and return the final state.
- * This is a simplified replay that handles queue/apply/advance/scheduleRetirement.
- */
-function replayFixtureActions(
-  fixture: Record<string, unknown>,
-  loadState: () => EngineState,
-): EngineState {
-  let state = loadState();
-  const actionLog = fixture['action_log'] as Array<Record<string, unknown>> | undefined;
-  if (!actionLog) return state;
-
-  for (const entry of actionLog) {
-    const action = entry['action'] as string;
-    if (action === 'queue') {
-      state = queueAction(
-        state,
-        entry['action_id'] as string,
-        entry['geoid'] as string,
-        entry['magnitude'] as number,
-        entry['decision_year'] as number,
-        undefined,
-        EMPTY_CLIMATE_CONTEXT,
-      );
-    } else if (action === 'apply') {
-      const result = applyAction(
-        state,
-        entry['action_id'] as string,
-        entry['location'] as string,
-        entry['magnitude'] as number,
-        EMPTY_CLIMATE_CONTEXT,
-      );
-      state = result[0];
-    } else if (action === 'advance') {
-      const years = (entry['years'] as number) || 1;
-      for (let i = 0; i < years; i++) {
-        state = advanceYear(state, EMPTY_CLIMATE_CONTEXT);
-      }
-    } else if (action === 'schedule_retirement') {
-      state = scheduleRetirement(state, entry['asset_id'] as string, entry['year'] as number);
-    }
-  }
-
-  // Advance to target year if specified
-  const targetYear = fixture['target_year'] as number | undefined;
-  if (targetYear) {
-    while (state.year < targetYear) {
-      state = advanceYear(state, EMPTY_CLIMATE_CONTEXT);
-    }
-  }
-
-  return state;
-}
-
-void replayFixtureActions;
 
 describe('C3 Inertness Gate', () => {
   // Test that Golden A (simplest golden) state digest is unchanged under EMPTY_CLIMATE_CONTEXT

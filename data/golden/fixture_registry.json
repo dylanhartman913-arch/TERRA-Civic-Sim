@@ -159,6 +159,19 @@
         "event_count": 1530
       },
       "note": "New fixture; no A-L fixture regenerated and no amendment consumed."
+    },
+    {
+      "fixture_id": "golden_n",
+      "engine_version": "4.7",
+      "location": "terra-app/tests/parity/fixtures/golden_n.json",
+      "superseded_by": null,
+      "status": "active",
+      "description": "Golden N — Fremont and Converse county-ag arcs: invasive treatment decay/maintenance, irrigation efficiency, solar valuation swap, wind shared acres, and two-year D1 drought under historical and SSP3-7.0.",
+      "created": "2026-07-19",
+      "historical_ag_digest_md5": "a61e8b16b4cea0e3ae743f9ccd7a26d0",
+      "ssp370_ag_digest_md5": "ea66457fa0fc4c5f2364b0995d797b0d",
+      "cross_runtime_tolerance": 0.000001,
+      "note": "New fixture; no A-M fixture regenerated and no amendment consumed. amendments_used remains 4."
     }
   ]
 }

@@ -1,4 +1,4 @@
-/** Emit TypeScript C4-i four-contract replay artifacts for the A-L matrix. */
+/** Emit TypeScript four-contract replay artifacts for the A-M inertness matrix. */
 
 import { createHash } from 'node:crypto';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -11,15 +11,18 @@ import {
   loadFixture,
   loadInitialState,
   loadInitialStateWithRetirements,
+  loadInitialStateWithAnchorsAndTags,
 } from './helpers.js';
 import {
   advanceYear,
   applyAction,
+  applyHazardEventConsequences,
   historyDigest,
   initializeState,
   queueAction,
   reduceProductionAsset,
   scheduleRetirement,
+  sampleHazardEvents,
 } from '../../src/engine/engine.js';
 import type {
   ActionLibrary,
@@ -31,6 +34,8 @@ import type {
   FiscalCoefficients,
   InitialNetwork,
   PopulationProjection,
+  ClimateHazardBaseline,
+  ClimateProjectionPoint,
 } from '../../src/engine/types.js';
 
 const FIXTURE_IDS = [
@@ -48,10 +53,55 @@ const FIXTURE_IDS = [
   'golden_j_prime',
   'golden_k',
   'golden_l',
+  'golden_m',
 ] as const;
 
 type FixtureId = (typeof FIXTURE_IDS)[number];
 type FixtureEntry = Record<string, unknown>;
+
+function parseCsv(path: string): Record<string, string>[] {
+  const lines = readFileSync(path, 'utf-8').trim().split(/\r?\n/);
+  const headings = lines[0].split(',');
+  return lines.slice(1).map((line) => {
+    const fields = line.split(',');
+    return Object.fromEntries(headings.map((heading, index) => [heading, fields[index]]));
+  });
+}
+
+function loadHazardBaselines(): ClimateHazardBaseline[] {
+  const dataDir = resolve(__dirname, '../../../data/processed');
+  return parseCsv(resolve(dataDir, 'nri_wrc_county_hazard_summary.csv'))
+    .map((row) => ({
+      geoid: row.geoid.padStart(5, '0'),
+      heat_wave_frequency: Number(row.heat_wave_annualized_frequency),
+      heat_wave_risk_score: Number(row.heat_wave_risk_score),
+      wildfire_frequency: Number(row.wildfire_annualized_frequency),
+      wildfire_risk_score: Number(row.wildfire_risk_score),
+      drought_frequency: Number(row.drought_annualized_frequency),
+      drought_risk_score: Number(row.drought_risk_score),
+      severe_storm_frequency:
+        Number(row.hail_annualized_frequency) + Number(row.strong_wind_annualized_frequency),
+      severe_storm_risk_score: Math.max(
+        Number(row.hail_risk_score), Number(row.strong_wind_risk_score),
+      ),
+    }))
+    .sort((left, right) => left.geoid.localeCompare(right.geoid));
+}
+
+function loadClimateProjections(): ClimateProjectionPoint[] {
+  const dataDir = resolve(__dirname, '../../../data/processed');
+  const payload = JSON.parse(
+    readFileSync(resolve(dataDir, 'county_climate_projections.json'), 'utf-8'),
+  ) as { records: Array<Record<string, unknown>> };
+  return payload.records.map((record) => ({
+    geoid: String(record.geoid),
+    lens: String(record.lens) as 'historical' | 'ssp245' | 'ssp370',
+    metric: String(record.metric),
+    epoch: Number(record.epoch),
+    percentile: String(record.percentile),
+    value: Number(record.value),
+  }));
+}
 
 function configured(state: EngineState, migrationEnabled: boolean): EngineState {
   return {
@@ -410,6 +460,24 @@ function replayFixture(
     );
     return advanceTo(state, 2040, climateContext);
   }
+  if (fixtureId === 'golden_m') {
+    let state = configured(loadInitialStateWithAnchorsAndTags(), migrationEnabled);
+    [state] = applyAction(state, 'heat_resilience_upgrade', '56037', 1);
+    const baselines = loadHazardBaselines();
+    const projections = loadClimateProjections();
+    for (let year = 2026; year <= 2030; year++) {
+      const events = sampleHazardEvents(state, {
+        seed: 42,
+        lens: climateContext.lens,
+        years: [year],
+        countyBaselines: baselines,
+        projectionPoints: projections,
+      });
+      [state] = applyHazardEventConsequences(state, events);
+      state = advanceYear(state);
+    }
+    return state;
+  }
   const fixture = loadFixture('golden_l');
   let state = configured(loadInitialStateWithRetirements(), migrationEnabled);
   for (const entry of fixture.action_log as FixtureEntry[]) {
@@ -580,12 +648,12 @@ describe('C4-i four-contract matrix emitter', () => {
   it('emits every fixture/lens/migration/contract cell when requested', () => {
     const outputDir = process.env.C4I_CONTRACT_OUTPUT_DIR;
     if (!outputDir) {
-      expect(FIXTURE_IDS).toHaveLength(14);
+      expect(FIXTURE_IDS).toHaveLength(15);
       return;
     }
     const rows = emit(outputDir);
-    expect(rows).toHaveLength(14 * 2 * 2 * 4);
-    expect(new Set(rows.map((row) => row.fixture))).toHaveLength(14);
+    expect(rows).toHaveLength(15 * 2 * 2 * 4);
+    expect(new Set(rows.map((row) => row.fixture))).toHaveLength(15);
     expect(new Set(rows.map((row) => row.contract))).toHaveLength(4);
     const manifest = readFileSync(resolve(outputDir, 'manifest.json'));
     const artifactBytes = rows.reduce((sum, row) => sum + row.payload_bytes, 0);
@@ -597,5 +665,5 @@ describe('C4-i four-contract matrix emitter', () => {
         runtime: 'typescript',
       }),
     );
-  });
+  }, 20_000);
 });

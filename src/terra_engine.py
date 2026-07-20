@@ -204,6 +204,64 @@ HOUSING_PRESSURE_S_PENALTY_PER_STEP = -0.005
 
 PRB_COAL_TONS_PER_MW_YR = 3743.4  # EIA Form 923 × PRB HHV × 0.70 CF (W2 proxy)
 
+# ── Wyoming county agriculture layer (v4.7 / AG2) ──────────────────────────
+AG_LAND_CONVERSION_PRIORITY = (
+    "other", "private_rangeland", "dry_crop", "irrigated_crop",
+)
+AG_CATTLE_ELASTICITY_BOUNDS = (0.5, 1.0)
+AG_DROUGHT_TIER = "D1"
+
+
+def _ag_fraction(value, label):
+    if (not isinstance(value, (int, float)) or isinstance(value, bool)
+            or not 0.0 <= value <= 1.0):
+        raise ValueError(f"{label} must be a numeric fraction in [0, 1]")
+    return float(value)
+
+
+def _irrigation_coefficients(state):
+    action = state["action_library"]["actions"].get("irrigation_efficiency", {})
+    coefficients = action.get("water_coefficients", {})
+    return (
+        _ag_fraction(
+            coefficients.get("diversion_reduction_fraction"),
+            "irrigation diversion_reduction_fraction",
+        ),
+        _ag_fraction(
+            coefficients.get("consumptive_use_reduction_fraction"),
+            "irrigation consumptive_use_reduction_fraction",
+        ),
+    )
+
+
+def _reinvasion_fraction(state):
+    action = state["action_library"]["actions"].get(
+        "invasive_species_removal", {}
+    )
+    return _ag_fraction(
+        action.get("reinvasion_decay", {}).get("fraction_retreated_per_year"),
+        "invasive treatment fraction_retreated_per_year",
+    )
+
+
+def _d1_ag_coefficients(state):
+    disturbance = state["action_library"].get("disturbances", {}).get(
+        "drought_d1_ag", {}
+    )
+    parameters = disturbance.get("lens_delta_parameters", {}).get(
+        AG_DROUGHT_TIER, {}
+    )
+    forage_delta = parameters.get("forage_production_delta")
+    if (not isinstance(forage_delta, (int, float))
+            or isinstance(forage_delta, bool)
+            or not -1.0 <= forage_delta <= 0.0):
+        raise ValueError("D1 forage_production_delta must be numeric in [-1, 0]")
+    curtailment = _ag_fraction(
+        parameters.get("irrigation_demand_delta"),
+        "D1 irrigation_demand_delta",
+    )
+    return float(forage_delta), curtailment
+
 # ── EIA-7A / MSHA production data (X2 production_asset seeds) ─────────────────
 # Source: EIA Annual Coal Report Table 2, 2024 (MSHA Form 7000-2; released Nov 2025)
 EIA_7A_CAMPBELL_COAL_2024 = 170_045_000.0   # short tons/yr (surface, 11 mines)
@@ -1582,6 +1640,408 @@ def _materialize_existing_assets(registry):
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# PART 0b — Wyoming county agriculture helpers (AG2)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def _ag_valuation_levels(ag):
+    """Return productive-value levels; the authoritative copy lives in county_fiscal."""
+    land = ag["land_acres"]
+    rates = ag["productive_value_usd_per_acre"]
+    easement = ag["easement_by_source"]
+    irrigated = (
+        land["irrigated_crop"] + easement.get("irrigated_crop", 0.0)
+    ) * rates["irrigated_crop"]
+    dry = (land["dry_crop"] + easement.get("dry_crop", 0.0)) * rates["dry_crop"]
+    rangeland = (
+        land["private_rangeland"]
+        + easement.get("private_rangeland", 0.0)
+    ) * rates["private_rangeland"]
+    return {
+        "irrigated_crop": round(irrigated, 6),
+        "dry_crop": round(dry, 6),
+        "private_rangeland": round(rangeland, 6),
+        "total": round(irrigated + dry + rangeland, 6),
+    }
+
+
+def _ag_snapshot_rows(ag, valuation, year):
+    land = {"year": year, **{k: round(v, 6) for k, v in ag["land_acres"].items()}}
+    water = {
+        "year": year,
+        **{k: round(v, 6) for k, v in ag["water_acre_feet"].items()},
+    }
+    forage = {
+        "year": year,
+        "private": round(ag["forage_aum"]["private"], 6),
+        "federal": round(ag["forage_aum"]["federal"], 6),
+        "index": round(ag["forage_aum"]["index"], 6),
+    }
+    return {
+        "land": land,
+        "water": water,
+        "forage": forage,
+        "cattle": {"year": year, "head": round(ag["cattle_head"], 6)},
+        "valuation": {
+            "year": year,
+            **{k: round(v, 6) for k, v in valuation.items()},
+        },
+    }
+
+
+def _replace_year_snapshot(trajectory, row):
+    if trajectory and trajectory[-1]["year"] == row["year"]:
+        trajectory[-1] = row
+    else:
+        trajectory.append(row)
+
+
+def _record_ag_snapshot(state, geoid):
+    ag = state["county_ag"][geoid]
+    valuation = state["county_fiscal"][geoid]["ag_valuation_usd"]
+    rows = _ag_snapshot_rows(ag, valuation, state["year"])
+    for key, row in rows.items():
+        _replace_year_snapshot(ag["trajectories"][key], row)
+
+
+def _seed_county_ag(data_dir, county_fiscal, start_year):
+    path = data_dir / "wy_county_ag_engine_baseline.json"
+    if not path.exists():
+        raise FileNotFoundError(f"required county agriculture baseline missing: {path}")
+    with open(path) as handle:
+        payload = json.load(handle)
+    counties = payload.get("counties", {})
+    if len(counties) != 23:
+        raise ValueError(f"county agriculture baseline must contain 23 counties, got {len(counties)}")
+
+    result = {}
+    for geoid, row in sorted(counties.items()):
+        if geoid not in county_fiscal:
+            raise ValueError(f"county agriculture has no county_fiscal ledger for {geoid}")
+        elasticity = float(row["cattle_forage_elasticity"])
+        if not AG_CATTLE_ELASTICITY_BOUNDS[0] <= elasticity <= AG_CATTLE_ELASTICITY_BOUNDS[1]:
+            raise ValueError(f"cattle forage elasticity out of bounds for {geoid}: {elasticity}")
+        assessment_rate = _ag_fraction(
+            row["ag_assessment_rate"], f"ag assessment rate for {geoid}"
+        )
+        land = {k: float(v) for k, v in row["land_acres"].items()}
+        water = {k: float(v) for k, v in row["water_acre_feet"].items()}
+        forage = {k: float(v) for k, v in row["forage_aum"].items()}
+        ag = {
+            "geoid": geoid,
+            "county_name": row["county_name"],
+            "land_acres": land,
+            "water_acre_feet": water,
+            "forage_aum": forage,
+            "cattle_head": float(row["cattle_head"]),
+            "shared_energy_acres": 0.0,
+            "drought": {
+                "forage_multiplier": 1.0,
+                "water_curtailment_fraction": 0.0,
+                "years_remaining": 0,
+            },
+            "baseline": {
+                "land_acres": dict(land),
+                "water_acre_feet": dict(water),
+                "forage_aum": dict(forage),
+                "cattle_head": float(row["cattle_head"]),
+            },
+            "annual_grass_cover_fraction": float(row["annual_grass_cover_fraction"]),
+            "stocking_rate_aum_per_acre": float(row["stocking_rate_aum_per_acre"]),
+            "cattle_forage_elasticity": elasticity,
+            "ag_assessment_rate": assessment_rate,
+            "productive_value_usd_per_acre": {
+                k: float(v) for k, v in row["productive_value_usd_per_acre"].items()
+            },
+            "irrigation_upgraded_acres": 0.0,
+            "treatment_cohorts": [],
+            "conversion_cohorts": [],
+            "drought_events": [],
+            "easement_by_source": {
+                "other": 0.0,
+                "private_rangeland": 0.0,
+                "dry_crop": 0.0,
+                "irrigated_crop": 0.0,
+            },
+            "trajectories": {
+                "land": [], "water": [], "forage": [], "cattle": [], "valuation": [],
+            },
+            "data_provenance": {
+                "schema_version": payload["schema_version"],
+                "vintage": payload["vintage"],
+                "federal_aum_is_proxy": True,
+                "water_is_proxy": True,
+            },
+        }
+        valuation = _ag_valuation_levels(ag)
+        county_fiscal[geoid]["ag_valuation_usd"] = valuation
+        county_fiscal[geoid]["ag_assessed_value_modeled"] = round(
+            valuation["total"] * assessment_rate, 6
+        )
+        rows = _ag_snapshot_rows(ag, valuation, start_year)
+        for key, snapshot in rows.items():
+            ag["trajectories"][key].append(snapshot)
+        result[geoid] = ag
+    return result
+
+
+def _refresh_county_ag(state, geoid):
+    ag = state["county_ag"][geoid]
+    base = ag["baseline"]
+    land = ag["land_acres"]
+
+    base_irrigated = base["land_acres"]["irrigated_crop"]
+    irrigated_ratio = land["irrigated_crop"] / base_irrigated if base_irrigated else 0.0
+    upgraded_fraction = min(
+        1.0,
+        ag["irrigation_upgraded_acres"] / base_irrigated if base_irrigated else 0.0,
+    )
+    diversion_reduction, consumptive_reduction = _irrigation_coefficients(state)
+    curtailment = ag["drought"]["water_curtailment_fraction"]
+    ag["water_acre_feet"]["ag_diversion"] = round(
+        base["water_acre_feet"]["ag_diversion"]
+        * irrigated_ratio
+        * (1.0 - diversion_reduction * upgraded_fraction)
+        * (1.0 - curtailment),
+        6,
+    )
+    ag["water_acre_feet"]["ag_consumptive"] = round(
+        base["water_acre_feet"]["ag_consumptive"]
+        * irrigated_ratio
+        * (1.0 - consumptive_reduction * upgraded_fraction)
+        * (1.0 - curtailment),
+        6,
+    )
+
+    base_rangeland = base["land_acres"]["private_rangeland"]
+    land_ratio = land["private_rangeland"] / base_rangeland if base_rangeland else 0.0
+    treatment_gain = sum(
+        ag["annual_grass_cover_fraction"]
+        * min(
+            cohort["acres"],
+            cohort.get("maintenance_acres", 0.0)
+            + (cohort["acres"] - cohort.get("maintenance_acres", 0.0))
+            * cohort["remaining_fraction"],
+        )
+        / base_rangeland
+        for cohort in ag["treatment_cohorts"]
+    ) if base_rangeland else 0.0
+    drought_multiplier = ag["drought"]["forage_multiplier"]
+    ag["forage_aum"]["private"] = round(
+        base["forage_aum"]["private"] * land_ratio
+        * (1.0 + treatment_gain) * drought_multiplier,
+        6,
+    )
+    ag["forage_aum"]["federal"] = round(
+        base["forage_aum"]["federal"] * drought_multiplier, 6
+    )
+    base_total_aum = base["forage_aum"]["private"] + base["forage_aum"]["federal"]
+    current_total_aum = ag["forage_aum"]["private"] + ag["forage_aum"]["federal"]
+    forage_index = current_total_aum / base_total_aum if base_total_aum else 1.0
+    ag["forage_aum"]["index"] = round(forage_index, 6)
+    elasticity = ag["cattle_forage_elasticity"]
+    ag["cattle_head"] = round(max(
+        0.0,
+        base["cattle_head"] * (1.0 + elasticity * (forage_index - 1.0)),
+    ), 6)
+
+    valuation = _ag_valuation_levels(ag)
+    fiscal = state["county_fiscal"][geoid]
+    fiscal["ag_valuation_usd"] = valuation
+    fiscal["ag_assessed_value_modeled"] = round(
+        valuation["total"] * ag["ag_assessment_rate"], 6
+    )
+
+
+def _draw_land(ag, requested_acres):
+    remaining = max(0.0, float(requested_acres))
+    drawn = {key: 0.0 for key in AG_LAND_CONVERSION_PRIORITY}
+    for key in AG_LAND_CONVERSION_PRIORITY:
+        amount = min(remaining, ag["land_acres"][key])
+        ag["land_acres"][key] -= amount
+        drawn[key] = amount
+        remaining -= amount
+    if remaining > 1e-6:
+        raise ValueError(
+            f"requested land conversion exceeds non-easement land by {remaining:.6f} acres"
+        )
+    return drawn
+
+
+def _apply_county_ag_action(state, action_id, action, geoid, magnitude):
+    if geoid not in state.get("county_ag", {}):
+        return None
+    if (not action.get("ag_coexistence") and action_id not in {
+        "ag_conservation_easement",
+        "irrigation_efficiency",
+        "invasive_species_removal",
+        "rangeland_restoration_maintenance",
+        "mine_land_reclamation",
+    }):
+        return None
+    ag = state["county_ag"][geoid]
+    before = get_county_ag(state, geoid)["levels"]
+    detail = {}
+
+    coexistence = action.get("ag_coexistence")
+    if coexistence:
+        scale = magnitude / action.get("unit_scale", 1000)
+        converted = float(coexistence.get("land_acres_converted_from_ag", 0.0)) * scale
+        shared = float(coexistence.get("land_acres_shared_with_ag", 0.0)) * scale
+        drawn = _draw_land(ag, converted)
+        ag["land_acres"]["converted_to_energy"] += converted
+        ag["shared_energy_acres"] += shared
+        ag["conversion_cohorts"].append({
+            "action_id": action_id,
+            "year": state["year"],
+            "acres": round(converted, 6),
+            "sources": {k: round(v, 6) for k, v in drawn.items()},
+            "reclaimed_acres": 0.0,
+        })
+        detail["converted_acres"] = round(converted, 6)
+        detail["shared_acres"] = round(shared, 6)
+        detail["conversion_sources"] = {k: round(v, 6) for k, v in drawn.items()}
+
+    if action_id == "ag_conservation_easement":
+        drawn = _draw_land(ag, magnitude)
+        protected = sum(drawn.values())
+        ag["land_acres"]["easement_protected"] += protected
+        for key, value in drawn.items():
+            ag["easement_by_source"][key] += value
+        detail["easement_acres"] = round(protected, 6)
+
+    elif action_id == "irrigation_efficiency":
+        available = max(
+            0.0,
+            ag["baseline"]["land_acres"]["irrigated_crop"]
+            - ag["irrigation_upgraded_acres"],
+        )
+        upgraded = min(float(magnitude), available)
+        ag["irrigation_upgraded_acres"] += upgraded
+        detail["irrigation_upgraded_acres"] = round(upgraded, 6)
+
+    elif action_id == "invasive_species_removal":
+        treated = min(float(magnitude), ag["land_acres"]["private_rangeland"])
+        ag["treatment_cohorts"].append({
+            "completed_year": state["year"],
+            "acres": round(treated, 6),
+            "remaining_fraction": 1.0,
+            "maintenance_acres": 0.0,
+        })
+        detail["treated_acres"] = round(treated, 6)
+
+    elif action_id == "rangeland_restoration_maintenance":
+        pairing = action.get("pairing_rule", {})
+        max_lag = int(pairing.get("max_lag_years", 1))
+        eligible = [
+            cohort for cohort in ag["treatment_cohorts"]
+            if state["year"] - cohort["completed_year"] <= max_lag
+        ]
+        if not eligible:
+            raise ValueError(
+                "rangeland_restoration_maintenance requires invasive_species_removal "
+                f"within {max_lag} year(s)"
+            )
+        acres_left = float(magnitude)
+        maintained = 0.0
+        for cohort in eligible:
+            if acres_left <= 0:
+                break
+            covered = min(acres_left, cohort["acres"])
+            if covered > 0:
+                cohort["maintenance_acres"] += covered
+                maintained += covered
+                acres_left -= covered
+        detail["maintenance_acres"] = round(maintained, 6)
+
+    elif action_id == "mine_land_reclamation":
+        reclaim_left = min(float(magnitude), ag["land_acres"]["converted_to_energy"])
+        reclaimed = reclaim_left
+        for cohort in reversed(ag["conversion_cohorts"]):
+            if reclaim_left <= 0:
+                break
+            available = cohort["acres"] - cohort["reclaimed_acres"]
+            amount = min(reclaim_left, available)
+            cohort["reclaimed_acres"] += amount
+            reclaim_left -= amount
+        ag["land_acres"]["converted_to_energy"] -= reclaimed
+        ag["land_acres"]["private_rangeland"] += reclaimed
+        detail["reclaimed_to_rangeland_acres"] = round(reclaimed, 6)
+
+    _refresh_county_ag(state, geoid)
+    _record_ag_snapshot(state, geoid)
+    return {
+        "before": before,
+        "after": get_county_ag(state, geoid)["levels"],
+        **detail,
+    }
+
+
+def _apply_ag_drought_event(state, event):
+    geoid = str(event.get("geoid", "")).zfill(5)
+    if geoid not in state.get("county_ag", {}):
+        return None
+    tier = event.get("ag_drought_tier")
+    if tier != AG_DROUGHT_TIER:
+        raise ValueError(f"unsupported ag drought tier {tier!r}")
+    duration = event.get("duration_years", 1)
+    if not isinstance(duration, int) or isinstance(duration, bool) or duration <= 0:
+        raise ValueError("duration_years must be a positive integer")
+    severity_milli = event["severity_milli"]
+    severity_scale = max(0.5, min(2.0, severity_milli / 1000.0))
+    forage_delta, water_curtailment = _d1_ag_coefficients(state)
+    drought_event = {
+        "event_id": event["event_id"],
+        "start_year": int(event["year"]),
+        "duration_years": duration,
+        "forage_multiplier": round(
+            max(0.0, 1.0 + forage_delta * severity_scale), 6
+        ),
+        "water_curtailment_fraction": round(
+            min(0.8, water_curtailment * severity_scale), 6
+        ),
+        "lens": event.get("lens", "historical"),
+        "seed": event.get("seed"),
+    }
+    state["county_ag"][geoid]["drought_events"].append(drought_event)
+    return drought_event
+
+
+def _advance_county_ag(state, current_year):
+    decay_factor = 1.0 - _reinvasion_fraction(state)
+    for geoid, ag in state.get("county_ag", {}).items():
+        for cohort in ag["treatment_cohorts"]:
+            if (current_year > cohort["completed_year"]
+                    and cohort.get("maintenance_acres", 0.0) < cohort["acres"]):
+                cohort["remaining_fraction"] = round(
+                    cohort["remaining_fraction"] * decay_factor, 8
+                )
+
+        active = [
+            event for event in ag["drought_events"]
+            if event["start_year"] <= current_year
+            < event["start_year"] + event["duration_years"]
+        ]
+        if active:
+            forage_multiplier = min(e["forage_multiplier"] for e in active)
+            curtailment = max(e["water_curtailment_fraction"] for e in active)
+            years_remaining = max(
+                e["start_year"] + e["duration_years"] - current_year
+                for e in active
+            )
+        else:
+            forage_multiplier = 1.0
+            curtailment = 0.0
+            years_remaining = 0
+        ag["drought"] = {
+            "forage_multiplier": round(forage_multiplier, 6),
+            "water_curtailment_fraction": round(curtailment, 6),
+            "years_remaining": years_remaining,
+        }
+        _refresh_county_ag(state, geoid)
+        _record_ag_snapshot(state, geoid)
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # PART 1 — initialize_state()
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -1902,6 +2362,11 @@ def initialize_state(data_dir=None, county_ees_path=None, crosswalk_path=None,
         with open(lifecycle_coefficients_path) as f:
             lifecycle_coefficients = json.load(f)
 
+    # ── v4.7 (AG2): Wyoming county agriculture layer ────────────────────────
+    # Productive-value detail is attached to the existing county_fiscal rows;
+    # the agriculture state contains physical ledgers and dynamics only.
+    county_ag = _seed_county_ag(data_dir, county_fiscal, start_year)
+
     # ── Assemble state ────────────────────────────────────────────────────────
     state = {
         # v2 primary stores
@@ -1914,6 +2379,7 @@ def initialize_state(data_dir=None, county_ees_path=None, crosswalk_path=None,
         # v2.1 fiscal layer
         "county_fiscal":        county_fiscal,
         "fiscal_coefficients":  fiscal_coefficients,
+        "county_ag":            county_ag,
         # v3.1 lifecycle coefficients
         "lifecycle_coefficients": lifecycle_coefficients,
         # Retained from v1
@@ -2344,8 +2810,17 @@ def apply_action(state, action_id, location, magnitude, _skip_coupling=False,
         })
         material_consumed[mat_type] = {"quantity": total_qty, "unit": unit_label}
 
+    # ── v4.7 (AG2): physical agriculture action + A1 valuation swap ────────
+    # This runs before the existing fiscal action so the same county_fiscal row
+    # carries both the reduced ag productive value and industrial tax addition.
+    ag_delta = _apply_county_ag_action(
+        state, action_id, action, geoid, magnitude
+    ) if geoid else None
+
     # ── Apply fiscal effects ────────────────────────────────────────────────
-    fiscal_delta = _apply_fiscal_effects(state, action_id, geoid, magnitude)
+    fiscal_delta = _apply_fiscal_effects(
+        state, action_id, geoid, magnitude, ag_delta=ag_delta
+    )
 
     # ── Record history ───────────────────────────────────────────────────────
     action_record = {
@@ -2364,6 +2839,7 @@ def apply_action(state, action_id, location, magnitude, _skip_coupling=False,
         "network_delta": network_delta, "material_consumed": material_consumed,
         "bus_id": bus_id, "fiscal_delta": fiscal_delta,
         "adaptation_delta": adaptation_delta,
+        "ag_delta": ag_delta,
     }
     state["last_delta"] = delta_summary
 
@@ -2395,7 +2871,8 @@ def _shallow_copy_state(state):
     # Deep copy mutable stores (build_queue + existing_assets now materialized from registry)
     for key in ("county_ees", "bus_state", "active_couplings",
                 "sc_pools", "ecoregion_ees", "material_ledger",
-                "action_history", "disturbance_history", "county_fiscal"):
+                "action_history", "disturbance_history", "county_fiscal",
+                "county_ag"):
         new[key] = copy.deepcopy(state.get(key))
 
     # v3.0: materialize views from copied registry
@@ -3061,6 +3538,10 @@ def advance_year(state, climate_context=None):
             bs["firm_capacity_mw"] = round(non_thermal_firm + thermal_firm * worst_derate, 4)
             bs["deficit_mw"] = max(0.0, bs["load_mw"] - bs["firm_capacity_mw"])
 
+    # v4.7 (AG2): treatment decay, drought duration/recovery, water, forage,
+    # cattle, and fiscal-linked agricultural valuation advance together.
+    _advance_county_ag(state, current_year)
+
     # v4.0: append indicator snapshot at end of year
     if _HAS_INDICATORS:
         state["history"] = state.get("history", []) + [_snapshot_indicators(state)]
@@ -3273,6 +3754,27 @@ def apply_hazard_event_consequences(state, events):
             raise ValueError('severity_milli must be a non-negative integer')
         if event.get('consequence_multiplier_ppm') != 0:
             raise ValueError('raw climate event must have an inert consequence multiplier')
+
+        # AG2 D1 path: only explicitly classified D1 events enter agriculture.
+        # Generic C4-i drought_stress events retain Golden M's historical skip
+        # behavior until a caller supplies the D1 classification and duration.
+        if hazard_kind == 'drought_stress' and event.get('ag_drought_tier') is not None:
+            if not has_working_copy:
+                state = _shallow_copy_state(state)
+                has_working_copy = True
+            drought_delta = _apply_ag_drought_event(state, event)
+            outcomes.append({
+                'event_id': event['event_id'],
+                'hazard_kind': hazard_kind,
+                'geoid': event['geoid'],
+                'status': 'applied_existing_handler',
+                'consequence_multiplier_ppm': 0,
+                'victim_asset_ids': [],
+                'handler': 'county_ag_d1',
+                'reason': None,
+                'delta': drought_delta,
+            })
+            continue
         victims = _climate_event_victims(state, event)
         victim_asset_ids = sorted({asset['asset_id'] for asset, _ppm in victims})
         if not victims:
@@ -3840,7 +4342,7 @@ def recompute_network(state):
 # PART 11 — Fiscal Layer Helpers
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def _apply_fiscal_effects(state, action_id, geoid, magnitude):
+def _apply_fiscal_effects(state, action_id, geoid, magnitude, ag_delta=None):
     """
     Apply fiscal effects of an action to a county's fiscal state.
     Returns a fiscal_delta dict summarizing changes, or None if no fiscal data.
@@ -3868,8 +4370,17 @@ def _apply_fiscal_effects(state, action_id, geoid, magnitude):
     pt_entry = action_coeffs.get("property_tax_annual", {}).get(geoid)
     if pt_entry:
         pt_value = pt_entry.get("value", 0.0) or 0.0
-        property_tax_delta = pt_value
-        cf["property_tax"] += pt_value
+        displaced_ag_tax = 0.0
+        if ag_delta:
+            before_value = ag_delta["before"]["ag_valuation_usd"]["total"]
+            after_value = ag_delta["after"]["ag_valuation_usd"]["total"]
+            assessment_rate = state["county_ag"][geoid]["ag_assessment_rate"]
+            displaced_assessed = (
+                max(0.0, before_value - after_value) * assessment_rate
+            )
+            displaced_ag_tax = displaced_assessed * cf["mill_levy_mills"] / 1000.0
+        property_tax_delta = pt_value - displaced_ag_tax
+        cf["property_tax"] += property_tax_delta
 
     # ── Sales/use tax (one-time construction) ────────────────────────────────
     suc_entry = action_coeffs.get("sales_use_construction", {})
@@ -4006,6 +4517,49 @@ def get_county_fiscal(state, geoid):
         "ledger_b_trajectory": b_traj,
         "ledger_c_trajectory": c_traj,
     }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# PART 12b — County Agriculture API + fifth digest contract (AG2)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def get_county_ag(state, geoid):
+    """Return the frozen county-ag levels + trajectories contract."""
+    geoid = str(geoid).zfill(5)
+    ag = state.get("county_ag", {}).get(geoid)
+    fiscal = state.get("county_fiscal", {}).get(geoid)
+    if ag is None or fiscal is None:
+        return None
+    return {
+        "geoid": geoid,
+        "year": state.get("year", 2025),
+        "levels": {
+            "land_acres": copy.deepcopy(ag["land_acres"]),
+            "water_acre_feet": copy.deepcopy(ag["water_acre_feet"]),
+            "forage_aum": {
+                "private": ag["forage_aum"]["private"],
+                "federal": ag["forage_aum"]["federal"],
+                "index": ag["forage_aum"]["index"],
+            },
+            "cattle_head": ag["cattle_head"],
+            "ag_valuation_usd": copy.deepcopy(fiscal["ag_valuation_usd"]),
+            "shared_energy_acres": ag["shared_energy_acres"],
+            "drought": copy.deepcopy(ag["drought"]),
+        },
+        "trajectories": copy.deepcopy(ag["trajectories"]),
+    }
+
+
+def ag_digest(state):
+    """Fifth additive digest; the four legacy serializers remain unchanged."""
+    digest_data = {
+        geoid: get_county_ag(state, geoid)
+        for geoid in sorted(state.get("county_ag", {}))
+    }
+    digest = {"county_ag": digest_data, "year": state.get("year", 2025)}
+    canonical = json.dumps(digest, sort_keys=True, separators=(',', ':'))
+    digest["md5"] = hashlib.md5(canonical.encode()).hexdigest()
+    return digest
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

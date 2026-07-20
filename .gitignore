@@ -63,6 +63,7 @@ data/processed/figures/14_lmp_map.html
 !data/processed/wy_county_fiscal_baseline.json
 !data/processed/wy_fiscal_coefficients.json
 !data/processed/wy_county_ag_baseline.json
+!data/processed/wy_county_ag_engine_baseline.json
 !data/processed/wy_grazing_allotments.csv
 !data/processed/wy_ag_sources.csv
 
