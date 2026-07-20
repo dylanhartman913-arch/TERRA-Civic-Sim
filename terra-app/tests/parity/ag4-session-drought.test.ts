@@ -7,8 +7,9 @@ import { agDigest } from '../../src/engine/engine.js';
 import { applySessionDrought } from '../../src/engine/session_drought.js';
 import { computeReplayDigest, replayScenario } from '../../src/engine/replay.js';
 import { exportToJson, importFromJson } from '../../src/engine/persistence.js';
-import type { ActionLibrary, CountyEESBaseline, CrosswalkRow, FiscalBaseline, FiscalCoefficients, InitialNetwork, ScenarioFile, SessionConfig } from '../../src/engine/types.js';
+import type { ActionLibrary, CountyEESBaseline, CrosswalkRow, EngineState, FiscalBaseline, FiscalCoefficients, InitialNetwork, ScenarioFile, SessionConfig } from '../../src/engine/types.js';
 import { loadInitialStateWithAnchorsAndTags } from './helpers.js';
+import { detectAutoPause } from '../../src/state/store.js';
 
 const ROOT = resolve(__dirname, '../..');
 const config = JSON.parse(readFileSync(
@@ -98,7 +99,54 @@ describe('AG4 Ranch Country drought session', () => {
   });
 });
 
-// TODO(AG4-debt): Add a golden replay-digest fixture for Ranch Country 2040.
+describe('detectAutoPause — drought_onset and irrigated_conversion paths', () => {
+  /** Minimal EngineState stub covering only the fields detectAutoPause reads. */
+  function baseState(countyAg: Record<string, {
+    county_name: string;
+    drought: { years_remaining: number };
+    land_acres: { irrigated_crop: number };
+  }>): EngineState {
+    return {
+      year: 2030,
+      build_queue: [],
+      active_couplings: [],
+      bus_state: {},
+      action_library: { actions: {} },
+      county_ag: countyAg,
+    } as unknown as EngineState;
+  }
+
+  it('fires drought_onset when drought begins in a county', () => {
+    const prev = baseState({ '56025': { county_name: 'Natrona', drought: { years_remaining: 0 }, land_acres: { irrigated_crop: 5000 } } });
+    const next = baseState({ '56025': { county_name: 'Natrona', drought: { years_remaining: 2 }, land_acres: { irrigated_crop: 5000 } } });
+    expect(detectAutoPause(prev, next, [], [], [])).toEqual({
+      reason: 'drought_onset',
+      detail: 'Drought conditions begin in Natrona',
+    });
+  });
+
+  it('fires irrigated_conversion when irrigated acreage decreases', () => {
+    const prev = baseState({ '56013': { county_name: 'Fremont', drought: { years_remaining: 0 }, land_acres: { irrigated_crop: 12000 } } });
+    const next = baseState({ '56013': { county_name: 'Fremont', drought: { years_remaining: 0 }, land_acres: { irrigated_crop: 11500 } } });
+    expect(detectAutoPause(prev, next, [], [], [])).toEqual({
+      reason: 'irrigated_conversion',
+      detail: 'Irrigated land converted in Fremont',
+    });
+  });
+
+  it('does NOT fire on unrelated state changes (irrigated acreage stable, drought continues)', () => {
+    // drought already ongoing (years_remaining > 0 in both) — onset already fired last year
+    const prev = baseState({ '56025': { county_name: 'Natrona', drought: { years_remaining: 1 }, land_acres: { irrigated_crop: 5000 } } });
+    const next = baseState({ '56025': { county_name: 'Natrona', drought: { years_remaining: 0 }, land_acres: { irrigated_crop: 5000 } } });
+    expect(detectAutoPause(prev, next, [], [], [])).toBeNull();
+  });
+
+  it('does NOT fire irrigated_conversion when irrigated acreage is unchanged', () => {
+    const prev = baseState({ '56013': { county_name: 'Fremont', drought: { years_remaining: 0 }, land_acres: { irrigated_crop: 12000 } } });
+    const next = baseState({ '56013': { county_name: 'Fremont', drought: { years_remaining: 0 }, land_acres: { irrigated_crop: 12000 } } });
+    expect(detectAutoPause(prev, next, [], [], [])).toBeNull();
+  });
+});
 
 function replayInputs() {
   const data = resolve(ROOT, 'src/data');
