@@ -116,6 +116,7 @@ import type {
   ClimateConsequenceOutcome,
   CountyAgState,
   CountyAgAccessor,
+  AgPlacementPreview,
   AgLandLevels,
   AgWaterLevels,
   AgForageLevels,
@@ -3827,6 +3828,129 @@ export function computeFiscalDelta(
   }
 
   return { geoid, ledger_a_delta, ledger_b_delta, ledger_c_delta, property_tax_delta, sales_use_delta };
+}
+
+// ── Ag Placement Preview (pure, zero-mutation) ─────────────────────────────
+
+/**
+ * Pure preview of what applyCountyAgAction would do for a given action + county + magnitude.
+ * No state mutation. Returns null if the county has no ag data or the action has no ag effects.
+ *
+ * All values are read directly from AG2's county_ag/county_fiscal engine state — zero UI-side arithmetic.
+ */
+export function getAgPlacementPreview(
+  state: EngineState,
+  actionId: string,
+  geoid: string,
+  magnitude: number,
+): AgPlacementPreview | null {
+  const gid = geoid.padStart(5, '0');
+  const ag = state.county_ag[gid];
+  if (!ag) return null;
+
+  const action = state.action_library.actions[actionId];
+  if (!action) return null;
+
+  const agActionIds = new Set([
+    'ag_conservation_easement', 'irrigation_efficiency',
+    'invasive_species_removal', 'rangeland_restoration_maintenance',
+    'mine_land_reclamation',
+  ]);
+  if (!action.ag_coexistence && !agActionIds.has(actionId)) return null;
+
+  const valuation = state.county_fiscal[gid]?.ag_valuation_usd ?? {
+    irrigated_crop: 0, dry_crop: 0, private_rangeland: 0, total: 0,
+  };
+  const pv = ag.productive_value_usd_per_acre;
+
+  const currentLandByClass = {
+    other: ag.land_acres.other,
+    private_rangeland: ag.land_acres.private_rangeland,
+    dry_crop: ag.land_acres.dry_crop,
+    irrigated_crop: ag.land_acres.irrigated_crop,
+  };
+
+  const aumBefore = round6(ag.forage_aum.private + ag.forage_aum.federal);
+
+  const drawn: Record<'other' | 'private_rangeland' | 'dry_crop' | 'irrigated_crop', number> = {
+    other: 0, private_rangeland: 0, dry_crop: 0, irrigated_crop: 0,
+  };
+  let convertedAcres = 0;
+  let sharedAcres = 0;
+  let blocked = false;
+  let blockedReason: string | null = null;
+
+  if (action.ag_coexistence) {
+    const scale = magnitude / (action.unit_scale ?? 1000);
+    convertedAcres = round6(action.ag_coexistence.land_acres_converted_from_ag * scale);
+    sharedAcres = round6(action.ag_coexistence.land_acres_shared_with_ag * scale);
+
+    // Pure simulation of drawAgLand — same priority order as engine
+    let remaining = Math.max(0, convertedAcres);
+    for (const key of AG_LAND_CONVERSION_PRIORITY) {
+      const amount = Math.min(remaining, ag.land_acres[key]);
+      drawn[key] = round6(amount);
+      remaining -= amount;
+    }
+    if (remaining > 1e-6) {
+      blocked = true;
+      const available = round6(convertedAcres - remaining);
+      blockedReason = `Easement-constrained: ${convertedAcres.toFixed(0)} ac needed, ${available.toFixed(0)} ac available`;
+    }
+  }
+
+  // Ag valuation removed (only converted classes with productive value)
+  const agValuationRemoved = round6(
+    drawn.irrigated_crop * (pv.irrigated_crop ?? 0)
+    + drawn.dry_crop * (pv.dry_crop ?? 0)
+    + drawn.private_rangeland * (pv.private_rangeland ?? 0),
+    // 'other' has no productive value per acre
+  );
+
+  // AUM after: proportional to rangeland remaining after conversion
+  let aumAfter = aumBefore;
+  if (drawn.private_rangeland > 0 && ag.land_acres.private_rangeland > 0) {
+    const newRangeland = ag.land_acres.private_rangeland - drawn.private_rangeland;
+    const ratio = newRangeland / ag.land_acres.private_rangeland;
+    aumAfter = round6(ag.forage_aum.private * ratio + ag.forage_aum.federal);
+  }
+
+  // Industrial valuation added from fiscal delta
+  let industrialValueAdded: number | null = null;
+  const fiscalDelta = computeFiscalDelta(state, actionId, gid, magnitude);
+  if (fiscalDelta) {
+    industrialValueAdded = round6(
+      fiscalDelta.property_tax_delta + fiscalDelta.sales_use_delta
+      + fiscalDelta.ledger_a_delta + fiscalDelta.ledger_b_delta + fiscalDelta.ledger_c_delta,
+    );
+  }
+
+  return {
+    action_id: actionId,
+    geoid: gid,
+    magnitude,
+    converted_acres: convertedAcres,
+    conversion_sources: drawn,
+    current_land_by_class: currentLandByClass,
+    shared_acres: sharedAcres,
+    ag_valuation_removed_usd: agValuationRemoved,
+    current_ag_valuation_total_usd: valuation.total,
+    industrial_valuation_added_usd: industrialValueAdded,
+    aum_before: aumBefore,
+    aum_after: aumAfter,
+    water_diversion_af: ag.water_acre_feet.ag_diversion,
+    water_consumptive_af: ag.water_acre_feet.ag_consumptive,
+    water_county_supply_af: ag.water_acre_feet.county_supply,
+    blocked,
+    blocked_reason: blockedReason,
+    provenance: {
+      schema_version: ag.data_provenance.schema_version,
+      vintage: ag.data_provenance.vintage,
+      federal_aum_is_proxy: ag.data_provenance.federal_aum_is_proxy,
+      water_is_proxy: ag.data_provenance.water_is_proxy,
+      land_conversion_priority: [...AG_LAND_CONVERSION_PRIORITY],
+    },
+  };
 }
 
 // ── Existing Assets API (Phase W5) ──────────────────────────────────────────

@@ -109,7 +109,10 @@ export interface LayerVisibility {
   sites: boolean;
   anchors: boolean;
   climateHazards: boolean;
+  agChoropleth: boolean;
 }
+
+export type AgChoroplethMode = 'invasive_burden' | 'converted_acres' | 'forage_trend';
 
 // ── Era boundaries ─────────────────────────────────────────────────────────
 
@@ -437,6 +440,7 @@ interface TerraStore {
   climateLens: ClimateLens;
   climateEpoch: ClimateEpoch;
   climateMetric: ClimateMetric;
+  agChoroplethMode: AgChoroplethMode;
 
   // Undo / Redo
   redoStack: ActionLogEntry[];
@@ -481,6 +485,7 @@ interface TerraStore {
   setClimateLens: (lens: ClimateLens) => void;
   setClimateEpoch: (epoch: ClimateEpoch) => void;
   setClimateMetric: (metric: ClimateMetric) => void;
+  setAgChoroplethMode: (mode: AgChoroplethMode) => void;
   enterPlacementMode: (actionId: string) => void;
   exitPlacementMode: () => void;
   confirmPlacement: (geoid: string, magnitude: number) => void;
@@ -625,10 +630,12 @@ export const useTerraStore = create<TerraStore>((set, get) => ({
     sites: true,
     anchors: true,
     climateHazards: false,
+    agChoropleth: false,
   },
   climateLens: 'historical',
   climateEpoch: '2050',
   climateMetric: 'high_fire_danger_days',
+  agChoroplethMode: 'forage_trend',
 
   // Undo / Redo
   redoStack: [],
@@ -862,6 +869,7 @@ export const useTerraStore = create<TerraStore>((set, get) => ({
   setClimateLens: (climateLens) => set({ climateLens }),
   setClimateEpoch: (climateEpoch) => set({ climateEpoch }),
   setClimateMetric: (climateMetric) => set({ climateMetric }),
+  setAgChoroplethMode: (agChoroplethMode) => set({ agChoroplethMode }),
 
   enterPlacementMode: (actionId) => {
     const { engineState } = get();

@@ -5,7 +5,7 @@ import { useTerraStore } from '../../state/store.js';
 import type { ActionRecord, CrosswalkRow, CountyFiscal } from '../../engine/types.js';
 import { Tooltip } from './Tooltip.js';
 import { computeConsumption, getBudgetShareString, isEraOverflow, getEraForYear } from '../../engine/budgets.js';
-import { computeFiscalDelta } from '../../engine/engine.js';
+import { computeFiscalDelta, getAgPlacementPreview } from '../../engine/engine.js';
 import { JOBS_PER_MW, HOUSING_PRESSURE_THRESHOLD } from '../panels/CountyYields.js';
 import { DeltaProjectionStrip } from './DeltaProjectionStrip.js';
 import { findSnapTarget } from './snapTarget.js';
@@ -472,6 +472,8 @@ export function PlacementOverlay({ map }: PlacementOverlayProps) {
       {/* ── Placement modal ── */}
       {placementMode && showModal && (() => {
         const { action } = placementMode;
+        const agPreviewModal = getAgPlacementPreview(engineState, action.action_id ?? '', showModal.geoid, modalMagnitude);
+        const agBlocked = agPreviewModal?.blocked ?? false;
         const unitScale = action.unit_scale ?? 100;
         const unitLabel = action.unit_label ?? 'units';
         const ttd = action.time_to_deploy ?? 2;
@@ -721,6 +723,133 @@ export function PlacementOverlay({ map }: PlacementOverlayProps) {
                 );
               })()}
 
+              {/* ── Ag competition preview (placement-time, engine pass-through) ── */}
+              {(() => {
+                const fmt$ = (v: number) => {
+                  const sign = v < 0 ? '-' : v > 0 ? '+' : '';
+                  const abs = Math.abs(v);
+                  if (abs >= 1e6) return `${sign}$${(abs / 1e6).toFixed(1)}M`;
+                  if (abs >= 1e3) return `${sign}$${(abs / 1e3).toFixed(0)}k`;
+                  return `${sign}$${Math.round(abs)}`;
+                };
+                const agPreview = getAgPlacementPreview(engineState, action.action_id ?? '', showModal.geoid, modalMagnitude);
+                if (!agPreview) return null;
+                if (agPreview.converted_acres === 0 && agPreview.shared_acres === 0) return null;
+
+                const fmtAc = (v: number) => v >= 1000 ? `${(v / 1000).toFixed(1)}k ac` : `${Math.round(v)} ac`;
+                const fmtAum = (v: number) => v >= 1000 ? `${(v / 1000).toFixed(1)}k AUM` : `${Math.round(v)} AUM`;
+                const fmtAfWater = (v: number) => v >= 1000 ? `${(v / 1000).toFixed(1)}k AF` : `${Math.round(v)} AF`;
+
+                const rowSty: React.CSSProperties = { display: 'flex', justifyContent: 'space-between', padding: '2px 0', borderTop: '1px solid var(--border)', fontSize: 10 };
+                const indentSty: React.CSSProperties = { color: 'var(--text-muted)', paddingLeft: 8, fontSize: 9 };
+
+                const sources = agPreview.conversion_sources;
+                const hasNonOther = sources.private_rangeland > 0 || sources.dry_crop > 0 || sources.irrigated_crop > 0;
+                const aumDelta = agPreview.aum_after - agPreview.aum_before;
+                const valueDelta = agPreview.industrial_valuation_added_usd != null
+                  ? agPreview.industrial_valuation_added_usd - agPreview.ag_valuation_removed_usd
+                  : null;
+
+                return (
+                  <div style={{ marginBottom: 16, padding: '10px 12px', background: 'rgba(139, 92, 246, 0.05)', border: `1px solid ${agPreview.blocked ? 'var(--deficit)' : 'rgba(139,92,246,0.3)'}`, borderRadius: 4 }}>
+                    <div style={{ fontSize: 9, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6 }}>
+                      Ag competition preview
+                      <span style={{ float: 'right', color: 'var(--text-muted)', fontSize: 8 }}>engine · zero UI arithmetic</span>
+                    </div>
+
+                    {agPreview.blocked && (
+                      <div style={{ color: 'var(--deficit)', fontSize: 10, marginBottom: 6, padding: '4px 6px', background: 'rgba(248,113,113,0.1)', borderRadius: 3 }}>
+                        {agPreview.blocked_reason}
+                      </div>
+                    )}
+
+                    {/* Converted acres by source class */}
+                    {agPreview.converted_acres > 0 && (
+                      <>
+                        <div style={rowSty}>
+                          <span style={{ color: 'var(--text-secondary)' }}>Converted (permanent)</span>
+                          <span style={{ color: 'var(--deficit)' }}>
+                            {fmtAc(agPreview.converted_acres)} / {fmtAc(Object.values(agPreview.current_land_by_class).reduce((a, b) => a + b, 0))} total
+                          </span>
+                        </div>
+                        {sources.other > 0 && <div style={rowSty}><span style={indentSty}>↳ other land</span><span style={{ color: 'var(--text-muted)', fontSize: 10 }}>{fmtAc(sources.other)}</span></div>}
+                        {sources.private_rangeland > 0 && <div style={rowSty}><span style={{ ...indentSty, color: 'var(--warning)' }}>↳ rangeland</span><span style={{ color: 'var(--warning)', fontSize: 10 }}>{fmtAc(sources.private_rangeland)} / {fmtAc(agPreview.current_land_by_class.private_rangeland)}</span></div>}
+                        {sources.dry_crop > 0 && <div style={rowSty}><span style={{ ...indentSty, color: 'var(--amber)' }}>↳ dry cropland</span><span style={{ color: 'var(--amber)', fontSize: 10 }}>{fmtAc(sources.dry_crop)} / {fmtAc(agPreview.current_land_by_class.dry_crop)}</span></div>}
+                        {sources.irrigated_crop > 0 && <div style={rowSty}><span style={{ ...indentSty, color: 'var(--deficit)' }}>↳ irrigated crop</span><span style={{ color: 'var(--deficit)', fontSize: 10 }}>{fmtAc(sources.irrigated_crop)} / {fmtAc(agPreview.current_land_by_class.irrigated_crop)}</span></div>}
+                      </>
+                    )}
+
+                    {/* Shared acres (dual-use, not consumed) */}
+                    {agPreview.shared_acres > 0 && (
+                      <div style={rowSty}>
+                        <span style={{ color: 'var(--text-secondary)' }}>Shared (not consumed)</span>
+                        <span style={{ color: 'var(--teal)' }}>{fmtAc(agPreview.shared_acres)}</span>
+                      </div>
+                    )}
+
+                    {/* Valuation asymmetry */}
+                    <div style={{ marginTop: 4 }}>
+                      <div style={rowSty}>
+                        <span style={{ color: 'var(--text-secondary)' }}>Ag valuation removed</span>
+                        <span style={{ color: agPreview.ag_valuation_removed_usd > 0 ? 'var(--deficit)' : 'var(--text-muted)' }}>
+                          {agPreview.ag_valuation_removed_usd > 0 ? fmt$(agPreview.ag_valuation_removed_usd) : '—'} / {fmt$(agPreview.current_ag_valuation_total_usd)}
+                        </span>
+                      </div>
+                      {agPreview.industrial_valuation_added_usd != null && (
+                        <div style={rowSty}>
+                          <span style={{ color: 'var(--text-secondary)' }}>Industrial valuation added</span>
+                          <span style={{ color: 'var(--teal)' }}>{fmt$(agPreview.industrial_valuation_added_usd)}</span>
+                        </div>
+                      )}
+                      {valueDelta != null && (
+                        <div style={{ ...rowSty, fontWeight: 500 }}>
+                          <span style={{ color: 'var(--text-muted)', fontSize: 9 }}>Net Δ (asymmetry)</span>
+                          <span style={{ color: valueDelta >= 0 ? 'var(--teal)' : 'var(--deficit)' }}>{fmt$(valueDelta)}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* AUM impact */}
+                    {(aumDelta !== 0 || hasNonOther) && (
+                      <div style={rowSty}>
+                        <span style={{ color: 'var(--text-secondary)' }}>AUM affected</span>
+                        <span style={{ color: aumDelta < 0 ? 'var(--warning)' : 'var(--text-muted)' }}>
+                          {fmtAum(agPreview.aum_before)} → {fmtAum(agPreview.aum_after)}
+                          {aumDelta !== 0 && <span style={{ marginLeft: 4, color: aumDelta < 0 ? 'var(--warning)' : 'var(--teal)' }}>({aumDelta > 0 ? '+' : ''}{fmtAum(aumDelta)})</span>}
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Water */}
+                    {agPreview.water_county_supply_af > 0 && (
+                      <div style={{ marginTop: 4 }}>
+                        <div style={rowSty}>
+                          <span style={{ color: 'var(--text-secondary)' }}>Ag diversion</span>
+                          <span style={{ color: 'var(--text-muted)' }}>{fmtAfWater(agPreview.water_diversion_af)} / {fmtAfWater(agPreview.water_county_supply_af)}</span>
+                        </div>
+                        <div style={rowSty}>
+                          <span style={{ color: 'var(--text-secondary)' }}>Ag consumptive</span>
+                          <span style={{ color: 'var(--text-muted)' }}>{fmtAfWater(agPreview.water_consumptive_af)}</span>
+                        </div>
+                        <div style={{ fontSize: 8, color: 'var(--text-muted)', marginTop: 3, lineHeight: 1.4 }}>
+                          Return flow = diversion − consumptive; reallocation from this placement is not consumptive.
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Debug provenance */}
+                    <details style={{ marginTop: 6 }}>
+                      <summary style={{ fontSize: 8, color: 'var(--text-muted)', cursor: 'pointer' }}>Debug provenance</summary>
+                      <div style={{ fontSize: 8, color: 'var(--text-muted)', marginTop: 4, lineHeight: 1.6 }}>
+                        schema: {agPreview.provenance.schema_version} · vintage: {agPreview.provenance.vintage}<br />
+                        federal AUM proxy: {String(agPreview.provenance.federal_aum_is_proxy)} · water proxy: {String(agPreview.provenance.water_is_proxy)}<br />
+                        draw priority: {agPreview.provenance.land_conversion_priority.join(' → ')}
+                      </div>
+                    </details>
+                  </div>
+                );
+              })()}
+
               {showModal && (
                 <DeltaProjectionStrip
                   actionId={action.action_id ?? ''}
@@ -753,10 +882,12 @@ export function PlacementOverlay({ map }: PlacementOverlayProps) {
 
               <div style={{ display: 'flex', gap: 8, marginTop: 20 }}>
                 <button
-                  onClick={() => { confirmPlacement(showModal.geoid, modalMagnitude); setShowModal(null); }}
-                  style={{ flex: 1, padding: '8px 0', background: 'var(--teal-dim)', color: 'var(--text-primary)', border: 'none', borderRadius: 4, fontFamily: 'var(--font-mono)', fontSize: 13, cursor: 'pointer' }}
+                  disabled={agBlocked}
+                  onClick={() => { if (!agBlocked) { confirmPlacement(showModal.geoid, modalMagnitude); setShowModal(null); } }}
+                  style={{ flex: 1, padding: '8px 0', background: agBlocked ? 'var(--border)' : 'var(--teal-dim)', color: agBlocked ? 'var(--text-muted)' : 'var(--text-primary)', border: 'none', borderRadius: 4, fontFamily: 'var(--font-mono)', fontSize: 13, cursor: agBlocked ? 'not-allowed' : 'pointer', opacity: agBlocked ? 0.5 : 1 }}
+                  title={agBlocked ? (agPreviewModal?.blocked_reason ?? 'Placement blocked') : undefined}
                 >
-                  Confirm
+                  {agBlocked ? 'Blocked' : 'Confirm'}
                 </button>
                 <button
                   onClick={() => { setShowModal(null); exitPlacementMode(); }}

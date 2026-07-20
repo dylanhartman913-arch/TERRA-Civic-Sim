@@ -15,6 +15,7 @@ import { QueuedBuildMarkers } from './QueuedBuildMarkers.js';
 import { AnchorFacilityLayer } from './AnchorFacilityLayer.js';
 import { MarkerLegend } from './MarkerLegend.js';
 import { HazardChoroplethLayer } from './HazardChoroplethLayer.js';
+import { AgChoroplethLayer } from './AgChoroplethLayer.js';
 import { AttributionPopover } from '../panels/ClimatePanel.js';
 import type { ClimateRecord } from '../climate.js';
 
@@ -39,6 +40,7 @@ export function MapView() {
   const climateLens = useTerraStore(s => s.climateLens);
   const climateEpoch = useTerraStore(s => s.climateEpoch);
   const climateMetric = useTerraStore(s => s.climateMetric);
+  const agChoroplethMode = useTerraStore(s => s.agChoroplethMode);
   const countyCards = engineState.county_cards as Record<string, { county_name?: string; state?: string }>;
   const campaignFlyTarget = useTerraStore(s => s.campaignFlyTarget);
 
@@ -97,6 +99,7 @@ export function MapView() {
             onTooltip={setTooltipState}
           />
           <HazardChoroplethLayer map={mapRef.current} visible={layers.climateHazards} lens={climateLens} epoch={climateEpoch} metric={climateMetric} onAttribution={handleHazardAttribution} />
+          <AgChoroplethLayer map={mapRef.current} visible={layers.agChoropleth} engineState={engineState} mode={agChoroplethMode} />
           {placementMode && (
             <PlacementOverlay map={mapRef.current} />
           )}
