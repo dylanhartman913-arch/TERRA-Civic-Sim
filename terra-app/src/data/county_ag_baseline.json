@@ -1,0 +1,824 @@
+{
+  "coefficients": {
+    "ag_assessment_rate": 0.095,
+    "cattle_elasticity_bounds": [
+      0.5,
+      1.0
+    ],
+    "cattle_forage_elasticity": 0.75,
+    "consumptive_af_per_irrigated_acre": 1.2,
+    "diversion_af_per_irrigated_acre": 2.0,
+    "federal_aum_proxy_note": "Active USFS authorized-use acres multiplied by the AG0 county stocking-rate coefficient; source CSV has no authorized-AUM field.",
+    "water_proxy_note": "Planning proxy used because AG0 SEO county observations are null; diversion and consumptive use remain separate fields."
+  },
+  "counties": {
+    "56001": {
+      "ag_assessment_rate": 0.095,
+      "annual_grass_cover_fraction": 0.073318,
+      "cattle_forage_elasticity": 0.75,
+      "cattle_head": 28081.0,
+      "county_name": "Albany",
+      "federal_authorized_use_acres": 375307.21,
+      "forage_aum": {
+        "federal": 12497.730093,
+        "index": 1.0,
+        "private": 40368.0
+      },
+      "geoid": "56001",
+      "land_acres": {
+        "converted_to_energy": 0.0,
+        "dry_crop": 18671.0,
+        "easement_protected": 0.0,
+        "irrigated_crop": 94846.0,
+        "other": 1411027.0,
+        "private_rangeland": 1211025.0
+      },
+      "productive_value_usd_per_acre": {
+        "dry_crop": 376.0,
+        "irrigated_crop": 1767.0,
+        "private_rangeland": 126.0
+      },
+      "stocking_rate_aum_per_acre": 0.0333,
+      "water_acre_feet": {
+        "ag_consumptive": 113815.2,
+        "ag_diversion": 189692.0,
+        "county_supply": 303507.2,
+        "energy": 0.0,
+        "other": 0.0
+      }
+    },
+    "56003": {
+      "ag_assessment_rate": 0.095,
+      "annual_grass_cover_fraction": 0.072751,
+      "cattle_forage_elasticity": 0.75,
+      "cattle_head": 23000.0,
+      "county_name": "Big Horn",
+      "federal_authorized_use_acres": 303143.078,
+      "forage_aum": {
+        "federal": 10094.664497,
+        "index": 1.0,
+        "private": 11040.0
+      },
+      "geoid": "56003",
+      "land_acres": {
+        "converted_to_energy": 0.0,
+        "dry_crop": 22926.0,
+        "easement_protected": 0.0,
+        "irrigated_crop": 84839.0,
+        "other": 1568400.0,
+        "private_rangeland": 331196.0
+      },
+      "productive_value_usd_per_acre": {
+        "dry_crop": 376.0,
+        "irrigated_crop": 1767.0,
+        "private_rangeland": 126.0
+      },
+      "stocking_rate_aum_per_acre": 0.0333,
+      "water_acre_feet": {
+        "ag_consumptive": 101806.8,
+        "ag_diversion": 169678.0,
+        "county_supply": 271484.8,
+        "energy": 0.0,
+        "other": 0.0
+      }
+    },
+    "56005": {
+      "ag_assessment_rate": 0.095,
+      "annual_grass_cover_fraction": 0.1709,
+      "cattle_forage_elasticity": 0.75,
+      "cattle_head": 46000.0,
+      "county_name": "Campbell",
+      "federal_authorized_use_acres": 313191.963,
+      "forage_aum": {
+        "federal": 10429.292368,
+        "index": 1.0,
+        "private": 81232.0
+      },
+      "geoid": "56005",
+      "land_acres": {
+        "converted_to_energy": 0.0,
+        "dry_crop": 126167.0,
+        "easement_protected": 0.0,
+        "irrigated_crop": 5200.0,
+        "other": 504988.0,
+        "private_rangeland": 2436960.0
+      },
+      "productive_value_usd_per_acre": {
+        "dry_crop": 376.0,
+        "irrigated_crop": 1767.0,
+        "private_rangeland": 126.0
+      },
+      "stocking_rate_aum_per_acre": 0.0333,
+      "water_acre_feet": {
+        "ag_consumptive": 6240.0,
+        "ag_diversion": 10400.0,
+        "county_supply": 16640.0,
+        "energy": 0.0,
+        "other": 0.0
+      }
+    },
+    "56007": {
+      "ag_assessment_rate": 0.095,
+      "annual_grass_cover_fraction": 0.04607,
+      "cattle_forage_elasticity": 0.75,
+      "cattle_head": 53000.0,
+      "county_name": "Carbon",
+      "federal_authorized_use_acres": 551682.895,
+      "forage_aum": {
+        "federal": 18371.040404,
+        "index": 1.0,
+        "private": 88250.0
+      },
+      "geoid": "56007",
+      "land_acres": {
+        "converted_to_energy": 0.0,
+        "dry_crop": 29033.0,
+        "easement_protected": 0.0,
+        "irrigated_crop": 157301.0,
+        "other": 2220760.0,
+        "private_rangeland": 2647500.0
+      },
+      "productive_value_usd_per_acre": {
+        "dry_crop": 376.0,
+        "irrigated_crop": 1767.0,
+        "private_rangeland": 126.0
+      },
+      "stocking_rate_aum_per_acre": 0.0333,
+      "water_acre_feet": {
+        "ag_consumptive": 188761.2,
+        "ag_diversion": 314602.0,
+        "county_supply": 503363.2,
+        "energy": 0.0,
+        "other": 0.0
+      }
+    },
+    "56009": {
+      "ag_assessment_rate": 0.095,
+      "annual_grass_cover_fraction": 0.182884,
+      "cattle_forage_elasticity": 0.75,
+      "cattle_head": 35500.0,
+      "county_name": "Converse",
+      "federal_authorized_use_acres": 491823.2,
+      "forage_aum": {
+        "federal": 16377.71256,
+        "index": 1.0,
+        "private": 76952.0
+      },
+      "geoid": "56009",
+      "land_acres": {
+        "converted_to_energy": 0.0,
+        "dry_crop": 14355.0,
+        "easement_protected": 0.0,
+        "irrigated_crop": 39235.0,
+        "other": 361000.0,
+        "private_rangeland": 2308574.0
+      },
+      "productive_value_usd_per_acre": {
+        "dry_crop": 376.0,
+        "irrigated_crop": 1767.0,
+        "private_rangeland": 126.0
+      },
+      "stocking_rate_aum_per_acre": 0.0333,
+      "water_acre_feet": {
+        "ag_consumptive": 47082.0,
+        "ag_diversion": 78470.0,
+        "county_supply": 125552.0,
+        "energy": 0.0,
+        "other": 0.0
+      }
+    },
+    "56011": {
+      "ag_assessment_rate": 0.095,
+      "annual_grass_cover_fraction": 0.103128,
+      "cattle_forage_elasticity": 0.75,
+      "cattle_head": 40000.0,
+      "county_name": "Crook",
+      "federal_authorized_use_acres": 184375.799,
+      "forage_aum": {
+        "federal": 6139.714107,
+        "index": 1.0,
+        "private": 38596.0
+      },
+      "geoid": "56011",
+      "land_acres": {
+        "converted_to_energy": 0.0,
+        "dry_crop": 139179.0,
+        "easement_protected": 0.0,
+        "irrigated_crop": 12277.0,
+        "other": 517525.0,
+        "private_rangeland": 1157886.0
+      },
+      "productive_value_usd_per_acre": {
+        "dry_crop": 376.0,
+        "irrigated_crop": 1767.0,
+        "private_rangeland": 126.0
+      },
+      "stocking_rate_aum_per_acre": 0.0333,
+      "water_acre_feet": {
+        "ag_consumptive": 14732.4,
+        "ag_diversion": 24554.0,
+        "county_supply": 39286.4,
+        "energy": 0.0,
+        "other": 0.0
+      }
+    },
+    "56013": {
+      "ag_assessment_rate": 0.095,
+      "annual_grass_cover_fraction": 0.051677,
+      "cattle_forage_elasticity": 0.75,
+      "cattle_head": 54000.0,
+      "county_name": "Fremont",
+      "federal_authorized_use_acres": 448295.053,
+      "forage_aum": {
+        "federal": 14928.225265,
+        "index": 1.0,
+        "private": 36093.0
+      },
+      "geoid": "56013",
+      "land_acres": {
+        "converted_to_energy": 0.0,
+        "dry_crop": 8699.0,
+        "easement_protected": 0.0,
+        "irrigated_crop": 101050.0,
+        "other": 4684850.0,
+        "private_rangeland": 1082792.0
+      },
+      "productive_value_usd_per_acre": {
+        "dry_crop": 376.0,
+        "irrigated_crop": 1767.0,
+        "private_rangeland": 126.0
+      },
+      "stocking_rate_aum_per_acre": 0.0333,
+      "water_acre_feet": {
+        "ag_consumptive": 121260.0,
+        "ag_diversion": 202100.0,
+        "county_supply": 323360.0,
+        "energy": 0.0,
+        "other": 0.0
+      }
+    },
+    "56015": {
+      "ag_assessment_rate": 0.095,
+      "annual_grass_cover_fraction": 0.158273,
+      "cattle_forage_elasticity": 0.75,
+      "cattle_head": 35146.0,
+      "county_name": "Goshen",
+      "federal_authorized_use_acres": 0.0,
+      "forage_aum": {
+        "federal": 0.0,
+        "index": 1.0,
+        "private": 33173.0
+      },
+      "geoid": "56015",
+      "land_acres": {
+        "converted_to_energy": 0.0,
+        "dry_crop": 161595.0,
+        "easement_protected": 0.0,
+        "irrigated_crop": 80336.0,
+        "other": 187277.0,
+        "private_rangeland": 995184.0
+      },
+      "productive_value_usd_per_acre": {
+        "dry_crop": 376.0,
+        "irrigated_crop": 1767.0,
+        "private_rangeland": 126.0
+      },
+      "stocking_rate_aum_per_acre": 0.0333,
+      "water_acre_feet": {
+        "ag_consumptive": 96403.2,
+        "ag_diversion": 160672.0,
+        "county_supply": 257075.2,
+        "energy": 0.0,
+        "other": 0.0
+      }
+    },
+    "56017": {
+      "ag_assessment_rate": 0.095,
+      "annual_grass_cover_fraction": 0.107288,
+      "cattle_forage_elasticity": 0.75,
+      "cattle_head": 0.0,
+      "county_name": "Hot Springs",
+      "federal_authorized_use_acres": 33645.477,
+      "forage_aum": {
+        "federal": 1120.394384,
+        "index": 1.0,
+        "private": 17705.0
+      },
+      "geoid": "56017",
+      "land_acres": {
+        "converted_to_energy": 0.0,
+        "dry_crop": 7080.0,
+        "easement_protected": 0.0,
+        "irrigated_crop": 15174.0,
+        "other": 729212.0,
+        "private_rangeland": 531157.0
+      },
+      "productive_value_usd_per_acre": {
+        "dry_crop": 376.0,
+        "irrigated_crop": 1767.0,
+        "private_rangeland": 126.0
+      },
+      "stocking_rate_aum_per_acre": 0.0333,
+      "water_acre_feet": {
+        "ag_consumptive": 18208.8,
+        "ag_diversion": 30348.0,
+        "county_supply": 48556.8,
+        "energy": 0.0,
+        "other": 0.0
+      }
+    },
+    "56019": {
+      "ag_assessment_rate": 0.095,
+      "annual_grass_cover_fraction": 0.12844,
+      "cattle_forage_elasticity": 0.75,
+      "cattle_head": 40500.0,
+      "county_name": "Johnson",
+      "federal_authorized_use_acres": 204113.478,
+      "forage_aum": {
+        "federal": 6796.978817,
+        "index": 1.0,
+        "private": 65908.0
+      },
+      "geoid": "56019",
+      "land_acres": {
+        "converted_to_energy": 0.0,
+        "dry_crop": 10327.0,
+        "easement_protected": 0.0,
+        "irrigated_crop": 36760.0,
+        "other": 634324.0,
+        "private_rangeland": 1977248.0
+      },
+      "productive_value_usd_per_acre": {
+        "dry_crop": 376.0,
+        "irrigated_crop": 1767.0,
+        "private_rangeland": 126.0
+      },
+      "stocking_rate_aum_per_acre": 0.0333,
+      "water_acre_feet": {
+        "ag_consumptive": 44112.0,
+        "ag_diversion": 73520.0,
+        "county_supply": 117632.0,
+        "energy": 0.0,
+        "other": 0.0
+      }
+    },
+    "56021": {
+      "ag_assessment_rate": 0.095,
+      "annual_grass_cover_fraction": 0.064919,
+      "cattle_forage_elasticity": 0.75,
+      "cattle_head": 0.0,
+      "county_name": "Laramie",
+      "federal_authorized_use_acres": 0.0,
+      "forage_aum": {
+        "federal": 0.0,
+        "index": 1.0,
+        "private": 37691.0
+      },
+      "geoid": "56021",
+      "land_acres": {
+        "converted_to_energy": 0.0,
+        "dry_crop": 257704.0,
+        "easement_protected": 0.0,
+        "irrigated_crop": 34315.0,
+        "other": 296222.0,
+        "private_rangeland": 1130743.0
+      },
+      "productive_value_usd_per_acre": {
+        "dry_crop": 376.0,
+        "irrigated_crop": 1767.0,
+        "private_rangeland": 126.0
+      },
+      "stocking_rate_aum_per_acre": 0.0333,
+      "water_acre_feet": {
+        "ag_consumptive": 41178.0,
+        "ag_diversion": 68630.0,
+        "county_supply": 109808.0,
+        "energy": 0.0,
+        "other": 0.0
+      }
+    },
+    "56023": {
+      "ag_assessment_rate": 0.095,
+      "annual_grass_cover_fraction": 0.022626,
+      "cattle_forage_elasticity": 0.75,
+      "cattle_head": 29000.0,
+      "county_name": "Lincoln",
+      "federal_authorized_use_acres": 628883.769,
+      "forage_aum": {
+        "federal": 20941.829508,
+        "index": 1.0,
+        "private": 6734.0
+      },
+      "geoid": "56023",
+      "land_acres": {
+        "converted_to_energy": 0.0,
+        "dry_crop": 19019.0,
+        "easement_protected": 0.0,
+        "irrigated_crop": 66977.0,
+        "other": 2320189.0,
+        "private_rangeland": 202031.0
+      },
+      "productive_value_usd_per_acre": {
+        "dry_crop": 376.0,
+        "irrigated_crop": 1767.0,
+        "private_rangeland": 126.0
+      },
+      "stocking_rate_aum_per_acre": 0.0333,
+      "water_acre_feet": {
+        "ag_consumptive": 80372.4,
+        "ag_diversion": 133954.0,
+        "county_supply": 214326.4,
+        "energy": 0.0,
+        "other": 0.0
+      }
+    },
+    "56025": {
+      "ag_assessment_rate": 0.095,
+      "annual_grass_cover_fraction": 0.101094,
+      "cattle_forage_elasticity": 0.75,
+      "cattle_head": 37000.0,
+      "county_name": "Natrona",
+      "federal_authorized_use_acres": 14667.054,
+      "forage_aum": {
+        "federal": 488.412898,
+        "index": 1.0,
+        "private": 65911.0
+      },
+      "geoid": "56025",
+      "land_acres": {
+        "converted_to_energy": 0.0,
+        "dry_crop": 23516.0,
+        "easement_protected": 0.0,
+        "irrigated_crop": 38555.0,
+        "other": 1378560.0,
+        "private_rangeland": 1977318.0
+      },
+      "productive_value_usd_per_acre": {
+        "dry_crop": 376.0,
+        "irrigated_crop": 1767.0,
+        "private_rangeland": 126.0
+      },
+      "stocking_rate_aum_per_acre": 0.0333,
+      "water_acre_feet": {
+        "ag_consumptive": 46266.0,
+        "ag_diversion": 77110.0,
+        "county_supply": 123376.0,
+        "energy": 0.0,
+        "other": 0.0
+      }
+    },
+    "56027": {
+      "ag_assessment_rate": 0.095,
+      "annual_grass_cover_fraction": 0.169551,
+      "cattle_forage_elasticity": 0.75,
+      "cattle_head": 30500.0,
+      "county_name": "Niobrara",
+      "federal_authorized_use_acres": 16987.668,
+      "forage_aum": {
+        "federal": 565.689344,
+        "index": 1.0,
+        "private": 41559.0
+      },
+      "geoid": "56027",
+      "land_acres": {
+        "converted_to_energy": 0.0,
+        "dry_crop": 45252.0,
+        "easement_protected": 0.0,
+        "irrigated_crop": 10295.0,
+        "other": 378353.0,
+        "private_rangeland": 1246758.0
+      },
+      "productive_value_usd_per_acre": {
+        "dry_crop": 376.0,
+        "irrigated_crop": 1767.0,
+        "private_rangeland": 126.0
+      },
+      "stocking_rate_aum_per_acre": 0.0333,
+      "water_acre_feet": {
+        "ag_consumptive": 12354.0,
+        "ag_diversion": 20590.0,
+        "county_supply": 32944.0,
+        "energy": 0.0,
+        "other": 0.0
+      }
+    },
+    "56029": {
+      "ag_assessment_rate": 0.095,
+      "annual_grass_cover_fraction": 0.034951,
+      "cattle_forage_elasticity": 0.75,
+      "cattle_head": 0.0,
+      "county_name": "Park",
+      "federal_authorized_use_acres": 502597.229,
+      "forage_aum": {
+        "federal": 16736.487726,
+        "index": 1.0,
+        "private": 18429.0
+      },
+      "geoid": "56029",
+      "land_acres": {
+        "converted_to_energy": 0.0,
+        "dry_crop": 24468.0,
+        "easement_protected": 0.0,
+        "irrigated_crop": 104747.0,
+        "other": 3759413.0,
+        "private_rangeland": 552882.0
+      },
+      "productive_value_usd_per_acre": {
+        "dry_crop": 376.0,
+        "irrigated_crop": 1767.0,
+        "private_rangeland": 126.0
+      },
+      "stocking_rate_aum_per_acre": 0.0333,
+      "water_acre_feet": {
+        "ag_consumptive": 125696.4,
+        "ag_diversion": 209494.0,
+        "county_supply": 335190.4,
+        "energy": 0.0,
+        "other": 0.0
+      }
+    },
+    "56031": {
+      "ag_assessment_rate": 0.095,
+      "annual_grass_cover_fraction": 0.150457,
+      "cattle_forage_elasticity": 0.75,
+      "cattle_head": 30542.0,
+      "county_name": "Platte",
+      "federal_authorized_use_acres": 6026.513,
+      "forage_aum": {
+        "federal": 200.682883,
+        "index": 1.0,
+        "private": 36608.0
+      },
+      "geoid": "56031",
+      "land_acres": {
+        "converted_to_energy": 0.0,
+        "dry_crop": 77649.0,
+        "easement_protected": 0.0,
+        "irrigated_crop": 50312.0,
+        "other": 107675.0,
+        "private_rangeland": 1098244.0
+      },
+      "productive_value_usd_per_acre": {
+        "dry_crop": 376.0,
+        "irrigated_crop": 1767.0,
+        "private_rangeland": 126.0
+      },
+      "stocking_rate_aum_per_acre": 0.0333,
+      "water_acre_feet": {
+        "ag_consumptive": 60374.4,
+        "ag_diversion": 100624.0,
+        "county_supply": 160998.4,
+        "energy": 0.0,
+        "other": 0.0
+      }
+    },
+    "56033": {
+      "ag_assessment_rate": 0.095,
+      "annual_grass_cover_fraction": 0.139483,
+      "cattle_forage_elasticity": 0.75,
+      "cattle_head": 35500.0,
+      "county_name": "Sheridan",
+      "federal_authorized_use_acres": 343871.143,
+      "forage_aum": {
+        "federal": 11450.909062,
+        "index": 1.0,
+        "private": 37692.0
+      },
+      "geoid": "56033",
+      "land_acres": {
+        "converted_to_energy": 0.0,
+        "dry_crop": 39857.0,
+        "easement_protected": 0.0,
+        "irrigated_crop": 50834.0,
+        "other": 393500.0,
+        "private_rangeland": 1130760.0
+      },
+      "productive_value_usd_per_acre": {
+        "dry_crop": 376.0,
+        "irrigated_crop": 1767.0,
+        "private_rangeland": 126.0
+      },
+      "stocking_rate_aum_per_acre": 0.0333,
+      "water_acre_feet": {
+        "ag_consumptive": 61000.8,
+        "ag_diversion": 101668.0,
+        "county_supply": 162668.8,
+        "energy": 0.0,
+        "other": 0.0
+      }
+    },
+    "56035": {
+      "ag_assessment_rate": 0.095,
+      "annual_grass_cover_fraction": 0.019788,
+      "cattle_forage_elasticity": 0.75,
+      "cattle_head": 28500.0,
+      "county_name": "Sublette",
+      "federal_authorized_use_acres": 700136.472,
+      "forage_aum": {
+        "federal": 23314.544518,
+        "index": 1.0,
+        "private": 12361.0
+      },
+      "geoid": "56035",
+      "land_acres": {
+        "converted_to_energy": 0.0,
+        "dry_crop": 77.0,
+        "easement_protected": 0.0,
+        "irrigated_crop": 120242.0,
+        "other": 2636191.0,
+        "private_rangeland": 370838.0
+      },
+      "productive_value_usd_per_acre": {
+        "dry_crop": 376.0,
+        "irrigated_crop": 1767.0,
+        "private_rangeland": 126.0
+      },
+      "stocking_rate_aum_per_acre": 0.0333,
+      "water_acre_feet": {
+        "ag_consumptive": 144290.4,
+        "ag_diversion": 240484.0,
+        "county_supply": 384774.4,
+        "energy": 0.0,
+        "other": 0.0
+      }
+    },
+    "56037": {
+      "ag_assessment_rate": 0.095,
+      "annual_grass_cover_fraction": 0.02474,
+      "cattle_forage_elasticity": 0.75,
+      "cattle_head": 13900.0,
+      "county_name": "Sweetwater",
+      "federal_authorized_use_acres": 72587.773,
+      "forage_aum": {
+        "federal": 2417.172841,
+        "index": 1.0,
+        "private": 44307.0
+      },
+      "geoid": "56037",
+      "land_acres": {
+        "converted_to_energy": 0.0,
+        "dry_crop": 0.0,
+        "easement_protected": 0.0,
+        "irrigated_crop": 36859.0,
+        "other": 5307185.0,
+        "private_rangeland": 1329219.0
+      },
+      "productive_value_usd_per_acre": {
+        "dry_crop": 376.0,
+        "irrigated_crop": 1767.0,
+        "private_rangeland": 126.0
+      },
+      "stocking_rate_aum_per_acre": 0.0333,
+      "water_acre_feet": {
+        "ag_consumptive": 44230.8,
+        "ag_diversion": 73718.0,
+        "county_supply": 117948.8,
+        "energy": 0.0,
+        "other": 0.0
+      }
+    },
+    "56039": {
+      "ag_assessment_rate": 0.095,
+      "annual_grass_cover_fraction": 0.015784,
+      "cattle_forage_elasticity": 0.75,
+      "cattle_head": 2172.0,
+      "county_name": "Teton",
+      "federal_authorized_use_acres": 196090.844,
+      "forage_aum": {
+        "federal": 6529.825105,
+        "index": 1.0,
+        "private": 679.0
+      },
+      "geoid": "56039",
+      "land_acres": {
+        "converted_to_energy": 0.0,
+        "dry_crop": 939.0,
+        "easement_protected": 0.0,
+        "irrigated_crop": 12949.0,
+        "other": 2523738.0,
+        "private_rangeland": 20356.0
+      },
+      "productive_value_usd_per_acre": {
+        "dry_crop": 376.0,
+        "irrigated_crop": 1767.0,
+        "private_rangeland": 126.0
+      },
+      "stocking_rate_aum_per_acre": 0.0333,
+      "water_acre_feet": {
+        "ag_consumptive": 15538.8,
+        "ag_diversion": 25898.0,
+        "county_supply": 41436.8,
+        "energy": 0.0,
+        "other": 0.0
+      }
+    },
+    "56041": {
+      "ag_assessment_rate": 0.095,
+      "annual_grass_cover_fraction": 0.036257,
+      "cattle_forage_elasticity": 0.75,
+      "cattle_head": 24000.0,
+      "county_name": "Uinta",
+      "federal_authorized_use_acres": 41647.896,
+      "forage_aum": {
+        "federal": 1386.874937,
+        "index": 1.0,
+        "private": 21872.0
+      },
+      "geoid": "56041",
+      "land_acres": {
+        "converted_to_energy": 0.0,
+        "dry_crop": 0.0,
+        "easement_protected": 0.0,
+        "irrigated_crop": 60227.0,
+        "other": 615979.0,
+        "private_rangeland": 656165.0
+      },
+      "productive_value_usd_per_acre": {
+        "dry_crop": 376.0,
+        "irrigated_crop": 1767.0,
+        "private_rangeland": 126.0
+      },
+      "stocking_rate_aum_per_acre": 0.0333,
+      "water_acre_feet": {
+        "ag_consumptive": 72272.4,
+        "ag_diversion": 120454.0,
+        "county_supply": 192726.4,
+        "energy": 0.0,
+        "other": 0.0
+      }
+    },
+    "56043": {
+      "ag_assessment_rate": 0.095,
+      "annual_grass_cover_fraction": 0.121062,
+      "cattle_forage_elasticity": 0.75,
+      "cattle_head": 13900.0,
+      "county_name": "Washakie",
+      "federal_authorized_use_acres": 33089.205,
+      "forage_aum": {
+        "federal": 1101.870527,
+        "index": 1.0,
+        "private": 10600.0
+      },
+      "geoid": "56043",
+      "land_acres": {
+        "converted_to_energy": 0.0,
+        "dry_crop": 11245.0,
+        "easement_protected": 0.0,
+        "irrigated_crop": 38025.0,
+        "other": 1065468.0,
+        "private_rangeland": 318009.0
+      },
+      "productive_value_usd_per_acre": {
+        "dry_crop": 376.0,
+        "irrigated_crop": 1767.0,
+        "private_rangeland": 126.0
+      },
+      "stocking_rate_aum_per_acre": 0.0333,
+      "water_acre_feet": {
+        "ag_consumptive": 45630.0,
+        "ag_diversion": 76050.0,
+        "county_supply": 121680.0,
+        "energy": 0.0,
+        "other": 0.0
+      }
+    },
+    "56045": {
+      "ag_assessment_rate": 0.095,
+      "annual_grass_cover_fraction": 0.151022,
+      "cattle_forage_elasticity": 0.75,
+      "cattle_head": 29000.0,
+      "county_name": "Weston",
+      "federal_authorized_use_acres": 602549.267,
+      "forage_aum": {
+        "federal": 20064.890591,
+        "index": 1.0,
+        "private": 40961.0
+      },
+      "geoid": "56045",
+      "land_acres": {
+        "converted_to_energy": 0.0,
+        "dry_crop": 26830.0,
+        "easement_protected": 0.0,
+        "irrigated_crop": 10162.0,
+        "other": 268898.0,
+        "private_rangeland": 1228833.0
+      },
+      "productive_value_usd_per_acre": {
+        "dry_crop": 376.0,
+        "irrigated_crop": 1767.0,
+        "private_rangeland": 126.0
+      },
+      "stocking_rate_aum_per_acre": 0.0333,
+      "water_acre_feet": {
+        "ag_consumptive": 12194.4,
+        "ag_diversion": 20324.0,
+        "county_supply": 32518.4,
+        "energy": 0.0,
+        "other": 0.0
+      }
+    }
+  },
+  "county_count": 23,
+  "schema_version": "county-ag-engine-v1",
+  "vintage": "2026-07-19"
+}

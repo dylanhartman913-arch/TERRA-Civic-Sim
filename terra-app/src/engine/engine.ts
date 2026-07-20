@@ -22,6 +22,7 @@ import {
   CONSEQUENCE_SEVERITY_CEILING_MILLI,
   sampleClimateHazardEvents,
 } from './events.js';
+import countyAgBaselineData from '../data/county_ag_baseline.json';
 
 // ── Pure-JS MD5 (RFC 1321) — browser + Node compatible ─────────────────────
 // Produces byte-identical output to Node's createHash('md5').update(s).digest('hex').
@@ -113,6 +114,12 @@ import type {
   ClimateHazardKind,
   ClimateHazardSamplingInput,
   ClimateConsequenceOutcome,
+  CountyAgState,
+  CountyAgAccessor,
+  AgLandLevels,
+  AgWaterLevels,
+  AgForageLevels,
+  AgValuationLevels,
 } from './types.js';
 import { EMPTY_CLIMATE_CONTEXT } from './types.js';
 
@@ -145,6 +152,57 @@ const EXPOSURE_VALUE_PPM: Record<string, number> = {
 };
 
 const PRB_COAL_TONS_PER_MW_YR = 3743.4; // EIA-923 heat-rate proxy (W2 severance source)
+const AG_LAND_CONVERSION_PRIORITY = [
+  'other', 'private_rangeland', 'dry_crop', 'irrigated_crop',
+] as const;
+const AG_CATTLE_ELASTICITY_BOUNDS = [0.5, 1.0] as const;
+
+function agFraction(value: unknown, label: string): number {
+  if (typeof value !== 'number' || !Number.isFinite(value) || value < 0 || value > 1) {
+    throw new Error(`${label} must be a numeric fraction in [0, 1]`);
+  }
+  return value;
+}
+
+function irrigationCoefficients(state: EngineState): [number, number] {
+  const coefficients = state.action_library.actions.irrigation_efficiency
+    ?.water_coefficients;
+  return [
+    agFraction(
+      coefficients?.diversion_reduction_fraction,
+      'irrigation diversion_reduction_fraction',
+    ),
+    agFraction(
+      coefficients?.consumptive_use_reduction_fraction,
+      'irrigation consumptive_use_reduction_fraction',
+    ),
+  ];
+}
+
+function reinvasionFraction(state: EngineState): number {
+  return agFraction(
+    state.action_library.actions.invasive_species_removal
+      ?.reinvasion_decay?.fraction_retreated_per_year,
+    'invasive treatment fraction_retreated_per_year',
+  );
+}
+
+function d1AgCoefficients(state: EngineState): [number, number] {
+  const disturbance = state.action_library.disturbances?.drought_d1_ag as
+    Record<string, unknown> | undefined;
+  const lensParameters = disturbance?.lens_delta_parameters as
+    Record<string, unknown> | undefined;
+  const parameters = lensParameters?.D1 as Record<string, unknown> | undefined;
+  const forageDelta = parameters?.forage_production_delta;
+  if (typeof forageDelta !== 'number' || !Number.isFinite(forageDelta)
+      || forageDelta < -1 || forageDelta > 0) {
+    throw new Error('D1 forage_production_delta must be numeric in [-1, 0]');
+  }
+  return [
+    forageDelta,
+    agFraction(parameters?.irrigation_demand_delta, 'D1 irrigation_demand_delta'),
+  ];
+}
 
 /** C4-i engine boundary: pure event sampling, with no consequence coupling. */
 export function sampleHazardEvents(
@@ -188,6 +246,27 @@ export function applyHazardEventConsequences(
     }
     if (event.consequence_multiplier_ppm !== 0) {
       throw new Error('raw climate event must have an inert consequence multiplier');
+    }
+    // AG2 D1 path: only explicitly classified D1 events enter agriculture.
+    // Generic C4-i drought events preserve Golden M's skipped-handler contract.
+    if (event.hazard_kind === 'drought_stress' && event.ag_drought_tier !== undefined) {
+      if (!hasWorkingCopy) {
+        state = shallowCopyState(state);
+        hasWorkingCopy = true;
+      }
+      const droughtDelta = applyAgDroughtEvent(state, event);
+      outcomes.push({
+        event_id: event.event_id,
+        hazard_kind: event.hazard_kind,
+        geoid: event.geoid,
+        status: 'applied_existing_handler',
+        consequence_multiplier_ppm: 0,
+        victim_asset_ids: [],
+        handler: 'county_ag_d1',
+        reason: null,
+        delta: droughtDelta,
+      });
+      continue;
     }
     const victims = climateEventVictims(state, event);
     const victimAssetIds = [...new Set(victims.map(({ asset }) => asset.asset_id))].sort();
@@ -1212,6 +1291,10 @@ function cloneCountyFiscal(cf: Record<string, CountyFiscal>): Record<string, Cou
   return out;
 }
 
+function cloneCountyAg(countyAg: Record<string, CountyAgState>): Record<string, CountyAgState> {
+  return structuredClone(countyAg);
+}
+
 function shallowCopyState(state: EngineState): EngineState {
   // Clone sc_pools (each pool has only primitives)
   const scPools = {} as unknown as ScPools;
@@ -1233,6 +1316,7 @@ function shallowCopyState(state: EngineState): EngineState {
     // v2.1 fiscal layer — deep-clone mutable fiscal data, share coefficients by reference
     county_fiscal: cloneCountyFiscal(state.county_fiscal),
     fiscal_coefficients: state.fiscal_coefficients,
+    county_ag: cloneCountyAg(state.county_ag),
     // Array shallow copies (elements are pushed, not mutated in place)
     active_couplings: [...state.active_couplings],
     build_queue: materializeBuildQueue(registry),
@@ -1326,6 +1410,367 @@ function getNeighbors(state: EngineState, busId: string): Set<string> {
     else if (tb === busIdStr) neighbors.add(fb);
   }
   return neighbors;
+}
+
+// ── Wyoming County Agriculture Helpers (AG2) ───────────────────────────────
+
+type AgLandSource = typeof AG_LAND_CONVERSION_PRIORITY[number];
+
+function round6(value: number): number {
+  return Math.round(value * 1e6) / 1e6;
+}
+
+function agValuationLevels(ag: CountyAgState): AgValuationLevels {
+  const land = ag.land_acres;
+  const rates = ag.productive_value_usd_per_acre;
+  const easement = ag.easement_by_source;
+  const irrigated = (land.irrigated_crop + easement.irrigated_crop) * rates.irrigated_crop;
+  const dry = (land.dry_crop + easement.dry_crop) * rates.dry_crop;
+  const rangeland = (land.private_rangeland + easement.private_rangeland) * rates.private_rangeland;
+  return {
+    irrigated_crop: round6(irrigated),
+    dry_crop: round6(dry),
+    private_rangeland: round6(rangeland),
+    total: round6(irrigated + dry + rangeland),
+  };
+}
+
+function replaceAgYearSnapshot<T extends { year: number }>(trajectory: T[], row: T): void {
+  if (trajectory.length > 0 && trajectory[trajectory.length - 1].year === row.year) {
+    trajectory[trajectory.length - 1] = row;
+  } else {
+    trajectory.push(row);
+  }
+}
+
+function recordAgSnapshot(state: EngineState, geoid: string): void {
+  const ag = state.county_ag[geoid];
+  const valuation = state.county_fiscal[geoid].ag_valuation_usd!;
+  replaceAgYearSnapshot(ag.trajectories.land, {
+    year: state.year,
+    ...Object.fromEntries(Object.entries(ag.land_acres).map(([k, v]) => [k, round6(v)])),
+  } as { year: number } & AgLandLevels);
+  replaceAgYearSnapshot(ag.trajectories.water, {
+    year: state.year,
+    ...Object.fromEntries(Object.entries(ag.water_acre_feet).map(([k, v]) => [k, round6(v)])),
+  } as { year: number } & AgWaterLevels);
+  replaceAgYearSnapshot(ag.trajectories.forage, {
+    year: state.year,
+    private: round6(ag.forage_aum.private),
+    federal: round6(ag.forage_aum.federal),
+    index: round6(ag.forage_aum.index),
+  });
+  replaceAgYearSnapshot(ag.trajectories.cattle, {
+    year: state.year, head: round6(ag.cattle_head),
+  });
+  replaceAgYearSnapshot(ag.trajectories.valuation, {
+    year: state.year,
+    irrigated_crop: round6(valuation.irrigated_crop),
+    dry_crop: round6(valuation.dry_crop),
+    private_rangeland: round6(valuation.private_rangeland),
+    total: round6(valuation.total),
+  });
+}
+
+interface CountyAgBaselineRow {
+  geoid: string;
+  county_name: string;
+  land_acres: AgLandLevels;
+  water_acre_feet: AgWaterLevels;
+  forage_aum: AgForageLevels;
+  cattle_head: number;
+  annual_grass_cover_fraction: number;
+  stocking_rate_aum_per_acre: number;
+  cattle_forage_elasticity: number;
+  ag_assessment_rate: number;
+  productive_value_usd_per_acre: Omit<AgValuationLevels, 'total'>;
+}
+
+function seedCountyAg(
+  countyFiscal: Record<string, CountyFiscal>,
+  startYear: number,
+): Record<string, CountyAgState> {
+  // Legacy/minimal replay callers may intentionally omit the optional fiscal
+  // baseline. Agriculture is additive in that compatibility mode; once any
+  // fiscal counties are present, all 23 Wyoming ledgers are mandatory.
+  if (Object.keys(countyFiscal).length === 0) return {};
+  const payload = countyAgBaselineData as unknown as {
+    schema_version: string;
+    vintage: string;
+    county_count: number;
+    counties: Record<string, CountyAgBaselineRow>;
+  };
+  if (payload.county_count !== 23 || Object.keys(payload.counties).length !== 23) {
+    throw new Error(`county agriculture baseline must contain 23 counties, got ${payload.county_count}`);
+  }
+  const result: Record<string, CountyAgState> = {};
+  for (const [geoid, row] of Object.entries(payload.counties).sort(([a], [b]) => a.localeCompare(b))) {
+    const fiscal = countyFiscal[geoid];
+    if (!fiscal) throw new Error(`county agriculture has no county_fiscal ledger for ${geoid}`);
+    if (row.cattle_forage_elasticity < AG_CATTLE_ELASTICITY_BOUNDS[0] ||
+        row.cattle_forage_elasticity > AG_CATTLE_ELASTICITY_BOUNDS[1]) {
+      throw new Error(`cattle forage elasticity out of bounds for ${geoid}`);
+    }
+    const assessmentRate = agFraction(row.ag_assessment_rate, `ag assessment rate for ${geoid}`);
+    const land = { ...row.land_acres };
+    const water = { ...row.water_acre_feet };
+    const forage = { ...row.forage_aum };
+    const ag: CountyAgState = {
+      geoid,
+      county_name: row.county_name,
+      land_acres: land,
+      water_acre_feet: water,
+      forage_aum: forage,
+      cattle_head: row.cattle_head,
+      shared_energy_acres: 0,
+      drought: { forage_multiplier: 1, water_curtailment_fraction: 0, years_remaining: 0 },
+      baseline: {
+        land_acres: { ...land },
+        water_acre_feet: { ...water },
+        forage_aum: { ...forage },
+        cattle_head: row.cattle_head,
+      },
+      annual_grass_cover_fraction: row.annual_grass_cover_fraction,
+      stocking_rate_aum_per_acre: row.stocking_rate_aum_per_acre,
+      cattle_forage_elasticity: row.cattle_forage_elasticity,
+      ag_assessment_rate: assessmentRate,
+      productive_value_usd_per_acre: { ...row.productive_value_usd_per_acre },
+      irrigation_upgraded_acres: 0,
+      treatment_cohorts: [],
+      conversion_cohorts: [],
+      drought_events: [],
+      easement_by_source: { other: 0, private_rangeland: 0, dry_crop: 0, irrigated_crop: 0 },
+      trajectories: { land: [], water: [], forage: [], cattle: [], valuation: [] },
+      data_provenance: {
+        schema_version: payload.schema_version,
+        vintage: payload.vintage,
+        federal_aum_is_proxy: true,
+        water_is_proxy: true,
+      },
+    };
+    const valuation = agValuationLevels(ag);
+    fiscal.ag_valuation_usd = valuation;
+    fiscal.ag_assessed_value_modeled = round6(valuation.total * ag.ag_assessment_rate);
+    result[geoid] = ag;
+    const seedState = {
+      year: startYear, county_ag: result, county_fiscal: countyFiscal,
+    } as EngineState;
+    recordAgSnapshot(seedState, geoid);
+  }
+  return result;
+}
+
+function refreshCountyAg(state: EngineState, geoid: string): void {
+  const ag = state.county_ag[geoid];
+  const base = ag.baseline;
+  const baseIrrigated = base.land_acres.irrigated_crop;
+  const irrigatedRatio = baseIrrigated > 0 ? ag.land_acres.irrigated_crop / baseIrrigated : 0;
+  const upgradedFraction = baseIrrigated > 0
+    ? Math.min(1, ag.irrigation_upgraded_acres / baseIrrigated) : 0;
+  const [diversionReduction, consumptiveReduction] = irrigationCoefficients(state);
+  const curtailment = ag.drought.water_curtailment_fraction;
+  ag.water_acre_feet.ag_diversion = round6(
+    base.water_acre_feet.ag_diversion * irrigatedRatio
+    * (1 - diversionReduction * upgradedFraction) * (1 - curtailment),
+  );
+  ag.water_acre_feet.ag_consumptive = round6(
+    base.water_acre_feet.ag_consumptive * irrigatedRatio
+    * (1 - consumptiveReduction * upgradedFraction) * (1 - curtailment),
+  );
+
+  const baseRangeland = base.land_acres.private_rangeland;
+  const landRatio = baseRangeland > 0 ? ag.land_acres.private_rangeland / baseRangeland : 0;
+  const treatmentGain = baseRangeland > 0
+    ? ag.treatment_cohorts.reduce((sum, cohort) => sum +
+        ag.annual_grass_cover_fraction
+        * Math.min(
+          cohort.acres,
+          cohort.maintenance_acres
+          + (cohort.acres - cohort.maintenance_acres) * cohort.remaining_fraction,
+        ) / baseRangeland, 0)
+    : 0;
+  const droughtMultiplier = ag.drought.forage_multiplier;
+  ag.forage_aum.private = round6(
+    base.forage_aum.private * landRatio * (1 + treatmentGain) * droughtMultiplier,
+  );
+  ag.forage_aum.federal = round6(base.forage_aum.federal * droughtMultiplier);
+  const baseTotal = base.forage_aum.private + base.forage_aum.federal;
+  const currentTotal = ag.forage_aum.private + ag.forage_aum.federal;
+  const forageIndex = baseTotal > 0 ? currentTotal / baseTotal : 1;
+  ag.forage_aum.index = round6(forageIndex);
+  ag.cattle_head = round6(Math.max(
+    0, base.cattle_head * (1 + ag.cattle_forage_elasticity * (forageIndex - 1)),
+  ));
+
+  const valuation = agValuationLevels(ag);
+  state.county_fiscal[geoid].ag_valuation_usd = valuation;
+  state.county_fiscal[geoid].ag_assessed_value_modeled = round6(
+    valuation.total * ag.ag_assessment_rate,
+  );
+}
+
+function drawAgLand(ag: CountyAgState, requestedAcres: number): Record<AgLandSource, number> {
+  let remaining = Math.max(0, requestedAcres);
+  const drawn: Record<AgLandSource, number> = {
+    other: 0, private_rangeland: 0, dry_crop: 0, irrigated_crop: 0,
+  };
+  for (const key of AG_LAND_CONVERSION_PRIORITY) {
+    const amount = Math.min(remaining, ag.land_acres[key]);
+    ag.land_acres[key] -= amount;
+    drawn[key] = amount;
+    remaining -= amount;
+  }
+  if (remaining > 1e-6) {
+    throw new Error(`requested land conversion exceeds non-easement land by ${remaining.toFixed(6)} acres`);
+  }
+  return drawn;
+}
+
+function applyCountyAgAction(
+  state: EngineState,
+  actionId: string,
+  action: ActionRecord,
+  geoid: string,
+  magnitude: number,
+): Record<string, unknown> | null {
+  const ag = state.county_ag[geoid];
+  if (!ag) return null;
+  const agActionIds = new Set([
+    'ag_conservation_easement', 'irrigation_efficiency',
+    'invasive_species_removal', 'rangeland_restoration_maintenance',
+    'mine_land_reclamation',
+  ]);
+  if (!action.ag_coexistence && !agActionIds.has(actionId)) return null;
+  const before = getCountyAg(state, geoid)!.levels;
+  const detail: Record<string, unknown> = {};
+
+  if (action.ag_coexistence) {
+    const scale = magnitude / (action.unit_scale ?? 1000);
+    const converted = action.ag_coexistence.land_acres_converted_from_ag * scale;
+    const shared = action.ag_coexistence.land_acres_shared_with_ag * scale;
+    const drawn = drawAgLand(ag, converted);
+    ag.land_acres.converted_to_energy += converted;
+    ag.shared_energy_acres += shared;
+    ag.conversion_cohorts.push({
+      action_id: actionId, year: state.year, acres: round6(converted),
+      sources: Object.fromEntries(Object.entries(drawn).map(([k, v]) => [k, round6(v)])) as Record<AgLandSource, number>,
+      reclaimed_acres: 0,
+    });
+    detail.converted_acres = round6(converted);
+    detail.shared_acres = round6(shared);
+    detail.conversion_sources = drawn;
+  }
+
+  if (actionId === 'ag_conservation_easement') {
+    const drawn = drawAgLand(ag, magnitude);
+    const protectedAcres = Object.values(drawn).reduce((sum, value) => sum + value, 0);
+    ag.land_acres.easement_protected += protectedAcres;
+    for (const key of AG_LAND_CONVERSION_PRIORITY) ag.easement_by_source[key] += drawn[key];
+    detail.easement_acres = round6(protectedAcres);
+  } else if (actionId === 'irrigation_efficiency') {
+    const available = Math.max(
+      0, ag.baseline.land_acres.irrigated_crop - ag.irrigation_upgraded_acres,
+    );
+    const upgraded = Math.min(magnitude, available);
+    ag.irrigation_upgraded_acres += upgraded;
+    detail.irrigation_upgraded_acres = round6(upgraded);
+  } else if (actionId === 'invasive_species_removal') {
+    const treated = Math.min(magnitude, ag.land_acres.private_rangeland);
+    ag.treatment_cohorts.push({
+      completed_year: state.year, acres: round6(treated),
+      remaining_fraction: 1, maintenance_acres: 0,
+    });
+    detail.treated_acres = round6(treated);
+  } else if (actionId === 'rangeland_restoration_maintenance') {
+    const maxLag = action.pairing_rule?.max_lag_years ?? 1;
+    const eligible = ag.treatment_cohorts.filter(
+      (cohort) => state.year - cohort.completed_year <= maxLag,
+    );
+    if (eligible.length === 0) {
+      throw new Error(`rangeland_restoration_maintenance requires invasive_species_removal within ${maxLag} year(s)`);
+    }
+    let acresLeft = magnitude;
+    let maintained = 0;
+    for (const cohort of eligible) {
+      if (acresLeft <= 0) break;
+      const covered = Math.min(acresLeft, cohort.acres);
+      if (covered > 0) {
+        cohort.maintenance_acres += covered;
+        maintained += covered;
+        acresLeft -= covered;
+      }
+    }
+    detail.maintenance_acres = round6(maintained);
+  } else if (actionId === 'mine_land_reclamation') {
+    let reclaimLeft = Math.min(magnitude, ag.land_acres.converted_to_energy);
+    const reclaimed = reclaimLeft;
+    for (const cohort of [...ag.conversion_cohorts].reverse()) {
+      if (reclaimLeft <= 0) break;
+      const available = cohort.acres - cohort.reclaimed_acres;
+      const amount = Math.min(reclaimLeft, available);
+      cohort.reclaimed_acres += amount;
+      reclaimLeft -= amount;
+    }
+    ag.land_acres.converted_to_energy -= reclaimed;
+    ag.land_acres.private_rangeland += reclaimed;
+    detail.reclaimed_to_rangeland_acres = round6(reclaimed);
+  }
+
+  refreshCountyAg(state, geoid);
+  recordAgSnapshot(state, geoid);
+  return { before, after: getCountyAg(state, geoid)!.levels, ...detail };
+}
+
+function applyAgDroughtEvent(
+  state: EngineState,
+  event: ClimateHazardEvent,
+): Record<string, unknown> | null {
+  const ag = state.county_ag[event.geoid];
+  if (!ag) return null;
+  if (event.ag_drought_tier !== 'D1') {
+    throw new Error(`unsupported ag drought tier '${event.ag_drought_tier}'`);
+  }
+  const duration = event.duration_years ?? 1;
+  if (!Number.isInteger(duration) || duration <= 0) {
+    throw new Error('duration_years must be a positive integer');
+  }
+  const severityScale = Math.max(0.5, Math.min(2, event.severity_milli / 1000));
+  const [forageDelta, waterCurtailment] = d1AgCoefficients(state);
+  const droughtEvent = {
+    event_id: event.event_id,
+    start_year: event.year,
+    duration_years: duration,
+    forage_multiplier: round6(Math.max(0, 1 + forageDelta * severityScale)),
+    water_curtailment_fraction: round6(Math.min(0.8, waterCurtailment * severityScale)),
+    lens: event.lens,
+    seed: event.seed ?? null,
+  };
+  ag.drought_events.push(droughtEvent);
+  return droughtEvent;
+}
+
+function advanceCountyAg(state: EngineState, currentYear: number): void {
+  const decayFactor = 1 - reinvasionFraction(state);
+  for (const [geoid, ag] of Object.entries(state.county_ag)) {
+    for (const cohort of ag.treatment_cohorts) {
+      if (currentYear > cohort.completed_year && cohort.maintenance_acres < cohort.acres) {
+        cohort.remaining_fraction = Math.round(cohort.remaining_fraction * decayFactor * 1e8) / 1e8;
+      }
+    }
+    const active = ag.drought_events.filter(
+      (event) => event.start_year <= currentYear &&
+        currentYear < event.start_year + event.duration_years,
+    );
+    ag.drought = active.length > 0 ? {
+      forage_multiplier: Math.min(...active.map((event) => event.forage_multiplier)),
+      water_curtailment_fraction: Math.max(...active.map((event) => event.water_curtailment_fraction)),
+      years_remaining: Math.max(...active.map(
+        (event) => event.start_year + event.duration_years - currentYear,
+      )),
+    } : { forage_multiplier: 1, water_curtailment_fraction: 0, years_remaining: 0 };
+    refreshCountyAg(state, geoid);
+    recordAgSnapshot(state, geoid);
+  }
 }
 
 // ── Initialize State ────────────────────────────────────────────────────────
@@ -1490,6 +1935,10 @@ export function initializeState(
     }
   }
 
+  // v4.7 (AG2): productive-value detail is attached to county_fiscal rows;
+  // county_ag owns the physical ledgers and dynamics.
+  const county_ag = seedCountyAg(county_fiscal, startYear);
+
   // ── Asset registry (v3.0) — source of truth for all assets ─────────────────
   const asset_registry = seedAssetRegistry(countyCards, baselineRetirements);
 
@@ -1523,6 +1972,7 @@ export function initializeState(
     sc_pools,
     county_fiscal,
     fiscal_coefficients: fc,
+    county_ag,
     buses,
     branches,
     ba_flows: initialNetwork.ba_flows,
@@ -1898,8 +2348,14 @@ export function applyAction(
     materialConsumed[matType] = { quantity: totalQty, unit: unitLabel };
   }
 
+  // v4.7 (AG2): physical agriculture action + A1 valuation swap on the same
+  // county_fiscal row, before the existing industrial fiscal action.
+  const agDelta = geoid
+    ? applyCountyAgAction(state, actionId, action, geoid, magnitude)
+    : null;
+
   // Apply fiscal effects
-  const fiscalDelta = applyFiscalEffects(state, actionId, geoid, magnitude);
+  const fiscalDelta = applyFiscalEffects(state, actionId, geoid, magnitude, agDelta);
 
   // Record history
   const actionRecord: ActionHistoryRecord = {
@@ -1919,6 +2375,7 @@ export function applyAction(
     bus_id: busId,
     fiscal_delta: fiscalDelta,
     adaptation_delta: adaptationDelta,
+    ag_delta: agDelta,
   };
   state.last_delta = deltaSummary;
 
@@ -2491,6 +2948,10 @@ export function advanceYear(
       bs.deficit_mw = Math.max(0.0, bs.load_mw - bs.firm_capacity_mw);
     }
   }
+
+  // v4.7 (AG2): treatment decay, drought duration/recovery, water, forage,
+  // cattle, and fiscal-linked agricultural valuation advance together.
+  advanceCountyAg(state, currentYear);
 
   // v4.0: append indicator snapshot at end of year
   state.history = [...(state.history ?? []), snapshotIndicators(state)];
@@ -3097,6 +3558,7 @@ function applyFiscalEffects(
   actionId: string,
   geoid: string | null,
   magnitude: number,
+  agDelta: Record<string, unknown> | null = null,
 ): FiscalDelta | null {
   if (!geoid || !(geoid in state.county_fiscal)) return null;
 
@@ -3115,8 +3577,17 @@ function applyFiscalEffects(
   // Property tax (from new assessed value)
   const ptValue = actionCoeffs.property_tax_annual?.[geoid];
   if (ptValue !== undefined && ptValue !== null) {
-    property_tax_delta = ptValue;
-    cf.property_tax += ptValue;
+    let displacedAgTax = 0;
+    if (agDelta) {
+      const before = agDelta.before as CountyAgAccessor['levels'];
+      const after = agDelta.after as CountyAgAccessor['levels'];
+      const displacedAssessed = Math.max(
+        0, before.ag_valuation_usd.total - after.ag_valuation_usd.total,
+      ) * state.county_ag[geoid].ag_assessment_rate;
+      displacedAgTax = displacedAssessed * cf.mill_levy_mills / 1000;
+    }
+    property_tax_delta = ptValue - displacedAgTax;
+    cf.property_tax += property_tax_delta;
   }
 
   // Sales/use tax (one-time construction)
@@ -3242,6 +3713,63 @@ export function getCountyFiscal(state: EngineState, geoid: string): Record<strin
     ledger_b_trajectory: b_traj,
     ledger_c_trajectory: c_traj,
   };
+}
+
+// ── County Agriculture API + Fifth Digest Contract (AG2) ──────────────────
+
+export function getCountyAg(state: EngineState, geoid: string): CountyAgAccessor | null {
+  const gid = geoid.padStart(5, '0');
+  const ag = state.county_ag[gid];
+  const valuation = state.county_fiscal[gid]?.ag_valuation_usd;
+  if (!ag || !valuation) return null;
+  return {
+    geoid: gid,
+    year: state.year,
+    levels: {
+      land_acres: { ...ag.land_acres },
+      water_acre_feet: { ...ag.water_acre_feet },
+      forage_aum: {
+        private: ag.forage_aum.private,
+        federal: ag.forage_aum.federal,
+        index: ag.forage_aum.index,
+      },
+      cattle_head: ag.cattle_head,
+      ag_valuation_usd: { ...valuation },
+      shared_energy_acres: ag.shared_energy_acres,
+      drought: { ...ag.drought },
+    },
+    trajectories: structuredClone(ag.trajectories),
+  };
+}
+
+function serializeAgCanonical(value: unknown, key?: string): string {
+  if (value === null || value === undefined) return 'null';
+  if (typeof value === 'boolean') return value ? 'true' : 'false';
+  if (typeof value === 'number') {
+    if (key === 'year' || key === 'years_remaining') return String(Math.round(value));
+    return Number.isInteger(value) ? value.toFixed(1) : JSON.stringify(value);
+  }
+  if (typeof value === 'string') return JSON.stringify(value);
+  if (Array.isArray(value)) {
+    return `[${value.map((item) => serializeAgCanonical(item)).join(',')}]`;
+  }
+  const object = value as Record<string, unknown>;
+  return `{${Object.keys(object).sort().map(
+    (objectKey) => `${JSON.stringify(objectKey)}:${serializeAgCanonical(object[objectKey], objectKey)}`,
+  ).join(',')}}`;
+}
+
+export function agDigest(state: EngineState): {
+  county_ag: Record<string, CountyAgAccessor | null>;
+  year: number;
+  md5: string;
+} {
+  const county_ag: Record<string, CountyAgAccessor | null> = {};
+  for (const geoid of Object.keys(state.county_ag).sort()) {
+    county_ag[geoid] = getCountyAg(state, geoid);
+  }
+  const digest = { county_ag, year: state.year };
+  return { ...digest, md5: computeMd5Hex(serializeAgCanonical(digest)) };
 }
 
 // ── Compute Fiscal Delta (pure preview — no state mutation) ─────────────────

@@ -221,6 +221,29 @@ export interface ActionRecord {
   session3_note?: string;
   dissertation_note?: string;
   climate_adaptation?: ClimateAdaptationEffect;
+  ag_coexistence?: {
+    land_acres_converted_from_ag: number;
+    land_acres_shared_with_ag: number;
+    engine_active?: boolean;
+    engine_active_since?: string;
+    [key: string]: unknown;
+  };
+  water_coefficients?: {
+    diversion_reduction_fraction: number;
+    consumptive_use_reduction_fraction: number;
+    [key: string]: unknown;
+  };
+  reinvasion_decay?: {
+    fraction_retreated_per_year: number;
+    paired_maintenance_action: string;
+    maintenance_lag_years: number;
+    [key: string]: unknown;
+  };
+  pairing_rule?: {
+    requires_prior_action: string;
+    max_lag_years: number;
+    [key: string]: unknown;
+  };
 }
 
 export interface CouplingTrigger {
@@ -370,6 +393,121 @@ export interface CountyFiscal {
   ledger_b_cumulative_delta: number;
   ledger_c_cumulative_delta: number;
   fiscal_actions: FiscalAction[];
+  /** AG2 productive value detail; additive on the existing fiscal ledger. */
+  ag_valuation_usd?: AgValuationLevels;
+  ag_assessed_value_modeled?: number;
+}
+
+// ── Wyoming County Agriculture (AG2) ───────────────────────────────────────
+
+export interface AgLandLevels {
+  irrigated_crop: number;
+  dry_crop: number;
+  private_rangeland: number;
+  easement_protected: number;
+  converted_to_energy: number;
+  other: number;
+}
+
+export interface AgWaterLevels {
+  ag_consumptive: number;
+  ag_diversion: number;
+  energy: number;
+  other: number;
+  county_supply: number;
+}
+
+export interface AgForageLevels {
+  private: number;
+  federal: number;
+  index: number;
+}
+
+export interface AgValuationLevels {
+  irrigated_crop: number;
+  dry_crop: number;
+  private_rangeland: number;
+  total: number;
+}
+
+export interface AgDroughtLevels {
+  forage_multiplier: number;
+  water_curtailment_fraction: number;
+  years_remaining: number;
+}
+
+export interface CountyAgState {
+  geoid: string;
+  county_name: string;
+  land_acres: AgLandLevels;
+  water_acre_feet: AgWaterLevels;
+  forage_aum: AgForageLevels;
+  cattle_head: number;
+  shared_energy_acres: number;
+  drought: AgDroughtLevels;
+  baseline: {
+    land_acres: AgLandLevels;
+    water_acre_feet: AgWaterLevels;
+    forage_aum: AgForageLevels;
+    cattle_head: number;
+  };
+  annual_grass_cover_fraction: number;
+  stocking_rate_aum_per_acre: number;
+  cattle_forage_elasticity: number;
+  ag_assessment_rate: number;
+  productive_value_usd_per_acre: Omit<AgValuationLevels, 'total'>;
+  irrigation_upgraded_acres: number;
+  treatment_cohorts: Array<{
+    completed_year: number;
+    acres: number;
+    remaining_fraction: number;
+    maintenance_acres: number;
+  }>;
+  conversion_cohorts: Array<{
+    action_id: string;
+    year: number;
+    acres: number;
+    sources: Record<'other' | 'private_rangeland' | 'dry_crop' | 'irrigated_crop', number>;
+    reclaimed_acres: number;
+  }>;
+  drought_events: Array<{
+    event_id: string;
+    start_year: number;
+    duration_years: number;
+    forage_multiplier: number;
+    water_curtailment_fraction: number;
+    lens: ClimateLens;
+    seed: number | null;
+  }>;
+  easement_by_source: Record<'other' | 'private_rangeland' | 'dry_crop' | 'irrigated_crop', number>;
+  trajectories: {
+    land: Array<{ year: number } & AgLandLevels>;
+    water: Array<{ year: number } & AgWaterLevels>;
+    forage: Array<{ year: number } & AgForageLevels>;
+    cattle: Array<{ year: number; head: number }>;
+    valuation: Array<{ year: number } & AgValuationLevels>;
+  };
+  data_provenance: {
+    schema_version: string;
+    vintage: string;
+    federal_aum_is_proxy: true;
+    water_is_proxy: true;
+  };
+}
+
+export interface CountyAgAccessor {
+  geoid: string;
+  year: number;
+  levels: {
+    land_acres: AgLandLevels;
+    water_acre_feet: AgWaterLevels;
+    forage_aum: AgForageLevels;
+    cattle_head: number;
+    ag_valuation_usd: AgValuationLevels;
+    shared_energy_acres: number;
+    drought: AgDroughtLevels;
+  };
+  trajectories: CountyAgState['trajectories'];
 }
 
 // ── Fiscal Coefficients (slimmed TS format) ─────────────────────────────────
@@ -623,6 +761,7 @@ export interface EngineState {
   // v2.1 fiscal layer
   county_fiscal: Record<string, CountyFiscal>;
   fiscal_coefficients: FiscalCoefficients;
+  county_ag: Record<string, CountyAgState>;
   // Tracking
   material_ledger: Record<string, MaterialLedgerEntry>;
   action_history: ActionHistoryRecord[];
@@ -694,6 +833,7 @@ export interface DeltaSummary {
     vulnerability_reduction_ppm: number;
     affected_asset_ids: string[];
   } | null;
+  ag_delta?: Record<string, unknown> | null;
 }
 
 export interface DisturbanceDeltaSummary {
@@ -996,10 +1136,13 @@ export interface ClimateHazardEvent {
   annual_probability_ppm: number;
   baseline_frequency_micros: number;
   projection_factor_ppm: number;
-  lens: Exclude<ClimateLens, 'historical'>;
+  lens: ClimateLens;
   seed: number;
   /** C4-i is inert: consequence coupling remains exactly zero. */
   consequence_multiplier_ppm: 0;
+  /** AG2 optional D1 classification; absent events retain C4-i behavior. */
+  ag_drought_tier?: 'D1';
+  duration_years?: number;
 }
 
 export type ClimateConsequenceStatus =
@@ -1015,9 +1158,9 @@ export interface ClimateConsequenceOutcome {
   status: ClimateConsequenceStatus;
   consequence_multiplier_ppm: number;
   victim_asset_ids: string[];
-  handler: 'inject_disturbance' | null;
+  handler: 'inject_disturbance' | 'county_ag_d1' | null;
   reason: string | null;
-  delta: DisturbanceDeltaSummary | null;
+  delta: DisturbanceDeltaSummary | Record<string, unknown> | null;
 }
 
 export interface ClimateHazardSamplingInput {

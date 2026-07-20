@@ -1,4 +1,4 @@
-"""Emit Python C4-i four-contract replay artifacts for the A-L matrix."""
+"""Emit Python four-contract replay artifacts for the A-M inertness matrix."""
 
 from __future__ import annotations
 
@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 import terra_engine as te
+from c4i_event_harness import load_hazard_baselines, load_projection_points
 
 
 FIXTURE_DIR = ROOT / "terra-app" / "tests" / "parity" / "fixtures"
@@ -41,6 +42,7 @@ FIXTURE_IDS = (
     "golden_j_prime",
     "golden_k",
     "golden_l",
+    "golden_m",
 )
 
 
@@ -307,6 +309,28 @@ def replay_fixture(
                 climate_context=climate_context,
             )
         return _advance(state, 2050, climate_context)
+    if fixture_id == "golden_m":
+        lens = climate_context["lens"]
+        state = _initial(True, migration_enabled)
+        state, _ = te.apply_action(
+            state, "heat_resilience_upgrade", "56037", 1
+        )
+        baselines = load_hazard_baselines()
+        projections = load_projection_points()
+        for year in range(2026, 2031):
+            events = te.sample_hazard_events(
+                state,
+                seed=42,
+                lens=lens,
+                years=[year],
+                county_baselines=baselines,
+                projection_points=projections,
+            )
+            state, _ = te.apply_hazard_event_consequences(state, events)
+            state = te.advance_year(
+                state, climate_context={"lens": "historical", "tables": {}}
+            )
+        return state
     raise ValueError(f"Unknown fixture_id {fixture_id!r}")
 
 
