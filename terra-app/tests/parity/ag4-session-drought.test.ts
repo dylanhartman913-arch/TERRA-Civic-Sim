@@ -10,11 +10,15 @@ import { exportToJson, importFromJson } from '../../src/engine/persistence.js';
 import type { ActionLibrary, CountyEESBaseline, CrosswalkRow, EngineState, FiscalBaseline, FiscalCoefficients, InitialNetwork, ScenarioFile, SessionConfig } from '../../src/engine/types.js';
 import { loadInitialStateWithAnchorsAndTags } from './helpers.js';
 import { detectAutoPause } from '../../src/state/store.js';
+import { loadFixture } from './helpers.js';
 
 const ROOT = resolve(__dirname, '../..');
 const config = JSON.parse(readFileSync(
   resolve(ROOT, 'src/data/session-configs/ranch-country-2040.json'), 'utf-8',
 )) as SessionConfig;
+const ranchGolden = loadFixture('golden_ranch_country_2040') as {
+  digests: { replay_digest: string; ag_digest_md5: string };
+};
 
 function atYear(year: number) {
   const state = loadInitialStateWithAnchorsAndTags();
@@ -67,13 +71,17 @@ describe('AG4 Ranch Country drought session', () => {
       annotations: [{ id: 'ann-1', year: 2030, trigger_type: 'drought_onset', trigger_id: 'drought', prompt: 'How are you responding?', text: 'Water plan.', timestamp: 1 }],
     };
     const before = replayScenario(baseFile, ...replayInputs());
-    const file = { ...baseFile, replay_digest: computeReplayDigest(before, baseFile.climate_lens) };
+    // Assert against the frozen golden fixture (not self-referential).
+    expect(computeReplayDigest(before, baseFile.climate_lens)).toBe(ranchGolden.digests.replay_digest);
+    expect(agDigest(before).md5).toBe(ranchGolden.digests.ag_digest_md5);
+    // Round-trip: verify export/import is stable.
+    const file = { ...baseFile, replay_digest: ranchGolden.digests.replay_digest };
     const imported = importFromJson(exportToJson(file));
     expect(imported?.session_config?.drought).toBe(true);
     expect(imported?.annotations).toEqual(file.annotations);
     const after = replayScenario(imported!, ...replayInputs());
-    expect(computeReplayDigest(after, imported?.climate_lens)).toBe(file.replay_digest);
-    expect(agDigest(after).md5).toBe(agDigest(before).md5);
+    expect(computeReplayDigest(after, imported?.climate_lens)).toBe(ranchGolden.digests.replay_digest);
+    expect(agDigest(after).md5).toBe(ranchGolden.digests.ag_digest_md5);
   });
 
   it('replays the Ranch Country base scenario without AG4 drought effects when AG flags are off', () => {
@@ -96,6 +104,9 @@ describe('AG4 Ranch Country drought session', () => {
     // Pre-AG4 baseline for Ranch Country's identical base replay with AG flags disabled.
     expect(computeReplayDigest(energyOnlyState, energyOnlyFile.climate_lens)).toBe('beafdb2f2f64657b3ecf7680e2188b91');
     expect(agDigest(energyOnlyState).md5).toBe('756ec0d2d5ddf481be1331a48b38a1cb');
+    // Drought-enabled state asserts against the frozen golden fixture.
+    expect(computeReplayDigest(droughtEnabledState, droughtEnabledFile.climate_lens)).toBe(ranchGolden.digests.replay_digest);
+    expect(agDigest(droughtEnabledState).md5).toBe(ranchGolden.digests.ag_digest_md5);
   });
 });
 
