@@ -66,6 +66,8 @@ appear at auto-pause moments.
 | `scenario_profile_id` | string | no | Used only when `campaign_id` is absent; loads a free-play scenario |
 | `fixed_seed` | integer | no | Ensures all participants see identical stochastic events. Omit for each participant to draw their own seed |
 | `max_year` | integer | no | Year at which the reflection card is automatically shown and the game pauses |
+| `ag_category` | boolean | no | Enables agriculture actions in the palette; omitted preserves energy-only sessions |
+| `drought` | boolean | no | Enables seeded AG2 drought sampling and consequences during yearly play |
 | `annotation_prompts` | array | no | Each entry maps a trigger type to a one-line prompt text |
 | `annotation_prompts[].trigger` | string | yes | One of `build_decision`, `disturbance_event`, `era_transition`, `manual` |
 | `annotation_prompts[].prompt` | string | yes | The question shown in the auto-pause modal |
@@ -80,6 +82,8 @@ appear at auto-pause moments.
 | `disturbance_event` | `event_fired` |
 | `era_transition` | `era_transition` |
 | `manual` | Participant-initiated from the reflection card |
+| `drought_onset` | First active seeded AG drought in a county |
+| `irrigated_conversion` | First conversion of irrigated agricultural land |
 
 ---
 

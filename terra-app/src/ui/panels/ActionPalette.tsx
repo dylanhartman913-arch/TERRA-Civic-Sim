@@ -18,6 +18,7 @@ export function ActionPalette() {
   const engineState = useTerraStore(s => s.engineState);
   const enterPlacementMode = useTerraStore(s => s.enterPlacementMode);
   const placementMode = useTerraStore(s => s.placementMode);
+  const sessionConfig = useTerraStore(s => s.sessionConfig);
   const [search, setSearch] = useState('');
   const [expanded, setExpanded] = useState<Set<string>>(new Set(['ENERGY_SUPPLY', 'ENERGY_DEMAND']));
 
@@ -29,6 +30,7 @@ export function ActionPalette() {
     }[]> = {};
 
     for (const [id, action] of Object.entries(actions)) {
+      if (action.category === 'agriculture' && sessionConfig && !sessionConfig.ag_category) continue;
       const q = search.toLowerCase();
       const name = action.action_name ?? action.label ?? id;
       if (q && !name.toLowerCase().includes(q) && !id.toLowerCase().includes(q)) continue;
@@ -48,7 +50,7 @@ export function ActionPalette() {
       });
     }
     return groups;
-  }, [engineState.action_library.actions, search]);
+  }, [engineState.action_library.actions, search, sessionConfig?.ag_category]);
 
   const buckets = BUCKET_ORDER.filter(b => grouped[b]).concat(
     Object.keys(grouped).filter(b => !BUCKET_ORDER.includes(b))

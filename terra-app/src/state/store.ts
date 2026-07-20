@@ -19,6 +19,7 @@ import type {
   SessionConfig,
   Annotation,
 } from '../engine/types.js';
+import { applySessionDrought } from '../engine/session_drought.js';
 import {
   initializeState,
   applyAction as engineApplyAction,
@@ -405,6 +406,16 @@ function detectAutoPause(
     return { reason: 'event_fired', event: engineEvents[0], detail: engineEvents[0].title };
   }
 
+  for (const [geoid, ag] of Object.entries(newState.county_ag)) {
+    const previous = prevState.county_ag[geoid];
+    if (ag.drought.years_remaining > 0 && (previous?.drought.years_remaining ?? 0) === 0) {
+      return { reason: 'drought_onset', detail: `Drought conditions begin in ${ag.county_name}` };
+    }
+    if (ag.land_acres.irrigated_crop < (previous?.land_acres.irrigated_crop ?? ag.land_acres.irrigated_crop)) {
+      return { reason: 'irrigated_conversion', detail: `Irrigated land converted in ${ag.county_name}` };
+    }
+  }
+
   for (let i = 0; i < newConditions.length; i++) {
     if (newConditions[i].met && prevConditions[i] && !prevConditions[i].met) {
       return { reason: 'quest_condition_met', detail: `Condition met: ${newConditions[i].label}` };
@@ -771,6 +782,11 @@ export const useTerraStore = create<TerraStore>((set, get) => ({
 
     let newState = engineAdvanceYear(engineState);
 
+    const { sessionConfig, climateLens } = get();
+    if (sessionConfig?.drought) {
+      [newState] = applySessionDrought(newState, gameSeed, climateLens);
+    }
+
     const events = getAllEventsForYear(newState.year, newState, gameSeed);
 
     for (const evt of events) {
@@ -795,7 +811,6 @@ export const useTerraStore = create<TerraStore>((set, get) => ({
     const autoPause = detectAutoPause(prevState, newState, events, prevConditions, newConditions);
 
     // Session max_year: auto-show reflection card when limit reached
-    const { sessionConfig } = get();
     const hitMaxYear = sessionConfig?.max_year != null && newState.year >= sessionConfig.max_year;
 
     set({
@@ -958,7 +973,7 @@ export const useTerraStore = create<TerraStore>((set, get) => ({
   },
 
   saveToSlot: (slot_id, name) => {
-    const { engineState, actionLog, eventHistory, activeScenario, gameSeed, sessionMeta, annotations, climateLens } = get();
+    const { engineState, actionLog, eventHistory, activeScenario, gameSeed, sessionMeta, sessionConfig, annotations, climateLens } = get();
     const digest = computeReplayDigest(engineState, climateLens);
     const file: ScenarioFile = {
       schema_version: '3.1',
@@ -973,7 +988,7 @@ export const useTerraStore = create<TerraStore>((set, get) => ({
       year_reached: engineState.year,
       replay_digest: digest,
       climate_lens: climateLens,
-      ...(sessionMeta ? { session_meta: sessionMeta, annotations } : {}),
+      ...(sessionMeta ? { session_meta: sessionMeta, session_config: sessionConfig ?? undefined, annotations } : {}),
     };
     persistenceSaveToSlot(browserStorage, slot_id, file);
     get().refreshSlots();
@@ -1013,6 +1028,7 @@ export const useTerraStore = create<TerraStore>((set, get) => ({
       canRedo: false,
       pendingAutoPause: null,
       climateLens: file.climate_lens ?? 'historical',
+      sessionConfig: file.session_config ?? null,
     });
   },
 
@@ -1022,7 +1038,7 @@ export const useTerraStore = create<TerraStore>((set, get) => ({
   },
 
   exportScenario: () => {
-    const { engineState, actionLog, eventHistory, activeScenario, gameSeed, sessionMeta, annotations, climateLens } = get();
+    const { engineState, actionLog, eventHistory, activeScenario, gameSeed, sessionMeta, sessionConfig, annotations, climateLens } = get();
     const digest = computeReplayDigest(engineState, climateLens);
     const file: ScenarioFile = {
       schema_version: '3.1',
@@ -1037,7 +1053,7 @@ export const useTerraStore = create<TerraStore>((set, get) => ({
       year_reached: engineState.year,
       replay_digest: digest,
       climate_lens: climateLens,
-      ...(sessionMeta ? { session_meta: sessionMeta, annotations } : {}),
+      ...(sessionMeta ? { session_meta: sessionMeta, session_config: sessionConfig ?? undefined, annotations } : {}),
     };
     const json = exportToJson(file);
     const blob = new Blob([json], { type: 'application/json' });
@@ -1082,6 +1098,9 @@ export const useTerraStore = create<TerraStore>((set, get) => ({
         }
       }
       state = engineAdvanceYear(state);
+      if (file.session_config?.drought) {
+        [state] = applySessionDrought(state, file.gameSeed, file.climate_lens ?? 'historical');
+      }
 
       const events = getAllEventsForYear(state.year, state, file.gameSeed);
       for (const evt of events) {
@@ -1292,6 +1311,7 @@ export const useTerraStore = create<TerraStore>((set, get) => ({
       annotations: [],
       showReflectionCard: false,
       ...(config?.fixed_seed != null ? { gameSeed: config.fixed_seed } : {}),
+      ...(config?.climate_lens ? { climateLens: config.climate_lens } : {}),
     });
 
     // Auto-start campaign if config specifies one

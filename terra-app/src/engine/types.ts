@@ -1072,7 +1072,9 @@ export type AutoPauseReason =
   | 'deficit_threshold'
   | 'event_fired'
   | 'era_transition'
-  | 'quest_condition_met';
+  | 'quest_condition_met'
+  | 'drought_onset'
+  | 'irrigated_conversion';
 
 export interface AutoPause {
   reason: AutoPauseReason;
@@ -1240,6 +1242,8 @@ export interface ScenarioFile {
   climate_lens?: ClimateLens;
   // Session mode (optional — only present in workshop sessions)
   session_meta?: SessionMeta;
+  /** Session switches needed to reproduce a facilitated replay. */
+  session_config?: SessionConfig;
   annotations?: Annotation[];
 }
 
@@ -1281,7 +1285,9 @@ export type AnnotationTrigger =
   | 'build_decision'     // build_complete or coupling_activated auto-pause
   | 'disturbance_event'  // event_fired auto-pause
   | 'era_transition'     // era_transition auto-pause
-  | 'manual';            // participant-initiated from reflection card
+  | 'manual'             // participant-initiated from reflection card
+  | 'drought_onset'      // first active AG drought in a county
+  | 'irrigated_conversion'; // first irrigated land conversion
 
 export interface SessionAnnotationPrompt {
   trigger: AnnotationTrigger;
@@ -1303,6 +1309,12 @@ export interface SessionConfig {
   campaign_id?: string;           // if set, auto-starts this campaign on session enter
   scenario_profile_id?: string;   // ignored if campaign_id present
   fixed_seed?: number;            // ensures identical event draws across participants
+  /** Show agriculture actions in the palette. Omitted preserves energy-only sessions. */
+  ag_category?: boolean;
+  /** Sample and apply AG2 drought consequences during yearly session play. */
+  drought?: boolean;
+  /** Session lens used by seeded drought sampling; absent keeps the historical lens. */
+  climate_lens?: ClimateLens;
   max_year?: number;              // session ends (reflection card shown) at this year
   annotation_prompts?: SessionAnnotationPrompt[];
   locked_settings?: SessionLockedSettings;

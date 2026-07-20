@@ -26,6 +26,7 @@ export interface SessionOutcome {
   laborUtil: number;
   housingPressure: number;
   totalBuiltMw: number;
+  convertedAgAcres: number;
   digest: string;
 }
 
@@ -172,6 +173,9 @@ export function extractOutcome(
     .filter(a => a.origin === 'player' && a.asset_class !== 'site' && a.asset_class !== 'housing_stock' && a.lifecycle !== 'retired')
     .reduce((s, a) => s + (a.capacity_mw ?? 0), 0);
 
+  const convertedAgAcres = Object.values(state.county_ag)
+    .reduce((sum, ag) => sum + ag.land_acres.converted_to_energy, 0);
+
   // Study-area fiscal net delta
   let fiscalNet = 0;
   for (const cf of Object.values(state.county_fiscal)) {
@@ -189,6 +193,7 @@ export function extractOutcome(
     laborUtil,
     housingPressure,
     totalBuiltMw,
+    convertedAgAcres,
     digest,
   };
 }

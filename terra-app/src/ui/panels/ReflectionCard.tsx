@@ -74,7 +74,7 @@ export function ReflectionCard() {
   const exportScenario = useTerraStore(s => s.exportScenario);
 
   // Derive built/retired asset summaries
-  const { builtAssets, retiredAssets, fiscalNet, totalBuiltMw, eesDeltas } = useMemo(() => {
+  const { builtAssets, retiredAssets, fiscalNet, totalBuiltMw, eesDeltas, convertedAgAcres } = useMemo(() => {
     const reg = engineState.asset_registry;
     const year = engineState.year;
 
@@ -98,6 +98,9 @@ export function ReflectionCard() {
 
     // Total player-built MW
     const mw = built.reduce((s, a) => s + (a.capacity_mw ?? 0), 0);
+    const convertedAg = Object.values(engineState.county_ag).reduce(
+      (sum, ag) => sum + ag.land_acres.converted_to_energy, 0,
+    );
 
     // Study-area EES at start vs now
     const history = engineState.history ?? [];
@@ -115,6 +118,7 @@ export function ReflectionCard() {
       fiscalNet: totalFiscalNet,
       totalBuiltMw: mw,
       eesDeltas: eesDelta,
+      convertedAgAcres: convertedAg,
     };
   }, [engineState]);
 
@@ -196,6 +200,14 @@ export function ReflectionCard() {
           value={fmt$(fiscalNet)}
           positive={fiscalNet >= 0}
         />
+
+        {convertedAgAcres > 0 && (
+          <Row
+            label="Converted agricultural acres"
+            value={`${Math.round(convertedAgAcres).toLocaleString()} ac`}
+            positive={false}
+          />
+        )}
 
         {/* Built assets */}
         <SectionHeader>

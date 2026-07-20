@@ -15,6 +15,7 @@ import {
   injectDisturbance as engineInjectDisturbance,
 } from './engine.js';
 import { getAllEventsForYear } from './events.js';
+import { applySessionDrought } from './session_drought.js';
 
 // ── PyFloat marker — avoids class syntax for erasableSyntaxOnly ────────────
 // Tagged plain object instead of class; canonicalJson recognizes the tag.
@@ -248,6 +249,10 @@ export function replayScenario(
 
     // b. Advance year
     state = engineAdvanceYear(state);
+
+    if (file.session_config?.drought) {
+      [state] = applySessionDrought(state, gameSeed, file.climate_lens ?? 'historical');
+    }
 
     // c+d. Re-draw events and apply deterministic engine effects
     const events = getAllEventsForYear(state.year, state, gameSeed);

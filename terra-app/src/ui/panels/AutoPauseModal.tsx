@@ -9,6 +9,8 @@ const REASON_ICONS: Record<string, string> = {
   era_transition: '\u{1F4C5}',
   quest_condition_met: '\u2713',
   event_fired: '\u{1F321}',
+  drought_onset: '\u{1F4A7}',
+  irrigated_conversion: '\u{1F33E}',
 };
 
 const REASON_TITLES: Record<string, string> = {
@@ -18,6 +20,8 @@ const REASON_TITLES: Record<string, string> = {
   era_transition: 'New Era',
   quest_condition_met: 'Condition Met',
   event_fired: 'Event',
+  drought_onset: 'Drought Onset',
+  irrigated_conversion: 'Irrigated Land Converted',
 };
 
 const CATEGORY_ICONS: Record<string, string> = {
@@ -37,6 +41,8 @@ function reasonToTrigger(reason: string): AnnotationTrigger | null {
   if (reason === 'build_complete' || reason === 'coupling_activated') return 'build_decision';
   if (reason === 'event_fired') return 'disturbance_event';
   if (reason === 'era_transition') return 'era_transition';
+  if (reason === 'drought_onset') return 'drought_onset';
+  if (reason === 'irrigated_conversion') return 'irrigated_conversion';
   return null;
 }
 

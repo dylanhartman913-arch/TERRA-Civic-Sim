@@ -53,6 +53,7 @@ const OUTCOME_LABELS: Record<keyof SessionOutcome, string> = {
   laborUtil: 'Labor Util',
   housingPressure: 'Housing Pressure',
   totalBuiltMw: 'Built MW',
+  convertedAgAcres: 'Converted Ag Acres',
   digest: 'Digest',
 };
 
@@ -63,6 +64,7 @@ const SCATTER_OPTIONS: { key: keyof SessionOutcome; label: string }[] = [
   { key: 'fiscalNet', label: 'Fiscal Net ($)' },
   { key: 'laborUtil', label: 'Labor Utilization' },
   { key: 'totalBuiltMw', label: 'Total Built MW' },
+  { key: 'convertedAgAcres', label: 'Converted Ag Acres' },
 ];
 
 const CONSENSUS_OPTIONS: { key: ConsensusIndicator; label: string }[] = [
@@ -107,6 +109,7 @@ function fmt$(v: number): string {
 function fmtVal(key: keyof SessionOutcome, v: number): string {
   if (key === 'fiscalNet') return fmt$(v);
   if (key === 'totalBuiltMw') return v >= 1000 ? `${(v / 1000).toFixed(1)} GW` : `${Math.round(v)} MW`;
+  if (key === 'convertedAgAcres') return `${Math.round(v).toLocaleString()} ac`;
   if (key === 'laborUtil' || key === 'housingPressure') return (v * 100).toFixed(1) + '%';
   if (key === 'finalYear') return String(Math.round(v));
   return v.toFixed(3);
@@ -216,6 +219,7 @@ export function DebriefView({ onClose }: { onClose: () => void }) {
   // Consensus selectors
   const [consensusIndicator, setConsensusIndicator] = useState<ConsensusIndicator>('E');
   const [consensusYear, setConsensusYear] = useState<number | null>(null);
+  const [consensusPopoverGeoid, setConsensusPopoverGeoid] = useState<string | null>(null);
 
   // Annotation filter
   const [annotationFilter, setAnnotationFilter] = useState<AnnotationTrigger | 'all'>('all');
@@ -361,6 +365,15 @@ export function DebriefView({ onClose }: { onClose: () => void }) {
     }
     return [...years].sort((a, b) => a - b);
   }, [histories]);
+
+  const consensusTreatments = useMemo(() => {
+    if (!consensusPopoverGeoid) return [];
+    return replayed.map(({ session, state }) => {
+      const cohorts = state.county_ag[consensusPopoverGeoid]?.treatment_cohorts ?? [];
+      const treatedAcres = cohorts.reduce((sum, cohort) => sum + cohort.acres, 0);
+      return { label: session.label, treatedAcres, cohortCount: cohorts.length };
+    });
+  }, [replayed, consensusPopoverGeoid]);
 
   // ── CSV exports ───────────────────────────────────────────────────────────
 
@@ -845,6 +858,13 @@ export function DebriefView({ onClose }: { onClose: () => void }) {
               Agreement: <span style={{ color: 'var(--teal)' }}>■ high</span> (CV &lt; 5%) · <span style={{ color: '#f59e0b' }}>■ medium</span> (5–20%) · <span style={{ color: 'var(--deficit)' }}>■ low</span> (&gt; 20%)
             </div>
 
+            {consensusPopoverGeoid && (
+              <div data-testid="consensus-ag-treatments" style={{ marginBottom: 10, padding: '8px 10px', background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 4, fontSize: 10 }}>
+                <span style={{ color: 'var(--text-secondary)' }}>Ag treatments · {consensusPopoverGeoid}: </span>
+                {consensusTreatments.map(t => `${t.label} ${Math.round(t.treatedAcres).toLocaleString()} ac (${t.cohortCount} cohort${t.cohortCount === 1 ? '' : 's'})`).join(' · ')}
+              </div>
+            )}
+
             {sessions.length < 2 ? (
               <div style={{ color: 'var(--text-muted)', fontSize: 11 }}>Load at least 2 sessions to compute consensus.</div>
             ) : consensusRows.length === 0 ? (
@@ -868,7 +888,7 @@ export function DebriefView({ onClose }: { onClose: () => void }) {
                   {consensusRows.slice(0, 50).map((row, i) => {
                     const chipColor = row.agreement === 'high' ? 'var(--teal)' : row.agreement === 'medium' ? '#f59e0b' : 'var(--deficit)';
                     return (
-                      <tr key={row.geoid} style={{ background: i % 2 === 0 ? 'transparent' : 'var(--bg-surface)' }}>
+                      <tr key={row.geoid} onClick={() => setConsensusPopoverGeoid(row.geoid)} style={{ background: i % 2 === 0 ? 'transparent' : 'var(--bg-surface)', cursor: 'pointer' }}>
                         <td style={{ padding: '4px 8px', borderBottom: '1px solid var(--border)', fontFamily: 'var(--font-mono)' }}>
                           {row.geoid}
                         </td>
