@@ -26,7 +26,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useTerraStore } from '../../state/store.js';
 import type { EngineState, BuildQueueItem, CountyFiscal, ProductionAsset } from '../../engine/types.js';
-import { getExistingAssets } from '../../engine/engine.js';
+import { getExistingAssets, getCountyAg } from '../../engine/engine.js';
 import { computeFiscalNetDelta, computeFiscalBaselineRevenue } from '../../state/selectors.js';
 
 // ── Jobs per unit (construction + operations) ──────────────────────────────
@@ -482,6 +482,10 @@ export function CountyYields() {
     revenue:  useRef<HTMLDivElement>(null),
     water:    useRef<HTMLDivElement>(null),
     housing:  useRef<HTMLDivElement>(null),
+    forage:   useRef<HTMLDivElement>(null),
+    land:     useRef<HTMLDivElement>(null),
+    agwater:  useRef<HTMLDivElement>(null),
+    agvalue:  useRef<HTMLDivElement>(null),
   };
 
   if (!selectedGeoid) return null;
@@ -539,6 +543,16 @@ export function CountyYields() {
 
   // ── Water (requires baseline data — currently null for all counties) ──
   const waterBaseline = card.water_withdrawals_mgd; // always null right now
+
+  // ── Agriculture (WY only, AG2) ─────────────────────────────────────────
+  const agData = isWY ? getCountyAg(engineState, geoidPadded) : null;
+  const agLand = agData?.levels.land_acres;
+  const agForage = agData?.levels.forage_aum;
+  const agWater = agData?.levels.water_acre_feet;
+  const agVal = agData?.levels.ag_valuation_usd;
+  const totalAgLandAc = agLand ? agLand.irrigated_crop + agLand.dry_crop + agLand.private_rangeland + agLand.other + agLand.converted_to_energy + agLand.easement_protected : 0;
+  // Invasive burden: conversion cohorts proxy
+  const convertedAcRes = agLand?.converted_to_energy ?? 0;
 
   // ── Yield strip item ──────────────────────────────────────────────────
   const itemStyle = (key: string): React.CSSProperties => ({
@@ -726,6 +740,196 @@ export function CountyYields() {
           <span style={valueStyle('var(--text-muted)')}>—</span>
           <span style={subStyle}>no baseline</span>
         </div>
+
+        {/* 🌿 Forage (WY ag: private/federal AUM split + RAP invasive trend) */}
+        {agData && agForage && (
+          <div
+            ref={refs.forage}
+            style={itemStyle('forage')}
+            onClick={() => toggleYield('forage')}
+            title="Forage AUM — click to expand"
+          >
+            <span style={labelStyle}>🌿 Forage</span>
+            <span style={valueStyle(agForage.index < 0.95 ? 'var(--warning)' : 'var(--teal)')}>
+              {(agForage.index * 100).toFixed(0)}%
+            </span>
+            <span style={subStyle}>{(agForage.private / 1000).toFixed(1)}k pvt AUM</span>
+            {openYield === 'forage' && (
+              <YieldPopover anchorRef={refs.forage} onClose={() => setOpenYield(null)}>
+                <div style={{ color: 'var(--text-muted)', fontSize: 9, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>
+                  Forage — private/federal AUM
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, padding: '2px 0' }}>
+                  <span style={{ color: 'var(--text-secondary)' }}>Private AUM</span>
+                  <span style={{ color: 'var(--teal)' }}>{Math.round(agForage.private).toLocaleString()}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, padding: '2px 0', borderTop: '1px solid var(--border)' }}>
+                  <span style={{ color: 'var(--text-secondary)' }}>Federal AUM</span>
+                  <span style={{ color: 'var(--text-muted)' }}>{Math.round(agForage.federal).toLocaleString()} (proxy)</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, padding: '2px 0', borderTop: '1px solid var(--border)' }}>
+                  <span style={{ color: 'var(--text-secondary)' }}>Total AUM</span>
+                  <span>{Math.round(agForage.private + agForage.federal).toLocaleString()}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '4px 0', borderTop: '1px solid var(--border)', fontWeight: 500 }}>
+                  <span style={{ color: 'var(--text-secondary)' }}>Forage index</span>
+                  <span style={{ color: agForage.index < 0.95 ? 'var(--warning)' : agForage.index > 1.02 ? 'var(--teal)' : 'var(--text-primary)' }}>
+                    {(agForage.index * 100).toFixed(1)}% of baseline
+                  </span>
+                </div>
+                {convertedAcRes > 0 && (
+                  <div style={{ fontSize: 9, color: 'var(--warning)', marginTop: 6, lineHeight: 1.4 }}>
+                    RAP invasive burden: {convertedAcRes.toLocaleString()} ac converted to energy reduces forage base.
+                  </div>
+                )}
+                {agData.levels.drought.forage_multiplier < 1 && (
+                  <div style={{ fontSize: 9, color: 'var(--deficit)', marginTop: 4, lineHeight: 1.4 }}>
+                    Active drought: forage multiplier {(agData.levels.drought.forage_multiplier * 100).toFixed(0)}% ({agData.levels.drought.years_remaining} yr remaining)
+                  </div>
+                )}
+              </YieldPopover>
+            )}
+          </div>
+        )}
+
+        {/* 🌾 Land ledger (stacked: ag classes + converted) */}
+        {agData && agLand && (
+          <div
+            ref={refs.land}
+            style={itemStyle('land')}
+            onClick={() => toggleYield('land')}
+            title="Land ledger — click to expand"
+          >
+            <span style={labelStyle}>🌾 Land</span>
+            <span style={valueStyle(convertedAcRes > 0 ? 'var(--warning)' : 'var(--text-secondary)')}>
+              {convertedAcRes > 0 ? `${(convertedAcRes / 1000).toFixed(1)}k converted` : 'no conversion'}
+            </span>
+            <span style={subStyle}>{(totalAgLandAc / 1000).toFixed(0)}k ac total</span>
+            {openYield === 'land' && (
+              <YieldPopover anchorRef={refs.land} onClose={() => setOpenYield(null)}>
+                <div style={{ color: 'var(--text-muted)', fontSize: 9, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>
+                  Land Ledger — DOR classes
+                </div>
+                {[
+                  { label: 'Irrigated crop', value: agLand.irrigated_crop, color: 'var(--teal)' },
+                  { label: 'Dry cropland', value: agLand.dry_crop, color: 'var(--text-primary)' },
+                  { label: 'Private rangeland', value: agLand.private_rangeland, color: 'var(--text-secondary)' },
+                  { label: 'Other ag land', value: agLand.other, color: 'var(--text-muted)' },
+                  { label: 'Easement protected', value: agLand.easement_protected, color: 'var(--surplus)' },
+                  { label: 'Converted to energy', value: agLand.converted_to_energy, color: 'var(--deficit)', bold: true },
+                ].map(row => row.value > 0 && (
+                  <div key={row.label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, padding: '2px 0', borderTop: '1px solid var(--border)', fontWeight: row.bold ? 600 : undefined }}>
+                    <span style={{ color: 'var(--text-secondary)' }}>{row.label}</span>
+                    <span style={{ color: row.color }}>{Math.round(row.value).toLocaleString()} ac</span>
+                  </div>
+                ))}
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '4px 0', borderTop: '1px solid var(--border)', fontWeight: 500 }}>
+                  <span style={{ color: 'var(--text-secondary)' }}>Total</span>
+                  <span>{Math.round(totalAgLandAc).toLocaleString()} ac</span>
+                </div>
+                {convertedAcRes > 0 && (
+                  <div style={{ fontSize: 9, color: 'var(--warning)', marginTop: 4, lineHeight: 1.4 }}>
+                    {(convertedAcRes / totalAgLandAc * 100).toFixed(1)}% of county ag land converted to energy — irreversible without mine_land_reclamation.
+                  </div>
+                )}
+              </YieldPopover>
+            )}
+          </div>
+        )}
+
+        {/* 💧 Ag water by claimant (diversion + consumptive, separate) */}
+        {agData && agWater && agWater.county_supply > 0 && (
+          <div
+            ref={refs.agwater}
+            style={itemStyle('agwater')}
+            onClick={() => toggleYield('agwater')}
+            title="Ag water — diversion and consumptive use — click to expand"
+          >
+            <span style={labelStyle}>💧 Ag Water</span>
+            <span style={valueStyle('var(--text-secondary)')}>
+              {(agWater.ag_diversion / 1000).toFixed(1)}k AF div
+            </span>
+            <span style={subStyle}>{(agWater.ag_consumptive / 1000).toFixed(1)}k AF cons · {(agWater.county_supply / 1000).toFixed(0)}k supply</span>
+            {openYield === 'agwater' && (
+              <YieldPopover anchorRef={refs.agwater} onClose={() => setOpenYield(null)}>
+                <div style={{ color: 'var(--text-muted)', fontSize: 9, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>
+                  Water by Claimant (AG2 proxy)
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, padding: '2px 0' }}>
+                  <span style={{ color: 'var(--text-secondary)' }}>Ag diversion</span>
+                  <span>{Math.round(agWater.ag_diversion).toLocaleString()} AF/yr</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, padding: '2px 0', borderTop: '1px solid var(--border)' }}>
+                  <span style={{ color: 'var(--text-secondary)' }}>Ag consumptive</span>
+                  <span>{Math.round(agWater.ag_consumptive).toLocaleString()} AF/yr</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, padding: '2px 0', borderTop: '1px solid var(--border)' }}>
+                  <span style={{ color: 'var(--text-secondary)' }}>Return flow</span>
+                  <span style={{ color: 'var(--teal)' }}>{Math.round(agWater.ag_diversion - agWater.ag_consumptive).toLocaleString()} AF/yr</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, padding: '2px 0', borderTop: '1px solid var(--border)' }}>
+                  <span style={{ color: 'var(--text-secondary)' }}>Energy water</span>
+                  <span style={{ color: agWater.energy > 0 ? 'var(--warning)' : 'var(--text-muted)' }}>{Math.round(agWater.energy).toLocaleString()} AF/yr</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '4px 0', borderTop: '1px solid var(--border)', fontWeight: 500 }}>
+                  <span style={{ color: 'var(--text-secondary)' }}>County supply</span>
+                  <span>{Math.round(agWater.county_supply).toLocaleString()} AF/yr</span>
+                </div>
+                <div style={{ fontSize: 9, color: 'var(--text-muted)', marginTop: 6, lineHeight: 1.5 }}>
+                  Return flow = diversion − consumptive. Diversion creates a water right claim;
+                  consumptive use is the portion that doesn't return to the watershed.
+                  Reallocation to energy is not consumptive use — it is separately tracked.
+                  <br />Source: WY State Engineer Office proxy (AG2 vintage).
+                </div>
+              </YieldPopover>
+            )}
+          </div>
+        )}
+
+        {/* 💵 Ag economics (DOR land-type valuation breakdown) */}
+        {agData && agVal && agVal.total > 0 && (
+          <div
+            ref={refs.agvalue}
+            style={itemStyle('agvalue')}
+            onClick={() => toggleYield('agvalue')}
+            title="Ag valuation — DOR land-type breakdown — click to expand"
+          >
+            <span style={labelStyle}>💵 Ag Value</span>
+            <span style={valueStyle('var(--text-secondary)')}>
+              {agVal.total >= 1e6 ? `$${(agVal.total / 1e6).toFixed(1)}M` : `$${Math.round(agVal.total / 1000)}k`}
+            </span>
+            <span style={subStyle}>total assessed</span>
+            {openYield === 'agvalue' && (
+              <YieldPopover anchorRef={refs.agvalue} onClose={() => setOpenYield(null)}>
+                <div style={{ color: 'var(--text-muted)', fontSize: 9, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>
+                  Ag Economics — DOR Land-Type
+                </div>
+                {[
+                  { label: 'Irrigated crop', value: agVal.irrigated_crop },
+                  { label: 'Dry cropland', value: agVal.dry_crop },
+                  { label: 'Private rangeland', value: agVal.private_rangeland },
+                ].map(row => (
+                  <div key={row.label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, padding: '2px 0', borderTop: '1px solid var(--border)' }}>
+                    <span style={{ color: 'var(--text-secondary)' }}>{row.label}</span>
+                    <span style={{ color: row.value > 0 ? 'var(--text-primary)' : 'var(--text-muted)' }}>
+                      {row.value >= 1e6 ? `$${(row.value / 1e6).toFixed(2)}M` : row.value >= 1e3 ? `$${Math.round(row.value / 1000)}k` : `$${Math.round(row.value)}`}
+                    </span>
+                  </div>
+                ))}
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '4px 0', borderTop: '1px solid var(--border)', fontWeight: 500 }}>
+                  <span style={{ color: 'var(--text-secondary)' }}>Total assessed value</span>
+                  <span style={{ color: 'var(--text-primary)' }}>
+                    {agVal.total >= 1e6 ? `$${(agVal.total / 1e6).toFixed(2)}M` : `$${Math.round(agVal.total).toLocaleString()}`}
+                  </span>
+                </div>
+                <div style={{ fontSize: 9, color: 'var(--text-muted)', marginTop: 6, lineHeight: 1.5 }}>
+                  Source: WY DOR agricultural land-type productive values × current acres (AG2).
+                  Energy valuation changes tracked separately in fiscal ledger.
+                </div>
+              </YieldPopover>
+            )}
+          </div>
+        )}
 
         {/* 🏠 Housing pressure */}
         <div

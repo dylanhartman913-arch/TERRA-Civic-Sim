@@ -23,7 +23,10 @@ export function ActionPalette() {
 
   const grouped = useMemo(() => {
     const actions = engineState.action_library.actions;
-    const groups: Record<string, { id: string; name: string; unitLabel: string; ttd: number }[]> = {};
+    const groups: Record<string, {
+      id: string; name: string; unitLabel: string; ttd: number;
+      decayPct?: number; maintenanceLag?: number; agCoexistence?: boolean;
+    }[]> = {};
 
     for (const [id, action] of Object.entries(actions)) {
       const q = search.toLowerCase();
@@ -32,11 +35,16 @@ export function ActionPalette() {
 
       const bucket = action.bucket ?? action.category ?? 'OTHER';
       if (!groups[bucket]) groups[bucket] = [];
+      const decay = (action as Record<string, unknown>).reinvasion_decay as { fraction_retreated_per_year?: number } | undefined;
+      const pairingRule = (action as Record<string, unknown>).pairing_rule as { max_lag_years?: number } | undefined;
       groups[bucket].push({
         id,
         name,
         unitLabel: action.unit_label ?? action.unit ?? '',
         ttd: action.time_to_deploy ?? 0,
+        decayPct: decay?.fraction_retreated_per_year != null ? Math.round(decay.fraction_retreated_per_year * 100) : undefined,
+        maintenanceLag: pairingRule?.max_lag_years,
+        agCoexistence: !!action.ag_coexistence,
       });
     }
     return groups;
@@ -154,6 +162,16 @@ export function ActionPalette() {
                   <div style={{ color: 'var(--text-muted)', fontSize: 10, marginTop: 2 }}>
                     {action.unitLabel} · {action.ttd}yr deploy
                   </div>
+                  {action.decayPct != null && (
+                    <div style={{ color: 'var(--warning)', fontSize: 9, marginTop: 2 }}>
+                      ⚠ {action.decayPct}%/yr re-invasion — pair with maintenance{action.maintenanceLag != null ? ` within ${action.maintenanceLag}yr` : ''}
+                    </div>
+                  )}
+                  {action.agCoexistence && (
+                    <div style={{ color: 'rgba(139,92,246,0.8)', fontSize: 9, marginTop: 2 }}>
+                      ◈ ag coexistence — check competition preview before commit
+                    </div>
+                  )}
                 </button>
               );
             })}

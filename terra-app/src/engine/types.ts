@@ -510,6 +510,51 @@ export interface CountyAgAccessor {
   trajectories: CountyAgState['trajectories'];
 }
 
+// ── Ag Placement Preview (pure preview before commit) ──────────────────────
+
+/** Pure, zero-mutation preview of ag impacts for a placement-time competition preview. */
+export interface AgPlacementPreview {
+  action_id: string;
+  geoid: string;
+  magnitude: number;
+  /** Acres that would be permanently converted from agriculture */
+  converted_acres: number;
+  /** Acres converted by source land class */
+  conversion_sources: Record<'other' | 'private_rangeland' | 'dry_crop' | 'irrigated_crop', number>;
+  /** Current available acres in each land class (denominator for display) */
+  current_land_by_class: Record<'other' | 'private_rangeland' | 'dry_crop' | 'irrigated_crop', number>;
+  /** Acres shared with ag (dual-use, e.g. wind grazing) — NOT consumed */
+  shared_acres: number;
+  /** Ag valuation removed ($) = sum of (drawn acres × productive_value_per_acre) for each class */
+  ag_valuation_removed_usd: number;
+  /** Current total ag valuation (denominator) */
+  current_ag_valuation_total_usd: number;
+  /** Industrial valuation added via fiscal property_tax + other revenue streams */
+  industrial_valuation_added_usd: number | null;
+  /** Animal Unit Months before placement */
+  aum_before: number;
+  /** Animal Unit Months after placement (changes if private_rangeland is converted) */
+  aum_after: number;
+  /** Current ag water diversion (acre-feet/yr) */
+  water_diversion_af: number;
+  /** Current ag consumptive use (acre-feet/yr) */
+  water_consumptive_af: number;
+  /** County water supply (acre-feet/yr) — denominator */
+  water_county_supply_af: number;
+  /** True if this placement would fail (e.g. insufficient non-easement land) */
+  blocked: boolean;
+  /** Human-readable reason for blocking; null if not blocked */
+  blocked_reason: string | null;
+  /** Debug: data provenance metadata from county ag baseline */
+  provenance: {
+    schema_version: string;
+    vintage: string;
+    federal_aum_is_proxy: boolean;
+    water_is_proxy: boolean;
+    land_conversion_priority: ReadonlyArray<string>;
+  };
+}
+
 // ── Fiscal Coefficients (slimmed TS format) ─────────────────────────────────
 
 export interface CoalRetirementAdValoremCoeff {
