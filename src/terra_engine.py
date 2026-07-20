@@ -600,8 +600,16 @@ def _normalize_fuel(fuel_type_str):
 def _build_fuel_mix_map(data_dir):
     pa_path = data_dir / "synthetic_plant_assignments.parquet"
     gen_path = data_dir / "generators_with_costs.parquet"
-    if not pa_path.exists() or not gen_path.exists():
-        return {}, {}
+    if not pa_path.exists():
+        raise FileNotFoundError(
+            f"Missing required file: {pa_path}\n"
+            "Regenerate from notebooks/nb05_plant_assignments.ipynb before calling initialize_state()."
+        )
+    if not gen_path.exists():
+        raise FileNotFoundError(
+            f"Missing required file: {gen_path}\n"
+            "Regenerate from notebooks/nb11_generators_with_costs.ipynb before calling initialize_state()."
+        )
     pa = pd.read_parquet(pa_path)
     gen = pd.read_parquet(gen_path)[['generator_id', 'plant_id', 'fuel_type', 'capacity_mw']]
     merged = pa.merge(gen, on=['generator_id', 'plant_id'], how='left', suffixes=('_pa', '_gen'))
