@@ -1,0 +1,29 @@
+{
+  "source": "HIFLD Control Areas, fixed ArcGIS Online Shapefile item",
+  "arcgis_item_id": "17499e6de9104f7288ce2ccc9239bc98",
+  "arcgis_item_modified_utc": "2021-12-08T21:51:56Z",
+  "snapshot_url": "https://www.arcgis.com/sharing/rest/content/items/17499e6de9104f7288ce2ccc9239bc98/data",
+  "retrieved_at_utc": "2026-08-10T20:53:58.461030+00:00",
+  "raw_response_path": "data/staging/hifld_control_areas_2021-12-08_raw.zip",
+  "raw_sha256": "12296854e38d369ec1aef5eaf4f8eb5ca3bbfba1fa23029893ca1f4815a3c868",
+  "raw_bytes": 23578889,
+  "archive_members": [
+    "Control_Areas.cpg",
+    "Control_Areas.dbf",
+    "Control_Areas.prj",
+    "Control_Areas.shp",
+    "Control_Areas.shp.xml",
+    "Control_Areas.shx"
+  ],
+  "boundary_feature_count": 71,
+  "plant_record_count": 25868,
+  "boundary_matched_count": 25246,
+  "overlap_join_rows_before_deduplication": 13661,
+  "eia_ba_code_present_count": 25253,
+  "derived_paths": [
+    "data/staging/ba_territories.geojson",
+    "data/staging/power_plants_with_ba.geojson"
+  ],
+  "superseded_live_service": "https://services5.arcgis.com/bsqU0jSPAuI04L89/arcgis/rest/services/Balancing_Authorities/FeatureServer/0",
+  "residual_unpinnable_risk": null
+}

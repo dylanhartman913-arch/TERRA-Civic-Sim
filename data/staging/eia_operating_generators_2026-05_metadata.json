@@ -1,0 +1,12 @@
+{
+  "source": "U.S. EIA API v2, Inventory of Operable Generators",
+  "endpoint": "https://api.eia.gov/v2/electricity/operating-generator-capacity/data",
+  "pinned_period": "2026-05",
+  "status_filter": "OP",
+  "retrieved_at_utc": "2026-08-10T21:00:59.046049+00:00",
+  "raw_response_path": "data/staging/eia_operating_generators_2026-05_raw.json",
+  "raw_sha256": "cf14ff4b1283ca3c7ad563d93ba098ae8a761561c2396d58252aab4343179a36",
+  "raw_bytes": 16888632,
+  "record_count": 25868,
+  "derived_path": "data/staging/power_plants.geojson"
+}
