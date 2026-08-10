@@ -761,6 +761,8 @@ export interface AssetInstance {
   co2e_tpy?: number | null;                     // CO2-equivalent emissions (tons/yr)
   display_sector?: string | null;               // 'mining/extraction', 'utilities/power', etc.
   confidence?: string | null;                   // 'high' | 'low' | 'medium' | 'curated'
+  match_confidence?: 'exact_id' | 'fuzzy' | 'unmatched' | null;
+  county_ees_contribution?: Array<{ geoid: string; capital: 'Ec'; delta: number }> | null;
 
   // v4.4 (C2) hazard exposure tags — read-only data field; excluded from all digest surfaces
   // (ExistingAsset/ProductionAsset/IndicatorSnapshot do not carry this field)

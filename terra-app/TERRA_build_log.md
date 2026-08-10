@@ -3270,3 +3270,78 @@ The gap of 27 cannot be reconstructed from current codebase state. Investigation
 | **T5-FU-2** | T5 | **TS test-count reproduction gap (original 305 vs. 332, OPEN).** T5 builder's parity claim (332) is reproduced on current main (332 ✓). Full-suite delta post-T5 (+11) is explained by T3 and T6 additions. The original independent-reviewer count of 305 cannot be reconstructed: missing-CSV removes 9 passing tests (still counted as total 332), no dynamic generation exists, and the 27-file P0 baseline yields 321 (not 305). The mechanism that produced 305 is unresolved. | **OPEN — gap unexplained; do not mark closed until 305 origin is identified** |
 
 The fb2ef4c "Documented, closed" status for T5-FU-2 is **superseded by this entry**.
+
+---
+
+## Extended Build 001 — Generator provenance and retirement attribution
+
+**Date:** 2026-08-10
+**Session:** Extended build resumed from Checkpoint 2 (`151aa69`)
+
+### Provenance repair and promotion
+
+- The original processed operating-generator GeoJSON contained 15,034 rows but
+  only 15,000 unique generator keys. Git history and the superseded notebook
+  established the cause: `PAGE_SIZE=5000` combined with `MAX_PAGES=3`.
+- `01_eia_pull.ipynb` now pins `2026-05`, filters `status=OP`, and paginates by
+  actual returned rows until the EIA-reported total is exhausted. There is no
+  page-count or page-size cap. The authorized pull, a separate one-row test,
+  and the earlier complete pull all agreed on 25,868 records.
+- The complete BA-enriched file was promoted to
+  `data/processed/power_plants_with_ba.geojson`: 25,868 rows and 25,868 unique
+  `(plantid, generatorid)` keys, SHA-256
+  `d8a65ff2b4b31f21d06d5cbf8efbcca3382bdf064981d48108c96bbfe600c614`.
+  A complete-versus-staged rerun of the 08b county method produced zero drift
+  for every Wyoming county.
+
+### Retirement schedule audit
+
+- `retirement_schedule_audit.csv` independently resolved schedule entries by
+  normalized plant name, state, and county before checking the file's code.
+- Dave Johnston is confirmed: plant 4158, Converse, 816.7 MW, four units.
+- Jim Bridger was keyed to 6204, which is Laramie River Station in Platte.
+  The unambiguous Jim Bridger match is plant **8066**, Sweetwater, 2,326 MW,
+  four operating units. `baseline_retirements.json` now uses 8066. Its legacy
+  three-unit/1,863 MW schedule detail remains explicitly flagged in the audit
+  rather than silently rewritten.
+
+### Generator matching and attribution
+
+- `generator_anchor_match_audit.csv` resolves 99/104 canonical generator
+  anchors: 97 exact EIA/ORIS IDs and two fuzzy matches (Dave Johnston +7.18%,
+  Jim Bridger +9.72%). Five rows remain unmatched, including duplicate exact-ID
+  aliases for the two retirement-bearing flagships; this prevents double
+  materialization and attribution.
+- The TypeScript and Python anchor seeders now materialize matched generator
+  anchors absent from county-card flagships. All 99 canonical matched IDs are
+  present at runtime; all five unmatched IDs are excluded.
+- `generator_anchor_attribution_audit.csv` contains 322 facility-county rows.
+  Attribution exactly reproduces 08b's 50 km tract-centroid inclusion,
+  population weighting, global linear min-max slope, and 1/6 Ec weighting.
+  No county's summed matched attribution exceeds its full Ec generator term.
+  Contributions are stored as Ec-only `county_ees_contribution` arrays in both
+  processed and app anchor facility files; E, S, and `county_fiscal` are
+  untouched.
+
+### Retirement engine and trajectory
+
+- On matched generator retirement, TypeScript `advanceYear` and Python
+  `advance_year` subtract the stored facility contributions from live county
+  Ec. Missing target counties raise an error.
+- Golden A–J before/after: 12 TypeScript files / 146 tests passed both times;
+  no fixture output changed. Python parity module: 115/115 passed. The focused
+  generator-attribution suite has four passing tests, including exact 2027 and
+  2031 Ec subtraction with E/S inertness.
+- The executed do-nothing trajectory now separates raw retirement-only Ec from
+  population drift. 2027 Dave Johnston retirement-only ΔEc is
+  `-0.0027884602253802`; population drift is `+0.0021228885477793`. Corrected
+  2031 Jim Bridger (plant 8066, Sweetwater) retirement-only ΔEc is
+  `-0.002906898131525`; population drift is `+0.0021182680441089`.
+  `trajectory_results.csv` carries both fields plus explicit plant/county
+  identity columns. The succession-timing comparison remains directional-only.
+
+### Gate verdict
+
+**PASS.** Pagination and retirement identity gates cleared; generator matching
+exceeded its threshold; attribution remained structurally bounded; no unrelated
+golden fixture changed.

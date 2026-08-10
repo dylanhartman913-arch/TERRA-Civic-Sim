@@ -227,7 +227,20 @@ def generator_inventory_diff(existing_path: Path, staged_path: Path) -> pd.DataF
                 "status_staged": new["status"] if new is not None else None,
             }
         )
-    return pd.DataFrame(rows)
+    return pd.DataFrame(
+        rows,
+        columns=[
+            "source_record_id",
+            "plant_name",
+            "state",
+            "county",
+            "difference",
+            "capacity_mw_existing",
+            "capacity_mw_staged",
+            "status_existing",
+            "status_staged",
+        ],
+    )
 
 
 def main() -> None:

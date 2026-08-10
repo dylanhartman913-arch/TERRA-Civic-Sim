@@ -921,11 +921,14 @@ interface AnchorFeatureProps {
   display_sector?: string;
   confidence?: string;
   commodity?: string | null;
+  match_confidence?: 'exact_id' | 'fuzzy' | 'unmatched';
+  capacity_mw_eia?: number | null;
+  county_ees_contribution?: Array<{ geoid: string; capital: 'Ec'; delta: number }>;
 }
 
 /**
  * Seed Tier 2 anchor facilities into the asset registry.
- * Generators get anchor_id + co2e_tpy attached (not re-seeded).
+ * Matched generators get anchor fields attached or are seeded when absent.
  * New asset_classes: mine, industrial_load, commercial_anchor_load.
  * Zero flow deltas — anchors carry marginal handles only.
  */
@@ -947,14 +950,52 @@ function seedAnchorFacilities(
     const name = props.name ?? '';
 
     if (ac === 'generator') {
+      if (props.match_confidence === 'unmatched') continue;
+      if (props.match_confidence !== 'exact_id' && props.match_confidence !== 'fuzzy') continue;
+      let attached = false;
       for (const a of registry) {
         if (a.geoid === geoid && a.name === name && a.origin === 'baseline'
             && (a.asset_class === 'generator' || a.asset_class === 'demand')) {
           a.anchor_id = anchorId;
           a.co2e_tpy = props.co2e_tpy ?? null;
+          a.match_confidence = props.match_confidence ?? null;
+          a.county_ees_contribution = props.county_ees_contribution ?? [];
+          attached = true;
           break;
         }
       }
+      if (attached) continue;
+      const capacity = props.capacity_mw_eia ?? props.capacity_or_load_mw ?? null;
+      newAssets.push({
+        asset_id: `anchor_${geoid}_${slugify(name)}`,
+        origin: 'baseline', lifecycle: 'operating', asset_class: 'generator',
+        name, geoid, county_name: '', state: '', type: 'generator', status: 'operating',
+        source_url: props.source ?? '', operational_year: null,
+        capacity_mw: capacity != null ? Number(capacity) : null,
+        coal_tons_yr: null, production_proxy: null, fiscal_action_id: null, excluded: null,
+        commodity: null, production_volume: null, production_unit: null,
+        production_confidence: null, production_source: null, data_year: null,
+        effective_severance_rate_per_unit: null, county_distribution_share: null,
+        advalorem_rate_per_unit: null, assessed_delta_per_unit: null, employment_direct: null,
+        action_id: null, magnitude: null, decision_year: null, throttle_reason: null,
+        commissioned: null, scheduled_retirement_year: null,
+        reclamation_year_log: null, active_reclamation_acres: null, reclamation_jobs_direct: null,
+        decommissioning_cost_usd: null, decommissioning_labor_usd: null,
+        decommissioning_duration_years: null, decommissioning_start_year: null,
+        housing_total_units: null, housing_occupied_units: null, housing_convertible_units: null,
+        housing_subsidized_units: null, housing_permits_per_year: null,
+        housing_affordable_added: null, housing_pressure_ratio: null,
+        housing_seasonal_excluded: null, site_origin_asset_id: null, site_origin_type: null,
+        site_class: null, interconnection_mw: null, water_rights_flag: null, acres: null,
+        workforce_pool_initial: null, workforce_pool_current: null,
+        workforce_pool_half_life_years: null, site_spawn_year: null,
+        restoration_eligibility: null, succession_site_id: null,
+        ttd_reduction_applied: null, capex_discount_fraction: null, tx_waiver_mw: null,
+        convert_source_asset_id: null, anchor_id: anchorId, co2e_tpy: props.co2e_tpy ?? null,
+        display_sector: props.display_sector ?? null, confidence: props.confidence ?? 'high',
+        match_confidence: props.match_confidence,
+        county_ees_contribution: props.county_ees_contribution ?? [],
+      });
       continue;
     }
 
@@ -2802,6 +2843,17 @@ export function advanceYear(
     if (asset.scheduled_retirement_year === currentYear && asset.lifecycle === 'operating') {
       asset.lifecycle = 'retired';
       retiredAny = true;
+      if (asset.asset_class === 'generator' && asset.county_ees_contribution?.length) {
+        for (const contribution of asset.county_ees_contribution) {
+          const county = state.county_ees[contribution.geoid];
+          if (!county) {
+            throw new Error(
+              `Missing county_ees row ${contribution.geoid} for retiring generator ${asset.asset_id}`,
+            );
+          }
+          county.Ec -= contribution.delta;
+        }
+      }
       // v3.2: decommissioning cost draw — price from lifecycle_coefficients.decommissioning
       // v4.3: anchor classes excluded — no MW-based decommissioning cost model
       const DECOM_EXCLUDED: Set<string> = new Set(['production', 'mine', 'industrial_load', 'commercial_anchor_load']);

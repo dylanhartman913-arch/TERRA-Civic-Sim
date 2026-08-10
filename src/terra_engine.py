@@ -1110,8 +1110,8 @@ def _seed_anchor_facilities(data_dir, registry):
     Seed Tier 2 anchor facilities from mw_anchor_facilities.geojson into asset_registry.
 
     New asset_classes: mine, industrial_load, commercial_anchor_load.
-    Generators are already seeded from EIA-860/county_cards — this function
-    attaches anchor_id and co2e_tpy to existing generator rows by name+geoid match.
+    Matched generators are attached to existing county-card rows by name+geoid,
+    or materialized as generator rows when no county-card row exists.
 
     Zero flow deltas: anchors carry marginal handles only. Their jobs, output, and
     valuation are already embedded in observed county baselines. Seeded anchors
@@ -1141,7 +1141,11 @@ def _seed_anchor_facilities(data_dir, registry):
         name = props.get('name', '')
 
         if ac == 'generator':
-            # Attach anchor_id + co2e_tpy to existing registry row (do not re-seed)
+            if props.get('match_confidence') == 'unmatched':
+                continue
+            if props.get('match_confidence') not in ('exact_id', 'fuzzy'):
+                continue
+            attached = False
             for a in registry:
                 if (a.get('geoid') == geoid
                         and a.get('name') == name
@@ -1149,7 +1153,50 @@ def _seed_anchor_facilities(data_dir, registry):
                         and a.get('asset_class') in ('generator', 'demand')):
                     a['anchor_id'] = anchor_id
                     a['co2e_tpy'] = props.get('co2e_tpy')
+                    a['match_confidence'] = props.get('match_confidence')
+                    a['county_ees_contribution'] = props.get('county_ees_contribution', [])
+                    attached = True
                     break
+            if attached:
+                continue
+            capacity = props.get('capacity_mw_eia', props.get('capacity_or_load_mw'))
+            new_assets.append({
+                'asset_id': f'anchor_{geoid}_{_slugify(name)}',
+                'origin': 'baseline', 'lifecycle': 'operating',
+                'asset_class': 'generator', 'name': name, 'geoid': geoid,
+                'county_name': '', 'state': '', 'type': 'generator',
+                'status': 'operating', 'source_url': props.get('source', ''),
+                'operational_year': None,
+                'capacity_mw': float(capacity) if capacity is not None else None,
+                'coal_tons_yr': None, 'production_proxy': None,
+                'fiscal_action_id': None, 'excluded': None, 'commodity': None,
+                'production_volume': None, 'production_unit': None,
+                'production_confidence': None, 'production_source': None, 'data_year': None,
+                'effective_severance_rate_per_unit': None, 'county_distribution_share': None,
+                'advalorem_rate_per_unit': None, 'assessed_delta_per_unit': None,
+                'employment_direct': None, 'action_id': None, 'magnitude': None,
+                'decision_year': None, 'throttle_reason': None, 'commissioned': None,
+                'scheduled_retirement_year': None, 'reclamation_year_log': None,
+                'active_reclamation_acres': None, 'reclamation_jobs_direct': None,
+                'decommissioning_cost_usd': None, 'decommissioning_labor_usd': None,
+                'decommissioning_duration_years': None, 'decommissioning_start_year': None,
+                'housing_total_units': None, 'housing_occupied_units': None,
+                'housing_convertible_units': None, 'housing_subsidized_units': None,
+                'housing_permits_per_year': None, 'housing_affordable_added': None,
+                'housing_pressure_ratio': None, 'housing_seasonal_excluded': None,
+                'site_origin_asset_id': None, 'site_origin_type': None, 'site_class': None,
+                'interconnection_mw': None, 'water_rights_flag': None, 'acres': None,
+                'workforce_pool_initial': None, 'workforce_pool_current': None,
+                'workforce_pool_half_life_years': None, 'site_spawn_year': None,
+                'restoration_eligibility': None, 'succession_site_id': None,
+                'ttd_reduction_applied': None, 'capex_discount_fraction': None,
+                'tx_waiver_mw': None, 'convert_source_asset_id': None,
+                'anchor_id': anchor_id, 'co2e_tpy': props.get('co2e_tpy'),
+                'display_sector': props.get('display_sector'),
+                'confidence': props.get('confidence', 'high'),
+                'match_confidence': props.get('match_confidence'),
+                'county_ees_contribution': props.get('county_ees_contribution', []),
+            })
             continue
 
         if ac == 'data_center':
@@ -3370,6 +3417,16 @@ def advance_year(state, climate_context=None):
                 and asset["lifecycle"] == "operating"):
             asset["lifecycle"] = "retired"
             retired_any = True
+            if (asset.get('asset_class') == 'generator'
+                    and asset.get('county_ees_contribution')):
+                for contribution in asset['county_ees_contribution']:
+                    geoid = contribution['geoid']
+                    if geoid not in state['county_ees']:
+                        raise KeyError(
+                            f"Missing county_ees row {geoid} for retiring generator "
+                            f"{asset['asset_id']}"
+                        )
+                    state['county_ees'][geoid]['Ec'] -= contribution['delta']
             # v3.2: decommissioning cost draw (MW-based generator assets only)
             # v4.3: anchor classes (mine/industrial_load/commercial_anchor_load) are
             # excluded — they have no MW-based decommissioning cost model.
