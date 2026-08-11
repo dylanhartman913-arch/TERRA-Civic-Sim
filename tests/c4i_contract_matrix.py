@@ -57,10 +57,25 @@ def _retirements() -> dict:
     return {key: value for key, value in raw.items() if key != "_meta"}
 
 
-def _initial(with_retirements: bool, migration_enabled: bool) -> dict:
+def _initial(
+    with_retirements: bool,
+    migration_enabled: bool,
+    with_anchors: bool = False,
+    with_exposure_tags: bool = False,
+) -> dict:
+    anchor_facilities = None
+    exposure_tag_data = None
+    if with_anchors:
+        with (DATA_DIR / "mw_anchor_facilities.geojson").open() as handle:
+            anchor_facilities = json.load(handle)
+    if with_exposure_tags:
+        with (DATA_DIR / "asset_exposure_tags.json").open() as handle:
+            exposure_tag_data = json.load(handle)
     state = te.initialize_state(
         data_dir=DATA_DIR,
         baseline_retirements=_retirements() if with_retirements else None,
+        anchor_facilities=anchor_facilities,
+        exposure_tag_data=exposure_tag_data,
     )
     state["population_config"]["migration_enabled"] = migration_enabled
     return state
@@ -271,7 +286,7 @@ def replay_fixture(
             climate_context,
         )
     if fixture_id == "golden_k":
-        state = _initial(False, migration_enabled)
+        state = _initial(False, migration_enabled, with_anchors=True)
         state = te.schedule_retirement(
             state, "anchor_56037_we_soda_westvaco", 2030
         )
@@ -311,7 +326,12 @@ def replay_fixture(
         return _advance(state, 2050, climate_context)
     if fixture_id == "golden_m":
         lens = climate_context["lens"]
-        state = _initial(True, migration_enabled)
+        state = _initial(
+            True,
+            migration_enabled,
+            with_anchors=True,
+            with_exposure_tags=True,
+        )
         state, _ = te.apply_action(
             state, "heat_resilience_upgrade", "56037", 1
         )

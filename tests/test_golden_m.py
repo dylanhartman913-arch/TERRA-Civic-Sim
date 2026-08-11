@@ -38,7 +38,15 @@ def _adapted_initial_state():
         retirements = {
             key: value for key, value in json.load(handle).items() if key != "_meta"
         }
-    state = te.initialize_state(baseline_retirements=retirements)
+    with (ROOT / "data" / "processed" / "mw_anchor_facilities.geojson").open() as handle:
+        anchor_facilities = json.load(handle)
+    with (ROOT / "data" / "processed" / "asset_exposure_tags.json").open() as handle:
+        exposure_tag_data = json.load(handle)
+    state = te.initialize_state(
+        baseline_retirements=retirements,
+        anchor_facilities=anchor_facilities,
+        exposure_tag_data=exposure_tag_data,
+    )
     state, delta = te.apply_action(
         state, "heat_resilience_upgrade", TARGET_GEOID, 1
     )

@@ -20,7 +20,8 @@ TTD/capex NOT discounted — brownfield premium already in cost_2024). Golden I.
 
 Public API
 ----------
-initialize_state(data_dir=None, ..., baseline_retirements=None) -> state dict
+initialize_state(data_dir=None, ..., baseline_retirements=None,
+                 anchor_facilities=None, exposure_tag_data=None) -> state dict
 apply_action(state, action_id, geoid, magnitude) -> (state, delta_summary)
 queue_action(state, action_id, geoid, magnitude, decision_year) -> state
 advance_year(state) -> state
@@ -1105,9 +1106,9 @@ def _seed_housing_assets(county_cards, housing_baseline):
 # asset_class is the type of asset in the registry; site_class is a field on
 # spawned site assets that drives SITE_COMPAT lookup for succession actions.
 
-def _seed_anchor_facilities(data_dir, registry):
+def _seed_anchor_facilities(anchor_facilities, registry):
     """
-    Seed Tier 2 anchor facilities from mw_anchor_facilities.geojson into asset_registry.
+    Seed Tier 2 anchor facilities from a GeoJSON payload into asset_registry.
 
     New asset_classes: mine, industrial_load, commercial_anchor_load.
     Matched generators are attached to existing county-card rows by name+geoid,
@@ -1120,15 +1121,11 @@ def _seed_anchor_facilities(data_dir, registry):
     Returns: list of new AssetInstance dicts (mine/industrial_load/commercial_anchor_load).
     Generator rows are mutated in-place (anchor_id + co2e_tpy attached).
     """
-    anchor_path = data_dir / "mw_anchor_facilities.geojson"
-    if not anchor_path.exists():
+    if anchor_facilities is None:
         return []
 
-    with open(anchor_path) as f:
-        anchor_gj = json.load(f)
-
     new_assets = []
-    for feat in anchor_gj['features']:
+    for feat in anchor_facilities['features']:
         props = feat['properties']
         if props.get('tier') != 2:
             continue
@@ -1273,28 +1270,24 @@ def _seed_anchor_facilities(data_dir, registry):
     return new_assets
 
 
-def _apply_exposure_tags(asset_registry, data_dir):
+def _apply_exposure_tags(asset_registry, exposure_tag_data):
     """
     Apply hazard exposure tags to every asset in the registry.
     v4.4 (C2): read-only data field — excluded from all four digest surfaces.
 
-    Loads asset_exposure_tags.json from data_dir. Assigns tags by:
+    Assigns tags from an explicit exposure-tag payload by:
       1. Per-asset lookup: registry asset.anchor_id → JSON asset_id
       2. Class default: class_defaults[asset_class]
       3. None (asset_class not covered)
 
     Mutates registry in place.
     """
-    tag_path = data_dir / "asset_exposure_tags.json"
-    if not tag_path.exists():
+    if exposure_tag_data is None:
         return
 
-    with open(tag_path) as f:
-        tag_data = json.load(f)
-
-    class_defaults = tag_data.get('class_defaults', {})
+    class_defaults = exposure_tag_data.get('class_defaults', {})
     by_anchor_id = {entry['asset_id']: entry['tags']
-                    for entry in tag_data.get('assets', [])}
+                    for entry in exposure_tag_data.get('assets', [])}
 
     for a in asset_registry:
         anchor_id = a.get('anchor_id')
@@ -2102,13 +2095,17 @@ def _advance_county_ag(state, current_year):
 
 def initialize_state(data_dir=None, county_ees_path=None, crosswalk_path=None,
                      county_cards_path=None, action_library_path=None,
-                     start_year=2025, baseline_retirements=None):
+                     start_year=2025, baseline_retirements=None,
+                     anchor_facilities=None, exposure_tag_data=None):
     """
     Initialize and return the canonical TERRA engine v3.0 state dict.
 
     The state is county-keyed: state['county_ees'] is the primary capital store.
     Ecoregion scores are retained as state['ecoregion_ees'] for backward
     compatibility and suitability overlay derivation.
+
+    Anchor facilities and exposure tags are opt-in payloads. Omitting either
+    argument leaves that dataset unloaded, matching the TypeScript initializer.
     """
     if data_dir is None:
         data_dir = DATA_DIR
@@ -2257,13 +2254,18 @@ def initialize_state(data_dir=None, county_ees_path=None, crosswalk_path=None,
     # ── v4.3 (F1): Seed Tier 2 anchor facilities from geojson ────────────────
     # New asset_classes: mine, industrial_load, commercial_anchor_load.
     # Generators get anchor_id + co2e_tpy attached (not re-seeded).
-    # Anchors are excluded from existing_assets view → digest-stable.
-    asset_registry.extend(_seed_anchor_facilities(data_dir, asset_registry))
+    # Non-generator anchors are excluded from existing_assets. Newly
+    # materialized matched generators remain visible in that view.
+    if anchor_facilities is not None:
+        asset_registry.extend(
+            _seed_anchor_facilities(anchor_facilities, asset_registry)
+        )
 
     # ── v4.4 (C2): Apply hazard exposure tags ────────────────────────────────
     # Tags are read-only data on registry rows. Excluded from all digest surfaces:
     # existing_assets materialization, state_digest, fiscal_digest, history_digest.
-    _apply_exposure_tags(asset_registry, data_dir)
+    if exposure_tag_data is not None:
+        _apply_exposure_tags(asset_registry, exposure_tag_data)
 
     # Materialize existing_assets from registry (overrides the _seed_existing_assets above)
     existing_assets = _materialize_existing_assets(asset_registry)

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import copy
 import inspect
+import json
 import sys
 from pathlib import Path
 
@@ -16,6 +17,20 @@ sys.path.insert(0, str(ROOT / "src"))
 import terra_engine as te
 
 from c4i_event_harness import load_hazard_baselines, load_projection_points
+
+
+DATA_DIR = ROOT / "data" / "processed"
+
+
+def _initial_state_with_anchors_and_tags():
+    with (DATA_DIR / "mw_anchor_facilities.geojson").open() as handle:
+        anchor_facilities = json.load(handle)
+    with (DATA_DIR / "asset_exposure_tags.json").open() as handle:
+        exposure_tag_data = json.load(handle)
+    return te.initialize_state(
+        anchor_facilities=anchor_facilities,
+        exposure_tag_data=exposure_tag_data,
+    )
 
 
 def _event(kind="heat_wave", geoid="56037", severity_milli=2_000):
@@ -35,7 +50,7 @@ def _event(kind="heat_wave", geoid="56037", severity_milli=2_000):
 
 
 def test_ac1_heat_consequence_uses_existing_handler_and_c2_selects_anchor_victims():
-    state = te.initialize_state()
+    state = _initial_state_with_anchors_and_tags()
     before = te.state_digest(state)["md5"]
 
     coupled, outcomes = te.apply_hazard_event_consequences(
@@ -52,7 +67,7 @@ def test_ac1_heat_consequence_uses_existing_handler_and_c2_selects_anchor_victim
 
 
 def test_ac1_unsupported_consequence_is_logged_and_skipped_without_parallel_mechanic():
-    state = te.initialize_state()
+    state = _initial_state_with_anchors_and_tags()
     digests_before = (
         te.state_digest(state)["md5"],
         te.fiscal_digest(state)["md5"],
@@ -80,7 +95,7 @@ def test_ac1_unsupported_consequence_is_logged_and_skipped_without_parallel_mech
 
 
 def test_ac2_adaptation_has_structural_write_allowlist_and_cannot_accept_hazard_inputs():
-    state = te.initialize_state()
+    state = _initial_state_with_anchors_and_tags()
     action = state["action_library"]["actions"]["heat_resilience_upgrade"]
     effect = action["climate_adaptation"]
     helper_parameters = tuple(inspect.signature(te._apply_climate_adaptation).parameters)
@@ -109,7 +124,7 @@ def test_ac2_adaptation_has_structural_write_allowlist_and_cannot_accept_hazard_
 
 
 def test_ac2_adaptation_reduces_vulnerability_but_raw_sampling_is_exogenous():
-    state = te.initialize_state()
+    state = _initial_state_with_anchors_and_tags()
     baselines = load_hazard_baselines()
     projections = load_projection_points()
     sample_kwargs = {
@@ -147,7 +162,7 @@ def test_ac2_adaptation_reduces_vulnerability_but_raw_sampling_is_exogenous():
 
 
 def test_consequence_normalization_has_a_discriminating_severity_ceiling():
-    state = te.initialize_state()
+    state = _initial_state_with_anchors_and_tags()
     at_ceiling, _ = te.apply_hazard_event_consequences(
         state, [_event(severity_milli=te.CONSEQUENCE_SEVERITY_CEILING_MILLI)]
     )
@@ -158,14 +173,14 @@ def test_consequence_normalization_has_a_discriminating_severity_ceiling():
 
 
 def test_coupling_rejects_a_pre_coupled_event_instead_of_double_applying():
-    state = te.initialize_state()
+    state = _initial_state_with_anchors_and_tags()
     pre_coupled = {**_event(), "consequence_multiplier_ppm": 500_000}
     with pytest.raises(ValueError, match="inert consequence multiplier"):
         te.apply_hazard_event_consequences(state, [pre_coupled])
 
 
 def test_ac6_adaptation_price_is_explicitly_flagged():
-    state = te.initialize_state()
+    state = _initial_state_with_anchors_and_tags()
     action = state["action_library"]["actions"]["heat_resilience_upgrade"]
     assert action["cost_2024"] == action["cost_2035"] == action["cost_2050"] == 0
     assert action["confidence"] == "flagged"

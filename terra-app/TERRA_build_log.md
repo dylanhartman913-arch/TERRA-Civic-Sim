@@ -3345,3 +3345,37 @@ The fb2ef4c "Documented, closed" status for T5-FU-2 is **superseded by this entr
 **PASS.** Pagination and retirement identity gates cleared; generator matching
 exceeded its threshold; attribution remained structurally bounded; no unrelated
 golden fixture changed.
+
+---
+
+## Extended Build 001 — Final close-out and Python initialization parity
+
+**Date:** 2026-08-11
+**Base commit:** `5a82e9d0ec1e6365ed8cc70739307357288ee4b7`
+
+### Data corrections and capacity reconciliation
+
+- The generator provenance repair removed the three-page EIA pagination ceiling: the old pull stopped at 15,000 unique records; the pinned `2026-05`, `status=OP` inventory is complete at 25,868.
+- The retirement audit corrected Jim Bridger from plant `6204` (Laramie River Station, Platte) to plant `8066` (Jim Bridger, Sweetwater). Its retirement description now contains all four current EIA nameplate rows (`577.9 + 586.2 + 577.9 + 584.0 = 2,326.0` MW), replacing the stale/wrong `1,863.0` MW three-row total. Controlled probes confirmed these unit capacities are descriptive and do not drive Ec subtraction.
+- Jim Bridger's three encountered values now have explicit meanings: `2,326.0` MW EIA nameplate is used for Ec attribution; county-card `2,120` MW is a defensible rounded net-capability/planning figure (2024 EIA reports `2,119` MW net summer/winter); `1,863.0` MW was stale/wrong.
+
+### Golden fixtures and initialization contract
+
+- The approved Golden K/M/C2 registry expectations were refreshed because Part 3 correctly materialized 97 additional matched generator anchors. Golden K existing-assets is `078e16c1096748472e81755f4e91f459`; Golden M's state/history/existing-assets and consequence-status values now reflect its intentionally anchor/tag-enabled helper. The Jim Bridger county-card capacity remains `2,120` MW and was not altered by fixture regeneration.
+- Diagnosis of 16 Python parity failures found a separate API-contract bug: Python `initialize_state` unconditionally loaded anchors/tags from disk, while TypeScript only loads optional payloads passed by the caller. A controlled disabled-autoload run made all 16 failures pass.
+- Python now mirrors TypeScript with optional `anchor_facilities` and `exposure_tag_data` payloads (`None`/omitted = unloaded). K, M, C2/C4-ii, contract-matrix K/M, the Golden K generator, and notebook 19 explicitly opt in. G/G′/H/I/J/J′ and other legacy paths remain anchor-free.
+
+### Verification and output stability
+
+- Python parity: `115/115`; separate Golden M/C2/C4-ii: `20/20`; focused K/anchor: `16/16`.
+- TypeScript parity: `33/33` files, `350/350` tests with one worker; performance median `11.788 ms`. The timing test also passed alone at `13.649 ms`. No TypeScript engine code changed.
+- Attribution/trajectory artifacts retained their prior SHA-256 values. Explicit loading reproduced the existing facility contributions and raw retirement-only Ec (`2027 -0.002788460225381151`; corrected Sweetwater/plant-8066 `2031 -0.002906898131525004`).
+- The four drought-work files were isolated during verification and excluded from this commit; they remain a separate uncommitted workstream.
+
+### Wave 7 open carry-forward
+
+1. `county_cards.json` lacks `capacity_basis` and capacity-vintage fields even though `capacity_or_load_mw` mixes nameplate, net-capability, planning-era, and load values.
+2. Dave Johnston's live `762` MW record falsely says `Capacity verified from EIA-860 2024.` Official 2024 EIA-860 plant 4158 totals are `816.7` MW nameplate, `745` MW summer, and `755` MW winter; pinned `2026-05` nameplate is also `816.7` MW. Leave the record unchanged pending Wave 7 provenance repair.
+3. Add cross-runtime parity CI that runs both engines against shared fixtures and directly against each other for anchor-free and anchor/tag-enabled initialization. The now-fixed unconditional/opt-in mismatch demonstrates why fixture-only or single-runtime gates are insufficient.
+
+**Gate verdict: PASS.** The initializer contract is aligned, legacy and anchor-aware fixtures both pass in their intended modes, and Parts 3–6 outputs are unchanged.

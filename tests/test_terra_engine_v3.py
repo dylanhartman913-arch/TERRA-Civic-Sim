@@ -43,6 +43,22 @@ def load_state_with_retirements():
     return te.initialize_state(data_dir=DATA_DIR, baseline_retirements=retirements)
 
 
+def load_state_with_anchors(baseline_retirements=None, exposure_tags=False):
+    """Load the opt-in anchor registry, optionally with exposure tags."""
+    with open(DATA_DIR / "mw_anchor_facilities.geojson") as f:
+        anchor_facilities = json.load(f)
+    exposure_tag_data = None
+    if exposure_tags:
+        with open(DATA_DIR / "asset_exposure_tags.json") as f:
+            exposure_tag_data = json.load(f)
+    return te.initialize_state(
+        data_dir=DATA_DIR,
+        baseline_retirements=baseline_retirements,
+        anchor_facilities=anchor_facilities,
+        exposure_tag_data=exposure_tag_data,
+    )
+
+
 def find_asset(registry, predicate):
     """Find first asset matching predicate in registry."""
     for a in registry:
@@ -224,25 +240,23 @@ class TestExistingAssetsDigest:
 
 class TestAnchorCommodityField:
     def test_seed_reads_msha_commodity_field(self):
-        state = load_state()
+        state = load_state_with_anchors()
         mine = find_asset(state["asset_registry"], lambda a: a.get("anchor_id") == "msha_4800152")
         assert mine["commodity"] == "trona"
 
-    def test_seed_uses_compatibility_fallback_when_field_is_absent(self, tmp_path):
+    def test_seed_uses_compatibility_fallback_when_field_is_absent(self):
         source = DATA_DIR / "mw_anchor_facilities.geojson"
         data = json.loads(source.read_text())
         mine = next(f for f in data["features"] if f["properties"].get("anchor_id") == "msha_4800152")
         del mine["properties"]["commodity"]
-        (tmp_path / "mw_anchor_facilities.geojson").write_text(json.dumps(data))
-        seeded = te._seed_anchor_facilities(tmp_path, [])
+        seeded = te._seed_anchor_facilities(data, [])
         trona = next(a for a in seeded if a.get("anchor_id") == "msha_4800152")
         assert trona["commodity"] == "trona"
 
     @pytest.mark.parametrize("migration_enabled", [True, False])
-    def test_anchor_field_does_not_change_existing_anchor_digest(self, migration_enabled, tmp_path):
-        state = load_state()
+    def test_anchor_field_does_not_change_existing_anchor_digest(self, migration_enabled):
+        state = load_state_with_anchors()
         state["population_config"]["migration_enabled"] = migration_enabled
-        assert te.existing_assets_digest(state)["md5"] == "a881df20643298394d53c2ac43012fe3"
         current = sorted(
             ({k: v for k, v in a.items() if k != "exposure_tags"}
              for a in state["asset_registry"] if a.get("anchor_id")),
@@ -252,10 +266,18 @@ class TestAnchorCommodityField:
         data = json.loads(source.read_text())
         for feature in data["features"]:
             feature["properties"].pop("commodity", None)
-        (tmp_path / "mw_anchor_facilities.geojson").write_text(json.dumps(data))
+        fallback_state = te.initialize_state(
+            data_dir=DATA_DIR,
+            anchor_facilities=data,
+        )
+        fallback_state["population_config"]["migration_enabled"] = migration_enabled
+        assert (
+            te.existing_assets_digest(state)["md5"]
+            == te.existing_assets_digest(fallback_state)["md5"]
+        )
         fallback = sorted(
             ({k: v for k, v in a.items() if k != "exposure_tags"}
-             for a in te._seed_anchor_facilities(tmp_path, [])
+             for a in te._seed_anchor_facilities(data, [])
              if a.get("anchor_id") and a.get("asset_class") == "mine"),
             key=lambda a: a["anchor_id"],
         )
@@ -1185,7 +1207,7 @@ def golden_k_fixture():
 @pytest.fixture(scope='module')
 def golden_k_state():
     """Replay the Golden K scenario (no baseline retirements, with anchors)."""
-    state = te.initialize_state(data_dir=DATA_DIR)
+    state = load_state_with_anchors()
     state = te.schedule_retirement(state, 'anchor_56037_we_soda_westvaco', 2030)
     state = te.schedule_retirement(state, 'anchor_56005_black_thunder', 2028)
     state = advance_to_year(state, 2029)
@@ -1202,7 +1224,7 @@ class TestGoldenK:
 
     def test_k1_anchor_seeding_populates_registry(self):
         """Anchors are seeded into asset_registry at initialization."""
-        state = te.initialize_state(data_dir=DATA_DIR)
+        state = load_state_with_anchors()
         anchors = [a for a in state["asset_registry"]
                    if a.get("asset_class") in ("mine", "industrial_load", "commercial_anchor_load")]
         assert len(anchors) > 0, "No anchor assets seeded"
@@ -1210,20 +1232,19 @@ class TestGoldenK:
         assert len(mines) > 0, "No mine assets seeded"
 
     def test_k2_anchor_inertness_state_digest(self):
-        """Anchor seeding does not change state_digest — two inits match."""
-        s1 = te.initialize_state(data_dir=DATA_DIR)
-        s2 = te.initialize_state(data_dir=DATA_DIR)
-        # If anchors leaked into the digest, the md5 would differ between
-        # different-order dict construction or be non-deterministic. Two
-        # identical inits must produce identical digests.
-        assert te.state_digest(s1)["md5"] == te.state_digest(s2)["md5"]
-        # Also verify fiscal and existing_assets are stable
-        assert te.fiscal_digest(s1)["md5"] == te.fiscal_digest(s2)["md5"]
-        assert te.existing_assets_digest(s1)["md5"] == te.existing_assets_digest(s2)["md5"]
+        """Anchor seeding is inert to state/fiscal but materializes generators."""
+        anchored = load_state_with_anchors()
+        anchor_free = load_state()
+        assert te.state_digest(anchored)["md5"] == te.state_digest(anchor_free)["md5"]
+        assert te.fiscal_digest(anchored)["md5"] == te.fiscal_digest(anchor_free)["md5"]
+        assert (
+            te.existing_assets_digest(anchored)["md5"]
+            != te.existing_assets_digest(anchor_free)["md5"]
+        )
 
     def test_k3_bt_site_spawns_with_correct_class(self, golden_k_fixture):
         """Black Thunder mine site spawns with site_class='mine'."""
-        state = te.initialize_state(data_dir=DATA_DIR)
+        state = load_state_with_anchors()
         state = te.schedule_retirement(state, 'anchor_56005_black_thunder', 2028)
         state = advance_to_year(state, 2029)
         site = find_asset(state["asset_registry"],
@@ -1232,7 +1253,7 @@ class TestGoldenK:
 
     def test_k4_bt_workforce_pool_from_employment(self, golden_k_fixture):
         """Black Thunder workforce pool sized by employment_direct, not MW."""
-        state = te.initialize_state(data_dir=DATA_DIR)
+        state = load_state_with_anchors()
         state = te.schedule_retirement(state, 'anchor_56005_black_thunder', 2028)
         state = advance_to_year(state, 2029)
         site = find_asset(state["asset_registry"],
@@ -1241,7 +1262,7 @@ class TestGoldenK:
 
     def test_k5_solar_on_mine_site_gets_succession(self, golden_k_fixture):
         """Solar on BT mine site receives TTD reduction and capex discount."""
-        state = te.initialize_state(data_dir=DATA_DIR)
+        state = load_state_with_anchors()
         state = te.schedule_retirement(state, 'anchor_56005_black_thunder', 2028)
         state = advance_to_year(state, 2029)
         state = te.queue_action(state, 'solar_utility', '56005', 100, 2029)
@@ -1255,7 +1276,7 @@ class TestGoldenK:
 
     def test_k6_ws_workforce_pool_from_employment(self, golden_k_fixture):
         """WE Soda workforce pool sized by employment (722)."""
-        state = te.initialize_state(data_dir=DATA_DIR)
+        state = load_state_with_anchors()
         state = te.schedule_retirement(state, 'anchor_56037_we_soda_westvaco', 2030)
         state = advance_to_year(state, 2031)
         site = find_asset(state["asset_registry"],
@@ -1264,7 +1285,7 @@ class TestGoldenK:
 
     def test_k7_ws_mine_site_null_interconnection(self, golden_k_fixture):
         """WE Soda mine site has null interconnection_mw (mines have no MW)."""
-        state = te.initialize_state(data_dir=DATA_DIR)
+        state = load_state_with_anchors()
         state = te.schedule_retirement(state, 'anchor_56037_we_soda_westvaco', 2030)
         state = advance_to_year(state, 2031)
         site = find_asset(state["asset_registry"],
@@ -1273,7 +1294,7 @@ class TestGoldenK:
 
     def test_k8_y_track_hook_fires_for_trona(self, golden_k_fixture):
         """Y-track hook fires on mine retirement with correct commodity."""
-        state = te.initialize_state(data_dir=DATA_DIR)
+        state = load_state_with_anchors()
         state = te.schedule_retirement(state, 'anchor_56037_we_soda_westvaco', 2030)
         state = advance_to_year(state, 2031)
         retired = find_asset(state["asset_registry"],
@@ -1306,7 +1327,7 @@ class TestGoldenK:
     def test_k11_deterministic(self, golden_k_fixture):
         """Two full replays produce identical state_digest."""
         def replay():
-            s = te.initialize_state(data_dir=DATA_DIR)
+            s = load_state_with_anchors()
             s = te.schedule_retirement(s, 'anchor_56037_we_soda_westvaco', 2030)
             s = te.schedule_retirement(s, 'anchor_56005_black_thunder', 2028)
             s = advance_to_year(s, 2029)

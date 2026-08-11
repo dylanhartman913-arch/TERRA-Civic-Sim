@@ -45,7 +45,12 @@ if not (DATA_DIR / 'synthetic_buses.geojson').exists():
         DATA_DIR = _main
 
 print("Initializing state...")
-state = initialize_state(data_dir=DATA_DIR)
+with (DATA_DIR / 'mw_anchor_facilities.geojson').open() as handle:
+    anchor_facilities = json.load(handle)
+state = initialize_state(
+    data_dir=DATA_DIR,
+    anchor_facilities=anchor_facilities,
+)
 
 # ── Identify anchors ────────────────────────────────────────────────────────
 def find_anchor(registry, name, geoid=None):
@@ -205,7 +210,10 @@ assert state['year'] == 2040
 
 # ── Determinism check ────────────────────────────────────────────────────────
 print("\nDeterminism check — running identical scenario again...")
-state2 = initialize_state(data_dir=DATA_DIR)
+state2 = initialize_state(
+    data_dir=DATA_DIR,
+    anchor_facilities=anchor_facilities,
+)
 state2 = schedule_retirement(state2, we_soda['asset_id'], 2030)
 state2 = schedule_retirement(state2, black_thunder['asset_id'], 2028)
 for _ in range(4):  # to 2029

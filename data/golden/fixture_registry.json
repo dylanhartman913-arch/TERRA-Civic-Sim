@@ -123,7 +123,7 @@
       "created": "2026-07-12",
       "state_digest_md5": "457b215ab9efb0891fe4376984249ba0",
       "fiscal_digest_md5": "469ae713294c18fc2fe06797e6cabbed",
-      "existing_assets_digest_md5": "f8117a24bfa8ef77495a6ca24c38d518",
+      "existing_assets_digest_md5": "078e16c1096748472e81755f4e91f459",
       "history_digest_md5": "f9f716e177fb7bc37bd5f61eaa79057f",
       "history_n_years": 15,
       "history_year_range": [2026, 2040],
@@ -138,24 +138,24 @@
       "description": "Golden M — C4-ii resilience fork. One heat-resilience action, seed 42, years 2026-2030; lens enters only through sampled events and existing-handler consequences.",
       "created": "2026-07-16",
       "historical": {
-        "state_digest_md5": "bc09a67e4b42e94d165b86fc751f4823",
+        "state_digest_md5": "0ba566255ca2418a9c2f0ef3cb1db891",
         "fiscal_digest_md5": "58bd2636ea88f814328ecb24aad8a75a",
-        "existing_assets_digest_md5": "18bdf3eb5fa5acb6b8960c350a19a018",
-        "history_digest_md5": "0b953d708f79c794cfcda2c1b259775f",
+        "existing_assets_digest_md5": "12ce6abe6e39b60dd1dcc06b7e065cc3",
+        "history_digest_md5": "38eaf77f1d25d8dd780f85a00efb434a",
         "event_count": 0
       },
       "ssp245": {
-        "state_digest_md5": "56e2efa80b5960ff43b020b8633db637",
+        "state_digest_md5": "dce68445d78a6baaa434c5ee2b996020",
         "fiscal_digest_md5": "58bd2636ea88f814328ecb24aad8a75a",
-        "existing_assets_digest_md5": "18bdf3eb5fa5acb6b8960c350a19a018",
-        "history_digest_md5": "eec3ebfb3affcea3a9ebe414f347e481",
+        "existing_assets_digest_md5": "12ce6abe6e39b60dd1dcc06b7e065cc3",
+        "history_digest_md5": "e09bedf64ed37da50d4612f463baac7d",
         "event_count": 1506
       },
       "ssp370": {
-        "state_digest_md5": "c0564963edb2fb836e486fc8a7f3bca7",
+        "state_digest_md5": "f69a928c918fa12d9a0450b6fc14b9b5",
         "fiscal_digest_md5": "58bd2636ea88f814328ecb24aad8a75a",
-        "existing_assets_digest_md5": "18bdf3eb5fa5acb6b8960c350a19a018",
-        "history_digest_md5": "892e07bab0863ea95ba8687977fe4c56",
+        "existing_assets_digest_md5": "12ce6abe6e39b60dd1dcc06b7e065cc3",
+        "history_digest_md5": "2ec618b89873bd540e1f0d597659638c",
         "event_count": 1530
       },
       "note": "New fixture; no A-L fixture regenerated and no amendment consumed."

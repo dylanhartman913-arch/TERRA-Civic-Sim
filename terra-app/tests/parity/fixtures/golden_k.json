@@ -78,7 +78,7 @@
   "digests_yr2040": {
     "state_digest_md5": "457b215ab9efb0891fe4376984249ba0",
     "fiscal_digest_md5": "469ae713294c18fc2fe06797e6cabbed",
-    "existing_assets_digest_md5": "f8117a24bfa8ef77495a6ca24c38d518",
+    "existing_assets_digest_md5": "078e16c1096748472e81755f4e91f459",
     "history_digest_md5": "f9f716e177fb7bc37bd5f61eaa79057f",
     "history_n_years": 15,
     "history_year_range": [

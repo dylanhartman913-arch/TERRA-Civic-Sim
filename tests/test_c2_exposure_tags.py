@@ -44,28 +44,35 @@ def _load_retirements():
     return {k: v for k, v in raw.items() if k != "_meta"}
 
 
+def _load_anchor_facilities():
+    with open(DATA_DIR / "mw_anchor_facilities.geojson") as f:
+        return json.load(f)
+
+
+def _load_exposure_tag_data():
+    with open(DATA_DIR / "asset_exposure_tags.json") as f:
+        return json.load(f)
+
+
 def load_state_with_anchors_and_tags(retirements=True):
     """Initialize state with anchors and exposure tags (full C2 state)."""
     r = _load_retirements() if retirements else None
-    return te.initialize_state(data_dir=DATA_DIR, baseline_retirements=r)
+    return te.initialize_state(
+        data_dir=DATA_DIR,
+        baseline_retirements=r,
+        anchor_facilities=_load_anchor_facilities(),
+        exposure_tag_data=_load_exposure_tag_data(),
+    )
 
 
 def load_state_without_tags():
-    """Initialize state with anchors but WITHOUT exposure tags — control for inertness.
-
-    We patch _apply_exposure_tags temporarily to skip tag assignment.
-    """
-    orig = te._apply_exposure_tags
-
-    def _noop(registry, data_dir):
-        pass  # skip tag assignment
-
-    te._apply_exposure_tags = _noop
-    try:
-        state = te.initialize_state(data_dir=DATA_DIR, baseline_retirements=_load_retirements())
-    finally:
-        te._apply_exposure_tags = orig
-    return state
+    """Initialize state with anchors but WITHOUT exposure tags — inertness control."""
+    return te.initialize_state(
+        data_dir=DATA_DIR,
+        baseline_retirements=_load_retirements(),
+        anchor_facilities=_load_anchor_facilities(),
+        exposure_tag_data=None,
+    )
 
 
 def find_assets(registry, pred):

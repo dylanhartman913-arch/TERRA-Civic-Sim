@@ -23,9 +23,10 @@
       "scheduled_retirement_year": 2031,
       "retirement_source": "eia860_imputed",
       "units": [
-        { "generator_id": "1", "capacity_mw": 621.0, "year_on": 1981, "year_shutdown": 2031, "retirement_source": "eia860_imputed" },
-        { "generator_id": "2", "capacity_mw": 621.0, "year_on": 1981, "year_shutdown": 2031, "retirement_source": "eia860_imputed" },
-        { "generator_id": "3", "capacity_mw": 621.0, "year_on": 1982, "year_shutdown": 2032, "retirement_source": "eia860_imputed" }
+        { "generator_id": "1", "capacity_mw": 577.9 },
+        { "generator_id": "2", "capacity_mw": 586.2 },
+        { "generator_id": "3", "capacity_mw": 577.9 },
+        { "generator_id": "4", "capacity_mw": 584.0 }
       ]
     }
   }

@@ -1,3 +1,3 @@
 entry_name_in_file,plant_code_in_file,eia_plant_code_by_name_match,match_status,capacity_mw_in_file,capacity_mw_eia,unit_count_in_file,unit_count_eia,county_in_file,county_eia,verdict
 Dave Johnston Power Plant,4158,4158,name_state_county_match_all_fields_agree,816.7,816.7,4,4,Converse,Converse,confirmed_correct
-Jim Bridger Power Plant,6204,8066,name_state_county_match_code_differs,1863.0,2326.0,3,4,Sweetwater,Sweetwater,wrong_plant_code
+Jim Bridger Power Plant,8066,8066,name_state_county_match_all_fields_agree,2326.0,2326.0,4,4,Sweetwater,Sweetwater,confirmed_correct
