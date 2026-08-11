@@ -3370,7 +3370,7 @@ golden fixture changed.
 - Python parity: `115/115`; separate Golden M/C2/C4-ii: `20/20`; focused K/anchor: `16/16`.
 - TypeScript parity: `33/33` files, `350/350` tests with one worker; performance median `11.788 ms`. The timing test also passed alone at `13.649 ms`. No TypeScript engine code changed.
 - Attribution/trajectory artifacts retained their prior SHA-256 values. Explicit loading reproduced the existing facility contributions and raw retirement-only Ec (`2027 -0.002788460225381151`; corrected Sweetwater/plant-8066 `2031 -0.002906898131525004`).
-- The four drought-work files were isolated during verification and excluded from this commit; they remain a separate uncommitted workstream.
+- The four drought-work files were isolated during verification and excluded from commit `66532c4e5dffceb0998b89a4a966d4f2fb867567`. The stash then popped cleanly; exactly `replay.ts`, `session_drought.ts`, `store.ts`, and `golden_ranch_country_2040.json` are restored as uncommitted modifications and remain a separate workstream.
 
 ### Wave 7 open carry-forward
 
