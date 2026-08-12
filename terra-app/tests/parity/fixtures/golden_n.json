@@ -19,7 +19,7 @@
         },
         "digests": {
           "ag_digest_md5": "8f5ae69e00d8094b6ec860484a01aaf7",
-          "existing_assets_digest_md5": "a881df20643298394d53c2ac43012fe3",
+          "existing_assets_digest_md5": "92bfcbf6e650ae5851d04058fdeef752",
           "fiscal_digest_md5": "af67c87f142045222bcaf324cdc9a947",
           "history_digest_md5": "d751713988987e9331980363e24189ce",
           "state_digest_md5": "7526d2e64081d0fb0554b9f8b3606590"
@@ -75,10 +75,10 @@
         ],
         "digests": {
           "ag_digest_md5": "b81cef0912a17e4af5fa445b4be494ab",
-          "existing_assets_digest_md5": "906ad6827b7b6646b6ae840151b2a6cd",
+          "existing_assets_digest_md5": "42cc98986d8459d1f3cbaff9de786c83",
           "fiscal_digest_md5": "4fb3eb1b84612723780439595c157537",
           "history_digest_md5": "c2353deea3c200616521f2aebad42fca",
-          "state_digest_md5": "f027b7d8ccb52707da9c695d1b2059d7"
+          "state_digest_md5": "f45f531f1904a4ebfb519ed918f86821"
         }
       },
       "treatment_without_maintenance": {
@@ -131,10 +131,10 @@
         ],
         "digests": {
           "ag_digest_md5": "60294b3decb6c62540516085b9cfdcad",
-          "existing_assets_digest_md5": "906ad6827b7b6646b6ae840151b2a6cd",
+          "existing_assets_digest_md5": "42cc98986d8459d1f3cbaff9de786c83",
           "fiscal_digest_md5": "4fb3eb1b84612723780439595c157537",
           "history_digest_md5": "d3bc21330cabf2fa13ce62b083545763",
-          "state_digest_md5": "3e11342818af7e08c481d2cf1ac40ab8"
+          "state_digest_md5": "0788d3706e076804169093a6609f2c8d"
         }
       },
       "two_year_drought": {
@@ -166,10 +166,10 @@
         ],
         "digests": {
           "ag_digest_md5": "a61e8b16b4cea0e3ae743f9ccd7a26d0",
-          "existing_assets_digest_md5": "928a96b9fb9efd8c8b17ba1e3e061a4d",
+          "existing_assets_digest_md5": "94838f10c798a0650d1b33fee30717b8",
           "fiscal_digest_md5": "4b55b15a08079110290331854e19a6b2",
           "history_digest_md5": "21a89c7f52caebfd43195b6275302f4c",
-          "state_digest_md5": "a843a252ef3453935139113b39d496f5"
+          "state_digest_md5": "7646ce28b7f627be65ccbfbb011a4a7f"
         },
         "handler": "county_ag_d1"
       },
@@ -252,7 +252,7 @@
         },
         "digests": {
           "ag_digest_md5": "8a85a3fe55f11fea6a81ea5ff77faf4f",
-          "existing_assets_digest_md5": "a881df20643298394d53c2ac43012fe3",
+          "existing_assets_digest_md5": "92bfcbf6e650ae5851d04058fdeef752",
           "fiscal_digest_md5": "e9478d4e071c79ad991012052d3b53b2",
           "history_digest_md5": "d751713988987e9331980363e24189ce",
           "state_digest_md5": "000294920cc93b848802324d4ffc5d82"
@@ -270,7 +270,7 @@
         },
         "digests": {
           "ag_digest_md5": "08c85b5a3a9dd435b4867e53fc81d94e",
-          "existing_assets_digest_md5": "a881df20643298394d53c2ac43012fe3",
+          "existing_assets_digest_md5": "92bfcbf6e650ae5851d04058fdeef752",
           "fiscal_digest_md5": "d47d1bfcc7d9fcc221ea190ded3d8239",
           "history_digest_md5": "d751713988987e9331980363e24189ce",
           "state_digest_md5": "6e6ecf5e425db7b483f6778f6add7762"
@@ -298,7 +298,7 @@
         },
         "digests": {
           "ag_digest_md5": "8f5ae69e00d8094b6ec860484a01aaf7",
-          "existing_assets_digest_md5": "a881df20643298394d53c2ac43012fe3",
+          "existing_assets_digest_md5": "92bfcbf6e650ae5851d04058fdeef752",
           "fiscal_digest_md5": "af67c87f142045222bcaf324cdc9a947",
           "history_digest_md5": "d751713988987e9331980363e24189ce",
           "state_digest_md5": "7526d2e64081d0fb0554b9f8b3606590"
@@ -354,10 +354,10 @@
         ],
         "digests": {
           "ag_digest_md5": "b81cef0912a17e4af5fa445b4be494ab",
-          "existing_assets_digest_md5": "906ad6827b7b6646b6ae840151b2a6cd",
+          "existing_assets_digest_md5": "42cc98986d8459d1f3cbaff9de786c83",
           "fiscal_digest_md5": "4fb3eb1b84612723780439595c157537",
           "history_digest_md5": "c2353deea3c200616521f2aebad42fca",
-          "state_digest_md5": "f027b7d8ccb52707da9c695d1b2059d7"
+          "state_digest_md5": "f45f531f1904a4ebfb519ed918f86821"
         }
       },
       "treatment_without_maintenance": {
@@ -410,10 +410,10 @@
         ],
         "digests": {
           "ag_digest_md5": "60294b3decb6c62540516085b9cfdcad",
-          "existing_assets_digest_md5": "906ad6827b7b6646b6ae840151b2a6cd",
+          "existing_assets_digest_md5": "42cc98986d8459d1f3cbaff9de786c83",
           "fiscal_digest_md5": "4fb3eb1b84612723780439595c157537",
           "history_digest_md5": "d3bc21330cabf2fa13ce62b083545763",
-          "state_digest_md5": "3e11342818af7e08c481d2cf1ac40ab8"
+          "state_digest_md5": "0788d3706e076804169093a6609f2c8d"
         }
       },
       "two_year_drought": {
@@ -445,10 +445,10 @@
         ],
         "digests": {
           "ag_digest_md5": "ea66457fa0fc4c5f2364b0995d797b0d",
-          "existing_assets_digest_md5": "928a96b9fb9efd8c8b17ba1e3e061a4d",
+          "existing_assets_digest_md5": "94838f10c798a0650d1b33fee30717b8",
           "fiscal_digest_md5": "4b55b15a08079110290331854e19a6b2",
           "history_digest_md5": "21a89c7f52caebfd43195b6275302f4c",
-          "state_digest_md5": "a843a252ef3453935139113b39d496f5"
+          "state_digest_md5": "7646ce28b7f627be65ccbfbb011a4a7f"
         },
         "handler": "county_ag_d1"
       },
@@ -531,7 +531,7 @@
         },
         "digests": {
           "ag_digest_md5": "8a85a3fe55f11fea6a81ea5ff77faf4f",
-          "existing_assets_digest_md5": "a881df20643298394d53c2ac43012fe3",
+          "existing_assets_digest_md5": "92bfcbf6e650ae5851d04058fdeef752",
           "fiscal_digest_md5": "e9478d4e071c79ad991012052d3b53b2",
           "history_digest_md5": "d751713988987e9331980363e24189ce",
           "state_digest_md5": "000294920cc93b848802324d4ffc5d82"
@@ -549,7 +549,7 @@
         },
         "digests": {
           "ag_digest_md5": "08c85b5a3a9dd435b4867e53fc81d94e",
-          "existing_assets_digest_md5": "a881df20643298394d53c2ac43012fe3",
+          "existing_assets_digest_md5": "92bfcbf6e650ae5851d04058fdeef752",
           "fiscal_digest_md5": "d47d1bfcc7d9fcc221ea190ded3d8239",
           "history_digest_md5": "d751713988987e9331980363e24189ce",
           "state_digest_md5": "6e6ecf5e425db7b483f6778f6add7762"

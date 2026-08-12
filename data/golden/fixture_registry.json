@@ -94,7 +94,10 @@
       "created": "2026-07-03",
       "history_digest_md5": "b314878564e4118e7a60d6fc04d6a03d",
       "history_n_years": 63,
-      "history_year_range": [2026, 2088],
+      "history_year_range": [
+        2026,
+        2088
+      ],
       "note": "v4.0 additive: history field does not affect Golden A-H digest values."
     },
     {
@@ -111,7 +114,10 @@
       "created": "2026-07-05",
       "history_digest_md5": "7b05722c9b11c2b405faf953c729977d",
       "history_n_years": 63,
-      "history_year_range": [2026, 2088]
+      "history_year_range": [
+        2026,
+        2088
+      ]
     },
     {
       "fixture_id": "golden_k",
@@ -119,15 +125,18 @@
       "location": "terra-app/tests/parity/fixtures/golden_k.json",
       "superseded_by": null,
       "status": "active",
-      "description": "Golden K — anchor lifecycle (F1 Session). Retire WE Soda trona anchor (Sweetwater, 722 emp) in 2030; retire Black Thunder coal anchor (Campbell, 808 emp) in 2028; queue solar_utility on mine site; place SMR on Sweetwater in 2035. Tests anchor retirement → site spawn → succession discount chain. Employment-sized workforce pools (not MW-based).",
+      "description": "Golden K \u2014 anchor lifecycle (F1 Session). Retire WE Soda trona anchor (Sweetwater, 722 emp) in 2030; retire Black Thunder coal anchor (Campbell, 808 emp) in 2028; queue solar_utility on mine site; place SMR on Sweetwater in 2035. Tests anchor retirement \u2192 site spawn \u2192 succession discount chain. Employment-sized workforce pools (not MW-based).",
       "created": "2026-07-12",
       "state_digest_md5": "457b215ab9efb0891fe4376984249ba0",
       "fiscal_digest_md5": "469ae713294c18fc2fe06797e6cabbed",
       "existing_assets_digest_md5": "078e16c1096748472e81755f4e91f459",
       "history_digest_md5": "f9f716e177fb7bc37bd5f61eaa79057f",
       "history_n_years": 15,
-      "history_year_range": [2026, 2040],
-      "note": "New fixture — no amendment consumed. Four-contract parity confirmed (Python ↔ TS, 12 tests)."
+      "history_year_range": [
+        2026,
+        2040
+      ],
+      "note": "New fixture \u2014 no amendment consumed. Four-contract parity confirmed (Python \u2194 TS, 12 tests)."
     },
     {
       "fixture_id": "golden_m",
@@ -135,24 +144,24 @@
       "location": "terra-app/tests/parity/fixtures/golden_m.json",
       "superseded_by": null,
       "status": "active",
-      "description": "Golden M — C4-ii resilience fork. One heat-resilience action, seed 42, years 2026-2030; lens enters only through sampled events and existing-handler consequences.",
+      "description": "Golden M \u2014 C4-ii resilience fork. One heat-resilience action, seed 42, years 2026-2030; lens enters only through sampled events and existing-handler consequences.",
       "created": "2026-07-16",
       "historical": {
-        "state_digest_md5": "0ba566255ca2418a9c2f0ef3cb1db891",
+        "state_digest_md5": "0a0091bbc8b2b341364382b4f2d0b99b",
         "fiscal_digest_md5": "58bd2636ea88f814328ecb24aad8a75a",
         "existing_assets_digest_md5": "12ce6abe6e39b60dd1dcc06b7e065cc3",
         "history_digest_md5": "38eaf77f1d25d8dd780f85a00efb434a",
         "event_count": 0
       },
       "ssp245": {
-        "state_digest_md5": "dce68445d78a6baaa434c5ee2b996020",
+        "state_digest_md5": "3f1764d1df8eeb3a67fecd973f736594",
         "fiscal_digest_md5": "58bd2636ea88f814328ecb24aad8a75a",
         "existing_assets_digest_md5": "12ce6abe6e39b60dd1dcc06b7e065cc3",
         "history_digest_md5": "e09bedf64ed37da50d4612f463baac7d",
         "event_count": 1506
       },
       "ssp370": {
-        "state_digest_md5": "f69a928c918fa12d9a0450b6fc14b9b5",
+        "state_digest_md5": "da39731213b8ec713630347effe36218",
         "fiscal_digest_md5": "58bd2636ea88f814328ecb24aad8a75a",
         "existing_assets_digest_md5": "12ce6abe6e39b60dd1dcc06b7e065cc3",
         "history_digest_md5": "2ec618b89873bd540e1f0d597659638c",
@@ -166,11 +175,11 @@
       "location": "terra-app/tests/parity/fixtures/golden_n.json",
       "superseded_by": null,
       "status": "active",
-      "description": "Golden N — Fremont and Converse county-ag arcs: invasive treatment decay/maintenance, irrigation efficiency, solar valuation swap, wind shared acres, and two-year D1 drought under historical and SSP3-7.0.",
+      "description": "Golden N \u2014 Fremont and Converse county-ag arcs: invasive treatment decay/maintenance, irrigation efficiency, solar valuation swap, wind shared acres, and two-year D1 drought under historical and SSP3-7.0.",
       "created": "2026-07-19",
       "historical_ag_digest_md5": "a61e8b16b4cea0e3ae743f9ccd7a26d0",
       "ssp370_ag_digest_md5": "ea66457fa0fc4c5f2364b0995d797b0d",
-      "cross_runtime_tolerance": 0.000001,
+      "cross_runtime_tolerance": 1e-06,
       "note": "New fixture; no A-M fixture regenerated and no amendment consumed. amendments_used remains 4."
     }
   ]

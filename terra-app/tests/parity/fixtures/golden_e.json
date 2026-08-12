@@ -41,7 +41,7 @@
     "golden_a_state_digest_unchanged": "4a838c7070d55d3487d8f3ecbc529220"
   },
   "existing_assets_digest": {
-    "md5": "a881df20643298394d53c2ac43012fe3"
+    "md5": "92bfcbf6e650ae5851d04058fdeef752"
   },
   "existing_assets_snapshot": {
     "56005": [
@@ -77,9 +77,9 @@
         "name": "Dave Johnston Power Plant",
         "status": "operating",
         "asset_kind": "mw_asset",
-        "capacity_mw": 762.0,
+        "capacity_mw": 816.7,
         "type": "coal",
-        "coal_tons_yr": 2852470.8,
+        "coal_tons_yr": 3057234.78,
         "excluded": null,
         "fiscal_action_id": "coal_to_solar"
       }
@@ -89,7 +89,7 @@
         "name": "Meta AI Data Center (Cheyenne)",
         "status": "under_construction",
         "asset_kind": "mw_asset",
-        "capacity_mw": 100.0,
+        "capacity_mw": 152.0,
         "type": "data_center",
         "coal_tons_yr": null,
         "excluded": null,
@@ -99,7 +99,7 @@
         "name": "Jade/Crusoe Campus Phase 1 (Cheyenne)",
         "status": "approved_2026",
         "asset_kind": "mw_asset",
-        "capacity_mw": 200.0,
+        "capacity_mw": 1800.0,
         "type": "data_center",
         "coal_tons_yr": null,
         "excluded": null,

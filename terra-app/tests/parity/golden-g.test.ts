@@ -69,7 +69,7 @@ describe('Golden G — Scheduled Baseline Retirements 2025→2045', () => {
     expect(state.bus_state[bus56037].capacity_mw).toBe(fixture.assertions.bus_56037_init_capacity_mw);
   });
 
-  it('(7c) Dave Johnston retires at year 2027 — capacity drops 762 MW', () => {
+  it('(7c) Dave Johnston retires at year 2027 — capacity drops 816.7 MW', () => {
     const state = advanceToYear(loadInitialStateWithRetirements(), 2027);
     const dj = findAsset(state.asset_registry, a => a.name.includes('Dave Johnston'));
     expect(dj.lifecycle).toBe(fixture.assertions.yr2027_dj_lifecycle);

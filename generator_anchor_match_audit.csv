@@ -99,7 +99,7 @@ eia_plant_58218,eia860_58218_30045,eia_plant_code,exact_id,40.0,40.0,0.0
 eia_plant_58392,eia860_58392_30039,eia_plant_code,exact_id,2.0,2.0,0.0
 eia_plant_58438,eia860_58438_46081,eia_plant_code,exact_id,4.0,4.0,0.0
 ,flagship_powder_river_basin_coal_mines,no_match,unmatched,,,
-eia_plant_4158,flagship_dave_johnston_power_plant,normalized_name_county_capacity,fuzzy,816.7,762.0,7.17847769028872
+eia_plant_4158,flagship_dave_johnston_power_plant,normalized_name_county_capacity,fuzzy,816.7,816.7,0.0
 ,flagship_kemmerer_unit_1_natrium,no_match,unmatched,,345.0,
 ,flagship_naughton_gas_conversion,no_match,unmatched,,,
 eia_plant_8066,flagship_jim_bridger_power_plant,normalized_name_county_capacity,fuzzy,2326.0,2120.0,9.716981132075473

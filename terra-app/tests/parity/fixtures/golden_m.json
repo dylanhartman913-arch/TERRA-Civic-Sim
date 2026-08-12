@@ -3,10 +3,10 @@
   "pre_c4_historical_control": {
     "event_count": 0,
     "event_stream_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
-    "existing_assets_digest_md5": "12ce6abe6e39b60dd1dcc06b7e065cc3",
+    "existing_assets_digest_md5": "9055732f1fc6a4144a658386ef08f788",
     "fiscal_digest_md5": "58bd2636ea88f814328ecb24aad8a75a",
     "history_digest_md5": "38eaf77f1d25d8dd780f85a00efb434a",
-    "state_digest_md5": "0ba566255ca2418a9c2f0ef3cb1db891",
+    "state_digest_md5": "0a0091bbc8b2b341364382b4f2d0b99b",
     "status_counts": {
       "applied_existing_handler": 0,
       "skipped_no_existing_handler": 0,
@@ -17,10 +17,10 @@
     "historical": {
       "event_count": 0,
       "event_stream_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
-      "existing_assets_digest_md5": "12ce6abe6e39b60dd1dcc06b7e065cc3",
+      "existing_assets_digest_md5": "9055732f1fc6a4144a658386ef08f788",
       "fiscal_digest_md5": "58bd2636ea88f814328ecb24aad8a75a",
       "history_digest_md5": "38eaf77f1d25d8dd780f85a00efb434a",
-      "state_digest_md5": "0ba566255ca2418a9c2f0ef3cb1db891",
+      "state_digest_md5": "0a0091bbc8b2b341364382b4f2d0b99b",
       "status_counts": {
         "applied_existing_handler": 0,
         "skipped_no_existing_handler": 0,
@@ -30,10 +30,10 @@
     "ssp245": {
       "event_count": 1506,
       "event_stream_sha256": "c3472a7254110b124eabdde2a9e232acdc240ecd0ef8c766564282e1cf9a850f",
-      "existing_assets_digest_md5": "12ce6abe6e39b60dd1dcc06b7e065cc3",
+      "existing_assets_digest_md5": "9055732f1fc6a4144a658386ef08f788",
       "fiscal_digest_md5": "58bd2636ea88f814328ecb24aad8a75a",
       "history_digest_md5": "e09bedf64ed37da50d4612f463baac7d",
-      "state_digest_md5": "dce68445d78a6baaa434c5ee2b996020",
+      "state_digest_md5": "3f1764d1df8eeb3a67fecd973f736594",
       "status_counts": {
         "applied_existing_handler": 116,
         "skipped_no_existing_handler": 576,
@@ -43,10 +43,10 @@
     "ssp370": {
       "event_count": 1530,
       "event_stream_sha256": "7e06cf0fa7f21b76a2f3869b7b851ef89bddd55e580426002e7d2ad72d8a9f6c",
-      "existing_assets_digest_md5": "12ce6abe6e39b60dd1dcc06b7e065cc3",
+      "existing_assets_digest_md5": "9055732f1fc6a4144a658386ef08f788",
       "fiscal_digest_md5": "58bd2636ea88f814328ecb24aad8a75a",
       "history_digest_md5": "2ec618b89873bd540e1f0d597659638c",
-      "state_digest_md5": "f69a928c918fa12d9a0450b6fc14b9b5",
+      "state_digest_md5": "da39731213b8ec713630347effe36218",
       "status_counts": {
         "applied_existing_handler": 123,
         "skipped_no_existing_handler": 572,

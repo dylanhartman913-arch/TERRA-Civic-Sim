@@ -35,10 +35,10 @@
   },
   "digests_after": {
     "fiscal_digest_md5": "b2a9567a9545db98d2509c9e75a98a66",
-    "existing_assets_digest_md5": "80f48310c47b6dd9c97dfb999da4bf56"
+    "existing_assets_digest_md5": "8e03a67bd89e7aa53d46db41f059e968"
   },
   "digests_before": {
     "fiscal_digest_md5": "af67c87f142045222bcaf324cdc9a947",
-    "existing_assets_digest_md5": "a881df20643298394d53c2ac43012fe3"
+    "existing_assets_digest_md5": "92bfcbf6e650ae5851d04058fdeef752"
   }
 }

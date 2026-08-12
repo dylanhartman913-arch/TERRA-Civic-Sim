@@ -12,17 +12,17 @@
     "bus_56037_id": "282",
     "bus_56009_init_capacity_mw": 1244.5,
     "bus_56037_init_capacity_mw": 2401.8,
-    "dj_capacity_drop_mw": 762,
+    "dj_capacity_drop_mw": 816.7,
     "jb_capacity_drop_mw": 2120,
     "yr2027_dj_lifecycle": "retired",
     "yr2027_jb_lifecycle": "operating",
-    "yr2027_bus_56009_capacity_mw": 482.5,
+    "yr2027_bus_56009_capacity_mw": 427.79999999999995,
     "yr2027_bus_56037_capacity_mw": 2401.8,
     "yr2031_dj_lifecycle": "retired",
     "yr2031_jb_lifecycle": "retired",
-    "yr2031_bus_56009_capacity_mw": 482.5,
+    "yr2031_bus_56009_capacity_mw": 427.79999999999995,
     "yr2031_bus_56037_capacity_mw": 281.8000000000002,
-    "yr2045_bus_56009_capacity_mw": 482.5,
+    "yr2045_bus_56009_capacity_mw": 427.79999999999995,
     "yr2045_bus_56037_capacity_mw": 281.8000000000002,
     "prb_geoid": "56005",
     "prb_init_production_volume": 170045000.0,
@@ -37,21 +37,21 @@
     "yr2045_prb_reclamation_jobs_direct": 63.54
   },
   "digests_yr2027": {
-    "state_digest_md5": "316fe412b9d030cc91db4b3ae50ede46",
+    "state_digest_md5": "5bb6c8e9a9cc448a64e99564e7ce383a",
     "fiscal_digest_md5": "63ecffeb94175ed53150c042b96b7c03",
-    "existing_assets_digest_md5": "3a6f5ab498b87a8dbfba07f25a3ff482",
+    "existing_assets_digest_md5": "583cdb35e2c2d6b93b019fc734a03654",
     "note": "state_digest_md5 identical to Golden G — county_ees/bus_state/sc_pools unchanged by coal decline"
   },
   "digests_yr2031": {
-    "state_digest_md5": "a4619f25b45f7d006933de9efe83fbb2",
+    "state_digest_md5": "c282c011e7af856a2b69d6fda97cb396",
     "fiscal_digest_md5": "ad9da9c73fda224a42f0d9c1e5c685e4",
-    "existing_assets_digest_md5": "509f39bec10746c8c751971b6e1146b2",
+    "existing_assets_digest_md5": "fee4a377419aafb8d0825cda06b05751",
     "note": "state_digest_md5 identical to Golden G"
   },
   "digests_yr2045": {
-    "state_digest_md5": "f81d33175334549b3fe24a105a752fad",
+    "state_digest_md5": "d0a59b604e9235a2df2e9c6ca27c7171",
     "fiscal_digest_md5": "045f30e465a518e78870f00bb9b27aea",
-    "existing_assets_digest_md5": "d4fcd3d212d58ee99227d45e3937467a",
+    "existing_assets_digest_md5": "955bfa3640f27d335b443b6304b9d447",
     "note": "state_digest_md5 identical to Golden G"
   }
 }

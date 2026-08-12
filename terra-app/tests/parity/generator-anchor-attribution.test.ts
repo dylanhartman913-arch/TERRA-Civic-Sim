@@ -112,4 +112,32 @@ describe('generator anchor identity materialization', () => {
     expect(state.county_ees['56037'].E).toBe(initial.sweetwater.E);
     expect(state.county_ees['56037'].S).toBe(initial.sweetwater.S);
   });
+
+  it('uses pinned generator attribution rather than county-card display capacity for Ec retirement', () => {
+    let state = loadInitialStateWithAnchorsAndTags();
+    const anchors = JSON.parse(
+      readFileSync(resolve(DATA_DIR, 'mw_anchor_facilities.geojson'), 'utf-8'),
+    ).features;
+    const pinnedDave = anchors.find((feature: { properties: { anchor_id?: string } }) => (
+      feature.properties.anchor_id === 'flagship_dave_johnston_power_plant'
+    ));
+    const runtimeDave = state.asset_registry.find(asset => (
+      asset.anchor_id === 'flagship_dave_johnston_power_plant'
+    ));
+    if (!runtimeDave) throw new Error('Dave Johnston anchor was not materialized');
+
+    expect(pinnedDave.properties.capacity_mw_eia).toBe(816.7);
+    expect(runtimeDave.county_ees_contribution).toEqual(
+      pinnedDave.properties.county_ees_contribution,
+    );
+
+    const initialConverseEc = state.county_ees['56009'].Ec;
+    runtimeDave.capacity_mw = 1;
+    while (state.year < 2027) state = advanceYear(state);
+
+    expect(state.county_ees['56009'].Ec).toBeCloseTo(
+      initialConverseEc - pinnedDave.properties.county_ees_contribution[0].delta,
+      12,
+    );
+  });
 });

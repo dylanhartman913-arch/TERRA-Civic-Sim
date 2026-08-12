@@ -161,25 +161,25 @@
     }
   },
   "digests_historical": {
-    "state_md5": "1433f6150db484136889fc2e3144676d",
+    "state_md5": "c7a754d8118b0b55b8515007d0e80319",
     "fiscal_md5": "f2339a29bf6b350f816fe56206f7528f",
-    "existing_assets_md5": "c595148345117df0fee90e070d1207cd",
+    "existing_assets_md5": "70da39fa89481261fb6fe1977d68e89e",
     "history_md5": "d4356c42a7ef0cf32c2e939d7b48105c",
     "probe_year_state_md5s": {
-      "2030": "9da3415d8237ff114f4638071f96420f",
-      "2040": "09b20953b767560c49f947af59af7a34",
-      "2050": "1433f6150db484136889fc2e3144676d"
+      "2030": "73a4456fb39b264e8e5112d739f2c81d",
+      "2040": "9bca2634c005edf7ca31b39b9e3a2f0c",
+      "2050": "c7a754d8118b0b55b8515007d0e80319"
     }
   },
   "digests_ssp370": {
-    "state_md5": "2181c7b000237b5dfb6680e8e239759c",
+    "state_md5": "5fd10add3168f69de5f1d8f554ae7ff4",
     "fiscal_md5": "f2339a29bf6b350f816fe56206f7528f",
-    "existing_assets_md5": "c595148345117df0fee90e070d1207cd",
+    "existing_assets_md5": "70da39fa89481261fb6fe1977d68e89e",
     "history_md5": "d4356c42a7ef0cf32c2e939d7b48105c",
     "probe_year_state_md5s": {
-      "2030": "9adbb6ddc194828e7bcbe7b25ff65463",
-      "2040": "c595df7104c1e5649815040351f66a85",
-      "2050": "2181c7b000237b5dfb6680e8e239759c"
+      "2030": "c51dabba4f001c23d0faf32dbe30bbdf",
+      "2040": "854d654ff11607bbf2c94a2e11815384",
+      "2050": "5fd10add3168f69de5f1d8f554ae7ff4"
     }
   }
 }
