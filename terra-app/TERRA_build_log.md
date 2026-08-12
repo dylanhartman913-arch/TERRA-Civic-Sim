@@ -3379,3 +3379,59 @@ golden fixture changed.
 3. Add cross-runtime parity CI that runs both engines against shared fixtures and directly against each other for anchor-free and anchor/tag-enabled initialization. The now-fixed unconditional/opt-in mismatch demonstrates why fixture-only or single-runtime gates are insufficient.
 
 **Gate verdict: PASS.** The initializer contract is aligned, legacy and anchor-aware fixtures both pass in their intended modes, and Parts 3–6 outputs are unchanged.
+
+---
+
+## Wave 7 — W7-0: County-card capacity provenance schema
+
+**Commit:** `c8339e2feat(W7-0): add county-card capacity provenance schema and correct seven flagship records`
+**Merged into main:** 2026-08-12
+**Base commit (branch point):** `b187965`
+
+### What shipped
+
+Addresses carry-forward items 1 and 2 from Extended Build 001.
+
+**Schema additions:** three new fields on every flagship-asset record in
+`county_cards.json` and `mw_county_cards.json`:
+- `capacity_basis` — measurement type: `"nameplate"`, `"net_summer"`, `"load"`, `"planning"`, or `null`
+- `capacity_vintage` — source date string or `null`
+- `source_url` — direct URL to primary source or `null`
+
+**Capacity corrections — seven flagship records:**
+
+| Facility | Old MW | New MW | Basis | Correction |
+|---|---|---|---|---|
+| Dave Johnston (plant 4158) | 762 | 816.7 | nameplate | False EIA-860 2024 claim removed; corrected to four-unit nameplate total from pinned 2026-05 inventory |
+| Meta AI Data Center (Cheyenne) | 100 | 152 | load | Corrected to Epoch AI directory figure |
+| Jade/Crusoe Campus Phase 1 | 200 | 1800 | load | Corrected to Tallgrass press-release figure |
+| Jim Bridger, Kemmerer, Naughton, BWXT, PRB Mines | — | unchanged | varies | Schema fields added; no MW change |
+
+Dave Johnston's notes now state the actual basis ("EIA operating-generator
+nameplate total 816.7 MW for 2026-05") replacing the false provenance claim.
+
+**New files:**
+- `scripts/validate_county_card_capacities.py` — capacity basis consistency validator
+- `tests/test_county_card_capacity_provenance.py` — AC0.1–AC0.5 regression suite
+- `county_card_capacity_audit.csv` — per-record capacity audit trail
+
+**Golden fixtures updated (10):** golden_e, f, g, g_prime, h, i, k, l, m, n
+refreshed to reflect corrected capacities and schema fields.
+
+### Verification
+
+All AC0.1–AC0.5 criteria reviewed and approved prior to merge.
+
+Post-merge suite on `main` at `c8339e2`:
+- Python: **228/228**
+- TypeScript full: **393/393** (39 files)
+- TypeScript parity: **351/351** (33 files)
+
+Drought-work files (`replay.ts`, `session_drought.ts`, `store.ts`,
+`golden_ranch_country_2040.json`) confirmed uncommitted and unclaimed by
+this merge — they remain a separate workstream.
+
+### W7-0 carry-forward (still open)
+1. Cross-runtime parity CI (both engines against shared fixtures, anchor-free and anchor/tag-enabled modes) — not yet implemented.
+
+**Gate verdict: PASS.** W7-0 shipped cleanly. W7-1 not yet started.

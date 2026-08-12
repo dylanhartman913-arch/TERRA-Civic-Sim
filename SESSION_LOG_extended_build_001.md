@@ -203,3 +203,15 @@ Sample 10 audit rows (facility capacity and county capacity are both population-
 3. **Cross-runtime parity CI:** Python and TypeScript had a silent API-contract divergence (unconditional versus opt-in anchor/tag loading) that passed until generator materialization widened its effect. Wave 7 CI should run both engines against the shared golden fixtures **and against each other** on every merge, including explicit anchor-free and anchor/tag-enabled initialization modes. This is a second concrete provenance/parity precedent alongside the Jim Bridger identity error.
 
 - **Decision: COMPLETE.** The initialization fix restored intended legacy fixture behavior without changing anchor-aware attribution or trajectory outputs. All requested correctness gates are green; the three Wave 7 items remain explicitly open.
+
+### 2026-08-12 — W7-0 merge to main
+
+- **Commit:** `c8339e2` — `feat(W7-0): add county-card capacity provenance schema and correct seven flagship records`
+- **Branch:** `w7-0-capacity-provenance` fast-forward merged into `main`.
+- **Carry-forward items closed:** items 1 (county-card capacity schema) and 2 (Dave Johnston false EIA-860 2024 claim) from the Wave 7 carry-forward list above.
+- **Corrections:** Dave Johnston corrected 762 → 816.7 MW nameplate (false EIA-860 2024 claim removed); Meta AI Data Center 100 → 152 MW load; Jade/Crusoe 200 → 1800 MW load. Schema fields `capacity_basis`, `capacity_vintage`, `source_url` added to all seven flagship records.
+- **New files shipped:** `scripts/validate_county_card_capacities.py`, `tests/test_county_card_capacity_provenance.py`, `county_card_capacity_audit.csv`.
+- **Golden fixtures:** 10 fixtures refreshed (golden_e, f, g, g_prime, h, i, k, l, m, n).
+- **Post-merge suite on main at `c8339e2`:** Python 228/228 · TypeScript full 393/393 · TypeScript parity 351/351.
+- **Drought files confirmed:** `replay.ts`, `session_drought.ts`, `store.ts`, `golden_ranch_country_2040.json` remain uncommitted and unclaimed by this merge.
+- **Still open:** cross-runtime parity CI (W7 carry-forward item 3).
