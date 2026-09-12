@@ -247,12 +247,13 @@ export function replayScenario(
       }
     }
 
-    // b. Advance year
-    state = engineAdvanceYear(state);
-
+    // b. Apply drought for the upcoming year BEFORE advancing so that
+    //    advanceCountyAg records trajectory snapshots with drought-affected values.
     if (file.session_config?.drought) {
-      [state] = applySessionDrought(state, gameSeed, file.climate_lens ?? 'historical');
+      [state] = applySessionDrought(state, gameSeed, file.climate_lens ?? 'historical', state.year + 1);
     }
+
+    state = engineAdvanceYear(state);
 
     // c+d. Re-draw events and apply deterministic engine effects
     const events = getAllEventsForYear(state.year, state, gameSeed);

@@ -25,9 +25,15 @@ const projectionPoints = (projectionData as { records: Array<Record<string, unkn
   metric: String(record.metric), epoch: Number(record.epoch), percentile: String(record.percentile), value: Number(record.value),
 })) as ClimateProjectionPoint[];
 
-/** Sample deterministic yearly hazards and apply AG2 D1 consequences to Wyoming droughts. */
-export function applySessionDrought(state: EngineState, seed: number, lens: ClimateLens): [EngineState, ClimateHazardEvent[]] {
-  const droughts = sampleHazardEvents(state, { seed, lens, years: [state.year], countyBaselines, projectionPoints })
+/** Sample deterministic yearly hazards and apply AG2 D1 consequences to Wyoming droughts.
+ *
+ * @param targetYear - Year to sample drought events for. Defaults to state.year.
+ *   Pass `state.year + 1` when calling *before* engineAdvanceYear so that drought events are
+ *   in place when advanceCountyAg runs and records trajectory snapshots for the new year.
+ */
+export function applySessionDrought(state: EngineState, seed: number, lens: ClimateLens, targetYear?: number): [EngineState, ClimateHazardEvent[]] {
+  const year = targetYear ?? state.year;
+  const droughts = sampleHazardEvents(state, { seed, lens, years: [year], countyBaselines, projectionPoints })
     .filter(event => event.hazard_kind === 'drought_stress' && event.geoid.startsWith('56'))
     .map(event => ({ ...event, ag_drought_tier: 'D1' as const, duration_years: 1 }));
   if (droughts.length === 0) return [state, droughts];

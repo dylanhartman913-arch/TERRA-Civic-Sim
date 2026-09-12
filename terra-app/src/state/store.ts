@@ -777,16 +777,20 @@ export const useTerraStore = create<TerraStore>((set, get) => ({
     const {
       engineState, actionLog, yearSnapshots,
       gameSeed, activeScenario, questConditions, eventHistory,
+      sessionConfig, climateLens,
     } = get();
     const prevState = engineState;
     const prevConditions = questConditions;
 
-    let newState = engineAdvanceYear(engineState);
-
-    const { sessionConfig, climateLens } = get();
+    // Apply drought for the upcoming year BEFORE engineAdvanceYear so that
+    // advanceCountyAg (inside engineAdvanceYear) records trajectory snapshots
+    // with drought-affected forage values in the year the drought occurs.
+    let preState = engineState;
     if (sessionConfig?.drought) {
-      [newState] = applySessionDrought(newState, gameSeed, climateLens);
+      [preState] = applySessionDrought(preState, gameSeed, climateLens, preState.year + 1);
     }
+
+    let newState = engineAdvanceYear(preState);
 
     const events = getAllEventsForYear(newState.year, newState, gameSeed);
 
