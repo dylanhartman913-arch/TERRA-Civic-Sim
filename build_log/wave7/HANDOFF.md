@@ -108,3 +108,61 @@ Git LFS for that file in S2.
 - GitHub push output: no file-size warning ✓
 
 **S2 complete. Next: S3 (terra-app unstaged changes — pop stash@{0} and address).**
+
+---
+
+## S3 — 2026-09-12 — Adjudicate session drought ordering fix (F8)
+
+**Objective:** Verify and commit the four-file drought ordering fix from S2's
+stash, or park it on a branch if unverifiable. Answer the Python-side question.
+
+**What was done:**
+
+**Stash handling:**
+- `stash@{0}` contained 5 files (the 4 drought-fix files + `county_climate_baseline.json`
+  pre-LFS version). Used `git checkout stash@{0} -- <four files>` to extract only
+  the relevant files, avoiding an LFS conflict on the county baseline file.
+- Created `S3-temp-before-fix` temp stash to get before-fix state; popped it after
+  recording before-fix results. Confirmed via `git stash list` at each step.
+- S2's original stash remains at `stash@{0}` (now contains only the stale
+  county_climate_baseline.json diff — harmless, can be dropped in a future session).
+
+**Before-fix verification (drought ordering bug confirmed):**
+- Golden fixture `ag_digest_md5`: `756ec0d2d5ddf481be1331a48b38a1cb`
+- Energy-only `ag_digest_md5` (test line 106): `756ec0d2d5ddf481be1331a48b38a1cb`
+- **Identical** — drought had no effect on AG digest. Bug confirmed real.
+- All 9 `ag4-session-drought.test.ts` tests pass (golden matched buggy state).
+- Full parity suite: 33/33 files, 351/351 tests pass.
+
+**After-fix verification (ordering corrected):**
+- Golden fixture `ag_digest_md5`: `0c537942942e306a22f04bdc44418b07` (changed)
+- Energy-only `ag_digest_md5`: `756ec0d2d5ddf481be1331a48b38a1cb` (unchanged)
+- **Different** — drought now correctly affects AG digest.
+- `replay_digest`: `beafdb2f2f64657b3ecf7680e2188b91` (unchanged — expected,
+  non-AG engine path).
+- All 9 `ag4-session-drought.test.ts` tests pass.
+- Full parity suite: 33/33 files, 351/351 tests pass. No other fixture moved.
+
+**The fix (commit adcd421):**
+- `replay.ts`: moved `applySessionDrought` before `engineAdvanceYear`, passing
+  `state.year + 1` as target year.
+- `session_drought.ts`: added optional `targetYear` parameter.
+- `store.ts`: same reordering as replay.ts.
+- `golden_ranch_country_2040.json`: updated `ag_digest_md5` to `0c537942...`.
+
+**Python-side question (documented in DECISIONS.md):**
+- Python `advance_year` (`terra_engine.py:3299`) does NOT have the same bug.
+- Python architecture is structurally different: drought events are added to state
+  by the caller via `apply_hazard_event_consequences` BEFORE calling `advance_year`.
+  `_advance_county_ag` (inside `advance_year`, line 3610) reads the pre-existing
+  events and records snapshots with drought effects correctly.
+- No Python fix or new ticket needed. Session drought ordering is purely a
+  TypeScript app-layer concern.
+
+**Acceptance results:**
+- Before-fix: drought-enabled ag_digest = energy-only ag_digest ✓ (bug confirmed)
+- After-fix: they differ, ag_digest_md5 moved 756ec0d2… → 0c537942… ✓
+- Full TS parity: 351/351 pass, no other fixture movement ✓
+- DECISIONS.md has dated, code-grounded Python answer ✓
+
+**F8 closed. S3 complete. Committed to main as W7-0.2 (adcd421).**
