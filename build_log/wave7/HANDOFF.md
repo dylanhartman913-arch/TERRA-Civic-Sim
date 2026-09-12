@@ -68,3 +68,43 @@ exposed API key in reachable object), F5 (governing docs untracked).
 Git LFS for that file in S2.
 
 **F3, F4, F5 closed. S1 complete. Next: S2 (tree hygiene).**
+
+---
+
+## S2 — 2026-09-12 — Tree hygiene + LFS migration
+
+**Objective:** One checkout, one clean tree, no root strays, county_climate_baseline.json in Git LFS.
+
+**What was done:**
+
+**Worktrees & branches:**
+- `git worktree list --porcelain` showed 18 prunable worktrees + 1 live (main). One unmerged branch: `w4-c5a-ui` (expected per Wave4_closeout_amendment_C5a.md).
+- Tagged `w4-c5a-ui` before deletion: `archive/w4-c5a-ui` → SHA `3a36ae43ad95d4e8641e001dbd478391fea96760`
+- `git worktree prune` removed the already-dead `/private/tmp/energy-map-w7-0` admin entry.
+- `git worktree remove --force` removed all 17 remaining linked worktrees (directories deleted).
+- Deleted 19 merged branches + `w4-c5a-ui` (force). `git branch --no-merged main` is now empty.
+
+**Root strays (commit 4d1d44e):**
+- `run_cells.py`, `build_nb16.py`, `generate_golden_e.py` → `scripts/legacy/`
+- `terra_configurator.jsx`, `terra_sandbox.jsx` → `archive/prototypes/`
+- Orphan root `package-lock.json` deleted (untracked, `"packages": {}` — empty stub with no node context at root)
+
+**LFS migration:**
+- `git lfs install` initialized (git-lfs 3.6.0 via Homebrew already present).
+- `.gitattributes` created tracking `data/processed/county_climate_baseline.json` (commit e16a99d).
+- `git lfs migrate import --include="data/processed/county_climate_baseline.json" --everything` rewrote 96 commits.
+- Force-pushed: `b0be1d3...c7a5dc3 main -> main`. GitHub LFS upload: 1/1 objects, 53 MB at 17 MB/s — no file-size warning on push.
+- `.git` size: 34 MB → 86 MB (expected: LFS object cache ~50 MB in `.git/lfs/objects/` added; git pack shrank by replacing the 50 MB blob with a pointer).
+- Working copy smudge confirmed: `cat data/processed/county_climate_baseline.json | head -c 50` → real JSON (`{"schema_version": "C2.1.0"...`).
+- Terra-app unstaged changes (replay.ts, session_drought.ts, store.ts, golden_ranch_country_2040.json) stashed at `stash@{0}` before migration; still intact, deferred to S3.
+
+**Acceptance results:**
+- `git worktree list` → exactly 1 entry (main at c7a5dc3) ✓
+- `git branch --no-merged main` → empty ✓
+- `git tag -l 'archive/*'` → `archive/w4-c5a-ui` ✓
+- No loose `.py`/`.jsx` at root ✓
+- `git lfs ls-files` → `ddcc1e720a * data/processed/county_climate_baseline.json` ✓
+- `cat data/processed/county_climate_baseline.json | head -c 50` → real JSON ✓
+- GitHub push output: no file-size warning ✓
+
+**S2 complete. Next: S3 (terra-app unstaged changes — pop stash@{0} and address).**
