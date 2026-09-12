@@ -38,3 +38,33 @@ exposed API key in reachable object), F5 (governing docs untracked).
 - Prunable worktree `/private/tmp/energy-map-w7-0` — deferred to S2
 
 **Acceptance status:** Pending push (step 7). See block below after push.
+
+---
+
+## S1 — 2026-09-12 — Acceptance confirmed
+
+**Remote SHA after push:** 35bd752 (origin/main now matches local main)
+
+**Acceptance results:**
+- `git cat-file -t b169a18` → `fatal: Not a valid object name` ✓ (old blob gone)
+- `git status` → no unintended untracked `.md` at root ✓
+- `git rev-list --count origin/main..main` → 0 ✓
+
+**Newly tracked files (committed and pushed):**
+- `15_coefficient_monte_carlo.ipynb`
+- `18_magnitude_sweep.ipynb`
+- `Wave 2-6 Roadmaps.md`
+- `Wave7_roadmap.md`
+- `docs/TERRA_pitch_summary.md`
+- `docs/W7_audit_followon_and_path_forward.md`
+- `interrupted_build_status.md`
+- `mc_full_run.py`
+- `src/mc_worker.py`
+- `build_log/wave7/HANDOFF.md`
+- `build_log/wave7/DECISIONS.md`
+
+**Note:** GitHub warned about `data/processed/county_climate_baseline.json`
+(50.44 MB, just over the 50 MB recommended limit). Not blocking, but consider
+Git LFS for that file in S2.
+
+**F3, F4, F5 closed. S1 complete. Next: S2 (tree hygiene).**
