@@ -68,3 +68,54 @@ The Python engine has a structurally different architecture:
 
 **Conclusion:** No new ticket needed for Python. The digest registry should note
 that session drought ordering is a TypeScript-layer concern only.
+
+---
+
+## 2026-09-13 — S5: network_metadata.json reconstruction sourcing
+
+**Decision:** Some values in the reconstructed `network_metadata.json` are
+sourced from `TERRA_methods_overview.md` (a project-level document maintained
+outside this repo, in the project's Claude workspace) rather than from a
+tracked repo file. This is noted here because the methods doc and repo code
+could drift in the future.
+
+**Values from methods doc (confirmed matching repo code):**
+- `POP_WEIGHT_ALPHA = 0.45` — matches `notebooks/07_synthetic_topology.ipynb` cell 3
+- `MOUNTAIN_WEST_BUS_SHARE = 0.18` — matches nb07 cell 3
+- `Wyoming bus floor = 6` — matches nb07 cell 3
+- `per-BA bounds: min 1, max 80` — matches nb07 cell 3
+- `RANDOM_SEED = 42` — matches nb07 cell 3
+- `edge-keep decay constant = 150 km` — matches nb07 `LONG_HAUL_PROBABILITY_SCALE_KM = 150`
+- `CAPACITY_HEADROOM_MULT = 1.25` — matches nb07 cell 3
+
+**Discrepancy found — DELAUNAY_PRUNE_DISTANCE_KM:**
+- Methods doc states: `DELAUNAY_PRUNE_DISTANCE_KM = 400`
+- Repo code (nb07 cell 3): `DELAUNAY_PRUNE_DISTANCE_KM = 75`
+
+The repo value (75 km) is the authoritative one. Nb07's `keep_probability()`
+function drops all edges longer than this threshold to probability 0, then a
+density enhancement phase adds edges back up to `TARGET_EDGE_COUNT = 800`.
+The methods doc figure of 400 km may reflect an earlier design iteration or
+a documentation error. The repo produced the actual topology validation
+artifact (`synthetic_topology_validation.json`) with 500 buses / 818 edges,
+which is consistent with the 75 km threshold + density fill, not 400 km.
+
+**Recommendation:** Update the external methods doc to match the repo, or
+add a dated note there explaining the change.
+
+---
+
+## 2026-09-13 — S5: island_filter_min_nodes is runtime-computed, not a constant
+
+**Decision:** The `island_filter_min_nodes` key in `network_metadata.json`
+is marked MISSING in the S5 reconstruction. The ticket expected it to be a
+hardcoded constant in `julia/build_nodal_case.jl`, but that file reads it
+from the metadata file (line 102). The value is computed at runtime by
+`notebooks/06_generator_costs.ipynb` as the first capacity-retention
+threshold that retains ≥95% of total snapped MW. The fallback default is 50,
+but the actual value depends on the graph structure and cannot be recovered
+without re-running nb06 against the current generator/bus data.
+
+**Impact:** `julia/build_nodal_case.jl` will error (`KeyError` equivalent)
+if run before nb06 re-populates this key. This is a known gap, documented
+in the S5 handoff, and feeds into S9 / W7-2.

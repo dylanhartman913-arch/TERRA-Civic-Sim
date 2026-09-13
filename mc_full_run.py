@@ -257,6 +257,53 @@ def main():
     wall_total = time.time() - t0
     print(f"\n[{datetime.now().isoformat(timespec='seconds')}] Full run complete.")
     print(f"Total wall-clock: {wall_total/60:.1f} min  |  {len(all_rows):,} rows")
+
+    # ── Deep-merge mc_sensitivity into network_metadata.json ──────────────────
+    # F10 fix: read-modify-write so pre-existing keys are preserved.
+    MC = pd.DataFrame(all_rows).sort_values('iter_idx').reset_index(drop=True)
+    IS_PARTIAL = len(MC) < N_ITER
+
+    from scipy.stats import spearmanr
+    factor_cols = [c for c in MC.columns if c.startswith('f__')]
+    varied_cols = [c for c in factor_cols if MC[c].std() > 1e-9]
+    top5 = []
+    for col in varied_cols:
+        parts = col[3:].rsplit('__', 1)
+        corr, _ = spearmanr(MC[col].values, MC['composite'].values)
+        top5.append({'action_id': parts[0], 'capital': parts[1],
+                     'spearman_composite': corr})
+    top5 = sorted(top5, key=lambda x: abs(x['spearman_composite']), reverse=True)[:5]
+
+    meta_path = DATA_DIR / 'network_metadata.json'
+    if meta_path.exists():
+        with open(meta_path) as f:
+            metadata = json.load(f)
+    else:
+        metadata = {}
+
+    metadata['mc_sensitivity'] = {
+        'run_date':                   datetime.now(timezone.utc).isoformat(),
+        'notebook':                   '15_coefficient_monte_carlo.ipynb',
+        'quick_test':                 False,
+        'n_iterations_requested':     N_ITER,
+        'n_iterations_completed':     len(MC),
+        'is_partial':                 IS_PARTIAL,
+        'coeff_ci_half_width':        COEFF_CI_HALF_WIDTH,
+        'coeff_ci_z':                 COEFF_CI_Z,
+        'sigma':                      round(SIGMA, 4),
+        'n_perturbable_coefficients': len(COEFF_KEYS),
+        'composite_mean':             round(float(MC['composite'].mean()), 4),
+        'composite_sd':               round(float(MC['composite'].std()), 4),
+        'composite_p5':               round(float(MC['composite'].quantile(0.05)), 4),
+        'composite_p95':              round(float(MC['composite'].quantile(0.95)), 4),
+        'nominal_composite':          round(NOM_COMPOSITE, 4),
+        'top5_coefficients_by_sensitivity': top5,
+    }
+
+    with open(meta_path, 'w') as f:
+        json.dump(metadata, f, indent=2)
+    print(f"Updated (deep-merge): {meta_path}")
+
     print(f"\n*** Analysis/plotting cells ready. Open the notebook and run from Cell 12 "
           f"(consolidate results) onward. ***")
 

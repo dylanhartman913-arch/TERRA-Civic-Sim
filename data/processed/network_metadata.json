@@ -1,0 +1,98 @@
+{
+  "total_buses": 500,
+  "total_lines": 818,
+  "grid_size_m": 500,
+  "data_vintage_year": 2024,
+  "atb_scenario": "Moderate",
+  "atb_version": "2024 v3.0.0",
+  "notes": "island_filter_min_nodes is the minimum component size for inclusion in the Julia power flow case. Buses in smaller components are flagged in_giant_component=false.",
+  "synthetic_network": {
+    "n_buses": 500,
+    "n_edges": 818,
+    "pop_weight_alpha": 0.45,
+    "population_resolution": "county",
+    "mountain_west_bus_count": 79,
+    "wyoming_bus_count": 12,
+    "interchange_percentile": 0.95,
+    "capacity_headroom_mult": 1.25,
+    "random_seed": 42,
+    "validation_status": "warning",
+    "validation_warnings": [
+      "p50 length 92.8 km outside 30\u201380 km",
+      "p95 length 166.4 km outside 200\u2013400 km"
+    ]
+  },
+  "mc_sensitivity": {
+    "run_date": "2026-07-31T18:03:29.494051+00:00",
+    "notebook": "15_coefficient_monte_carlo.ipynb",
+    "quick_test": false,
+    "n_iterations_requested": 10000,
+    "n_iterations_completed": 10000,
+    "is_partial": false,
+    "coeff_ci_half_width": 0.5,
+    "coeff_ci_z": 1.96,
+    "sigma": 0.2551,
+    "n_perturbable_coefficients": 141,
+    "composite_mean": 5.2215,
+    "composite_sd": 0.011,
+    "composite_p5": 5.2035,
+    "composite_p95": 5.2399,
+    "nominal_composite": 5.2217,
+    "top5_coefficients_by_sensitivity": [
+      {
+        "action_id": "prairie_restoration",
+        "capital": "E",
+        "spearman_composite": 0.7166928543865265
+      },
+      {
+        "action_id": "riparian_buffer",
+        "capital": "E",
+        "spearman_composite": 0.6008152400869032
+      },
+      {
+        "action_id": "smr_advanced",
+        "capital": "Ec",
+        "spearman_composite": 0.203048619755327
+      },
+      {
+        "action_id": "transmission_230kv",
+        "capital": "Ec",
+        "spearman_composite": 0.14537506910139159
+      },
+      {
+        "action_id": "mine_land_reclamation",
+        "capital": "E",
+        "spearman_composite": 0.10068051063667476
+      }
+    ],
+    "n_high_leverage_low_confidence": 11,
+    "sub_portfolio_flip_rate": 0.0,
+    "sub_portfolio_n_draws": 1000
+  },
+  "_provenance": {
+    "total_buses": "repo_artifact: data/processed/synthetic_topology_validation.json (n_buses)",
+    "total_lines": "repo_artifact: data/processed/synthetic_topology_validation.json (n_edges)",
+    "grid_size_m": "code_constant: notebooks/06_generator_costs.ipynb cell \"cell-meta\" (hardcoded 500)",
+    "data_vintage_year": "code_constant: notebooks/06_generator_costs.ipynb cell \"cell-meta\" (hardcoded 2024)",
+    "atb_scenario": "code_constant: notebooks/06_generator_costs.ipynb cell \"cell-meta\" (\"Moderate\")",
+    "atb_version": "code_constant: notebooks/06_generator_costs.ipynb cell \"cell-meta\" (\"2024 v3.0.0\")",
+    "notes": "code_constant: notebooks/06_generator_costs.ipynb cell \"cell-meta\"",
+    "synthetic_network.n_buses": "repo_artifact: data/processed/synthetic_topology_validation.json",
+    "synthetic_network.n_edges": "repo_artifact: data/processed/synthetic_topology_validation.json",
+    "synthetic_network.pop_weight_alpha": "code_constant: notebooks/07_synthetic_topology.ipynb cell 3 (POP_WEIGHT_ALPHA = 0.45); confirmed by methods_doc_2026-06-12",
+    "synthetic_network.population_resolution": "code_constant: notebooks/07_synthetic_topology.ipynb cell 0 markdown",
+    "synthetic_network.mountain_west_bus_count": "repo_artifact: data/processed/synthetic_topology_validation.json",
+    "synthetic_network.wyoming_bus_count": "repo_artifact: data/processed/synthetic_topology_validation.json",
+    "synthetic_network.interchange_percentile": "code_constant: notebooks/07_synthetic_topology.ipynb cell 3 (INTERCHANGE_PERCENTILE = 0.95)",
+    "synthetic_network.capacity_headroom_mult": "code_constant: notebooks/07_synthetic_topology.ipynb cell 3 (CAPACITY_HEADROOM_MULT = 1.25); confirmed by methods_doc_2026-06-12",
+    "synthetic_network.random_seed": "code_constant: notebooks/07_synthetic_topology.ipynb cell 3 (RANDOM_SEED = 42); confirmed by methods_doc_2026-06-12",
+    "synthetic_network.validation_status": "repo_artifact: data/processed/synthetic_topology_validation.json",
+    "synthetic_network.validation_warnings": "repo_artifact: data/processed/synthetic_topology_validation.json",
+    "mc_sensitivity": "recovered: pre-existing key in data/processed/network_metadata.json (2026-07-31 MC run)"
+  },
+  "_reconstruction_meta": {
+    "reconstructed_by": "S5 / W7 roadmap",
+    "reconstructed_date": "2026-09-13",
+    "reason": "F10 \u2014 original file was overwritten to contain only mc_sensitivity key; all other keys lost"
+  }
+}

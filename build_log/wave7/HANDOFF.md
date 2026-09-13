@@ -262,3 +262,104 @@ Results: 27 PASS  |  2 FAIL
 **Commits:** 1b7b744 (main), 09a5ee8 (fix staging artifact)
 
 **F9 (structural half) closed. S4 complete. Do not start S5.**
+
+---
+
+## S5 — 2026-09-13 — Rebuild network_metadata.json (F10)
+
+**Objective:** Reconstruct provenance-tracked `network_metadata.json`, fix
+the wholesale-overwrite bug, and add a merge regression test.
+
+**Salvage attempt (step 1):**
+- `~/energy-map` exists but contains no `network_metadata.json`
+- Time Machine: `tmutil listbackups` → `Operation not permitted` (no access)
+- No recovered original; reconstruction from repo artifacts required.
+
+**What was done:**
+
+**Reconstructed keys (9 present in rebuilt file):**
+
+| Key | Source | Provenance tag |
+|-----|--------|----------------|
+| `total_buses` (500) | `data/processed/synthetic_topology_validation.json` | `repo_artifact` |
+| `total_lines` (818) | `data/processed/synthetic_topology_validation.json` | `repo_artifact` |
+| `grid_size_m` (500) | `notebooks/06_generator_costs.ipynb` cell "cell-meta" | `code_constant` |
+| `data_vintage_year` (2024) | nb06 cell "cell-meta" | `code_constant` |
+| `atb_scenario` ("Moderate") | nb06 cell "cell-meta" | `code_constant` |
+| `atb_version` ("2024 v3.0.0") | nb06 cell "cell-meta" | `code_constant` |
+| `notes` | nb06 cell "cell-meta" | `code_constant` |
+| `synthetic_network` (11 sub-keys) | Validation JSON + nb07 code constants | `repo_artifact` + `code_constant` |
+| `mc_sensitivity` (full block) | Pre-existing in file (2026-07-31 run) | `recovered` |
+
+**`synthetic_network` sub-keys:**
+- `n_buses` (500), `n_edges` (818), `mountain_west_bus_count` (79),
+  `wyoming_bus_count` (12), `validation_status` ("warning"),
+  `validation_warnings` — all from `synthetic_topology_validation.json`
+- `pop_weight_alpha` (0.45), `capacity_headroom_mult` (1.25),
+  `random_seed` (42) — from nb07 code, confirmed by methods doc
+- `population_resolution` ("county"), `interchange_percentile` (0.95) — from nb07 code
+
+**Missing keys (21 — cannot be grounded without re-running notebooks):**
+
+*Write-only (no downstream consumer reads these directly):*
+- `giant_component_size` — nb06 runtime value
+- `n_components` — nb06 runtime value
+- `pct_mw_retained_at_filter` — nb06 runtime value
+- `total_snapped_mw` — nb06 runtime value
+- `spatial_hierarchy` — nb08c output
+- `retirement_data` — nb10 output
+- `county_pivot` — nb14 output
+- `engine_v2` — nb16 output
+- `action_library` — build_action_library_v2.py output
+- `model_architecture`, `n_zones`, `zonal_total_cap_gw`, `zonal_load_proxy_gw` — julia/build_e4st_case.jl
+- `e4st_v2` — julia/build_e4st_case_v2.jl
+- `e4st_case` — julia/build_nodal_case.jl output
+- `scenario_runs` — julia/run_scenario.jl output
+- `scenarios_completed` — julia/run_scenarios.jl output
+
+*Critical consumer reads (KeyError risk if not re-populated):*
+- **`island_filter_min_nodes`** — read by `julia/build_nodal_case.jl:102`.
+  Computed at runtime by nb06 (first threshold retaining ≥95% total MW;
+  fallback 50). Not a hardcoded constant anywhere. Marked MISSING.
+- **`validation_deepdive`** — read by `julia/build_nodal_case.jl:98`
+  (checks `ready_for_e4st`). Written by archived `08_validation_deepdive.ipynb`.
+  Cannot recover without re-running.
+- **`ecoregion_layer`** — read by `notebooks/08c_spatial_hierarchy.ipynb`
+  (accesses `n_ecoregions_in_study_area`). Written by nb08a. Cannot recover.
+- **`ees_baseline`** — read by `notebooks/14_county_foundation.ipynb`.
+  Written by nb08b. Cannot recover.
+
+**Discrepancy found:** `DELAUNAY_PRUNE_DISTANCE_KM` — methods doc says 400,
+repo code (nb07 cell 3) says 75. Repo value used. See DECISIONS.md entry.
+
+**F10 bug fix (deep-merge):**
+- `mc_full_run.py` — added deep-merge metadata write at end of `main()`
+  (reads existing file, sets only `mc_sensitivity`, writes back)
+- `15_coefficient_monte_carlo.ipynb` cell 18 — removed skeleton-create
+  fallback; now always reads existing file and merges
+- `18_magnitude_sweep.ipynb` — added new cell (after cell 10) writing
+  `magnitude_sweep` summary block via deep-merge
+
+**Regression test:** `tests/test_metadata_merge.py`
+- `test_deep_merge_preserves_existing_keys` — writes throwaway key, asserts
+  all original keys survive
+- `test_metadata_has_provenance_for_all_data_keys` — every non-meta key has
+  a `_provenance` entry
+
+**Gitignore:** Added `!data/processed/network_metadata.json` exception
+(line 67 of `.gitignore`). File is now tracked.
+
+**Acceptance results:**
+- File tracked in git (not gitignored): `git check-ignore` exit 1 ✓
+- Every key has `_provenance` marker: test passes ✓
+- Merge regression test: both tests pass ✓
+- Consumer check: 9 present, 21 missing (all documented above) ✓
+
+**Missing keys feed S9 / W7-2.** Re-running the notebook pipeline
+(nb06 → nb07 → nb08a → nb08b → nb08c → nb10 → nb14 → nb16) will
+repopulate all missing keys via the existing merge-write pattern in each
+notebook. The 3 critical-read keys (`island_filter_min_nodes`,
+`validation_deepdive`, `ecoregion_layer`) must be repopulated before
+their Julia/notebook consumers can run.
+
+**F10 closed. S5 complete. Do not start S6.**
