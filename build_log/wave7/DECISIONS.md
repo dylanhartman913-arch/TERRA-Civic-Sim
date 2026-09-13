@@ -119,3 +119,63 @@ without re-running nb06 against the current generator/bus data.
 **Impact:** `julia/build_nodal_case.jl` will error (`KeyError` equivalent)
 if run before nb06 re-populates this key. This is a known gap, documented
 in the S5 handoff, and feeds into S9 / W7-2.
+
+---
+
+## 2026-09-13 — S6: Jim Bridger capacity_basis schema choice
+
+**Decision:** Set Jim Bridger Power Plant's `capacity_basis` to `"net_summer"`,
+`capacity_basis_vintage` to `"2024"`, and add a new `capacity_basis_note` field.
+
+**Options considered:**
+- (a) New enum value `"net_summer_winter"` — represents that both net summer and
+  net winter capability are identical.
+- (b) `"net_summer"` with a `capacity_basis_note` field — uses the primary EIA-860
+  reporting field and carries the winter agreement in prose.
+
+**Chosen: option (b) — `"net_summer"` + `capacity_basis_note`.**
+
+**Rationale:**
+1. `"net_summer"` is the primary EIA-860 generator capacity field and is
+   unambiguous to any reader familiar with EIA reporting.
+2. Introducing `"net_summer_winter"` as a new enum value adds ambiguity
+   (does it mean "minimum of the two", "maximum", or "both equal"?) without
+   adding precision that `"net_summer"` + a note can't provide.
+3. The note field is self-documenting: "2024 EIA-860 reports 2,119 MW net
+   summer AND net winter capability (both identical); rounded to 2,120 MW."
+
+**Values set:**
+- `capacity_basis`: `"net_summer"`
+- `capacity_basis_vintage`: `"2024"`
+- `capacity_basis_note`: "2024 EIA-860 reports 2,119 MW net summer AND net
+  winter capability (both identical); rounded to 2,120 MW. Net summer used as
+  basis per EIA primary reporting convention; winter agreement noted here."
+
+**Applied to both copies** (`data/processed/mw_anchor_facilities.geojson` and
+`terra-app/src/data/mw_anchor_facilities.geojson`) to keep them byte-identical.
+
+---
+
+## 2026-09-13 — S6: data/README.md county count (293 vs 157)
+
+**Decision:** Corrected study area from "293 counties" to "157 counties".
+
+**Verification:** `mw_study_counties.csv` has 158 rows including header → 157
+data rows. `mw_county_ees_summary.csv` also has 158 rows (same count). The 293
+figure was from the pre-pivot spatial-hierarchy superset
+(`spatial_hierarchy_counties.parquet`), which covers a broader bounding-box
+region. The EES-scoped study area is 157 counties.
+
+---
+
+## 2026-09-13 — S6: scenario_profiles.json rename
+
+**Decision:** Renamed `data/processed/mw_scenario_profiles.json` (the 31-profile
+analytical file) to `data/processed/ees_scenario_profiles.json`. The ticket
+referenced the file as `scenario_profiles.json`, but the actual filename had an
+`mw_` prefix. The `ees_` prefix better reflects that this is the EES analytical
+scenario set (vs. the 2-scenario UI file `terra-app/src/data/scenario_profiles.json`
+which is unrelated and was not touched).
+
+Updated `src/terra_engine.py:2292` and `scripts/check_generators.py:58` to
+reference the new filename.

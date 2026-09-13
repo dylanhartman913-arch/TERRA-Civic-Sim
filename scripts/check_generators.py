@@ -55,7 +55,7 @@ RUNTIME_FILES = [
     ("wy_county_ag_engine_baseline.json", "scripts/build_county_ag_engine_baseline.py → WY ag engine baseline"),
     # ── Runtime files with NO currently-tracked generator (expected FAIL) ──
     # These feed S9 / W7-2 work. Do not suppress.
-    ("mw_scenario_profiles.json",         "? → MW scenario profiles (terra_engine.py:2292, optional load)"),
+    ("ees_scenario_profiles.json",         "? → EES scenario profiles (terra_engine.py:2292, optional load)"),
     ("lifecycle_coefficients.json",       "? → lifecycle coefficients (terra_engine.py:2417, optional load)"),
 ]
 

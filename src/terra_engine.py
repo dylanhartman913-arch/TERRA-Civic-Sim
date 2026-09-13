@@ -2289,7 +2289,7 @@ def initialize_state(data_dir=None, county_ees_path=None, crosswalk_path=None,
             action['tier'] = _BUCKET_TO_TIER.get(action.get('bucket', ''), 'social')
 
     # ── Scenario profiles ─────────────────────────────────────────────────────
-    sp_path = data_dir / "mw_scenario_profiles.json"
+    sp_path = data_dir / "ees_scenario_profiles.json"
     if sp_path.exists():
         with open(sp_path) as f:
             scenario_profiles = json.load(f)

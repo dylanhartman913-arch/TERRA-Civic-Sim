@@ -48,12 +48,12 @@ Key outputs and their provenance:
 |---|---|---|
 | `initial_network.json` | `07_synthetic_topology.ipynb` | 500-bus synthetic grid; bus states, branches, ecoregion assignments |
 | `county_crosswalk.parquet` | `08c_spatial_hierarchy.ipynb` | Bus ↔ county GEOID crosswalk (primary bus flag) |
-| `mw_county_cards.json` | `14_county_foundation.ipynb` | Flagship assets and county metadata for 293-county study area |
-| `mw_action_library_v3.json` | `15_action_library_v3.ipynb` | 49 actions / 21 disturbances; ATB 2024 CAPEX; EES coefficients |
+| `mw_county_cards.json` | `14_county_foundation.ipynb` | Flagship assets and county metadata for 157-county study area |
+| `mw_action_library_v3.json` | `15_action_library_v3.ipynb` | 55 actions, schema 3.3 (24 energy infrastructure, 14 ecological restoration, 12 settlement/social, 4 agriculture, 1 climate adaptation) / 22 disturbances; ATB 2024 CAPEX; EES coefficients |
 | `wy_county_fiscal_baseline.json` | `17_wy_fiscal_pull.ipynb` | 23-county Wyoming fiscal baseline (assessed values, mill levies, severance) |
 | `wy_fiscal_coefficients.json` | `18_fiscal_coefficients.ipynb` + `18b_school_finance_patch.ipynb` | Per-action, per-county fiscal deltas for three-ledger model |
 | `e4st_results_v2/` | Julia `julia/run_scenario.jl` | E4ST v2 LP solves; baseline + 3 scenarios; summary JSONs committed under `data/processed/e4st_results/` |
-| `spatial_hierarchy_counties.parquet` | `08c_spatial_hierarchy.ipynb` | 293 counties with HUC-8 crosswalk and primary ecoregion assignment |
+| `spatial_hierarchy_counties.parquet` | `08c_spatial_hierarchy.ipynb` | 157 counties with HUC-8 crosswalk and primary ecoregion assignment |
 | `spatial_hierarchy_huc8.parquet` | `08c_spatial_hierarchy.ipynb` | 409 HUC-8 watersheds with ecoregion assignment |
 | `synthetic_topology_validation.json` | `07_synthetic_topology.ipynb` | Topology QA: n_buses=500, n_edges=818, ready_for_e4st=True |
 | `material_coefficient_sources.csv` | `15_action_library_v3.ipynb` (initially) + hand-maintained | Material intensity and lifecycle coefficient citations |
@@ -62,32 +62,24 @@ Key outputs and their provenance:
 
 ## Notebook Execution Order
 
-Run notebooks **in the sequence below** on a fresh checkout. Some notebooks have
-inter-dependencies; the column "Requires" lists what must exist first.
+Run notebooks **in the sequence below** on a fresh checkout. Notebooks that were
+pure-viz, analysis-only, or superseded have been archived to `archive/notebooks/`
+(see `archive/notebooks/README.md`). Only notebooks that produce a tracked runtime
+file are listed here.
 
 ```
 Step  Notebook                        Requires                Output highlights
 ────  ──────────────────────────────  ──────────────────────  ─────────────────────────────────────────────
  01   01_eia_pull.ipynb               NREL_API_KEY in .env    eia930_raw.parquet, nrel_solar/*, nrel_wind/*
- 02   02_hifld_pull.ipynb             ba_shapefiles/ (manual) ba_territories.geojson, ba_capacity_summary.csv
- 02b  02b_generator_costs.ipynb       02 output               generators_with_costs.parquet
- 03   03_network_build.ipynb          01, 02b                 grid_network.graphml, power_plants.geojson
- 03a  03a_ba_territories.ipynb        02                      ba_map.html, ba_territories.geojson
+ 03a  03a_ba_territories.ipynb        ba_shapefiles/ (manual) ba_territories.geojson
  03b  03b_ba_interchange.ipynb        01                      ba_interchange_summary.csv, ba_flow_trends.csv
- 04   04_osm_transmission.ipynb       osm_transmission_raw    osm_transmission_hv.geojson
- 05   05_projections.ipynb            03b                     projection_scenarios.csv
- 06   06_generator_costs.ipynb        02b, atb_2024           cost_coverage.csv
- 07   07_synthetic_topology.ipynb     03, 04, 08a (ecoregion) initial_network.json, synthetic_buses.geojson
+ 06   06_generator_costs.ipynb        atb_2024_summary.csv    generators_with_costs.parquet, cost_coverage.csv
+ 07   07_synthetic_topology.ipynb     06, 08a (ecoregion)     initial_network.json, synthetic_buses.geojson
       [Pause at Cell 7 to review MW table before proceeding]
- 08a  08a_ecoregion_crosswalk.ipynb   ecoregions/ (manual)    ecoregion_ba_crosswalk.geojson
- 08b  08b_ees_baseline.ipynb          08a, census             county_ees_baseline (in terra-app/src/data/)
+ 08a  08a_ecoregion_crosswalk.ipynb   ecoregions/ (manual)    ecoregion_ba_crosswalk.geojson, mw_ecoregions.geojson
+ 08b  08b_ees_baseline.ipynb          08a, census             county_ees_baseline.json (terra-app/src/data/)
  08c  08c_spatial_hierarchy.ipynb     08a, census_tracts      spatial_hierarchy_counties.parquet, _huc8.parquet
- 09   09_scenario_comparison.ipynb    05                      (visualization)
- 09a  09a_scenario_precharacterize.ipynb  05                  scenario_profiles.json
- 10   10_eia860_retirements.ipynb     02b                     generators_with_retirements.parquet, baseline_retirements.json
- 11   11_applied_scenario.ipynb       07, 08b, 15             terra_wyoming_ees_trajectory.csv (TERRA demo)
- 12   12_availability_factors.ipynb   01, 03                  e4st_availability_factors.parquet
- 13   13_candidate_generators.ipynb   02b, 06                 candidate_summary.csv
+ 10   10_eia860_retirements.ipynb     06                      baseline_retirements.json
  14   14_county_foundation.ipynb      08b, 08c, 10            mw_county_cards.json
  15   15_action_library_v3.ipynb      06, 08b                 mw_action_library_v3.json, material_coefficient_sources.csv
  16   16_engine_v2_golden.ipynb       07, 08b, 14, 15         (golden fixture validation — Golden A/B/C)
@@ -96,6 +88,7 @@ Step  Notebook                        Requires                Output highlights
  18   18_fiscal_coefficients.ipynb    15, 17                  wy_fiscal_coefficients.json
  18b  18b_school_finance_patch.ipynb  18                      (patches school_finance_net in fiscal coefficients)
  19   19_engine_fiscal_golden.ipynb   16, 18b                 (golden fixture validation — Golden D/E/F/G)
+ 22   22_anchor_facilities.ipynb      08b, 08c                mw_anchor_facilities.geojson
 ```
 
 ### E4ST solves (Julia)

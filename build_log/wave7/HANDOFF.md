@@ -363,3 +363,57 @@ notebook. The 3 critical-read keys (`island_filter_min_nodes`,
 their Julia/notebook consumers can run.
 
 **F10 closed. S5 complete. Do not start S6.**
+
+---
+
+## S6 — 2026-09-13 — F1 fix + small corrections
+
+**Objective:** Python-side and TypeScript-side anchor files byte-identical;
+documentation numbers match shipped data. Closes F1, F7, F13.
+
+**Shared SHA-256 (both anchor copies):**
+`7fd936f7209bb67dfa106e50718c46cfca8b8dd66cd26bb2a55103ac4950b5a8`
+
+**Step 2 patches (Python-side → TS-side values):**
+- Dave Johnston Power Plant: `capacity_or_load_mw` 762 → 816.7, `capacity_delta_pct` 7.178 → 0
+- Meta AI Data Center (Cheyenne): `capacity_or_load_mw` 100 → 152
+- Jade/Crusoe Campus Phase 1 (Cheyenne): `capacity_or_load_mw` 200 → 1800
+
+**Step 4 — Python fixture movement:**
+No Python fixture digest moved. Tests run: `test_terra_engine_v3.py`,
+`test_c4ii_consequences.py`, `test_c2_exposure_tags.py`, `test_golden_m.py`
+→ 135 passed. Anchor loading is opt-in and the patched fields
+(`capacity_or_load_mw`, `capacity_delta_pct`) are not used in any digest path.
+
+**Step 5 — scenario_profiles rename:**
+- `data/processed/mw_scenario_profiles.json` → `data/processed/ees_scenario_profiles.json`
+- Ticket referenced the file as `scenario_profiles.json`; actual filename had `mw_` prefix.
+  Documented the discrepancy in DECISIONS.md.
+- Updated `src/terra_engine.py:2292` and `scripts/check_generators.py:58`.
+- `terra-app/src/data/scenario_profiles.json` untouched (confirmed via git status).
+
+**Step 6 — data/README.md verified counts:**
+- Study area: **157 counties** (verified against `mw_study_counties.csv`: 158 rows − header)
+- Action library: **55 actions, schema 3.3** (24 energy infrastructure, 14 ecological
+  restoration, 12 settlement/social, 4 agriculture, 1 climate adaptation) / **22 disturbances**
+  (verified against `mw_action_library_v3.json`)
+- Notebook run order updated: archived notebooks (02, 02b, 03, 04, 05, 09, 09a, 11, 12, 13)
+  removed; 22_anchor_facilities added; intro note links to `archive/notebooks/README.md`.
+
+**Step 7 — Jim Bridger `capacity_basis`:**
+- Chose option (b): `capacity_basis = "net_summer"` + `capacity_basis_note` field.
+- See DECISIONS.md for full rationale (TL;DR: avoids ambiguous new enum, self-documenting note).
+- Applied to both anchor file copies to preserve byte-identity.
+
+**Scripts added:**
+- `scripts/patch_anchor_facilities.py` — capacity patches for 3 records (idempotent)
+- `scripts/patch_jim_bridger_capacity_basis.py` — capacity_basis patch (both copies)
+
+**Acceptance:**
+- `shasum -a 256` both copies: `7fd936f7...` (identical) ✓
+- `grep -rn "293\|46 action\|49 action" data/README.md` → nothing ✓
+- `grep -rln "processed/scenario_profiles" --include=*.py --include=*.ipynb .` → nothing ✓
+- `terra-app/src/data/scenario_profiles.json` untouched ✓
+- Jim Bridger `capacity_basis = "net_summer"`, documented in DECISIONS.md ✓
+
+**F1, F7, F13 closed. S6 complete. Do not start S7a.**
