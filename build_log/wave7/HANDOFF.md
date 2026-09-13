@@ -166,3 +166,99 @@ stash, or park it on a branch if unverifiable. Answer the Python-side question.
 - DECISIONS.md has dated, code-grounded Python answer ✓
 
 **F8 closed. S3 complete. Committed to main as W7-0.2 (adcd421).**
+
+---
+
+## S4 — 2026-09-13 — Reinstate the generators (F9 structural half)
+
+**Objective:** Every notebook that generates a runtime-loaded file is back on
+main and tracked; everything else is explicitly archived with a stated reason.
+
+**What was done:**
+
+**Working list:** `git show --stat 35120e7` — 36 notebooks + 3 src files + 2 .md
+files deleted in that commit. The 3 src/ files and 2 .md files are outside
+ticket scope (Touches: notebooks/ only).
+
+**Restored to notebooks/ (12 notebooks from `35120e7^`):**
+- 11 specified by ticket: `07_synthetic_topology`, `08b_ees_baseline`,
+  `08c_spatial_hierarchy`, `10_eia860_retirements`, `15_action_library_v3`,
+  `16_engine_v2_golden`, `17_wy_fiscal_pull`, `18_fiscal_coefficients`,
+  `18b_school_finance_patch`, `19_engine_fiscal_golden`, `22_anchor_facilities`
+- 1 additional discovered by scan: `03b_ba_interchange` — produces
+  `ba_interchange_summary.csv`, hard-loaded by `terra_engine.py:633`,
+  no other tracked generator exists
+
+**Already in notebooks/ (no action):** `01_eia_pull.ipynb` and
+`03a_ba_territories.ipynb` were re-added post-deletion in commit ba9834e.
+
+**Archived to archive/notebooks/ (21 notebooks):**
+All were pure viz, analysis-only, or superseded by the current pipeline.
+See `archive/notebooks/README.md` for per-notebook reason.
+Pure-viz set: `06_lmp_map`, `07_dispatch_viz`, `07_lmp_map`,
+`09_lmp_comparison`, `11b_scenario_map`
+Superseded: `02_hifld_pull`, `02b_generator_costs`, `03_network_build`,
+`04_osm_transmission`, `05_projections`, `23_climate_projection_pull`,
+`23b_climate_acquisition`
+Analysis/no tracked output: `08_dispatch_mix`, `08_scenario_compare`,
+`08_validation_deepdive`, `09_scenario_comparison`, `09a_scenario_precharacterize`,
+`11_applied_scenario`, `11_hourly_profiles`, `12_availability_factors`,
+`13_candidate_generators`
+
+**Cell outputs stripped** from all 12 restored notebooks via `nbstripout`.
+Spot-check confirmed: `notebooks/22_anchor_facilities.ipynb` cell[0].outputs → `[]`.
+
+**`scripts/check_generators.py` output (run against final committed tree):**
+
+```
+check_generators.py — runtime file → tracked generator audit
+======================================================================
+[PASS]  county_ees_baseline.json
+[PASS]  mw_county_ees_summary.csv
+[PASS]  mw_ecoregion_ees_summary.csv
+[PASS]  county_crosswalk.parquet
+[PASS]  spatial_hierarchy_counties.parquet
+[PASS]  spatial_hierarchy_huc8.parquet
+[PASS]  synthetic_buses.geojson
+[PASS]  synthetic_branches.geojson
+[PASS]  network_metadata.json
+[PASS]  mw_action_library_v3.json
+[PASS]  wy_county_fiscal_baseline.json
+[PASS]  wy_fiscal_coefficients.json
+[PASS]  mw_anchor_facilities.geojson
+[PASS]  baseline_retirements.json
+[PASS]  data/golden/golden_a.json
+[PASS]  data/golden/golden_e.json
+[PASS]  ba_interchange_summary.csv
+[PASS]  generators_with_costs.parquet
+[PASS]  ecoregion_ba_crosswalk.geojson
+[PASS]  mw_ecoregions.geojson
+[PASS]  mw_tracts_2020.parquet
+[PASS]  mw_county_cards.json
+[PASS]  wy_county_ag_baseline.json
+[PASS]  wy_grazing_allotments.csv
+[PASS]  county_climate_projections.json
+[PASS]  county_population_projections.json
+[PASS]  wy_county_ag_engine_baseline.json
+[FAIL]  mw_scenario_profiles.json
+       → no tracked generator found
+[FAIL]  lifecycle_coefficients.json
+       → no tracked generator found
+======================================================================
+Results: 27 PASS  |  2 FAIL
+```
+
+**Runtime files still without a tracked generator (FAIL list — feeds S9 / W7-2):**
+1. `mw_scenario_profiles.json` — optional load `terra_engine.py:2292`. File
+   exists in `data/processed/` but no notebook or script produces it.
+2. `lifecycle_coefficients.json` — optional load `terra_engine.py:2417`. Same.
+
+**Acceptance results:**
+- `python scripts/check_generators.py` → 27 PASS, 2 FAIL (expected) ✓
+- `ls archive/notebooks/` → 21 notebooks + README.md ✓
+- Restored notebooks have no embedded cell outputs ✓
+- 2 FAIL entries are legitimate gaps, not suppressed ✓
+
+**Commits:** 1b7b744 (main), 09a5ee8 (fix staging artifact)
+
+**F9 (structural half) closed. S4 complete. Do not start S5.**
