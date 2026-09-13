@@ -94,5 +94,84 @@
     "reconstructed_by": "S5 / W7 roadmap",
     "reconstructed_date": "2026-09-13",
     "reason": "F10 \u2014 original file was overwritten to contain only mc_sensitivity key; all other keys lost"
+  },
+  "ees_baseline": {
+    "tract_count": 1676,
+    "ecoregion_scores": {
+      "21": {
+        "name": "Southern Rockies",
+        "E_score": 7.52,
+        "Ec_score": 6.28,
+        "S_score": 5.39,
+        "composite": 6.4
+      },
+      "17": {
+        "name": "Middle Rockies",
+        "E_score": 6.56,
+        "Ec_score": 5.85,
+        "S_score": 5.21,
+        "composite": 5.87
+      },
+      "25": {
+        "name": "High Plains",
+        "E_score": 2.4,
+        "Ec_score": 7.56,
+        "S_score": 5.43,
+        "composite": 5.13
+      },
+      "43": {
+        "name": "Northwestern Great Plains",
+        "E_score": 2.96,
+        "Ec_score": 5.86,
+        "S_score": 4.85,
+        "composite": 4.56
+      },
+      "80": {
+        "name": "Northern Basin and Range",
+        "E_score": 2.06,
+        "Ec_score": 6.01,
+        "S_score": 4.96,
+        "composite": 4.34
+      },
+      "20": {
+        "name": "Colorado Plateaus",
+        "E_score": 0.69,
+        "Ec_score": 6.05,
+        "S_score": 4.96,
+        "composite": 3.9
+      },
+      "18": {
+        "name": "Wyoming Basin",
+        "E_score": 0.6,
+        "Ec_score": 5.8,
+        "S_score": 4.85,
+        "composite": 3.75
+      }
+    },
+    "data_vintage": "ACS 2022 5-year, TIGER 2020, EIA power plants 2024",
+    "proxy_indicators": [
+      "eco_base_score: EPA L3 structural prior; TODO replace with NLCD land cover",
+      "water_stress: HUC-8 arid fraction; TODO replace with USDA NRCS water balance",
+      "development_pressure: vacancy_rate proxy; TODO replace with NLCD impervious change",
+      "has_university: HIFLD Colleges layer; TODO validate against NCES IPEDS 2022"
+    ],
+    "scoring_notes": "Indicators normalized 0-10 using Mountain West distribution. Population-weighted ecoregion aggregation. Government employment from ACS C24060 (class of worker rows 5+6+7), not C24050 (industry sector, row 3 = Agriculture). Tracts with >3 missing indicators excluded.",
+    "todo": [
+      "Replace eco_base_score with NLCD 2021 land cover % composition per tract",
+      "Replace water_stress with USDA NRCS or NOAA Drought Monitor raster",
+      "Replace development_pressure with NLCD impervious surface change 2011-2021",
+      "Validate university flag against NCES IPEDS 2022 database"
+    ],
+    "timestamp": "2026-09-13T16:42:55.486732"
+  },
+  "county_pivot": {
+    "study_county_count": 157,
+    "crosswalk_stats": {
+      "total_rows": 726,
+      "counties_with_multiple_buses": 157,
+      "mean_buses_per_county": 3.0
+    },
+    "doctrine": "The county is the unit of analysis and governance. The bus is the unit of energy system intervention. The tract is the unit of social measurement. The ecoregion is the unit of ecological suitability. The material ledger is the unit of honesty.",
+    "timestamp": "2026-09-13T22:46:03.002043+00:00"
   }
 }

@@ -52,6 +52,7 @@ data/processed/figures/14_lmp_map.html
 !data/processed/synthetic_branches.geojson
 !data/processed/ba_interchange_summary.csv
 !data/processed/county_housing_baseline.json
+!data/processed/county_ees_baseline.json
 !data/processed/lifecycle_coefficients.json
 !data/processed/mw_action_library_v3.json
 !data/processed/mw_county_cards.json

@@ -417,3 +417,87 @@ No Python fixture digest moved. Tests run: `test_terra_engine_v3.py`,
 - Jim Bridger `capacity_basis = "net_summer"`, documented in DECISIONS.md ✓
 
 **F1, F7, F13 closed. S6 complete. Do not start S7a.**
+
+---
+
+## S7a — 2026-09-13 — Rebuild county EES baseline on pinned inventory (F2)
+
+**Objective:** Rebuild the county E/Ec/S baseline so the Ec_gencap
+normalization matches the attribution logic's scale — both now computed
+from the complete pinned EIA generator inventory (25,868 generators,
+SHA `573f1a7b`).
+
+**What was done:**
+
+**Precondition check:**
+- `data/staging/eia_operating_generators_2026-05_raw.json`: 25,868 records,
+  SHA-256 `573f1a7b...` ✓
+- `data/processed/power_plants_with_ba.geojson`: 25,868 records, derived from
+  pinned inventory, last modified 2026-08-10 ✓
+- HIFLD FeatureServer reachability: Hospitals 200, Colleges 200 ✓
+
+**Snapshot (before hashes):**
+- `mw_county_ees_summary.csv`: `465776cf602ae2f8da65d6af031caf25be8f51ce612e6c1fe15a915bc7082f13`
+- `county_ees_baseline.json` (terra-app): `ab8920bfc286fa3a64f560e11122ceec7b23333e3de01767d41576dbcb1bcb6a`
+- `data/processed/county_ees_baseline.json`: did not exist
+
+**Reference normalization (fresh, from `build_generator_attribution.py` logic):**
+- `study_tracts()` → 1,676 tracts (7 ecoregion codes, n_missing ≤ 3)
+- `county_generator_term()` on `power_plants_with_ba.geojson`:
+  - gen_cap_50km_mw min: 0.0 MW, max: 5,796.9 MW
+  - ec_slope = 10 / 5796.9 / 6 = 2.875099909721863e-04
+
+**Notebook execution:**
+- `08b_ees_baseline.ipynb` run headlessly as Python script (converted via
+  nbconvert, OneDrive ROOT path patched to local). Produced
+  `mw_tract_ees_scores.parquet` (1,676 tracts, 42 columns) and
+  `mw_ecoregion_ees_summary.csv` (7 ecoregions).
+- `14_county_foundation.ipynb` run headlessly as Python script. TIGER 2023
+  county shapefile re-downloaded (missing `.dbf`/`.prj` files). Produced
+  `mw_county_ees_summary.csv` (157 counties), `mw_county_cards.json`,
+  `county_crosswalk.parquet`, `network_metadata.json` update.
+
+**Step 6 — slope comparison:**
+- 08b implied max: 5,796.9 MW (exact match with reference)
+- 08b ec_slope: 2.875099909721863e-04 (0.000% difference from reference)
+- Tolerance: 1% — PASS
+- Historical context: stale baseline had max ≈ 5,184.8 MW,
+  slope ≈ 3.2145e-4 — was 11.81% apart, now 0%
+
+**Step 7 — Albany county (56001) check:**
+- Pop-weighted Ec_gencap: 0.7708 (0-10 scale)
+- Pop-weighted Ec_contribution (Ec_gencap/6): 0.1285
+  - Stale value: 0.0097 → moved UP 13.2× (expected direction ✓)
+  - Expected target: ~0.1285 → actual 0.12846 (matches ✓)
+- Composite Ec: 5.5025 → 5.6212 (increase from Ec_gencap correction)
+- E and S unchanged (0.4351, 5.2321) — no generator dependency
+
+**Step 8 — promotion:**
+- `mw_county_ees_summary.csv` in place (157 rows)
+- `data/processed/county_ees_baseline.json` created (157 records)
+- `terra-app/src/data/county_ees_baseline.json` overwritten (157 records)
+- CSV ↔ JSON agreement: 0.00e+00 across all columns (E, Ec, S, population, n_tracts) ✓
+- Both JSON copies byte-identical ✓
+- `.gitignore` updated: added `!data/processed/county_ees_baseline.json` exception
+
+**After hashes:**
+- `mw_county_ees_summary.csv`: `8f66327636059adf766cdd315612772f79700b3ead2e415b9f742887650325c6`
+- `county_ees_baseline.json` (both paths): `3b0c326dbf48d5b9db94bfe26c9e965386f28714ee22baa74433b5df15931d2e`
+
+**Full E/Ec/S refresh note:** This was a full 08b + 14 re-run, so ALL
+sub-scores were refreshed — not just Ec_gencap. Census ACS 2022 and
+HIFLD data were re-fetched live. E and S composites may differ from
+stale values due to updated Census/HIFLD source data, not just the
+generator capacity fix. In practice, Albany's E and S were unchanged
+(matching to 4 decimal places), but other counties may show small
+E/S movement. This is expected and correct.
+
+**Acceptance:**
+- Step 6 slope comparison: 0.000% difference, within 1% tolerance ✓
+- 157 rows in both runtime paths ✓
+- CSV ↔ JSON agreement to 0.00e+00 for all columns ✓
+- Albany Ec_contribution moved UP from 0.0097 to 0.1285 ✓
+
+**Goldens NOT yet refreshed, trajectory NOT yet re-run — that's S7b.**
+
+**F2 (upstream half) closed. S7a complete. Do not start S7b.**
