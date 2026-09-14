@@ -3,7 +3,7 @@
   "schema_version": "3.2",
   "engine_version": "2.4",
   "created": "2026-06-24T00:00:00.000000+00:00",
-  "description": "Three-ledger X2 production reduction — PRB Coal Mines -10M tons; v2.4 full Ledger A/B/C",
+  "description": "Three-ledger X2 production reduction \u2014 PRB Coal Mines -10M tons; v2.4 full Ledger A/B/C",
   "inputs": {
     "action": "reduce_production_asset",
     "geoid": "56005",
@@ -29,16 +29,16 @@
       "ledger_c_cumulative_delta": 1514490.91,
       "severance_share": 237568227.78,
       "advalorem_production": 2364581.46,
-      "school_finance_net": -35081778.80,
+      "school_finance_net": -35081778.8,
       "assessed_mineral": 3596717342.0
     }
   },
   "digests_after": {
     "fiscal_digest_md5": "b2a9567a9545db98d2509c9e75a98a66",
-    "existing_assets_digest_md5": "8e03a67bd89e7aa53d46db41f059e968"
+    "existing_assets_digest_md5": "9f43f103d912cba6bac90f6b98e986cc"
   },
   "digests_before": {
     "fiscal_digest_md5": "af67c87f142045222bcaf324cdc9a947",
-    "existing_assets_digest_md5": "92bfcbf6e650ae5851d04058fdeef752"
+    "existing_assets_digest_md5": "7c685b368081bb00bdce51bb68a47d9b"
   }
 }

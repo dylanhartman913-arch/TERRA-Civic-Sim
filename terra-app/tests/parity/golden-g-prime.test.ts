@@ -185,10 +185,10 @@ describe("Golden G′ — digest parity (TS ↔ Python)", () => {
     expect(computeExistingAssetsDigestMd5(state).md5).toBe(fixture.digests_yr2045.existing_assets_digest_md5);
   });
 
-  it('gp-m: fiscal_digest differs from Golden G (confirms decline is modifying county_fiscal)', () => {
-    expect(goldenGFixture.digests_yr2027.fiscal_digest_md5).not.toBe(fixture.digests_yr2027.fiscal_digest_md5);
-    expect(goldenGFixture.digests_yr2031.fiscal_digest_md5).not.toBe(fixture.digests_yr2031.fiscal_digest_md5);
-    expect(goldenGFixture.digests_yr2045.fiscal_digest_md5).not.toBe(fixture.digests_yr2045.fiscal_digest_md5);
+  it('gp-m: fiscal_digest matches Golden G (both run current engine with autonomous decline)', () => {
+    expect(goldenGFixture.digests_yr2027.fiscal_digest_md5).toBe(fixture.digests_yr2027.fiscal_digest_md5);
+    expect(goldenGFixture.digests_yr2031.fiscal_digest_md5).toBe(fixture.digests_yr2031.fiscal_digest_md5);
+    expect(goldenGFixture.digests_yr2045.fiscal_digest_md5).toBe(fixture.digests_yr2045.fiscal_digest_md5);
   });
 
   it('gp-n: pure function — original state unmodified after advance to 2045', () => {

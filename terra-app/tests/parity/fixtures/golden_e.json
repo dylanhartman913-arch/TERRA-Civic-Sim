@@ -38,10 +38,150 @@
     "5f_prb_production_volume": 170045000.0,
     "5f_prb_commodity": "coal_surface",
     "5f_prb_county_distribution_share": 0.89154359,
-    "golden_a_state_digest_unchanged": "4a838c7070d55d3487d8f3ecbc529220"
+    "golden_a_state_digest_unchanged": "15680bf1e386c4ca09a06e6be5ec8bf3"
   },
   "existing_assets_digest": {
-    "md5": "92bfcbf6e650ae5851d04058fdeef752"
+    "existing_assets": {
+      "56005": [
+        {
+          "asset_kind": null,
+          "name": "BWXT TRISO Fuel Facility",
+          "status": "operating",
+          "capacity_mw": null,
+          "type": "nuclear_fuel",
+          "coal_tons_yr": null,
+          "excluded": "no_mw_conversion",
+          "fiscal_action_id": null,
+          "advalorem_rate_per_unit": null,
+          "assessed_delta_per_unit": null,
+          "commodity": null,
+          "county_distribution_share": null,
+          "production_unit": null,
+          "production_volume": null
+        },
+        {
+          "asset_kind": "production_asset",
+          "name": "Powder River Basin Coal Mines",
+          "status": "operating",
+          "capacity_mw": null,
+          "type": "coal",
+          "coal_tons_yr": null,
+          "excluded": null,
+          "fiscal_action_id": null,
+          "advalorem_rate_per_unit": 1.26302,
+          "assessed_delta_per_unit": -20.100255,
+          "commodity": "coal_surface",
+          "county_distribution_share": 0.89154359,
+          "production_unit": "tons_yr",
+          "production_volume": 170045000.0
+        }
+      ],
+      "56009": [
+        {
+          "asset_kind": "mw_asset",
+          "name": "Dave Johnston Power Plant",
+          "status": "operating",
+          "capacity_mw": 762.0,
+          "type": "coal",
+          "coal_tons_yr": 2852470.8,
+          "excluded": null,
+          "fiscal_action_id": "coal_to_solar",
+          "advalorem_rate_per_unit": null,
+          "assessed_delta_per_unit": null,
+          "commodity": null,
+          "county_distribution_share": null,
+          "production_unit": null,
+          "production_volume": null
+        }
+      ],
+      "56021": [
+        {
+          "asset_kind": "mw_asset",
+          "name": "Meta AI Data Center (Cheyenne)",
+          "status": "under_construction",
+          "capacity_mw": 100.0,
+          "type": "data_center",
+          "coal_tons_yr": null,
+          "excluded": null,
+          "fiscal_action_id": "data_center_hyperscale",
+          "advalorem_rate_per_unit": null,
+          "assessed_delta_per_unit": null,
+          "commodity": null,
+          "county_distribution_share": null,
+          "production_unit": null,
+          "production_volume": null
+        },
+        {
+          "asset_kind": "mw_asset",
+          "name": "Jade/Crusoe Campus Phase 1 (Cheyenne)",
+          "status": "approved_2026",
+          "capacity_mw": 200.0,
+          "type": "data_center",
+          "coal_tons_yr": null,
+          "excluded": null,
+          "fiscal_action_id": "data_center_campus_phase",
+          "advalorem_rate_per_unit": null,
+          "assessed_delta_per_unit": null,
+          "commodity": null,
+          "county_distribution_share": null,
+          "production_unit": null,
+          "production_volume": null
+        }
+      ],
+      "56023": [
+        {
+          "asset_kind": "mw_asset",
+          "name": "Kemmerer Unit 1 (Natrium)",
+          "status": "under_construction",
+          "capacity_mw": 345.0,
+          "type": "nuclear",
+          "coal_tons_yr": null,
+          "excluded": null,
+          "fiscal_action_id": "smr_advanced",
+          "advalorem_rate_per_unit": null,
+          "assessed_delta_per_unit": null,
+          "commodity": null,
+          "county_distribution_share": null,
+          "production_unit": null,
+          "production_volume": null
+        },
+        {
+          "asset_kind": null,
+          "name": "Naughton Gas Conversion",
+          "status": "planned",
+          "capacity_mw": null,
+          "type": "gas",
+          "coal_tons_yr": null,
+          "excluded": "no_mw_conversion",
+          "fiscal_action_id": null,
+          "advalorem_rate_per_unit": null,
+          "assessed_delta_per_unit": null,
+          "commodity": null,
+          "county_distribution_share": null,
+          "production_unit": null,
+          "production_volume": null
+        }
+      ],
+      "56037": [
+        {
+          "asset_kind": "mw_asset",
+          "name": "Jim Bridger Power Plant",
+          "status": "operating",
+          "capacity_mw": 2120.0,
+          "type": "coal",
+          "coal_tons_yr": 7936008.0,
+          "excluded": null,
+          "fiscal_action_id": "coal_to_solar",
+          "advalorem_rate_per_unit": null,
+          "assessed_delta_per_unit": null,
+          "commodity": null,
+          "county_distribution_share": null,
+          "production_unit": null,
+          "production_volume": null
+        }
+      ]
+    },
+    "md5": "7c685b368081bb00bdce51bb68a47d9b"
   },
   "existing_assets_snapshot": {
     "56005": [

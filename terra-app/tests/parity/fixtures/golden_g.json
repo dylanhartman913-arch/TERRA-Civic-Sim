@@ -3,15 +3,25 @@
   "schema_version": "3.0",
   "engine_version": "3.0",
   "created": "2026-07-02T00:00:00.000000+00:00",
-  "description": "Zero-player-action run 2025→2045 with EIA-860 scheduled baseline retirements. Dave Johnston (816.7 MW) retires 2027; Jim Bridger (2120 MW) retires 2031.",
+  "description": "Zero-player-action run 2025\u21922045 with EIA-860 scheduled baseline retirements. Dave Johnston (816.7 MW) retires 2027; Jim Bridger (2120 MW) retires 2031.",
   "inputs": {
     "action": "advance_year_x20",
     "player_actions": 0,
     "start_year": 2025,
     "end_year": 2045,
     "baseline_retirements": {
-      "dave_johnston": { "geoid": "56009", "capacity_mw": 816.7, "scheduled_retirement_year": 2027, "source": "eia860_planned" },
-      "jim_bridger": { "geoid": "56037", "capacity_mw": 2120, "scheduled_retirement_year": 2031, "source": "eia860_imputed" }
+      "dave_johnston": {
+        "geoid": "56009",
+        "capacity_mw": 816.7,
+        "scheduled_retirement_year": 2027,
+        "source": "eia860_planned"
+      },
+      "jim_bridger": {
+        "geoid": "56037",
+        "capacity_mw": 2120,
+        "scheduled_retirement_year": 2031,
+        "source": "eia860_imputed"
+      }
     }
   },
   "assertions": {
@@ -21,30 +31,30 @@
     "bus_56037_init_capacity_mw": 2401.8,
     "yr2027_dj_lifecycle": "retired",
     "yr2027_jb_lifecycle": "operating",
-    "yr2027_bus_56009_capacity_mw": 427.79999999999995,
+    "yr2027_bus_56009_capacity_mw": 482.5,
     "yr2027_bus_56037_capacity_mw": 2401.8,
     "yr2031_dj_lifecycle": "retired",
     "yr2031_jb_lifecycle": "retired",
-    "yr2031_bus_56009_capacity_mw": 427.79999999999995,
+    "yr2031_bus_56009_capacity_mw": 482.5,
     "yr2031_bus_56037_capacity_mw": 281.8000000000002,
-    "yr2045_bus_56009_capacity_mw": 427.79999999999995,
+    "yr2045_bus_56009_capacity_mw": 482.5,
     "yr2045_bus_56037_capacity_mw": 281.8000000000002,
-    "dj_capacity_drop_mw": 816.7,
+    "dj_capacity_drop_mw": 762.0,
     "jb_capacity_drop_mw": 2120
   },
   "digests_yr2027": {
-    "state_digest_md5": "316fe412b9d030cc91db4b3ae50ede46",
-    "fiscal_digest_md5": "a92761b7cee7c5e71e21c8faea67ede0",
-    "existing_assets_digest_md5": "a881df20643298394d53c2ac43012fe3"
+    "state_digest_md5": "599f4f27a9e1b69a22a43603acd557fc",
+    "fiscal_digest_md5": "63ecffeb94175ed53150c042b96b7c03",
+    "existing_assets_digest_md5": "ad3a1e1a3645eabab15e2b736ad3d511"
   },
   "digests_yr2031": {
-    "state_digest_md5": "a4619f25b45f7d006933de9efe83fbb2",
-    "fiscal_digest_md5": "cd28891e9eaaf9fb5ad345c91fe9b46f",
-    "existing_assets_digest_md5": "a881df20643298394d53c2ac43012fe3"
+    "state_digest_md5": "1ab45d5cfde1a39bc05ac987f5e2edf0",
+    "fiscal_digest_md5": "ad9da9c73fda224a42f0d9c1e5c685e4",
+    "existing_assets_digest_md5": "60af778999086403b0eb75336fbc8e34"
   },
   "digests_yr2045": {
-    "state_digest_md5": "f81d33175334549b3fe24a105a752fad",
-    "fiscal_digest_md5": "f29280ab01eac21ce00a9a7aa93a04bd",
-    "existing_assets_digest_md5": "a881df20643298394d53c2ac43012fe3"
+    "state_digest_md5": "cc3333f5f182570894d10bcde3e29105",
+    "fiscal_digest_md5": "045f30e465a518e78870f00bb9b27aea",
+    "existing_assets_digest_md5": "07744b36e91debe1f3756e6408bf82a6"
   }
 }

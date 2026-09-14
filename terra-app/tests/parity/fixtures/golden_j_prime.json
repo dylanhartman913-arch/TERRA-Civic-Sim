@@ -14,12 +14,18 @@
     "end_year": 2088,
     "note": "Projections are conditional forecasts under 'no further decisions,' not predictions. Python runtime uses _round_pop() (floor(n+0.5)) to match JS Math.round() semantics on .5 cases."
   },
-  "history_digest_md5": "7b05722c9b11c2b405faf953c729977d",
+  "history_digest_md5": "38b1e5de345a4c1970e8c289da741b7a",
   "history_n_years": 63,
-  "history_year_range": [2026, 2088],
+  "history_year_range": [
+    2026,
+    2088
+  ],
   "assertions": {
-    "laramie_payback_year_range": [2081, 2087],
-    "laramie_payback_year_range_note": "Same range as Golden J — payback_year uses raw cumulative_net (not per-capita), unaffected by population dynamics.",
+    "laramie_payback_year_range": [
+      2081,
+      2087
+    ],
+    "laramie_payback_year_range_note": "Same range as Golden J \u2014 payback_year uses raw cumulative_net (not per-capita), unaffected by population dynamics.",
     "laramie_labor_utilization_2030": 0.073443,
     "laramie_labor_utilization_construction_peak": {
       "year": 2030,
@@ -41,7 +47,7 @@
     "laramie_working_age_population_2038": 80376,
     "laramie_population_monotone_2028_2038": true,
     "laramie_history_spot_2032_E": 2.2391,
-    "laramie_history_spot_2032_Ec": 9.269313,
+    "laramie_history_spot_2032_Ec": 9.394758,
     "laramie_history_spot_2032_S": 6.869765
   }
 }

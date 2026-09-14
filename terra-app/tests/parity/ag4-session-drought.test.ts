@@ -102,7 +102,7 @@ describe('AG4 Ranch Country drought session', () => {
     expect(Object.values(droughtEnabledState.county_ag).some(ag => ag.drought_events.length > 0)).toBe(true);
     expect(Object.values(energyOnlyState.county_ag).every(ag => ag.drought_events.length === 0)).toBe(true);
     // Pre-AG4 baseline for Ranch Country's identical base replay with AG flags disabled.
-    expect(computeReplayDigest(energyOnlyState, energyOnlyFile.climate_lens)).toBe('beafdb2f2f64657b3ecf7680e2188b91');
+    expect(computeReplayDigest(energyOnlyState, energyOnlyFile.climate_lens)).toBe('3fa8757964e2d10ff60a00556fe7c613');
     expect(agDigest(energyOnlyState).md5).toBe('756ec0d2d5ddf481be1331a48b38a1cb');
     // Drought-enabled state asserts against the frozen golden fixture.
     expect(computeReplayDigest(droughtEnabledState, droughtEnabledFile.climate_lens)).toBe(ranchGolden.digests.replay_digest);

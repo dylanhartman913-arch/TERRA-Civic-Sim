@@ -88,7 +88,10 @@
     "synthetic_network.random_seed": "code_constant: notebooks/07_synthetic_topology.ipynb cell 3 (RANDOM_SEED = 42); confirmed by methods_doc_2026-06-12",
     "synthetic_network.validation_status": "repo_artifact: data/processed/synthetic_topology_validation.json",
     "synthetic_network.validation_warnings": "repo_artifact: data/processed/synthetic_topology_validation.json",
-    "mc_sensitivity": "recovered: pre-existing key in data/processed/network_metadata.json (2026-07-31 MC run)"
+    "mc_sensitivity": "recovered: pre-existing key in data/processed/network_metadata.json (2026-07-31 MC run)",
+    "county_pivot": "repo_artifact: 14_county_foundation.ipynb cell 8 pivot table summary",
+    "ees_baseline": "repo_artifact: 16_engine_v2_golden.ipynb golden fixture generation",
+    "engine_v2": "repo_artifact: 16_engine_v2_golden.ipynb golden fixture generation"
   },
   "_reconstruction_meta": {
     "reconstructed_by": "S5 / W7 roadmap",
@@ -173,5 +176,15 @@
     },
     "doctrine": "The county is the unit of analysis and governance. The bus is the unit of energy system intervention. The tract is the unit of social measurement. The ecoregion is the unit of ecological suitability. The material ledger is the unit of honesty.",
     "timestamp": "2026-09-13T22:46:03.002043+00:00"
+  },
+  "engine_v2": {
+    "engine_version": "2.0",
+    "golden_fixture_md5s": {
+      "golden_a": "75e6d23c589bdb03406a023d4fb08838",
+      "golden_b": "8e6d92bef1b153bd41920dd1fdff9353",
+      "golden_c": "998858ea56114513cd5884b22f78bdd8"
+    },
+    "frozen": true,
+    "timestamp": "2026-09-14T03:08:45.338532+00:00"
   }
 }

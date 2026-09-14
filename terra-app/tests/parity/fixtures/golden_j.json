@@ -11,7 +11,7 @@
     "end_year": 2088,
     "note": "Projections are conditional forecasts under \"no further decisions,\" not predictions. The delta shows marginal impact of current action set vs. autonomous dynamics."
   },
-  "history_digest_md5": "b314878564e4118e7a60d6fc04d6a03d",
+  "history_digest_md5": "f4e9370d36939c67de94e83578f17329",
   "history_n_years": 63,
   "history_year_range": [
     2026,
@@ -37,7 +37,7 @@
     "campbell_coal_recapture_burden_shrinks": true,
     "campbell_service_funding_note": "school_finance_net is negative for Campbell (mineral recapture county). service_funding_per_capita is negative and becomes less negative as coal production declines \u2014 the recapture burden shrinks. Absolute value decreases 2028-2038.",
     "laramie_history_spot_2032_E": 2.2391,
-    "laramie_history_spot_2032_Ec": 9.269313,
+    "laramie_history_spot_2032_Ec": 9.394758,
     "laramie_history_spot_2032_S": 6.869765
   }
 }

@@ -325,7 +325,7 @@ export function MethodsPage({ onClose }: Props) {
           <tbody>
             <tr>
               <td style={{ ...tdStyle, paddingLeft: 0, color: 'var(--text-primary)' }}>golden_b (no events)</td>
-              <td style={{ ...tdStyle, fontFamily: 'monospace', fontSize: 10 }}>716b189a8fee6757643818b15cd72541</td>
+              <td style={{ ...tdStyle, fontFamily: 'monospace', fontSize: 10 }}>4637927283447632599d648cfb360882</td>
               <td style={tdStyle}>Wyoming 2032 nuclear–DC buildout, Python engine, no events</td>
             </tr>
             <tr>

@@ -167,6 +167,6 @@ describe('Retirement Transitions (v3.0)', () => {
   it('existing_assets_digest is unchanged (no retirements scheduled at init)', () => {
     const state = loadInitialState();
     const { md5 } = computeExistingAssetsDigestMd5(state);
-    expect(md5).toBe('92bfcbf6e650ae5851d04058fdeef752');
+    expect(md5).toBe('7c685b368081bb00bdce51bb68a47d9b');
   });
 });

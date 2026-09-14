@@ -2,14 +2,119 @@
   "description": "Fremont and Converse county-ag arcs",
   "results": {
     "historical": {
+      "treatment_without_maintenance": {
+        "arc": [
+          {
+            "year": 2025,
+            "forage_index": 1.006532,
+            "cattle_head": 35673.908781
+          },
+          {
+            "year": 2026,
+            "forage_index": 1.004572,
+            "cattle_head": 35621.736147
+          },
+          {
+            "year": 2027,
+            "forage_index": 1.003201,
+            "cattle_head": 35585.215303
+          },
+          {
+            "year": 2028,
+            "forage_index": 1.00224,
+            "cattle_head": 35559.650712
+          },
+          {
+            "year": 2029,
+            "forage_index": 1.001568,
+            "cattle_head": 35541.755498
+          },
+          {
+            "year": 2030,
+            "forage_index": 1.001098,
+            "cattle_head": 35529.228849
+          },
+          {
+            "year": 2031,
+            "forage_index": 1.000768,
+            "cattle_head": 35520.460194
+          },
+          {
+            "year": 2032,
+            "forage_index": 1.000538,
+            "cattle_head": 35514.322136
+          },
+          {
+            "year": 2033,
+            "forage_index": 1.000377,
+            "cattle_head": 35510.025495
+          }
+        ],
+        "digests": {
+          "state_digest_md5": "efd161e4e6370b4c2ba3a1700c10e6c1",
+          "fiscal_digest_md5": "4fb3eb1b84612723780439595c157537",
+          "existing_assets_digest_md5": "8607ae203ce391d2c44cc653d3cdfb30",
+          "history_digest_md5": "3a13b788cda969b27959eb3789e7e200",
+          "ag_digest_md5": "60294b3decb6c62540516085b9cfdcad"
+        }
+      },
+      "treatment_with_maintenance": {
+        "arc": [
+          {
+            "year": 2025,
+            "forage_index": 1.006532,
+            "cattle_head": 35673.908781
+          },
+          {
+            "year": 2026,
+            "forage_index": 1.006532,
+            "cattle_head": 35673.908781
+          },
+          {
+            "year": 2027,
+            "forage_index": 1.006532,
+            "cattle_head": 35673.908781
+          },
+          {
+            "year": 2028,
+            "forage_index": 1.006532,
+            "cattle_head": 35673.908781
+          },
+          {
+            "year": 2029,
+            "forage_index": 1.006532,
+            "cattle_head": 35673.908781
+          },
+          {
+            "year": 2030,
+            "forage_index": 1.006532,
+            "cattle_head": 35673.908781
+          },
+          {
+            "year": 2031,
+            "forage_index": 1.006532,
+            "cattle_head": 35673.908781
+          },
+          {
+            "year": 2032,
+            "forage_index": 1.006532,
+            "cattle_head": 35673.908781
+          },
+          {
+            "year": 2033,
+            "forage_index": 1.006532,
+            "cattle_head": 35673.908781
+          }
+        ],
+        "digests": {
+          "state_digest_md5": "3b26055abef9352a406b2292d359ca75",
+          "fiscal_digest_md5": "4fb3eb1b84612723780439595c157537",
+          "existing_assets_digest_md5": "8607ae203ce391d2c44cc653d3cdfb30",
+          "history_digest_md5": "cff166615cf860496e9644e816a11349",
+          "ag_digest_md5": "b81cef0912a17e4af5fa445b4be494ab"
+        }
+      },
       "irrigation_efficiency": {
-        "after": {
-          "ag_consumptive": 119820.0,
-          "ag_diversion": 195100.0,
-          "county_supply": 323360.0,
-          "energy": 0.0,
-          "other": 0.0
-        },
         "before": {
           "ag_consumptive": 121260.0,
           "ag_diversion": 202100.0,
@@ -17,216 +122,23 @@
           "energy": 0.0,
           "other": 0.0
         },
-        "digests": {
-          "ag_digest_md5": "8f5ae69e00d8094b6ec860484a01aaf7",
-          "existing_assets_digest_md5": "92bfcbf6e650ae5851d04058fdeef752",
-          "fiscal_digest_md5": "af67c87f142045222bcaf324cdc9a947",
-          "history_digest_md5": "d751713988987e9331980363e24189ce",
-          "state_digest_md5": "7526d2e64081d0fb0554b9f8b3606590"
-        }
-      },
-      "treatment_with_maintenance": {
-        "arc": [
-          {
-            "cattle_head": 35673.908781,
-            "forage_index": 1.006532,
-            "year": 2025
-          },
-          {
-            "cattle_head": 35673.908781,
-            "forage_index": 1.006532,
-            "year": 2026
-          },
-          {
-            "cattle_head": 35673.908781,
-            "forage_index": 1.006532,
-            "year": 2027
-          },
-          {
-            "cattle_head": 35673.908781,
-            "forage_index": 1.006532,
-            "year": 2028
-          },
-          {
-            "cattle_head": 35673.908781,
-            "forage_index": 1.006532,
-            "year": 2029
-          },
-          {
-            "cattle_head": 35673.908781,
-            "forage_index": 1.006532,
-            "year": 2030
-          },
-          {
-            "cattle_head": 35673.908781,
-            "forage_index": 1.006532,
-            "year": 2031
-          },
-          {
-            "cattle_head": 35673.908781,
-            "forage_index": 1.006532,
-            "year": 2032
-          },
-          {
-            "cattle_head": 35673.908781,
-            "forage_index": 1.006532,
-            "year": 2033
-          }
-        ],
-        "digests": {
-          "ag_digest_md5": "b81cef0912a17e4af5fa445b4be494ab",
-          "existing_assets_digest_md5": "42cc98986d8459d1f3cbaff9de786c83",
-          "fiscal_digest_md5": "4fb3eb1b84612723780439595c157537",
-          "history_digest_md5": "c2353deea3c200616521f2aebad42fca",
-          "state_digest_md5": "f45f531f1904a4ebfb519ed918f86821"
-        }
-      },
-      "treatment_without_maintenance": {
-        "arc": [
-          {
-            "cattle_head": 35673.908781,
-            "forage_index": 1.006532,
-            "year": 2025
-          },
-          {
-            "cattle_head": 35621.736147,
-            "forage_index": 1.004572,
-            "year": 2026
-          },
-          {
-            "cattle_head": 35585.215303,
-            "forage_index": 1.003201,
-            "year": 2027
-          },
-          {
-            "cattle_head": 35559.650712,
-            "forage_index": 1.00224,
-            "year": 2028
-          },
-          {
-            "cattle_head": 35541.755498,
-            "forage_index": 1.001568,
-            "year": 2029
-          },
-          {
-            "cattle_head": 35529.228849,
-            "forage_index": 1.001098,
-            "year": 2030
-          },
-          {
-            "cattle_head": 35520.460194,
-            "forage_index": 1.000768,
-            "year": 2031
-          },
-          {
-            "cattle_head": 35514.322136,
-            "forage_index": 1.000538,
-            "year": 2032
-          },
-          {
-            "cattle_head": 35510.025495,
-            "forage_index": 1.000377,
-            "year": 2033
-          }
-        ],
-        "digests": {
-          "ag_digest_md5": "60294b3decb6c62540516085b9cfdcad",
-          "existing_assets_digest_md5": "42cc98986d8459d1f3cbaff9de786c83",
-          "fiscal_digest_md5": "4fb3eb1b84612723780439595c157537",
-          "history_digest_md5": "d3bc21330cabf2fa13ce62b083545763",
-          "state_digest_md5": "0788d3706e076804169093a6609f2c8d"
-        }
-      },
-      "two_year_drought": {
-        "arc": [
-          {
-            "cattle_head": 35500.0,
-            "forage_index": 1.0,
-            "year": 2025,
-            "years_remaining": 0
-          },
-          {
-            "cattle_head": 30175.0,
-            "forage_index": 0.8,
-            "year": 2026,
-            "years_remaining": 2
-          },
-          {
-            "cattle_head": 30175.0,
-            "forage_index": 0.8,
-            "year": 2027,
-            "years_remaining": 1
-          },
-          {
-            "cattle_head": 35500.0,
-            "forage_index": 1.0,
-            "year": 2028,
-            "years_remaining": 0
-          }
-        ],
-        "digests": {
-          "ag_digest_md5": "a61e8b16b4cea0e3ae743f9ccd7a26d0",
-          "existing_assets_digest_md5": "94838f10c798a0650d1b33fee30717b8",
-          "fiscal_digest_md5": "4b55b15a08079110290331854e19a6b2",
-          "history_digest_md5": "21a89c7f52caebfd43195b6275302f4c",
-          "state_digest_md5": "7646ce28b7f627be65ccbfbb011a4a7f"
+        "after": {
+          "ag_consumptive": 119820.0,
+          "ag_diversion": 195100.0,
+          "county_supply": 323360.0,
+          "energy": 0.0,
+          "other": 0.0
         },
-        "handler": "county_ag_d1"
+        "digests": {
+          "state_digest_md5": "9e1452e9eebe88f24d1d009168cd4dfc",
+          "fiscal_digest_md5": "af67c87f142045222bcaf324cdc9a947",
+          "existing_assets_digest_md5": "7c685b368081bb00bdce51bb68a47d9b",
+          "history_digest_md5": "d751713988987e9331980363e24189ce",
+          "ag_digest_md5": "8f5ae69e00d8094b6ec860484a01aaf7"
+        }
       },
       "utility_solar": {
-        "after": {
-          "ag_valuation_usd": {
-            "dry_crop": 3270824.0,
-            "irrigated_crop": 165302850.0,
-            "private_rangeland": 136431792.0,
-            "total": 305005466.0
-          },
-          "cattle_head": 25349.835438,
-          "drought": {
-            "forage_multiplier": 1.0,
-            "water_curtailment_fraction": 0.0,
-            "years_remaining": 0
-          },
-          "forage_aum": {
-            "federal": 14928.225265,
-            "index": 0.292589,
-            "private": 0.0
-          },
-          "land_acres": {
-            "converted_to_energy": 7500.0,
-            "dry_crop": 0.0,
-            "easement_protected": 5776341.0,
-            "irrigated_crop": 93550.0,
-            "other": 0.0,
-            "private_rangeland": 0.0
-          },
-          "shared_energy_acres": 0.0,
-          "water_acre_feet": {
-            "ag_consumptive": 112260.0,
-            "ag_diversion": 187100.0,
-            "county_supply": 323360.0,
-            "energy": 0.0,
-            "other": 0.0
-          }
-        },
         "before": {
-          "ag_valuation_usd": {
-            "dry_crop": 3270824.0,
-            "irrigated_crop": 178555350.0,
-            "private_rangeland": 136431792.0,
-            "total": 318257966.0
-          },
-          "cattle_head": 25349.835438,
-          "drought": {
-            "forage_multiplier": 1.0,
-            "water_curtailment_fraction": 0.0,
-            "years_remaining": 0
-          },
-          "forage_aum": {
-            "federal": 14928.225265,
-            "index": 0.292589,
-            "private": 0.0
-          },
           "land_acres": {
             "converted_to_energy": 0.0,
             "dry_crop": 0.0,
@@ -235,60 +147,253 @@
             "other": 0.0,
             "private_rangeland": 0.0
           },
-          "shared_energy_acres": 0.0,
           "water_acre_feet": {
             "ag_consumptive": 121260.0,
             "ag_diversion": 202100.0,
             "county_supply": 323360.0,
             "energy": 0.0,
             "other": 0.0
+          },
+          "forage_aum": {
+            "private": 0.0,
+            "federal": 14928.225265,
+            "index": 0.292589
+          },
+          "cattle_head": 25349.835438,
+          "ag_valuation_usd": {
+            "irrigated_crop": 178555350.0,
+            "dry_crop": 3270824.0,
+            "private_rangeland": 136431792.0,
+            "total": 318257966.0
+          },
+          "shared_energy_acres": 0.0,
+          "drought": {
+            "forage_multiplier": 1.0,
+            "water_curtailment_fraction": 0.0,
+            "years_remaining": 0
+          }
+        },
+        "after": {
+          "land_acres": {
+            "converted_to_energy": 7500.0,
+            "dry_crop": 0.0,
+            "easement_protected": 5776341.0,
+            "irrigated_crop": 93550.0,
+            "other": 0.0,
+            "private_rangeland": 0.0
+          },
+          "water_acre_feet": {
+            "ag_consumptive": 112260.0,
+            "ag_diversion": 187100.0,
+            "county_supply": 323360.0,
+            "energy": 0.0,
+            "other": 0.0
+          },
+          "forage_aum": {
+            "private": 0.0,
+            "federal": 14928.225265,
+            "index": 0.292589
+          },
+          "cattle_head": 25349.835438,
+          "ag_valuation_usd": {
+            "irrigated_crop": 165302850.0,
+            "dry_crop": 3270824.0,
+            "private_rangeland": 136431792.0,
+            "total": 305005466.0
+          },
+          "shared_energy_acres": 0.0,
+          "drought": {
+            "forage_multiplier": 1.0,
+            "water_curtailment_fraction": 0.0,
+            "years_remaining": 0
           }
         },
         "conversion_sources": {
-          "dry_crop": 0.0,
-          "irrigated_crop": 7500.0,
           "other": 0.0,
-          "private_rangeland": 0.0
+          "private_rangeland": 0.0,
+          "dry_crop": 0.0,
+          "irrigated_crop": 7500.0
         },
-        "digests": {
-          "ag_digest_md5": "8a85a3fe55f11fea6a81ea5ff77faf4f",
-          "existing_assets_digest_md5": "92bfcbf6e650ae5851d04058fdeef752",
-          "fiscal_digest_md5": "e9478d4e071c79ad991012052d3b53b2",
-          "history_digest_md5": "d751713988987e9331980363e24189ce",
-          "state_digest_md5": "000294920cc93b848802324d4ffc5d82"
-        },
-        "property_tax_after": 66424005.53543499,
         "property_tax_before": 52924754.34125999,
-        "property_tax_delta": 13499251.194175
+        "property_tax_after": 66424005.53543499,
+        "property_tax_delta": 13499251.194175,
+        "digests": {
+          "state_digest_md5": "30258c3f449eea9c7ad9e53b5310b88d",
+          "fiscal_digest_md5": "e9478d4e071c79ad991012052d3b53b2",
+          "existing_assets_digest_md5": "7c685b368081bb00bdce51bb68a47d9b",
+          "history_digest_md5": "d751713988987e9331980363e24189ce",
+          "ag_digest_md5": "8a85a3fe55f11fea6a81ea5ff77faf4f"
+        }
       },
       "wind_shared_land": {
+        "private_aum_before": 76952.0,
+        "private_aum_after": 76943.666717,
+        "shared_energy_acres": 84750.0,
         "conversion_sources": {
-          "dry_crop": 0.0,
-          "irrigated_crop": 0.0,
           "other": 0.0,
-          "private_rangeland": 250.0
+          "private_rangeland": 250.0,
+          "dry_crop": 0.0,
+          "irrigated_crop": 0.0
         },
         "digests": {
-          "ag_digest_md5": "08c85b5a3a9dd435b4867e53fc81d94e",
-          "existing_assets_digest_md5": "92bfcbf6e650ae5851d04058fdeef752",
+          "state_digest_md5": "746a7fa484c8e0d813577bc438753c69",
           "fiscal_digest_md5": "d47d1bfcc7d9fcc221ea190ded3d8239",
+          "existing_assets_digest_md5": "7c685b368081bb00bdce51bb68a47d9b",
           "history_digest_md5": "d751713988987e9331980363e24189ce",
-          "state_digest_md5": "6e6ecf5e425db7b483f6778f6add7762"
-        },
-        "private_aum_after": 76943.666717,
-        "private_aum_before": 76952.0,
-        "shared_energy_acres": 84750.0
+          "ag_digest_md5": "08c85b5a3a9dd435b4867e53fc81d94e"
+        }
+      },
+      "two_year_drought": {
+        "handler": "county_ag_d1",
+        "arc": [
+          {
+            "year": 2025,
+            "forage_index": 1.0,
+            "cattle_head": 35500.0,
+            "years_remaining": 0
+          },
+          {
+            "year": 2026,
+            "forage_index": 0.8,
+            "cattle_head": 30175.0,
+            "years_remaining": 2
+          },
+          {
+            "year": 2027,
+            "forage_index": 0.8,
+            "cattle_head": 30175.0,
+            "years_remaining": 1
+          },
+          {
+            "year": 2028,
+            "forage_index": 1.0,
+            "cattle_head": 35500.0,
+            "years_remaining": 0
+          }
+        ],
+        "digests": {
+          "state_digest_md5": "4e6454b3539ae7001cfb1a7f97733b5d",
+          "fiscal_digest_md5": "4b55b15a08079110290331854e19a6b2",
+          "existing_assets_digest_md5": "6f5ab02bb4a9af1d7f6104ac57a46a85",
+          "history_digest_md5": "19534f3c6e87454a912065fd015a5ade",
+          "ag_digest_md5": "a61e8b16b4cea0e3ae743f9ccd7a26d0"
+        }
       }
     },
     "ssp370": {
+      "treatment_without_maintenance": {
+        "arc": [
+          {
+            "year": 2025,
+            "forage_index": 1.006532,
+            "cattle_head": 35673.908781
+          },
+          {
+            "year": 2026,
+            "forage_index": 1.004572,
+            "cattle_head": 35621.736147
+          },
+          {
+            "year": 2027,
+            "forage_index": 1.003201,
+            "cattle_head": 35585.215303
+          },
+          {
+            "year": 2028,
+            "forage_index": 1.00224,
+            "cattle_head": 35559.650712
+          },
+          {
+            "year": 2029,
+            "forage_index": 1.001568,
+            "cattle_head": 35541.755498
+          },
+          {
+            "year": 2030,
+            "forage_index": 1.001098,
+            "cattle_head": 35529.228849
+          },
+          {
+            "year": 2031,
+            "forage_index": 1.000768,
+            "cattle_head": 35520.460194
+          },
+          {
+            "year": 2032,
+            "forage_index": 1.000538,
+            "cattle_head": 35514.322136
+          },
+          {
+            "year": 2033,
+            "forage_index": 1.000377,
+            "cattle_head": 35510.025495
+          }
+        ],
+        "digests": {
+          "state_digest_md5": "efd161e4e6370b4c2ba3a1700c10e6c1",
+          "fiscal_digest_md5": "4fb3eb1b84612723780439595c157537",
+          "existing_assets_digest_md5": "8607ae203ce391d2c44cc653d3cdfb30",
+          "history_digest_md5": "3a13b788cda969b27959eb3789e7e200",
+          "ag_digest_md5": "60294b3decb6c62540516085b9cfdcad"
+        }
+      },
+      "treatment_with_maintenance": {
+        "arc": [
+          {
+            "year": 2025,
+            "forage_index": 1.006532,
+            "cattle_head": 35673.908781
+          },
+          {
+            "year": 2026,
+            "forage_index": 1.006532,
+            "cattle_head": 35673.908781
+          },
+          {
+            "year": 2027,
+            "forage_index": 1.006532,
+            "cattle_head": 35673.908781
+          },
+          {
+            "year": 2028,
+            "forage_index": 1.006532,
+            "cattle_head": 35673.908781
+          },
+          {
+            "year": 2029,
+            "forage_index": 1.006532,
+            "cattle_head": 35673.908781
+          },
+          {
+            "year": 2030,
+            "forage_index": 1.006532,
+            "cattle_head": 35673.908781
+          },
+          {
+            "year": 2031,
+            "forage_index": 1.006532,
+            "cattle_head": 35673.908781
+          },
+          {
+            "year": 2032,
+            "forage_index": 1.006532,
+            "cattle_head": 35673.908781
+          },
+          {
+            "year": 2033,
+            "forage_index": 1.006532,
+            "cattle_head": 35673.908781
+          }
+        ],
+        "digests": {
+          "state_digest_md5": "3b26055abef9352a406b2292d359ca75",
+          "fiscal_digest_md5": "4fb3eb1b84612723780439595c157537",
+          "existing_assets_digest_md5": "8607ae203ce391d2c44cc653d3cdfb30",
+          "history_digest_md5": "cff166615cf860496e9644e816a11349",
+          "ag_digest_md5": "b81cef0912a17e4af5fa445b4be494ab"
+        }
+      },
       "irrigation_efficiency": {
-        "after": {
-          "ag_consumptive": 119820.0,
-          "ag_diversion": 195100.0,
-          "county_supply": 323360.0,
-          "energy": 0.0,
-          "other": 0.0
-        },
         "before": {
           "ag_consumptive": 121260.0,
           "ag_diversion": 202100.0,
@@ -296,216 +401,23 @@
           "energy": 0.0,
           "other": 0.0
         },
-        "digests": {
-          "ag_digest_md5": "8f5ae69e00d8094b6ec860484a01aaf7",
-          "existing_assets_digest_md5": "92bfcbf6e650ae5851d04058fdeef752",
-          "fiscal_digest_md5": "af67c87f142045222bcaf324cdc9a947",
-          "history_digest_md5": "d751713988987e9331980363e24189ce",
-          "state_digest_md5": "7526d2e64081d0fb0554b9f8b3606590"
-        }
-      },
-      "treatment_with_maintenance": {
-        "arc": [
-          {
-            "cattle_head": 35673.908781,
-            "forage_index": 1.006532,
-            "year": 2025
-          },
-          {
-            "cattle_head": 35673.908781,
-            "forage_index": 1.006532,
-            "year": 2026
-          },
-          {
-            "cattle_head": 35673.908781,
-            "forage_index": 1.006532,
-            "year": 2027
-          },
-          {
-            "cattle_head": 35673.908781,
-            "forage_index": 1.006532,
-            "year": 2028
-          },
-          {
-            "cattle_head": 35673.908781,
-            "forage_index": 1.006532,
-            "year": 2029
-          },
-          {
-            "cattle_head": 35673.908781,
-            "forage_index": 1.006532,
-            "year": 2030
-          },
-          {
-            "cattle_head": 35673.908781,
-            "forage_index": 1.006532,
-            "year": 2031
-          },
-          {
-            "cattle_head": 35673.908781,
-            "forage_index": 1.006532,
-            "year": 2032
-          },
-          {
-            "cattle_head": 35673.908781,
-            "forage_index": 1.006532,
-            "year": 2033
-          }
-        ],
-        "digests": {
-          "ag_digest_md5": "b81cef0912a17e4af5fa445b4be494ab",
-          "existing_assets_digest_md5": "42cc98986d8459d1f3cbaff9de786c83",
-          "fiscal_digest_md5": "4fb3eb1b84612723780439595c157537",
-          "history_digest_md5": "c2353deea3c200616521f2aebad42fca",
-          "state_digest_md5": "f45f531f1904a4ebfb519ed918f86821"
-        }
-      },
-      "treatment_without_maintenance": {
-        "arc": [
-          {
-            "cattle_head": 35673.908781,
-            "forage_index": 1.006532,
-            "year": 2025
-          },
-          {
-            "cattle_head": 35621.736147,
-            "forage_index": 1.004572,
-            "year": 2026
-          },
-          {
-            "cattle_head": 35585.215303,
-            "forage_index": 1.003201,
-            "year": 2027
-          },
-          {
-            "cattle_head": 35559.650712,
-            "forage_index": 1.00224,
-            "year": 2028
-          },
-          {
-            "cattle_head": 35541.755498,
-            "forage_index": 1.001568,
-            "year": 2029
-          },
-          {
-            "cattle_head": 35529.228849,
-            "forage_index": 1.001098,
-            "year": 2030
-          },
-          {
-            "cattle_head": 35520.460194,
-            "forage_index": 1.000768,
-            "year": 2031
-          },
-          {
-            "cattle_head": 35514.322136,
-            "forage_index": 1.000538,
-            "year": 2032
-          },
-          {
-            "cattle_head": 35510.025495,
-            "forage_index": 1.000377,
-            "year": 2033
-          }
-        ],
-        "digests": {
-          "ag_digest_md5": "60294b3decb6c62540516085b9cfdcad",
-          "existing_assets_digest_md5": "42cc98986d8459d1f3cbaff9de786c83",
-          "fiscal_digest_md5": "4fb3eb1b84612723780439595c157537",
-          "history_digest_md5": "d3bc21330cabf2fa13ce62b083545763",
-          "state_digest_md5": "0788d3706e076804169093a6609f2c8d"
-        }
-      },
-      "two_year_drought": {
-        "arc": [
-          {
-            "cattle_head": 35500.0,
-            "forage_index": 1.0,
-            "year": 2025,
-            "years_remaining": 0
-          },
-          {
-            "cattle_head": 28843.75,
-            "forage_index": 0.75,
-            "year": 2026,
-            "years_remaining": 2
-          },
-          {
-            "cattle_head": 28843.75,
-            "forage_index": 0.75,
-            "year": 2027,
-            "years_remaining": 1
-          },
-          {
-            "cattle_head": 35500.0,
-            "forage_index": 1.0,
-            "year": 2028,
-            "years_remaining": 0
-          }
-        ],
-        "digests": {
-          "ag_digest_md5": "ea66457fa0fc4c5f2364b0995d797b0d",
-          "existing_assets_digest_md5": "94838f10c798a0650d1b33fee30717b8",
-          "fiscal_digest_md5": "4b55b15a08079110290331854e19a6b2",
-          "history_digest_md5": "21a89c7f52caebfd43195b6275302f4c",
-          "state_digest_md5": "7646ce28b7f627be65ccbfbb011a4a7f"
+        "after": {
+          "ag_consumptive": 119820.0,
+          "ag_diversion": 195100.0,
+          "county_supply": 323360.0,
+          "energy": 0.0,
+          "other": 0.0
         },
-        "handler": "county_ag_d1"
+        "digests": {
+          "state_digest_md5": "9e1452e9eebe88f24d1d009168cd4dfc",
+          "fiscal_digest_md5": "af67c87f142045222bcaf324cdc9a947",
+          "existing_assets_digest_md5": "7c685b368081bb00bdce51bb68a47d9b",
+          "history_digest_md5": "d751713988987e9331980363e24189ce",
+          "ag_digest_md5": "8f5ae69e00d8094b6ec860484a01aaf7"
+        }
       },
       "utility_solar": {
-        "after": {
-          "ag_valuation_usd": {
-            "dry_crop": 3270824.0,
-            "irrigated_crop": 165302850.0,
-            "private_rangeland": 136431792.0,
-            "total": 305005466.0
-          },
-          "cattle_head": 25349.835438,
-          "drought": {
-            "forage_multiplier": 1.0,
-            "water_curtailment_fraction": 0.0,
-            "years_remaining": 0
-          },
-          "forage_aum": {
-            "federal": 14928.225265,
-            "index": 0.292589,
-            "private": 0.0
-          },
-          "land_acres": {
-            "converted_to_energy": 7500.0,
-            "dry_crop": 0.0,
-            "easement_protected": 5776341.0,
-            "irrigated_crop": 93550.0,
-            "other": 0.0,
-            "private_rangeland": 0.0
-          },
-          "shared_energy_acres": 0.0,
-          "water_acre_feet": {
-            "ag_consumptive": 112260.0,
-            "ag_diversion": 187100.0,
-            "county_supply": 323360.0,
-            "energy": 0.0,
-            "other": 0.0
-          }
-        },
         "before": {
-          "ag_valuation_usd": {
-            "dry_crop": 3270824.0,
-            "irrigated_crop": 178555350.0,
-            "private_rangeland": 136431792.0,
-            "total": 318257966.0
-          },
-          "cattle_head": 25349.835438,
-          "drought": {
-            "forage_multiplier": 1.0,
-            "water_curtailment_fraction": 0.0,
-            "years_remaining": 0
-          },
-          "forage_aum": {
-            "federal": 14928.225265,
-            "index": 0.292589,
-            "private": 0.0
-          },
           "land_acres": {
             "converted_to_energy": 0.0,
             "dry_crop": 0.0,
@@ -514,49 +426,137 @@
             "other": 0.0,
             "private_rangeland": 0.0
           },
-          "shared_energy_acres": 0.0,
           "water_acre_feet": {
             "ag_consumptive": 121260.0,
             "ag_diversion": 202100.0,
             "county_supply": 323360.0,
             "energy": 0.0,
             "other": 0.0
+          },
+          "forage_aum": {
+            "private": 0.0,
+            "federal": 14928.225265,
+            "index": 0.292589
+          },
+          "cattle_head": 25349.835438,
+          "ag_valuation_usd": {
+            "irrigated_crop": 178555350.0,
+            "dry_crop": 3270824.0,
+            "private_rangeland": 136431792.0,
+            "total": 318257966.0
+          },
+          "shared_energy_acres": 0.0,
+          "drought": {
+            "forage_multiplier": 1.0,
+            "water_curtailment_fraction": 0.0,
+            "years_remaining": 0
+          }
+        },
+        "after": {
+          "land_acres": {
+            "converted_to_energy": 7500.0,
+            "dry_crop": 0.0,
+            "easement_protected": 5776341.0,
+            "irrigated_crop": 93550.0,
+            "other": 0.0,
+            "private_rangeland": 0.0
+          },
+          "water_acre_feet": {
+            "ag_consumptive": 112260.0,
+            "ag_diversion": 187100.0,
+            "county_supply": 323360.0,
+            "energy": 0.0,
+            "other": 0.0
+          },
+          "forage_aum": {
+            "private": 0.0,
+            "federal": 14928.225265,
+            "index": 0.292589
+          },
+          "cattle_head": 25349.835438,
+          "ag_valuation_usd": {
+            "irrigated_crop": 165302850.0,
+            "dry_crop": 3270824.0,
+            "private_rangeland": 136431792.0,
+            "total": 305005466.0
+          },
+          "shared_energy_acres": 0.0,
+          "drought": {
+            "forage_multiplier": 1.0,
+            "water_curtailment_fraction": 0.0,
+            "years_remaining": 0
           }
         },
         "conversion_sources": {
-          "dry_crop": 0.0,
-          "irrigated_crop": 7500.0,
           "other": 0.0,
-          "private_rangeland": 0.0
+          "private_rangeland": 0.0,
+          "dry_crop": 0.0,
+          "irrigated_crop": 7500.0
         },
-        "digests": {
-          "ag_digest_md5": "8a85a3fe55f11fea6a81ea5ff77faf4f",
-          "existing_assets_digest_md5": "92bfcbf6e650ae5851d04058fdeef752",
-          "fiscal_digest_md5": "e9478d4e071c79ad991012052d3b53b2",
-          "history_digest_md5": "d751713988987e9331980363e24189ce",
-          "state_digest_md5": "000294920cc93b848802324d4ffc5d82"
-        },
-        "property_tax_after": 66424005.53543499,
         "property_tax_before": 52924754.34125999,
-        "property_tax_delta": 13499251.194175
+        "property_tax_after": 66424005.53543499,
+        "property_tax_delta": 13499251.194175,
+        "digests": {
+          "state_digest_md5": "30258c3f449eea9c7ad9e53b5310b88d",
+          "fiscal_digest_md5": "e9478d4e071c79ad991012052d3b53b2",
+          "existing_assets_digest_md5": "7c685b368081bb00bdce51bb68a47d9b",
+          "history_digest_md5": "d751713988987e9331980363e24189ce",
+          "ag_digest_md5": "8a85a3fe55f11fea6a81ea5ff77faf4f"
+        }
       },
       "wind_shared_land": {
+        "private_aum_before": 76952.0,
+        "private_aum_after": 76943.666717,
+        "shared_energy_acres": 84750.0,
         "conversion_sources": {
-          "dry_crop": 0.0,
-          "irrigated_crop": 0.0,
           "other": 0.0,
-          "private_rangeland": 250.0
+          "private_rangeland": 250.0,
+          "dry_crop": 0.0,
+          "irrigated_crop": 0.0
         },
         "digests": {
-          "ag_digest_md5": "08c85b5a3a9dd435b4867e53fc81d94e",
-          "existing_assets_digest_md5": "92bfcbf6e650ae5851d04058fdeef752",
+          "state_digest_md5": "746a7fa484c8e0d813577bc438753c69",
           "fiscal_digest_md5": "d47d1bfcc7d9fcc221ea190ded3d8239",
+          "existing_assets_digest_md5": "7c685b368081bb00bdce51bb68a47d9b",
           "history_digest_md5": "d751713988987e9331980363e24189ce",
-          "state_digest_md5": "6e6ecf5e425db7b483f6778f6add7762"
-        },
-        "private_aum_after": 76943.666717,
-        "private_aum_before": 76952.0,
-        "shared_energy_acres": 84750.0
+          "ag_digest_md5": "08c85b5a3a9dd435b4867e53fc81d94e"
+        }
+      },
+      "two_year_drought": {
+        "handler": "county_ag_d1",
+        "arc": [
+          {
+            "year": 2025,
+            "forage_index": 1.0,
+            "cattle_head": 35500.0,
+            "years_remaining": 0
+          },
+          {
+            "year": 2026,
+            "forage_index": 0.75,
+            "cattle_head": 28843.75,
+            "years_remaining": 2
+          },
+          {
+            "year": 2027,
+            "forage_index": 0.75,
+            "cattle_head": 28843.75,
+            "years_remaining": 1
+          },
+          {
+            "year": 2028,
+            "forage_index": 1.0,
+            "cattle_head": 35500.0,
+            "years_remaining": 0
+          }
+        ],
+        "digests": {
+          "state_digest_md5": "4e6454b3539ae7001cfb1a7f97733b5d",
+          "fiscal_digest_md5": "4b55b15a08079110290331854e19a6b2",
+          "existing_assets_digest_md5": "6f5ab02bb4a9af1d7f6104ac57a46a85",
+          "history_digest_md5": "19534f3c6e87454a912065fd015a5ade",
+          "ag_digest_md5": "ea66457fa0fc4c5f2364b0995d797b0d"
+        }
       }
     }
   },

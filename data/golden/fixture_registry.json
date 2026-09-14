@@ -75,13 +75,6 @@
       "amendment_reason": "Engine v3.1: autonomous PRB coal surface decline (-2.0%/yr compound, geoid 56005) + reclamation obligation tracking (cohort log \u2192 active_reclamation_acres \u2192 reclamation_jobs_direct). state_digest stable. fiscal_digest and existing_assets_digest reflect annual production volume erosion."
     },
     {
-      "golden": "H",
-      "file": "golden_h.json",
-      "description": "Lincoln County Kemmerer boomtown 2026-2034",
-      "state_digest_md5_a": "a46c1dd9f9d23c467f300f918da931f0",
-      "state_digest_md5_b": "866d7317755340a8bf9d6a4a1f3e3af4"
-    },
-    {
       "fixture_id": "golden_j",
       "engine_version": "4.0",
       "location": "terra-app/tests/parity/fixtures/golden_j.json",
@@ -147,24 +140,24 @@
       "description": "Golden M \u2014 C4-ii resilience fork. One heat-resilience action, seed 42, years 2026-2030; lens enters only through sampled events and existing-handler consequences.",
       "created": "2026-07-16",
       "historical": {
-        "state_digest_md5": "0a0091bbc8b2b341364382b4f2d0b99b",
+        "state_digest_md5": "f3f925f347f67e966a5f5aa981da5550",
         "fiscal_digest_md5": "58bd2636ea88f814328ecb24aad8a75a",
-        "existing_assets_digest_md5": "12ce6abe6e39b60dd1dcc06b7e065cc3",
-        "history_digest_md5": "38eaf77f1d25d8dd780f85a00efb434a",
+        "existing_assets_digest_md5": "1192d016fb8b5418217fc684e3d8763d",
+        "history_digest_md5": "a146e194dd763a8a20f9a0cf9e0e13c6",
         "event_count": 0
       },
       "ssp245": {
-        "state_digest_md5": "3f1764d1df8eeb3a67fecd973f736594",
+        "state_digest_md5": "324549424f2b910a82242f2eefad3d37",
         "fiscal_digest_md5": "58bd2636ea88f814328ecb24aad8a75a",
-        "existing_assets_digest_md5": "12ce6abe6e39b60dd1dcc06b7e065cc3",
-        "history_digest_md5": "e09bedf64ed37da50d4612f463baac7d",
+        "existing_assets_digest_md5": "1192d016fb8b5418217fc684e3d8763d",
+        "history_digest_md5": "396dca6c4b261128e6784a4798b9ffd1",
         "event_count": 1506
       },
       "ssp370": {
-        "state_digest_md5": "da39731213b8ec713630347effe36218",
+        "state_digest_md5": "22224f7300154dbef6c7200ada0a19a6",
         "fiscal_digest_md5": "58bd2636ea88f814328ecb24aad8a75a",
-        "existing_assets_digest_md5": "12ce6abe6e39b60dd1dcc06b7e065cc3",
-        "history_digest_md5": "2ec618b89873bd540e1f0d597659638c",
+        "existing_assets_digest_md5": "1192d016fb8b5418217fc684e3d8763d",
+        "history_digest_md5": "328a04bd457b468a897d0eb386e7bbbd",
         "event_count": 1530
       },
       "note": "New fixture; no A-L fixture regenerated and no amendment consumed."
@@ -181,6 +174,13 @@
       "ssp370_ag_digest_md5": "ea66457fa0fc4c5f2364b0995d797b0d",
       "cross_runtime_tolerance": 1e-06,
       "note": "New fixture; no A-M fixture regenerated and no amendment consumed. amendments_used remains 4."
+    },
+    {
+      "golden": "H",
+      "file": "golden_h.json",
+      "description": "Lincoln County Kemmerer boomtown 2026-2034",
+      "state_digest_md5_a": "7e31dc3fb03d70bb9ed8bc4f206882fe",
+      "state_digest_md5_b": "58493d9c4ab9b7776f69948c28f996bb"
     }
   ]
 }

@@ -2,7 +2,7 @@
   "fixture_id": "golden_k",
   "schema_version": "4.3",
   "engine_version": "4.3",
-  "created": "2026-07-12T19:08:19.835780+00:00",
+  "created": "2026-09-14T03:09:12.795394+00:00",
   "description": "Golden K \u2014 anchor lifecycle (F1 Session). Retire WE Soda trona anchor (Sweetwater, 722 emp) in 2030; retire Black Thunder coal anchor (Campbell, 808 emp) in 2028, queue solar_utility on mine site; place SMR on JB thermal site in 2035. Employment-sized by geojson employment_est field (derived, not MW-based). Tests anchor retirement \u2192 site spawn \u2192 succession discount chain.",
   "scenario": {
     "steps": [
@@ -76,10 +76,10 @@
     "largest_trona_anchor_by": "employment_est (722; geojson has no MW/tonnage for mines)"
   },
   "digests_yr2040": {
-    "state_digest_md5": "457b215ab9efb0891fe4376984249ba0",
+    "state_digest_md5": "e49a8ab279d2c2fd0f3d07c2b1eb64bd",
     "fiscal_digest_md5": "469ae713294c18fc2fe06797e6cabbed",
-    "existing_assets_digest_md5": "3d992a9b6ee0dad85dbbed6b72914351",
-    "history_digest_md5": "f9f716e177fb7bc37bd5f61eaa79057f",
+    "existing_assets_digest_md5": "0fa86f2f47b82c3cbe1b9a99b06fa9e3",
+    "history_digest_md5": "ea6d99e32b7bf23b022f60dea2db1eb0",
     "history_n_years": 15,
     "history_year_range": [
       2026,

@@ -149,19 +149,19 @@ function replayGoldenB(state: EngineState): EngineState {
 // ── Frozen digest values from the build log ─────────────────────────────────
 
 const FROZEN = {
-  golden_a: { state: '4a838c7070d55d3487d8f3ecbc529220' },
-  golden_b_no_events: { state: '716b189a8fee6757643818b15cd72541' },
-  golden_c: { state: '997753927c570e929fe5d9930fe64e0d' },
-  golden_d: { state: '775dce2e36e0c9fc347cabeceaec2f16', fiscal: '225c5bdddb9e0e59aea6ab9c92e09503' },
-  golden_e: { existing_assets: '92bfcbf6e650ae5851d04058fdeef752' },
-  golden_g_prime_2027: { state: '5bb6c8e9a9cc448a64e99564e7ce383a', fiscal: '63ecffeb94175ed53150c042b96b7c03', existing_assets: '583cdb35e2c2d6b93b019fc734a03654' },
-  golden_g_prime_2031: { state: 'c282c011e7af856a2b69d6fda97cb396', fiscal: 'ad9da9c73fda224a42f0d9c1e5c685e4', existing_assets: 'fee4a377419aafb8d0825cda06b05751' },
-  golden_g_prime_2045: { state: 'd0a59b604e9235a2df2e9c6ca27c7171', fiscal: '045f30e465a518e78870f00bb9b27aea', existing_assets: '955bfa3640f27d335b443b6304b9d447' },
-  golden_h_a: { state: '969ad98015d3607e187d71b2d09c681e', fiscal: '4fb3eb1b84612723780439595c157537', existing_assets: '42cc98986d8459d1f3cbaff9de786c83' },
-  golden_h_b: { state: '6b9cebb0a00640d8f52d29d0817c85e4', fiscal: '736e5343867c2f4c9c1fb892e0db65b9', existing_assets: '42cc98986d8459d1f3cbaff9de786c83' },
-  golden_i_2031: { state: 'c282c011e7af856a2b69d6fda97cb396', fiscal: 'ad9da9c73fda224a42f0d9c1e5c685e4', existing_assets: 'fee4a377419aafb8d0825cda06b05751' },
-  golden_i_2041: { state: '17fe866569a0384a150cb86f8b5d169d', fiscal: 'c251dce1f96ec87747160a75ed48fb64', existing_assets: '0a083f2103ab403e70d7e555202be9b8' },
-  golden_j_prime: { history: '7b05722c9b11c2b405faf953c729977d' },
+  golden_a: { state: '15680bf1e386c4ca09a06e6be5ec8bf3' },
+  golden_b_no_events: { state: '4637927283447632599d648cfb360882' },
+  golden_c: { state: '645d3b0b66c1d1c89b294af6eda9dd91' },
+  golden_d: { state: '7ecb211ebcfdcfcd10cf686b585aeeea', fiscal: 'cbc0734bc40b1fccb91db782d21151ba' },
+  golden_e: { existing_assets: '7c685b368081bb00bdce51bb68a47d9b' },
+  golden_g_prime_2027: { state: '599f4f27a9e1b69a22a43603acd557fc', fiscal: '63ecffeb94175ed53150c042b96b7c03', existing_assets: 'ad3a1e1a3645eabab15e2b736ad3d511' },
+  golden_g_prime_2031: { state: '1ab45d5cfde1a39bc05ac987f5e2edf0', fiscal: 'ad9da9c73fda224a42f0d9c1e5c685e4', existing_assets: '60af778999086403b0eb75336fbc8e34' },
+  golden_g_prime_2045: { state: 'cc3333f5f182570894d10bcde3e29105', fiscal: '045f30e465a518e78870f00bb9b27aea', existing_assets: '07744b36e91debe1f3756e6408bf82a6' },
+  golden_h_a: { state: '7e31dc3fb03d70bb9ed8bc4f206882fe', fiscal: '4fb3eb1b84612723780439595c157537', existing_assets: '8607ae203ce391d2c44cc653d3cdfb30' },
+  golden_h_b: { state: '58493d9c4ab9b7776f69948c28f996bb', fiscal: '736e5343867c2f4c9c1fb892e0db65b9', existing_assets: '8607ae203ce391d2c44cc653d3cdfb30' },
+  golden_i_2031: { state: '1ab45d5cfde1a39bc05ac987f5e2edf0', fiscal: 'ad9da9c73fda224a42f0d9c1e5c685e4', existing_assets: '60af778999086403b0eb75336fbc8e34' },
+  golden_i_2041: { state: '944c40eb6cbf1f72e5bf9af2f800bb28', fiscal: 'c251dce1f96ec87747160a75ed48fb64', existing_assets: '17786de1181bb535864d9210f7b08921' },
+  golden_j_prime: { history: '38b1e5de345a4c1970e8c289da741b7a' },
 };
 
 // ── Migration-toggle test: both true and false ──────────────────────────────

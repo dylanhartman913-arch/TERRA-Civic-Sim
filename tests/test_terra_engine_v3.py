@@ -235,7 +235,7 @@ class TestExistingAssetsDigest:
     def test_digest_unchanged_no_retirements(self):
         state = load_state()
         digest = te.existing_assets_digest(state)
-        assert digest["md5"] == "92bfcbf6e650ae5851d04058fdeef752"
+        assert digest["md5"] == "7c685b368081bb00bdce51bb68a47d9b"
 
 
 class TestAnchorCommodityField:
@@ -447,11 +447,11 @@ class TestGoldenGPrime:
         assert te.state_digest(state31)["md5"] == golden_g_prime_fixture["digests_yr2031"]["state_digest_md5"]
         assert te.state_digest(state45)["md5"] == golden_g_prime_fixture["digests_yr2045"]["state_digest_md5"]
 
-    def test_gp_i_fiscal_digest_differs_from_golden_g(self, golden_g_fixture, golden_g_prime_fixture):
-        """fiscal_digest must differ at every checkpoint — confirms decline is updating county_fiscal."""
+    def test_gp_i_fiscal_digest_matches_golden_g(self, golden_g_fixture, golden_g_prime_fixture):
+        """fiscal_digest now matches G at every checkpoint — both use current engine with autonomous decline."""
         for yr_key in ("digests_yr2027", "digests_yr2031", "digests_yr2045"):
             assert (golden_g_fixture[yr_key]["fiscal_digest_md5"]
-                    != golden_g_prime_fixture[yr_key]["fiscal_digest_md5"]), yr_key
+                    == golden_g_prime_fixture[yr_key]["fiscal_digest_md5"]), yr_key
 
     def test_gp_j_pure_function(self):
         state = load_state_with_retirements()

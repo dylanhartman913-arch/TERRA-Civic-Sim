@@ -1,7 +1,7 @@
 {
   "08001": {
     "E": 2.3531,
-    "Ec": 8.0292,
+    "Ec": 8.0282,
     "S": 5.2817,
     "anchor_facilities": [
       "eia860_469_08001",
@@ -79,10 +79,12 @@
     "employment": 275757,
     "flagship_assets": [],
     "fuel_mix": {
-      "NG": 0.9955,
-      "OBG": 0.0045
+      "MWH": 0.0314,
+      "NG": 0.8906,
+      "OBG": 0.004,
+      "SUN": 0.074
     },
-    "generation_capacity_mw": 1565.4,
+    "generation_capacity_mw": 1754.3,
     "geoid": "08001",
     "median_household_income": 86297,
     "per_capita_income": 37550,
@@ -95,7 +97,7 @@
   },
   "08005": {
     "E": 2.3825,
-    "Ec": 7.5176,
+    "Ec": 7.5329,
     "S": 5.5025,
     "anchor_facilities": [
       "eia860_56530_08005",
@@ -169,9 +171,10 @@
     "employment": 354417,
     "flagship_assets": [],
     "fuel_mix": {
-      "LFG": 1.0
+      "LFG": 0.0179,
+      "SUN": 0.9821
     },
-    "generation_capacity_mw": 3.2,
+    "generation_capacity_mw": 178.9,
     "geoid": "08005",
     "median_household_income": 92292,
     "per_capita_income": 49530,
@@ -184,7 +187,7 @@
   },
   "08007": {
     "E": 8.1814,
-    "Ec": 5.0338,
+    "Ec": 5.0335,
     "S": 5.2356,
     "anchor_facilities": [],
     "county_name": "Archuleta",
@@ -266,7 +269,7 @@
   },
   "08009": {
     "E": 2.9803,
-    "Ec": 5.388,
+    "Ec": 5.3945,
     "S": 4.4717,
     "anchor_facilities": [],
     "county_name": "Baca",
@@ -334,8 +337,11 @@
     },
     "employment": 1494,
     "flagship_assets": [],
-    "fuel_mix": {},
-    "generation_capacity_mw": 0.0,
+    "fuel_mix": {
+      "SUN": 0.7273,
+      "WND": 0.2727
+    },
+    "generation_capacity_mw": 5.5,
     "geoid": "08009",
     "median_household_income": 42115,
     "per_capita_income": 28115,
@@ -348,7 +354,7 @@
   },
   "08013": {
     "E": 2.7902,
-    "Ec": 7.9611,
+    "Ec": 7.9005,
     "S": 5.7646,
     "anchor_facilities": [
       "eia860_55207_08013",
@@ -421,11 +427,11 @@
     "employment": 178057,
     "flagship_assets": [],
     "fuel_mix": {
-      "NG": 0.9255,
-      "SUN": 0.004,
-      "WAT": 0.0706
+      "NG": 0.8569,
+      "SUN": 0.0594,
+      "WAT": 0.0837
     },
-    "generation_capacity_mw": 252.3,
+    "generation_capacity_mw": 272.5,
     "geoid": "08013",
     "median_household_income": 99770,
     "per_capita_income": 57339,
@@ -438,7 +444,7 @@
   },
   "08014": {
     "E": 2.3426,
-    "Ec": 8.531,
+    "Ec": 8.4898,
     "S": 5.9443,
     "anchor_facilities": [],
     "county_name": "Broomfield",
@@ -506,8 +512,10 @@
     },
     "employment": 41879,
     "flagship_assets": [],
-    "fuel_mix": {},
-    "generation_capacity_mw": 0.0,
+    "fuel_mix": {
+      "MWH": 1.0
+    },
+    "generation_capacity_mw": 7.8,
     "geoid": "08014",
     "median_household_income": 117541,
     "per_capita_income": 60862,
@@ -520,7 +528,7 @@
   },
   "08015": {
     "E": 7.3549,
-    "Ec": 5.6342,
+    "Ec": 5.6325,
     "S": 5.0338,
     "anchor_facilities": [
       "eia860_474_08015"
@@ -591,9 +599,10 @@
     "employment": 8752,
     "flagship_assets": [],
     "fuel_mix": {
-      "WAT": 1.0
+      "SUN": 0.8929,
+      "WAT": 0.1071
     },
-    "generation_capacity_mw": 0.6,
+    "generation_capacity_mw": 5.6,
     "geoid": "08015",
     "median_household_income": 65703,
     "per_capita_income": 38167,
@@ -606,7 +615,7 @@
   },
   "08017": {
     "E": 3.1282,
-    "Ec": 5.6268,
+    "Ec": 5.8863,
     "S": 4.7045,
     "anchor_facilities": [
       "ghgrp_1002352"
@@ -676,8 +685,10 @@
     },
     "employment": 886,
     "flagship_assets": [],
-    "fuel_mix": {},
-    "generation_capacity_mw": 0.0,
+    "fuel_mix": {
+      "WND": 1.0
+    },
+    "generation_capacity_mw": 498.4,
     "geoid": "08017",
     "median_household_income": 65577,
     "per_capita_income": 38791,
@@ -690,7 +701,7 @@
   },
   "08019": {
     "E": 7.3258,
-    "Ec": 6.5269,
+    "Ec": 6.4952,
     "S": 5.1713,
     "anchor_facilities": [
       "eia860_467_08019"
@@ -776,7 +787,7 @@
   },
   "08027": {
     "E": 8.4924,
-    "Ec": 5.2209,
+    "Ec": 5.2226,
     "S": 5.0659,
     "anchor_facilities": [],
     "county_name": "Custer",
@@ -858,7 +869,7 @@
   },
   "08029": {
     "E": 2.1264,
-    "Ec": 5.9177,
+    "Ec": 5.9433,
     "S": 4.6433,
     "anchor_facilities": [
       "ghgrp_1007215"
@@ -928,8 +939,10 @@
     },
     "employment": 12228,
     "flagship_assets": [],
-    "fuel_mix": {},
-    "generation_capacity_mw": 0.0,
+    "fuel_mix": {
+      "SUN": 1.0
+    },
+    "generation_capacity_mw": 80.0,
     "geoid": "08029",
     "median_household_income": 56349,
     "per_capita_income": 33055,
@@ -942,7 +955,7 @@
   },
   "08031": {
     "E": 2.4344,
-    "Ec": 7.6111,
+    "Ec": 7.6171,
     "S": 5.2663,
     "anchor_facilities": [
       "eia860_55200_08031",
@@ -1052,11 +1065,11 @@
     "employment": 416271,
     "flagship_assets": [],
     "fuel_mix": {
-      "NG": 0.9637,
-      "SUN": 0.0263,
-      "WAT": 0.0099
+      "NG": 0.842,
+      "SUN": 0.1493,
+      "WAT": 0.0087
     },
-    "generation_capacity_mw": 201.3,
+    "generation_capacity_mw": 230.4,
     "geoid": "08031",
     "median_household_income": 85853,
     "per_capita_income": 56381,
@@ -1069,7 +1082,7 @@
   },
   "08033": {
     "E": 7.8343,
-    "Ec": 5.0834,
+    "Ec": 5.1167,
     "S": 4.1066,
     "anchor_facilities": [],
     "county_name": "Dolores",
@@ -1137,8 +1150,10 @@
     },
     "employment": 1073,
     "flagship_assets": [],
-    "fuel_mix": {},
-    "generation_capacity_mw": 0.0,
+    "fuel_mix": {
+      "SUN": 1.0
+    },
+    "generation_capacity_mw": 110.0,
     "geoid": "08033",
     "median_household_income": 64708,
     "per_capita_income": 38098,
@@ -1151,7 +1166,7 @@
   },
   "08037": {
     "E": 7.6557,
-    "Ec": 6.1021,
+    "Ec": 6.1025,
     "S": 5.6763,
     "anchor_facilities": [
       "eia860_54630_08037",
@@ -1240,7 +1255,7 @@
   },
   "08043": {
     "E": 7.3563,
-    "Ec": 5.9992,
+    "Ec": 5.996,
     "S": 5.0865,
     "anchor_facilities": [
       "ghgrp_1003008",
@@ -1311,8 +1326,10 @@
     },
     "employment": 16855,
     "flagship_assets": [],
-    "fuel_mix": {},
-    "generation_capacity_mw": 0.0,
+    "fuel_mix": {
+      "SUN": 1.0
+    },
+    "generation_capacity_mw": 1.8,
     "geoid": "08043",
     "median_household_income": 56165,
     "per_capita_income": 28224,
@@ -1325,7 +1342,7 @@
   },
   "08045": {
     "E": 4.1215,
-    "Ec": 6.1726,
+    "Ec": 6.1845,
     "S": 5.0356,
     "anchor_facilities": [
       "eia860_476_08045",
@@ -1398,10 +1415,11 @@
     "employment": 34042,
     "flagship_assets": [],
     "fuel_mix": {
-      "SUN": 0.0943,
-      "WAT": 0.9057
+      "MWH": 0.2696,
+      "SUN": 0.5572,
+      "WAT": 0.1733
     },
-    "generation_capacity_mw": 15.9,
+    "generation_capacity_mw": 83.1,
     "geoid": "08045",
     "median_household_income": 82772,
     "per_capita_income": 39024,
@@ -1414,7 +1432,7 @@
   },
   "08047": {
     "E": 7.3991,
-    "Ec": 6.7701,
+    "Ec": 6.7264,
     "S": 5.2403,
     "anchor_facilities": [],
     "county_name": "Gilpin",
@@ -1496,7 +1514,7 @@
   },
   "08049": {
     "E": 8.6997,
-    "Ec": 5.3433,
+    "Ec": 5.3368,
     "S": 5.3164,
     "anchor_facilities": [
       "eia860_10422_08049"
@@ -1567,9 +1585,10 @@
     "employment": 8786,
     "flagship_assets": [],
     "fuel_mix": {
-      "WAT": 1.0
+      "SUN": 0.1754,
+      "WAT": 0.8246
     },
-    "generation_capacity_mw": 3.5,
+    "generation_capacity_mw": 5.7,
     "geoid": "08049",
     "median_household_income": 79367,
     "per_capita_income": 43553,
@@ -1582,7 +1601,7 @@
   },
   "08051": {
     "E": 7.815,
-    "Ec": 5.6884,
+    "Ec": 5.6862,
     "S": 5.5963,
     "anchor_facilities": [
       "eia860_512_08051",
@@ -1753,7 +1772,7 @@
   },
   "08057": {
     "E": 8.4154,
-    "Ec": 4.7192,
+    "Ec": 4.7195,
     "S": 4.5011,
     "anchor_facilities": [
       "ghgrp_1005324"
@@ -1823,8 +1842,10 @@
     },
     "employment": 660,
     "flagship_assets": [],
-    "fuel_mix": {},
-    "generation_capacity_mw": 0.0,
+    "fuel_mix": {
+      "SUN": 1.0
+    },
+    "generation_capacity_mw": 1.0,
     "geoid": "08057",
     "median_household_income": 38686,
     "per_capita_income": 29657,
@@ -1837,7 +1858,7 @@
   },
   "08059": {
     "E": 2.9422,
-    "Ec": 7.8069,
+    "Ec": 7.7634,
     "S": 5.5248,
     "anchor_facilities": [
       "eia860_55650_08059",
@@ -1916,9 +1937,10 @@
     "employment": 322035,
     "flagship_assets": [],
     "fuel_mix": {
-      "NG": 1.0
+      "NG": 0.99,
+      "SUN": 0.01
     },
-    "generation_capacity_mw": 266.6,
+    "generation_capacity_mw": 269.3,
     "geoid": "08059",
     "median_household_income": 103167,
     "per_capita_income": 54571,
@@ -1931,7 +1953,7 @@
   },
   "08063": {
     "E": 2.7263,
-    "Ec": 5.3511,
+    "Ec": 5.5309,
     "S": 4.5716,
     "anchor_facilities": [
       "eia860_57244_08063"
@@ -2004,7 +2026,7 @@
     "fuel_mix": {
       "WND": 1.0
     },
-    "generation_capacity_mw": 51.0,
+    "generation_capacity_mw": 805.0,
     "geoid": "08063",
     "median_household_income": 58992,
     "per_capita_income": 36039,
@@ -2017,7 +2039,7 @@
   },
   "08065": {
     "E": 7.758,
-    "Ec": 6.2786,
+    "Ec": 6.2734,
     "S": 4.6563,
     "anchor_facilities": [
       "eia860_6208_08065"
@@ -2103,7 +2125,7 @@
   },
   "08067": {
     "E": 4.0117,
-    "Ec": 5.892,
+    "Ec": 5.9015,
     "S": 5.2037,
     "anchor_facilities": [
       "eia860_50205_08067",
@@ -2183,10 +2205,11 @@
     "employment": 29235,
     "flagship_assets": [],
     "fuel_mix": {
-      "WAT": 0.6303,
-      "WH": 0.3697
+      "SUN": 0.0934,
+      "WAT": 0.5714,
+      "WH": 0.3352
     },
-    "generation_capacity_mw": 16.5,
+    "generation_capacity_mw": 18.2,
     "geoid": "08067",
     "median_household_income": 81936,
     "per_capita_income": 44614,
@@ -2199,7 +2222,7 @@
   },
   "08069": {
     "E": 2.8216,
-    "Ec": 7.1444,
+    "Ec": 7.1762,
     "S": 5.6859,
     "anchor_facilities": [
       "eia860_6761_08069",
@@ -2274,12 +2297,13 @@
     "employment": 191817,
     "flagship_assets": [],
     "fuel_mix": {
-      "NG": 0.5077,
-      "SUB": 0.2941,
-      "SUN": 0.0049,
-      "WAT": 0.1932
+      "MWH": 0.0009,
+      "NG": 0.4803,
+      "SUB": 0.2783,
+      "SUN": 0.0576,
+      "WAT": 0.1828
     },
-    "generation_capacity_mw": 998.2,
+    "generation_capacity_mw": 1055.1,
     "geoid": "08069",
     "median_household_income": 87199,
     "per_capita_income": 46676,
@@ -2292,7 +2316,7 @@
   },
   "08075": {
     "E": 2.5334,
-    "Ec": 6.1108,
+    "Ec": 6.1527,
     "S": 4.5463,
     "anchor_facilities": [
       "eia860_56563_08075",
@@ -2367,9 +2391,10 @@
     "employment": 10431,
     "flagship_assets": [],
     "fuel_mix": {
-      "WND": 1.0
+      "SUN": 0.0178,
+      "WND": 0.9822
     },
-    "generation_capacity_mw": 793.5,
+    "generation_capacity_mw": 1017.2,
     "geoid": "08075",
     "median_household_income": 54864,
     "per_capita_income": 29440,
@@ -2382,7 +2407,7 @@
   },
   "08077": {
     "E": 0.6706,
-    "Ec": 6.2947,
+    "Ec": 6.2993,
     "S": 5.164,
     "anchor_facilities": [
       "eia860_471_08077",
@@ -2455,10 +2480,11 @@
     "employment": 74204,
     "flagship_assets": [],
     "fuel_mix": {
-      "NG": 0.6115,
-      "WAT": 0.3885
+      "NG": 0.4742,
+      "SUN": 0.1444,
+      "WAT": 0.3815
     },
-    "generation_capacity_mw": 43.5,
+    "generation_capacity_mw": 56.1,
     "geoid": "08077",
     "median_household_income": 68077,
     "per_capita_income": 36303,
@@ -2553,7 +2579,7 @@
   },
   "08081": {
     "E": 0.5031,
-    "Ec": 6.4386,
+    "Ec": 6.4194,
     "S": 4.7066,
     "anchor_facilities": [
       "eia860_6021_08081",
@@ -2629,9 +2655,10 @@
     "employment": 6110,
     "flagship_assets": [],
     "fuel_mix": {
-      "SUB": 1.0
+      "SUB": 0.9055,
+      "SUN": 0.0945
     },
-    "generation_capacity_mw": 1427.6,
+    "generation_capacity_mw": 1576.6,
     "geoid": "08081",
     "median_household_income": 63983,
     "per_capita_income": 33019,
@@ -2644,7 +2671,7 @@
   },
   "08083": {
     "E": 1.6373,
-    "Ec": 5.6858,
+    "Ec": 5.7199,
     "S": 4.7538,
     "anchor_facilities": [
       "eia860_7373_08083",
@@ -2717,9 +2744,10 @@
     "employment": 10871,
     "flagship_assets": [],
     "fuel_mix": {
-      "WAT": 1.0
+      "SUN": 0.422,
+      "WAT": 0.578
     },
-    "generation_capacity_mw": 12.6,
+    "generation_capacity_mw": 21.8,
     "geoid": "08083",
     "median_household_income": 61377,
     "per_capita_income": 31044,
@@ -2732,7 +2760,7 @@
   },
   "08085": {
     "E": 0.622,
-    "Ec": 6.3088,
+    "Ec": 6.3289,
     "S": 4.9697,
     "anchor_facilities": [
       "eia860_514_08085",
@@ -2805,10 +2833,10 @@
     "employment": 18575,
     "flagship_assets": [],
     "fuel_mix": {
-      "SUN": 0.0048,
-      "WAT": 0.9952
+      "SUN": 0.0387,
+      "WAT": 0.9613
     },
-    "generation_capacity_mw": 209.7,
+    "generation_capacity_mw": 227.5,
     "geoid": "08085",
     "median_household_income": 62817,
     "per_capita_income": 35755,
@@ -2821,7 +2849,7 @@
   },
   "08087": {
     "E": 2.4407,
-    "Ec": 6.599,
+    "Ec": 6.5722,
     "S": 4.9585,
     "anchor_facilities": [
       "eia860_10682_08087",
@@ -2899,9 +2927,10 @@
     "employment": 13810,
     "flagship_assets": [],
     "fuel_mix": {
-      "NG": 1.0
+      "NG": 0.9838,
+      "SUN": 0.0162
     },
-    "generation_capacity_mw": 1066.9,
+    "generation_capacity_mw": 1084.5,
     "geoid": "08087",
     "median_household_income": 70471,
     "per_capita_income": 30422,
@@ -2914,7 +2943,7 @@
   },
   "08091": {
     "E": 1.3497,
-    "Ec": 5.9344,
+    "Ec": 5.9329,
     "S": 5.1824,
     "anchor_facilities": [],
     "county_name": "Ouray",
@@ -2982,8 +3011,10 @@
     },
     "employment": 2193,
     "flagship_assets": [],
-    "fuel_mix": {},
-    "generation_capacity_mw": 0.0,
+    "fuel_mix": {
+      "WAT": 1.0
+    },
+    "generation_capacity_mw": 8.0,
     "geoid": "08091",
     "median_household_income": 78750,
     "per_capita_income": 47768,
@@ -2996,7 +3027,7 @@
   },
   "08093": {
     "E": 7.9686,
-    "Ec": 5.9971,
+    "Ec": 5.9848,
     "S": 5.2267,
     "anchor_facilities": [
       "eia860_10423_08093"
@@ -3082,7 +3113,7 @@
   },
   "08095": {
     "E": 2.7597,
-    "Ec": 5.4068,
+    "Ec": 5.4223,
     "S": 4.4802,
     "anchor_facilities": [
       "ghgrp_1004866"
@@ -3166,7 +3197,7 @@
   },
   "08097": {
     "E": 7.9917,
-    "Ec": 6.021,
+    "Ec": 6.0197,
     "S": 5.7823,
     "anchor_facilities": [
       "eia860_7458_08097"
@@ -3237,9 +3268,10 @@
     "employment": 10499,
     "flagship_assets": [],
     "fuel_mix": {
-      "WAT": 1.0
+      "SUN": 0.5,
+      "WAT": 0.5
     },
-    "generation_capacity_mw": 5.0,
+    "generation_capacity_mw": 10.0,
     "geoid": "08097",
     "median_household_income": 96123,
     "per_capita_income": 87561,
@@ -3252,7 +3284,7 @@
   },
   "08103": {
     "E": 1.1114,
-    "Ec": 5.5932,
+    "Ec": 5.6122,
     "S": 4.9559,
     "anchor_facilities": [
       "eia860_54729_08103",
@@ -3328,9 +3360,10 @@
     "employment": 2900,
     "flagship_assets": [],
     "fuel_mix": {
-      "WAT": 1.0
+      "SUN": 0.6349,
+      "WAT": 0.3651
     },
-    "generation_capacity_mw": 2.3,
+    "generation_capacity_mw": 6.3,
     "geoid": "08103",
     "median_household_income": 69882,
     "per_capita_income": 30140,
@@ -3343,7 +3376,7 @@
   },
   "08105": {
     "E": 9.1196,
-    "Ec": 5.1412,
+    "Ec": 5.1552,
     "S": 5.0613,
     "anchor_facilities": [],
     "county_name": "Rio Grande",
@@ -3411,8 +3444,10 @@
     },
     "employment": 5301,
     "flagship_assets": [],
-    "fuel_mix": {},
-    "generation_capacity_mw": 0.0,
+    "fuel_mix": {
+      "SUN": 1.0
+    },
+    "generation_capacity_mw": 1.6,
     "geoid": "08105",
     "median_household_income": 57591,
     "per_capita_income": 34328,
@@ -3425,7 +3460,7 @@
   },
   "08107": {
     "E": 7.241,
-    "Ec": 6.462,
+    "Ec": 6.4466,
     "S": 5.5693,
     "anchor_facilities": [
       "eia860_525_08107",
@@ -3514,7 +3549,7 @@
   },
   "08109": {
     "E": 7.3316,
-    "Ec": 5.318,
+    "Ec": 5.3246,
     "S": 4.5826,
     "anchor_facilities": [],
     "county_name": "Saguache",
@@ -3582,8 +3617,10 @@
     },
     "employment": 2691,
     "flagship_assets": [],
-    "fuel_mix": {},
-    "generation_capacity_mw": 0.0,
+    "fuel_mix": {
+      "SUN": 1.0
+    },
+    "generation_capacity_mw": 2.7,
     "geoid": "08109",
     "median_household_income": 51946,
     "per_capita_income": 34311,
@@ -3596,7 +3633,7 @@
   },
   "08111": {
     "E": 8.7281,
-    "Ec": 4.6009,
+    "Ec": 4.6004,
     "S": 4.3634,
     "anchor_facilities": [],
     "county_name": "San Juan",
@@ -3678,7 +3715,7 @@
   },
   "08113": {
     "E": 6.9115,
-    "Ec": 5.3838,
+    "Ec": 5.3915,
     "S": 5.5283,
     "anchor_facilities": [
       "eia860_6207_08113",
@@ -3766,7 +3803,7 @@
   },
   "08115": {
     "E": 2.789,
-    "Ec": 5.1793,
+    "Ec": 5.1701,
     "S": 4.3897,
     "anchor_facilities": [],
     "county_name": "Sedgwick",
@@ -3848,7 +3885,7 @@
   },
   "08117": {
     "E": 8.8127,
-    "Ec": 5.7017,
+    "Ec": 5.6899,
     "S": 5.6284,
     "anchor_facilities": [
       "eia860_516_08117",
@@ -3935,7 +3972,7 @@
   },
   "08119": {
     "E": 7.2467,
-    "Ec": 6.1623,
+    "Ec": 6.1758,
     "S": 5.3146,
     "anchor_facilities": [],
     "county_name": "Teller",
@@ -4017,7 +4054,7 @@
   },
   "08121": {
     "E": 2.6612,
-    "Ec": 5.9299,
+    "Ec": 5.9149,
     "S": 4.4855,
     "anchor_facilities": [],
     "county_name": "Washington",
@@ -4099,7 +4136,7 @@
   },
   "08123": {
     "E": 2.3672,
-    "Ec": 7.5602,
+    "Ec": 7.6005,
     "S": 5.4933,
     "anchor_facilities": [
       "eia860_50707_08123",
@@ -4201,10 +4238,13 @@
     "employment": 168820,
     "flagship_assets": [],
     "fuel_mix": {
-      "NG": 0.8337,
-      "WND": 0.1663
+      "LFG": 0.0008,
+      "MWH": 0.0133,
+      "NG": 0.7029,
+      "SUN": 0.0742,
+      "WND": 0.2088
     },
-    "generation_capacity_mw": 3300.1,
+    "generation_capacity_mw": 4145.3,
     "geoid": "08123",
     "median_household_income": 89182,
     "per_capita_income": 39480,
@@ -4217,7 +4257,7 @@
   },
   "08125": {
     "E": 2.5412,
-    "Ec": 5.1762,
+    "Ec": 5.1769,
     "S": 4.4878,
     "anchor_facilities": [
       "ghgrp_1002083"
@@ -4287,8 +4327,10 @@
     },
     "employment": 4857,
     "flagship_assets": [],
-    "fuel_mix": {},
-    "generation_capacity_mw": 0.0,
+    "fuel_mix": {
+      "SUN": 1.0
+    },
+    "generation_capacity_mw": 2.8,
     "geoid": "08125",
     "median_household_income": 60118,
     "per_capita_income": 32575,
@@ -4301,7 +4343,7 @@
   },
   "16007": {
     "E": 0.86,
-    "Ec": 5.7046,
+    "Ec": 5.7035,
     "S": 4.6324,
     "anchor_facilities": [],
     "county_name": "Bear Lake",
@@ -4383,7 +4425,7 @@
   },
   "16019": {
     "E": 6.9932,
-    "Ec": 6.4626,
+    "Ec": 6.4492,
     "S": 5.46,
     "anchor_facilities": [
       "eia860_57211_16019",
@@ -4456,10 +4498,11 @@
     "employment": 56015,
     "flagship_assets": [],
     "fuel_mix": {
-      "WAT": 0.3824,
-      "WND": 0.6176
+      "NG": 0.0287,
+      "WAT": 0.3714,
+      "WND": 0.5999
     },
-    "generation_capacity_mw": 593.1,
+    "generation_capacity_mw": 610.6,
     "geoid": "16019",
     "median_household_income": 73103,
     "per_capita_income": 33008,
@@ -4472,7 +4515,7 @@
   },
   "16023": {
     "E": 6.8527,
-    "Ec": 5.0377,
+    "Ec": 5.0375,
     "S": 4.6613,
     "anchor_facilities": [],
     "county_name": "Butte",
@@ -4636,7 +4679,7 @@
   },
   "16043": {
     "E": 9.4074,
-    "Ec": 4.4955,
+    "Ec": 4.4945,
     "S": 5.469,
     "anchor_facilities": [
       "eia860_54668_16043"
@@ -4804,7 +4847,7 @@
   },
   "30001": {
     "E": 6.6358,
-    "Ec": 4.7838,
+    "Ec": 4.8068,
     "S": 5.0709,
     "anchor_facilities": [],
     "county_name": "Beaverhead",
@@ -4872,8 +4915,10 @@
     },
     "employment": 4600,
     "flagship_assets": [],
-    "fuel_mix": {},
-    "generation_capacity_mw": 0.0,
+    "fuel_mix": {
+      "SUN": 1.0
+    },
+    "generation_capacity_mw": 80.0,
     "geoid": "30001",
     "median_household_income": 55867,
     "per_capita_income": 34640,
@@ -4886,7 +4931,7 @@
   },
   "30003": {
     "E": 3.2792,
-    "Ec": 3.9981,
+    "Ec": 3.9937,
     "S": 3.9694,
     "anchor_facilities": [
       "eia860_2204_30003",
@@ -4963,10 +5008,11 @@
     "employment": 4740,
     "flagship_assets": [],
     "fuel_mix": {
-      "SUB": 0.2937,
-      "WAT": 0.7063
+      "SUB": 0.2915,
+      "SUN": 0.0076,
+      "WAT": 0.7009
     },
-    "generation_capacity_mw": 393.9,
+    "generation_capacity_mw": 396.9,
     "geoid": "30003",
     "median_household_income": 52463,
     "per_capita_income": 21849,
@@ -4979,7 +5025,7 @@
   },
   "30007": {
     "E": 6.395,
-    "Ec": 5.9574,
+    "Ec": 5.9571,
     "S": 5.0267,
     "anchor_facilities": [
       "eia860_54006_30007",
@@ -5066,7 +5112,7 @@
   },
   "30009": {
     "E": 3.946,
-    "Ec": 5.2282,
+    "Ec": 5.3131,
     "S": 4.9459,
     "anchor_facilities": [
       "eia860_10138_30009"
@@ -5137,9 +5183,10 @@
     "employment": 5215,
     "flagship_assets": [],
     "fuel_mix": {
-      "WAT": 1.0
+      "WAT": 0.0083,
+      "WND": 0.9917
     },
-    "generation_capacity_mw": 2.0,
+    "generation_capacity_mw": 241.8,
     "geoid": "30009",
     "median_household_income": 66780,
     "per_capita_income": 40838,
@@ -5234,7 +5281,7 @@
   },
   "30013": {
     "E": 3.7672,
-    "Ec": 5.6075,
+    "Ec": 5.6156,
     "S": 4.6463,
     "anchor_facilities": [
       "eia860_2191_30013",
@@ -5309,10 +5356,11 @@
     "employment": 38310,
     "flagship_assets": [],
     "fuel_mix": {
-      "WAT": 0.9669,
-      "WND": 0.0331
+      "SUN": 0.0109,
+      "WAT": 0.954,
+      "WND": 0.0351
     },
-    "generation_capacity_mw": 272.3,
+    "generation_capacity_mw": 276.0,
     "geoid": "30013",
     "median_household_income": 61351,
     "per_capita_income": 34481,
@@ -5325,7 +5373,7 @@
   },
   "30017": {
     "E": 3.0201,
-    "Ec": 4.7614,
+    "Ec": 4.8094,
     "S": 4.5717,
     "anchor_facilities": [
       "eia860_2177_30017"
@@ -5396,9 +5444,10 @@
     "employment": 6245,
     "flagship_assets": [],
     "fuel_mix": {
-      "NG": 1.0
+      "NG": 0.1008,
+      "WND": 0.8992
     },
-    "generation_capacity_mw": 23.3,
+    "generation_capacity_mw": 231.2,
     "geoid": "30017",
     "median_household_income": 61114,
     "per_capita_income": 34830,
@@ -5411,7 +5460,7 @@
   },
   "30021": {
     "E": 3.0494,
-    "Ec": 5.4718,
+    "Ec": 5.4689,
     "S": 4.816,
     "anchor_facilities": [
       "eia860_2176_30021",
@@ -5498,7 +5547,7 @@
   },
   "30023": {
     "E": 6.8844,
-    "Ec": 5.019,
+    "Ec": 5.0102,
     "S": 4.1791,
     "anchor_facilities": [
       "eia860_56908_30023"
@@ -5584,7 +5633,7 @@
   },
   "30025": {
     "E": 3.2895,
-    "Ec": 4.987,
+    "Ec": 4.986,
     "S": 5.0026,
     "anchor_facilities": [
       "eia860_56782_30025",
@@ -5754,7 +5803,7 @@
   },
   "30031": {
     "E": 6.4119,
-    "Ec": 5.8163,
+    "Ec": 5.8169,
     "S": 5.67,
     "anchor_facilities": [
       "ghgrp_1006185",
@@ -5825,8 +5874,10 @@
     },
     "employment": 69031,
     "flagship_assets": [],
-    "fuel_mix": {},
-    "generation_capacity_mw": 0.0,
+    "fuel_mix": {
+      "SUN": 1.0
+    },
+    "generation_capacity_mw": 4.0,
     "geoid": "30031",
     "median_household_income": 83434,
     "per_capita_income": 47269,
@@ -5921,7 +5972,7 @@
   },
   "30037": {
     "E": 3.4688,
-    "Ec": 5.6972,
+    "Ec": 5.6933,
     "S": 4.5389,
     "anchor_facilities": [],
     "county_name": "Golden Valley",
@@ -5953,8 +6004,10 @@
     },
     "employment": 380,
     "flagship_assets": [],
-    "fuel_mix": {},
-    "generation_capacity_mw": 0.0,
+    "fuel_mix": {
+      "SUN": 1.0
+    },
+    "generation_capacity_mw": 3.0,
     "geoid": "30037",
     "median_household_income": 54792,
     "per_capita_income": 31204,
@@ -5967,7 +6020,7 @@
   },
   "30039": {
     "E": 7.8833,
-    "Ec": 4.4232,
+    "Ec": 4.4191,
     "S": 4.9659,
     "anchor_facilities": [
       "eia860_58392_30039"
@@ -6053,7 +6106,7 @@
   },
   "30043": {
     "E": 6.5463,
-    "Ec": 6.1667,
+    "Ec": 6.1661,
     "S": 5.2085,
     "anchor_facilities": [
       "ghgrp_1002531"
@@ -6137,7 +6190,7 @@
   },
   "30045": {
     "E": 3.6855,
-    "Ec": 5.3924,
+    "Ec": 5.414,
     "S": 4.541,
     "anchor_facilities": [
       "eia860_58218_30045"
@@ -6210,7 +6263,7 @@
     "fuel_mix": {
       "WND": 1.0
     },
-    "generation_capacity_mw": 40.0,
+    "generation_capacity_mw": 120.0,
     "geoid": "30045",
     "median_household_income": 58750,
     "per_capita_income": 36713,
@@ -6223,7 +6276,7 @@
   },
   "30049": {
     "E": 6.2886,
-    "Ec": 6.4102,
+    "Ec": 6.4087,
     "S": 5.1036,
     "anchor_facilities": [
       "eia860_6400_30049",
@@ -6296,9 +6349,10 @@
     "employment": 36116,
     "flagship_assets": [],
     "fuel_mix": {
-      "WAT": 1.0
+      "SUN": 0.0478,
+      "WAT": 0.9522
     },
-    "generation_capacity_mw": 116.8,
+    "generation_capacity_mw": 125.4,
     "geoid": "30049",
     "median_household_income": 71967,
     "per_capita_income": 41274,
@@ -6397,7 +6451,7 @@
   },
   "30057": {
     "E": 7.533,
-    "Ec": 4.862,
+    "Ec": 4.8671,
     "S": 5.2146,
     "anchor_facilities": [
       "eia860_6422_30057"
@@ -6483,7 +6537,7 @@
   },
   "30059": {
     "E": 4.1021,
-    "Ec": 5.4314,
+    "Ec": 5.4308,
     "S": 4.6246,
     "anchor_facilities": [
       "eia860_57748_30059"
@@ -6569,7 +6623,7 @@
   },
   "30063": {
     "E": 6.3541,
-    "Ec": 5.6337,
+    "Ec": 5.6354,
     "S": 5.3852,
     "anchor_facilities": [
       "ghgrp_1004013"
@@ -6639,8 +6693,10 @@
     },
     "employment": 66207,
     "flagship_assets": [],
-    "fuel_mix": {},
-    "generation_capacity_mw": 0.0,
+    "fuel_mix": {
+      "NG": 1.0
+    },
+    "generation_capacity_mw": 6.1,
     "geoid": "30063",
     "median_household_income": 66840,
     "per_capita_income": 40311,
@@ -6653,7 +6709,7 @@
   },
   "30065": {
     "E": 3.2944,
-    "Ec": 5.1799,
+    "Ec": 5.181,
     "S": 4.8431,
     "anchor_facilities": [
       "msha_2401950"
@@ -6949,7 +7005,7 @@
   },
   "30077": {
     "E": 6.7732,
-    "Ec": 5.5987,
+    "Ec": 5.5931,
     "S": 4.3065,
     "anchor_facilities": [],
     "county_name": "Powell",
@@ -7031,7 +7087,7 @@
   },
   "30079": {
     "E": 3.4917,
-    "Ec": 4.4064,
+    "Ec": 4.4662,
     "S": 4.619,
     "anchor_facilities": [],
     "county_name": "Prairie",
@@ -7113,7 +7169,7 @@
   },
   "30081": {
     "E": 6.3522,
-    "Ec": 5.7189,
+    "Ec": 5.7197,
     "S": 5.0724,
     "anchor_facilities": [],
     "county_name": "Ravalli",
@@ -7195,7 +7251,7 @@
   },
   "30087": {
     "E": 3.2492,
-    "Ec": 4.9333,
+    "Ec": 4.9127,
     "S": 4.1425,
     "anchor_facilities": [
       "eia860_6076_30087",
@@ -7268,10 +7324,11 @@
     "employment": 3271,
     "flagship_assets": [],
     "fuel_mix": {
-      "SUB": 0.9728,
-      "WC": 0.0272
+      "SUB": 0.7284,
+      "WC": 0.0204,
+      "WND": 0.2513
     },
-    "generation_capacity_mw": 1693.5,
+    "generation_capacity_mw": 2261.8,
     "geoid": "30087",
     "median_household_income": 57656,
     "per_capita_income": 27655,
@@ -7284,7 +7341,7 @@
   },
   "30093": {
     "E": 6.5536,
-    "Ec": 5.48,
+    "Ec": 5.4712,
     "S": 4.4993,
     "anchor_facilities": [
       "eia860_55866_30093",
@@ -7375,7 +7432,7 @@
   },
   "30095": {
     "E": 3.1529,
-    "Ec": 5.7829,
+    "Ec": 5.9185,
     "S": 5.3972,
     "anchor_facilities": [
       "eia860_2192_30095"
@@ -7446,9 +7503,10 @@
     "employment": 4269,
     "flagship_assets": [],
     "fuel_mix": {
-      "WAT": 1.0
+      "WAT": 0.0353,
+      "WND": 0.9647
     },
-    "generation_capacity_mw": 12.0,
+    "generation_capacity_mw": 339.7,
     "geoid": "30095",
     "median_household_income": 78380,
     "per_capita_income": 45245,
@@ -7461,7 +7519,7 @@
   },
   "30097": {
     "E": 3.3877,
-    "Ec": 5.8603,
+    "Ec": 5.9622,
     "S": 4.9233,
     "anchor_facilities": [],
     "county_name": "Sweet Grass",
@@ -7529,8 +7587,11 @@
     },
     "employment": 1848,
     "flagship_assets": [],
-    "fuel_mix": {},
-    "generation_capacity_mw": 0.0,
+    "fuel_mix": {
+      "SUN": 0.0741,
+      "WND": 0.9259
+    },
+    "generation_capacity_mw": 27.0,
     "geoid": "30097",
     "median_household_income": 64872,
     "per_capita_income": 35495,
@@ -7625,7 +7686,7 @@
   },
   "30107": {
     "E": 3.4973,
-    "Ec": 5.9702,
+    "Ec": 5.9671,
     "S": 3.9318,
     "anchor_facilities": [
       "eia860_56377_30107"
@@ -7698,7 +7759,7 @@
     "fuel_mix": {
       "WND": 1.0
     },
-    "generation_capacity_mw": 155.0,
+    "generation_capacity_mw": 164.7,
     "geoid": "30107",
     "median_household_income": 48272,
     "per_capita_income": 28410,
@@ -7711,7 +7772,7 @@
   },
   "30109": {
     "E": 3.3697,
-    "Ec": 5.2638,
+    "Ec": 5.261,
     "S": 4.2185,
     "anchor_facilities": [],
     "county_name": "Wibaux",
@@ -7793,7 +7854,7 @@
   },
   "30111": {
     "E": 2.7364,
-    "Ec": 5.6429,
+    "Ec": 5.7212,
     "S": 5.2494,
     "anchor_facilities": [
       "eia860_50931_30111",
@@ -7870,9 +7931,13 @@
     "employment": 84122,
     "flagship_assets": [],
     "fuel_mix": {
-      "PC": 1.0
+      "NG": 0.5777,
+      "PC": 0.1898,
+      "SUB": 0.0042,
+      "SUN": 0.2233,
+      "WND": 0.005
     },
-    "generation_capacity_mw": 68.0,
+    "generation_capacity_mw": 358.3,
     "geoid": "30111",
     "median_household_income": 72300,
     "per_capita_income": 40978,
@@ -7885,7 +7950,7 @@
   },
   "31007": {
     "E": 3.3969,
-    "Ec": 5.2334,
+    "Ec": 5.2369,
     "S": 4.1791,
     "anchor_facilities": [],
     "county_name": "Banner",
@@ -7931,7 +7996,7 @@
   },
   "31013": {
     "E": 2.7,
-    "Ec": 5.1776,
+    "Ec": 5.1798,
     "S": 4.6921,
     "anchor_facilities": [],
     "county_name": "Box Butte",
@@ -7999,8 +8064,10 @@
     },
     "employment": 5245,
     "flagship_assets": [],
-    "fuel_mix": {},
-    "generation_capacity_mw": 0.0,
+    "fuel_mix": {
+      "SUN": 1.0
+    },
+    "generation_capacity_mw": 7.8,
     "geoid": "31013",
     "median_household_income": 67893,
     "per_capita_income": 32141,
@@ -8095,7 +8162,7 @@
   },
   "31033": {
     "E": 2.6655,
-    "Ec": 5.7391,
+    "Ec": 5.7142,
     "S": 4.614,
     "anchor_facilities": [],
     "county_name": "Cheyenne",
@@ -8163,8 +8230,10 @@
     },
     "employment": 4626,
     "flagship_assets": [],
-    "fuel_mix": {},
-    "generation_capacity_mw": 0.0,
+    "fuel_mix": {
+      "SUN": 1.0
+    },
+    "generation_capacity_mw": 3.8,
     "geoid": "31033",
     "median_household_income": 54038,
     "per_capita_income": 30467,
@@ -8177,7 +8246,7 @@
   },
   "31045": {
     "E": 2.7272,
-    "Ec": 5.7632,
+    "Ec": 5.7792,
     "S": 4.405,
     "anchor_facilities": [],
     "county_name": "Dawes",
@@ -8259,7 +8328,7 @@
   },
   "31049": {
     "E": 2.936,
-    "Ec": 5.3018,
+    "Ec": 5.2959,
     "S": 4.2318,
     "anchor_facilities": [
       "eia860_2230_31049"
@@ -8345,7 +8414,7 @@
   },
   "31057": {
     "E": 3.0319,
-    "Ec": 5.4109,
+    "Ec": 5.4107,
     "S": 4.196,
     "anchor_facilities": [],
     "county_name": "Dundy",
@@ -8427,7 +8496,7 @@
   },
   "31101": {
     "E": 3.1571,
-    "Ec": 5.806,
+    "Ec": 5.7773,
     "S": 4.7121,
     "anchor_facilities": [
       "eia860_785_31101"
@@ -8513,7 +8582,7 @@
   },
   "31105": {
     "E": 2.8714,
-    "Ec": 6.0006,
+    "Ec": 6.0607,
     "S": 4.0864,
     "anchor_facilities": [
       "eia860_56106_31105"
@@ -8584,9 +8653,10 @@
     "employment": 1649,
     "flagship_assets": [],
     "fuel_mix": {
-      "WND": 1.0
+      "DFO": 0.2105,
+      "WND": 0.7895
     },
-    "generation_capacity_mw": 30.0,
+    "generation_capacity_mw": 38.0,
     "geoid": "31105",
     "median_household_income": 53151,
     "per_capita_income": 31290,
@@ -8599,7 +8669,7 @@
   },
   "31123": {
     "E": 3.0071,
-    "Ec": 4.8722,
+    "Ec": 4.8744,
     "S": 4.3775,
     "anchor_facilities": [],
     "county_name": "Morrill",
@@ -8681,7 +8751,7 @@
   },
   "31135": {
     "E": 2.8219,
-    "Ec": 6.3331,
+    "Ec": 6.2852,
     "S": 4.4006,
     "anchor_facilities": [],
     "county_name": "Perkins",
@@ -8763,7 +8833,7 @@
   },
   "31157": {
     "E": 2.5413,
-    "Ec": 5.5839,
+    "Ec": 5.5861,
     "S": 4.5809,
     "anchor_facilities": [
       "eia860_57937_31157"
@@ -8834,9 +8904,10 @@
     "employment": 17418,
     "flagship_assets": [],
     "fuel_mix": {
-      "NG": 1.0
+      "NG": 0.4581,
+      "SUN": 0.5419
     },
-    "generation_capacity_mw": 7.1,
+    "generation_capacity_mw": 15.5,
     "geoid": "31157",
     "median_household_income": 60137,
     "per_capita_income": 33158,
@@ -8995,7 +9066,7 @@
   },
   "46019": {
     "E": 2.9823,
-    "Ec": 5.696,
+    "Ec": 5.7039,
     "S": 4.7481,
     "anchor_facilities": [
       "ghgrp_1008041"
@@ -9065,8 +9136,10 @@
     },
     "employment": 5109,
     "flagship_assets": [],
-    "fuel_mix": {},
-    "generation_capacity_mw": 0.0,
+    "fuel_mix": {
+      "WND": 1.0
+    },
+    "generation_capacity_mw": 105.0,
     "geoid": "46019",
     "median_household_income": 58106,
     "per_capita_income": 34218,
@@ -9079,7 +9152,7 @@
   },
   "46031": {
     "E": 3.3305,
-    "Ec": 3.1223,
+    "Ec": 3.1382,
     "S": 3.5437,
     "anchor_facilities": [],
     "county_name": "Corson",
@@ -9161,7 +9234,7 @@
   },
   "46033": {
     "E": 6.9341,
-    "Ec": 6.0547,
+    "Ec": 6.0506,
     "S": 4.9595,
     "anchor_facilities": [],
     "county_name": "Custer",
@@ -9325,7 +9398,7 @@
   },
   "46047": {
     "E": 5.4063,
-    "Ec": 5.7282,
+    "Ec": 5.7512,
     "S": 4.1584,
     "anchor_facilities": [],
     "county_name": "Fall River",
@@ -9393,8 +9466,10 @@
     },
     "employment": 2971,
     "flagship_assets": [],
-    "fuel_mix": {},
-    "generation_capacity_mw": 0.0,
+    "fuel_mix": {
+      "SUN": 1.0
+    },
+    "generation_capacity_mw": 80.0,
     "geoid": "46047",
     "median_household_income": 54886,
     "per_capita_income": 33745,
@@ -9735,7 +9810,7 @@
   },
   "46081": {
     "E": 6.684,
-    "Ec": 5.9456,
+    "Ec": 5.9446,
     "S": 5.1278,
     "anchor_facilities": [
       "eia860_58438_46081"
@@ -9821,7 +9896,7 @@
   },
   "46093": {
     "E": 4.7261,
-    "Ec": 6.3682,
+    "Ec": 6.3749,
     "S": 5.1056,
     "anchor_facilities": [],
     "county_name": "Meade",
@@ -10067,7 +10142,7 @@
   },
   "46103": {
     "E": 4.2743,
-    "Ec": 6.4465,
+    "Ec": 6.4771,
     "S": 5.0493,
     "anchor_facilities": [
       "eia860_3325_46103"
@@ -10138,10 +10213,11 @@
     "employment": 54310,
     "flagship_assets": [],
     "fuel_mix": {
-      "DFO": 0.0667,
-      "NG": 0.9333
+      "DFO": 0.036,
+      "NG": 0.5036,
+      "SUN": 0.4604
     },
-    "generation_capacity_mw": 150.0,
+    "generation_capacity_mw": 278.0,
     "geoid": "46103",
     "median_household_income": 67823,
     "per_capita_income": 38951,
@@ -10236,7 +10312,7 @@
   },
   "46117": {
     "E": 3.1165,
-    "Ec": 6.3885,
+    "Ec": 6.3619,
     "S": 5.0645,
     "anchor_facilities": [
       "eia860_56148_46117"
@@ -10322,7 +10398,7 @@
   },
   "46121": {
     "E": 3.1222,
-    "Ec": 3.7507,
+    "Ec": 3.7512,
     "S": 3.1145,
     "anchor_facilities": [],
     "county_name": "Todd",
@@ -10486,7 +10562,7 @@
   },
   "49007": {
     "E": 0.8324,
-    "Ec": 5.7272,
+    "Ec": 5.7621,
     "S": 4.6906,
     "anchor_facilities": [
       "eia860_50951_49007"
@@ -10557,9 +10633,10 @@
     "employment": 8256,
     "flagship_assets": [],
     "fuel_mix": {
-      "WC": 1.0
+      "SUN": 0.5793,
+      "WC": 0.4207
     },
-    "generation_capacity_mw": 58.1,
+    "generation_capacity_mw": 138.1,
     "geoid": "49007",
     "median_household_income": 53734,
     "per_capita_income": 26450,
@@ -10658,7 +10735,7 @@
   },
   "49015": {
     "E": 0.8187,
-    "Ec": 6.7932,
+    "Ec": 6.8573,
     "S": 5.0255,
     "anchor_facilities": [
       "eia860_6165_49015",
@@ -10730,9 +10807,10 @@
     "employment": 4043,
     "flagship_assets": [],
     "fuel_mix": {
-      "BIT": 1.0
+      "BIT": 0.8497,
+      "SUN": 0.1503
     },
-    "generation_capacity_mw": 2487.7,
+    "generation_capacity_mw": 2927.7,
     "geoid": "49015",
     "median_household_income": 67056,
     "per_capita_income": 27771,
@@ -10745,7 +10823,7 @@
   },
   "49017": {
     "E": 1.4439,
-    "Ec": 4.8907,
+    "Ec": 4.8906,
     "S": 4.4912,
     "anchor_facilities": [
       "eia860_3699_49017"
@@ -10995,7 +11073,7 @@
   },
   "49033": {
     "E": 2.8848,
-    "Ec": 4.9835,
+    "Ec": 4.9995,
     "S": 5.2561,
     "anchor_facilities": [],
     "county_name": "Rich",
@@ -11063,8 +11141,10 @@
     },
     "employment": 981,
     "flagship_assets": [],
-    "fuel_mix": {},
-    "generation_capacity_mw": 0.0,
+    "fuel_mix": {
+      "SUN": 1.0
+    },
+    "generation_capacity_mw": 57.6,
     "geoid": "49033",
     "median_household_income": 69250,
     "per_capita_income": 26796,
@@ -11077,7 +11157,7 @@
   },
   "49037": {
     "E": 0.9615,
-    "Ec": 4.3981,
+    "Ec": 4.4105,
     "S": 4.055,
     "anchor_facilities": [],
     "county_name": "San Juan",
@@ -11145,8 +11225,11 @@
     },
     "employment": 5224,
     "flagship_assets": [],
-    "fuel_mix": {},
-    "generation_capacity_mw": 0.0,
+    "fuel_mix": {
+      "SUN": 0.5369,
+      "WND": 0.4631
+    },
+    "generation_capacity_mw": 134.1,
     "geoid": "49037",
     "median_household_income": 52108,
     "per_capita_income": 25591,
@@ -11159,7 +11242,7 @@
   },
   "49047": {
     "E": 0.7806,
-    "Ec": 6.1375,
+    "Ec": 6.1193,
     "S": 5.0276,
     "anchor_facilities": [
       "eia860_7790_49047"
@@ -11328,7 +11411,7 @@
   },
   "56001": {
     "E": 0.4351,
-    "Ec": 5.5025,
+    "Ec": 5.6212,
     "S": 5.2321,
     "anchor_facilities": [
       "curated_56001_ivinson_memorial_hospital",
@@ -11406,7 +11489,7 @@
     "fuel_mix": {
       "WND": 1.0
     },
-    "generation_capacity_mw": 157.3,
+    "generation_capacity_mw": 487.1,
     "geoid": "56001",
     "median_household_income": 55887,
     "per_capita_income": 34969,
@@ -11419,7 +11502,7 @@
   },
   "56003": {
     "E": 0.7743,
-    "Ec": 5.0997,
+    "Ec": 5.1296,
     "S": 4.5724,
     "anchor_facilities": [
       "curated_56003_big_horn_county_institutional_anchor",
@@ -11515,7 +11598,7 @@
   },
   "56005": {
     "E": 2.9393,
-    "Ec": 6.9137,
+    "Ec": 6.8717,
     "S": 5.3141,
     "anchor_facilities": [
       "curated_56005_campbell_county_institutional_anchor",
@@ -11608,32 +11691,28 @@
     "employment": 24282,
     "flagship_assets": [
       {
-        "capacity_basis": null,
-        "capacity_or_load_mw": null,
-        "capacity_vintage": null,
-        "county_name": "Campbell",
-        "geoid": "56005",
         "name": "BWXT TRISO Fuel Facility",
-        "notes": "BWXT produces TRISO fuel pellets; Gillette WY facility. Cite BWXT press release or DOE HALEU announcement for source_url.",
-        "operational_year": null,
-        "source_url": "https://oilcity.news/community/energy-community/2025/09/25/bwxt-to-court-gillette-for-500m-nuclear-fuel-manufacturing-plant/",
+        "geoid": "56005",
+        "county_name": "Campbell",
         "state": "WY",
-        "status": "approved_2026",
-        "type": "nuclear_fuel"
+        "type": "nuclear_fuel",
+        "status": "operating",
+        "capacity_or_load_mw": null,
+        "operational_year": null,
+        "source_url": "needs_citation",
+        "notes": "BWXT produces TRISO fuel pellets; Gillette WY facility. Cite BWXT press release or DOE HALEU announcement for source_url."
       },
       {
-        "capacity_basis": null,
-        "capacity_or_load_mw": null,
-        "capacity_vintage": null,
-        "county_name": "Campbell",
-        "geoid": "56005",
         "name": "Powder River Basin Coal Mines",
-        "notes": "Powder River Basin (PRB) is the largest US coal-producing region; Campbell County anchors production. See EIA coal production data for annual output.",
+        "geoid": "56005",
+        "county_name": "Campbell",
+        "state": "WY",
+        "type": "coal",
+        "status": "operating",
+        "capacity_or_load_mw": null,
         "operational_year": null,
         "source_url": "https://www.eia.gov/coal/data.php",
-        "state": "WY",
-        "status": "operating",
-        "type": "coal"
+        "notes": "Powder River Basin (PRB) is the largest US coal-producing region; Campbell County anchors production. See EIA coal production data for annual output."
       }
     ],
     "fuel_mix": {
@@ -11653,7 +11732,7 @@
   },
   "56007": {
     "E": 1.0685,
-    "Ec": 5.6856,
+    "Ec": 5.7177,
     "S": 4.7838,
     "anchor_facilities": [
       "curated_56007_carbon_county_institutional_anchor",
@@ -11728,12 +11807,12 @@
     "employment": 6623,
     "flagship_assets": [],
     "fuel_mix": {
-      "NG": 0.006,
-      "OG": 0.0011,
-      "WAT": 0.2394,
-      "WND": 0.7535
+      "NG": 0.0012,
+      "OG": 0.0002,
+      "WAT": 0.0475,
+      "WND": 0.9511
     },
-    "generation_capacity_mw": 365.9,
+    "generation_capacity_mw": 1844.8,
     "geoid": "56007",
     "median_household_income": 65196,
     "per_capita_income": 33905,
@@ -11746,7 +11825,7 @@
   },
   "56009": {
     "E": 3.0463,
-    "Ec": 6.6118,
+    "Ec": 6.8553,
     "S": 4.91,
     "anchor_facilities": [
       "curated_56009_converse_county_institutional_anchor",
@@ -11828,25 +11907,23 @@
     "employment": 6867,
     "flagship_assets": [
       {
-        "capacity_basis": "nameplate",
-        "capacity_or_load_mw": 816.7,
-        "capacity_vintage": "2026-05",
-        "county_name": "Converse",
-        "geoid": "56009",
         "name": "Dave Johnston Power Plant",
-        "notes": "PacifiCorp / Pacific Power; Glenrock WY. The selected value is the four-unit EIA operating-generator nameplate total (816.7 MW) for 2026-05. The same source reports 745 MW net summer and 755 MW net winter capacity.",
+        "geoid": "56009",
+        "county_name": "Converse",
+        "state": "WY",
+        "type": "coal",
+        "status": "operating",
+        "capacity_or_load_mw": 762,
         "operational_year": 1959,
         "source_url": "https://www.eia.gov/electricity/data/eia860/",
-        "state": "WY",
-        "status": "operating",
-        "type": "coal"
+        "notes": "PacifiCorp / Pacific Power; Glenrock WY. Capacity verified from EIA-860 2024."
       }
     ],
     "fuel_mix": {
-      "SUB": 0.5846,
-      "WND": 0.4154
+      "SUB": 0.3402,
+      "WND": 0.6598
     },
-    "generation_capacity_mw": 1397.1,
+    "generation_capacity_mw": 2400.5,
     "geoid": "56009",
     "median_household_income": 79235,
     "per_capita_income": 37976,
@@ -11859,7 +11936,7 @@
   },
   "56011": {
     "E": 7.0313,
-    "Ec": 5.7124,
+    "Ec": 5.7123,
     "S": 5.2208,
     "anchor_facilities": [
       "curated_56011_crook_county_institutional_anchor",
@@ -11947,7 +12024,7 @@
   },
   "56013": {
     "E": 0.5747,
-    "Ec": 4.9565,
+    "Ec": 4.9576,
     "S": 4.3292,
     "anchor_facilities": [
       "curated_56013_fremont_county_institutional_anchor",
@@ -12022,11 +12099,11 @@
     "employment": 17285,
     "flagship_assets": [],
     "fuel_mix": {
-      "NG": 0.2294,
-      "WAT": 0.6881,
-      "WH": 0.0826
+      "NG": 0.4362,
+      "WAT": 0.5034,
+      "WH": 0.0604
     },
-    "generation_capacity_mw": 21.8,
+    "generation_capacity_mw": 29.8,
     "geoid": "56013",
     "median_household_income": 60030,
     "per_capita_income": 30414,
@@ -12039,7 +12116,7 @@
   },
   "56015": {
     "E": 2.7282,
-    "Ec": 5.9113,
+    "Ec": 5.912,
     "S": 4.5417,
     "anchor_facilities": [
       "curated_56015_banner_health_torrington_community_h",
@@ -12125,7 +12202,7 @@
   },
   "56017": {
     "E": 0.6733,
-    "Ec": 5.2959,
+    "Ec": 5.2954,
     "S": 4.439,
     "anchor_facilities": [
       "curated_56017_hot_springs_county_institutional_anc",
@@ -12298,7 +12375,7 @@
   },
   "56021": {
     "E": 2.4661,
-    "Ec": 6.3755,
+    "Ec": 6.5017,
     "S": 5.0348,
     "anchor_facilities": [
       "curated_56021_cheyenne_regional_medical_center",
@@ -12377,39 +12454,36 @@
     "employment": 48854,
     "flagship_assets": [
       {
-        "capacity_basis": "load",
-        "capacity_or_load_mw": 152,
-        "capacity_vintage": "2026-07",
-        "county_name": "Laramie",
-        "geoid": "56021",
         "name": "Meta AI Data Center (Cheyenne)",
-        "notes": "Estimated current IT load for Meta's Cheyenne campus. Meta's July 2024 announcement confirms the facility but reports 100 jobs, not 100 MW.",
-        "operational_year": null,
-        "source_url": "https://epoch.ai/data/ai-data-centers/directory/meta-cheyenne",
+        "geoid": "56021",
+        "county_name": "Laramie",
         "state": "WY",
+        "type": "data_center",
         "status": "under_construction",
-        "type": "data_center"
+        "capacity_or_load_mw": 100,
+        "operational_year": null,
+        "source_url": "needs_citation",
+        "notes": "Meta hyperscale campus in Cheyenne WY. Cite Meta Infrastructure announcements for source_url."
       },
       {
-        "capacity_basis": "load",
-        "capacity_or_load_mw": 1800,
-        "capacity_vintage": "2025-07",
-        "county_name": "Laramie",
-        "geoid": "56021",
         "name": "Jade/Crusoe Campus Phase 1 (Cheyenne)",
-        "notes": "Initial announced load for the southeast Wyoming AI data center campus; the developer announcement states 1.8 GW with expansion potential to 10 GW.",
-        "operational_year": 2026,
-        "source_url": "https://tallgrass.com/newsroom/press-releases/Crusoe",
+        "geoid": "56021",
+        "county_name": "Laramie",
         "state": "WY",
+        "type": "data_center",
         "status": "approved_2026",
-        "type": "data_center"
+        "capacity_or_load_mw": 200,
+        "operational_year": 2026,
+        "source_url": "needs_citation",
+        "notes": "Jade/Crusoe AI computing campus; Laramie County approval 2026. Cite Crusoe Energy / Jade Data Centers press release."
       }
     ],
     "fuel_mix": {
-      "NG": 0.6623,
-      "WND": 0.3377
+      "NG": 0.1878,
+      "SUN": 0.2012,
+      "WND": 0.6111
     },
-    "generation_capacity_mw": 211.4,
+    "generation_capacity_mw": 745.6,
     "geoid": "56021",
     "median_household_income": 76282,
     "per_capita_income": 41104,
@@ -12422,7 +12496,7 @@
   },
   "56023": {
     "E": 5.1482,
-    "Ec": 6.0686,
+    "Ec": 6.0643,
     "S": 5.0945,
     "anchor_facilities": [
       "curated_56023_lincoln_county_institutional_anchor",
@@ -12504,32 +12578,28 @@
     "employment": 9869,
     "flagship_assets": [
       {
-        "capacity_basis": "planning",
-        "capacity_or_load_mw": 345,
-        "capacity_vintage": "2025-01",
-        "county_name": "Lincoln",
-        "geoid": "56023",
         "name": "Kemmerer Unit 1 (Natrium)",
-        "notes": "TerraPower/GE-Hitachi Natrium sodium-cooled fast reactor. The 345 MWe value is the planned reactor output; it is not an operating EIA nameplate observation.",
-        "operational_year": 2031,
-        "source_url": "https://www.terrapower.com/terrapower-awarded-pivotal-state-permit-for-natrium-plant",
+        "geoid": "56023",
+        "county_name": "Lincoln",
         "state": "WY",
+        "type": "nuclear",
         "status": "under_construction",
-        "type": "nuclear"
+        "capacity_or_load_mw": 345,
+        "operational_year": 2031,
+        "source_url": "https://www.terrapower.com/natrium/",
+        "notes": "TerraPower/GE-Hitachi Natrium sodium-cooled fast reactor; DOE Milestone-Based Demonstration Program. Source URL is TerraPower press page; see also DOE Office of Nuclear Energy announcements."
       },
       {
-        "capacity_basis": null,
-        "capacity_or_load_mw": null,
-        "capacity_vintage": null,
-        "county_name": "Lincoln",
-        "geoid": "56023",
         "name": "Naughton Gas Conversion",
-        "notes": "PacifiCorp conversion of Naughton coal units to gas; verify exact capacity and schedule in PacifiCorp IRP.",
-        "operational_year": 2026,
-        "source_url": "https://wyofile.com/kemmerer-power-plants-coal-to-natural-gas-conversion-highlights-uncertainty-for-wyoming-communities/",
+        "geoid": "56023",
+        "county_name": "Lincoln",
         "state": "WY",
+        "type": "gas",
         "status": "planned",
-        "type": "gas"
+        "capacity_or_load_mw": null,
+        "operational_year": 2026,
+        "source_url": "needs_citation",
+        "notes": "PacifiCorp conversion of Naughton coal units to gas; verify exact capacity and schedule in PacifiCorp IRP."
       }
     ],
     "fuel_mix": {
@@ -12550,7 +12620,7 @@
   },
   "56025": {
     "E": 2.9456,
-    "Ec": 6.5952,
+    "Ec": 6.6151,
     "S": 4.9419,
     "anchor_facilities": [
       "curated_56025_natrona_county_institutional_anchor",
@@ -12627,10 +12697,10 @@
     "employment": 40661,
     "flagship_assets": [],
     "fuel_mix": {
-      "WAT": 0.8642,
-      "WND": 0.1358
+      "WAT": 0.4337,
+      "WND": 0.5663
     },
-    "generation_capacity_mw": 125.2,
+    "generation_capacity_mw": 249.5,
     "geoid": "56025",
     "median_household_income": 69104,
     "per_capita_income": 40346,
@@ -12728,7 +12798,7 @@
   },
   "56029": {
     "E": 1.0663,
-    "Ec": 6.031,
+    "Ec": 6.0569,
     "S": 4.9802,
     "anchor_facilities": [
       "curated_56029_park_county_institutional_anchor",
@@ -12818,7 +12888,7 @@
   },
   "56031": {
     "E": 2.912,
-    "Ec": 6.6956,
+    "Ec": 6.6312,
     "S": 4.1585,
     "anchor_facilities": [
       "curated_56031_platte_county_institutional_anchor",
@@ -13081,7 +13151,7 @@
   },
   "56037": {
     "E": 0.5214,
-    "Ec": 6.5858,
+    "Ec": 6.5554,
     "S": 5.0511,
     "anchor_facilities": [
       "curated_56037_sweetwater_county_institutional_anch",
@@ -13173,27 +13243,26 @@
     "employment": 20950,
     "flagship_assets": [
       {
-        "capacity_basis": "planning",
-        "capacity_or_load_mw": 2120,
-        "capacity_vintage": "2024",
-        "county_name": "Sweetwater",
-        "geoid": "56037",
         "name": "Jim Bridger Power Plant",
-        "notes": "PacifiCorp / Pacific Power. The 2,120 MW county-card value is a rounded net-capability/planning representation of EIA's 2,119 MW net summer and net winter total; the distinct 2024 EIA nameplate total is 2,326 MW.",
+        "geoid": "56037",
+        "county_name": "Sweetwater",
+        "state": "WY",
+        "type": "coal",
+        "status": "operating",
+        "capacity_or_load_mw": 2120,
         "operational_year": 1974,
         "source_url": "https://www.eia.gov/electricity/data/eia860/",
-        "state": "WY",
-        "status": "operating",
-        "type": "coal"
+        "notes": "PacifiCorp / Pacific Power. Units 3-4 targeted for early retirement under PacifiCorp IRP; verify current status."
       }
     ],
     "fuel_mix": {
-      "BIT": 0.0125,
-      "NG": 0.4861,
-      "SUB": 0.4966,
-      "WH": 0.0048
+      "BIT": 0.0121,
+      "NG": 0.4681,
+      "SUB": 0.4782,
+      "SUN": 0.037,
+      "WH": 0.0046
     },
-    "generation_capacity_mw": 2395.0,
+    "generation_capacity_mw": 2487.0,
     "geoid": "56037",
     "median_household_income": 79375,
     "per_capita_income": 40268,
@@ -13206,7 +13275,7 @@
   },
   "56039": {
     "E": 7.0569,
-    "Ec": 5.9218,
+    "Ec": 5.9173,
     "S": 5.4041,
     "anchor_facilities": [
       "curated_56039_grand_targhee_resort",
@@ -13291,7 +13360,7 @@
   },
   "56041": {
     "E": 0.5271,
-    "Ec": 6.0472,
+    "Ec": 6.0408,
     "S": 4.9924,
     "anchor_facilities": [
       "curated_56041_uinta_county_institutional_anchor",

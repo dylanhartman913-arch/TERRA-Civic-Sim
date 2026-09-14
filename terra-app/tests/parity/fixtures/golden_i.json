@@ -36,15 +36,15 @@
     "workforce_decay_note": "N(t) = 593.6 \u00d7 0.5^(10/5) = 593.6 \u00d7 0.25 = 148.4 FTE at year 2041 (Carley et al. 2018)"
   },
   "digests_yr2031": {
-    "state_digest_md5": "c282c011e7af856a2b69d6fda97cb396",
+    "state_digest_md5": "1ab45d5cfde1a39bc05ac987f5e2edf0",
     "fiscal_digest_md5": "ad9da9c73fda224a42f0d9c1e5c685e4",
-    "existing_assets_digest_md5": "fee4a377419aafb8d0825cda06b05751",
+    "existing_assets_digest_md5": "60af778999086403b0eb75336fbc8e34",
     "note": "Identical to Golden G\u2032 at 2031. Site assets excluded from all three digest domains."
   },
   "digests_yr2041": {
-    "state_digest_md5": "17fe866569a0384a150cb86f8b5d169d",
+    "state_digest_md5": "944c40eb6cbf1f72e5bf9af2f800bb28",
     "fiscal_digest_md5": "c251dce1f96ec87747160a75ed48fb64",
-    "existing_assets_digest_md5": "0a083f2103ab403e70d7e555202be9b8",
+    "existing_assets_digest_md5": "17786de1181bb535864d9210f7b08921",
     "note": "Covers 10 years of PRB autonomous coal decline + workforce pool decay (no player actions)."
   }
 }

@@ -3,26 +3,26 @@
   "schema_version": "3.1",
   "engine_version": "3.1",
   "created": "2026-07-03T00:00:00.000000+00:00",
-  "description": "Zero-player-action run 2025→2045 with EIA-860 scheduled baseline retirements AND autonomous PRB coal surface decline (-2.0%/yr compound, geoid 56005). Amends Golden G (v3.0). Second permitted fixture amendment (see fixture_registry.json).",
+  "description": "Zero-player-action run 2025\u21922045 with EIA-860 scheduled baseline retirements AND autonomous PRB coal surface decline (-2.0%/yr compound, geoid 56005). Amends Golden G (v3.0). Second permitted fixture amendment (see fixture_registry.json).",
   "amendment_of": "golden_g",
-  "amendment_reason": "Engine v3.1 added: (1) autonomous PRB coal surface decline in advance_year (lifecycle_coefficients.autonomous_decline.coal_surface.enabled=true, rate=-0.020/yr); (2) reclamation obligation tracking in reduce_production_asset (cohort log → active_reclamation_acres → reclamation_jobs_direct). state_digest is STABLE (covers county_ees/bus_state/sc_pools/year — not fiscal or production volume). fiscal_digest and existing_assets_digest change every year of the run.",
+  "amendment_reason": "Engine v3.1 added: (1) autonomous PRB coal surface decline in advance_year (lifecycle_coefficients.autonomous_decline.coal_surface.enabled=true, rate=-0.020/yr); (2) reclamation obligation tracking in reduce_production_asset (cohort log \u2192 active_reclamation_acres \u2192 reclamation_jobs_direct). state_digest is STABLE (covers county_ees/bus_state/sc_pools/year \u2014 not fiscal or production volume). fiscal_digest and existing_assets_digest change every year of the run.",
   "digest_stability_note": "state_digest_md5 values at 2027/2031/2045 are IDENTICAL to Golden G. Only fiscal_digest_md5 and existing_assets_digest_md5 differ.",
   "assertions": {
     "bus_56009_id": "494",
     "bus_56037_id": "282",
     "bus_56009_init_capacity_mw": 1244.5,
     "bus_56037_init_capacity_mw": 2401.8,
-    "dj_capacity_drop_mw": 816.7,
+    "dj_capacity_drop_mw": 762.0,
     "jb_capacity_drop_mw": 2120,
     "yr2027_dj_lifecycle": "retired",
     "yr2027_jb_lifecycle": "operating",
-    "yr2027_bus_56009_capacity_mw": 427.79999999999995,
+    "yr2027_bus_56009_capacity_mw": 482.5,
     "yr2027_bus_56037_capacity_mw": 2401.8,
     "yr2031_dj_lifecycle": "retired",
     "yr2031_jb_lifecycle": "retired",
-    "yr2031_bus_56009_capacity_mw": 427.79999999999995,
+    "yr2031_bus_56009_capacity_mw": 482.5,
     "yr2031_bus_56037_capacity_mw": 281.8000000000002,
-    "yr2045_bus_56009_capacity_mw": 427.79999999999995,
+    "yr2045_bus_56009_capacity_mw": 482.5,
     "yr2045_bus_56037_capacity_mw": 281.8000000000002,
     "prb_geoid": "56005",
     "prb_init_production_volume": 170045000.0,
@@ -37,21 +37,21 @@
     "yr2045_prb_reclamation_jobs_direct": 63.54
   },
   "digests_yr2027": {
-    "state_digest_md5": "5bb6c8e9a9cc448a64e99564e7ce383a",
+    "state_digest_md5": "599f4f27a9e1b69a22a43603acd557fc",
     "fiscal_digest_md5": "63ecffeb94175ed53150c042b96b7c03",
-    "existing_assets_digest_md5": "583cdb35e2c2d6b93b019fc734a03654",
-    "note": "state_digest_md5 identical to Golden G — county_ees/bus_state/sc_pools unchanged by coal decline"
+    "existing_assets_digest_md5": "ad3a1e1a3645eabab15e2b736ad3d511",
+    "note": "state_digest_md5 identical to Golden G \u2014 county_ees/bus_state/sc_pools unchanged by coal decline"
   },
   "digests_yr2031": {
-    "state_digest_md5": "c282c011e7af856a2b69d6fda97cb396",
+    "state_digest_md5": "1ab45d5cfde1a39bc05ac987f5e2edf0",
     "fiscal_digest_md5": "ad9da9c73fda224a42f0d9c1e5c685e4",
-    "existing_assets_digest_md5": "fee4a377419aafb8d0825cda06b05751",
+    "existing_assets_digest_md5": "60af778999086403b0eb75336fbc8e34",
     "note": "state_digest_md5 identical to Golden G"
   },
   "digests_yr2045": {
-    "state_digest_md5": "d0a59b604e9235a2df2e9c6ca27c7171",
+    "state_digest_md5": "cc3333f5f182570894d10bcde3e29105",
     "fiscal_digest_md5": "045f30e465a518e78870f00bb9b27aea",
-    "existing_assets_digest_md5": "955bfa3640f27d335b443b6304b9d447",
+    "existing_assets_digest_md5": "07744b36e91debe1f3756e6408bf82a6",
     "note": "state_digest_md5 identical to Golden G"
   }
 }

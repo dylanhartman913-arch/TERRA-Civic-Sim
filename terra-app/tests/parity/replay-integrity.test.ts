@@ -114,7 +114,7 @@ describe('replay-integrity', () => {
     console.log('  No-events fixture md5:   ', fixtureRaw.final_state_digest.md5);
 
     // With-events digest is deterministic for seed=42 + golden-b sequence
-    const WITH_EVENTS_DIGEST = 'a63401e30494a3da03e85817c3f42ba7';
+    const WITH_EVENTS_DIGEST = '8d8bd17dc81d0d25ecae43cb8b49afac';
     expect(helperMd5).toBe(WITH_EVENTS_DIGEST);
     expect(replayMd5).toBe(WITH_EVENTS_DIGEST);
   });
