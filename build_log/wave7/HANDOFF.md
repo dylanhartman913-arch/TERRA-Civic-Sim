@@ -671,17 +671,20 @@ Capacity values feed into `seedAssetRegistry` → `asset_registry` → `bus_stat
 | Golden H | ea (A/B) | `8607ae20...` | `c9ea2461...` | yes |
 | Golden I | state/ea (2031/2041) | see fixture | see fixture | yes |
 | Golden K | ea (2040) | `0fa86f2f...` | `e99daf93...` | yes |
-| Golden L | ssp370 state/probes | see fixture | see fixture | yes (TS≠Python) |
+| Golden L | ssp370 state/probes | see fixture | see fixture | yes |
 | Golden M | state (all lenses) | see fixture | see fixture | yes |
 | Golden N | state (4 of 6 scenarios) | see fixture | see fixture | yes |
 | All | fiscal_digest | — | — | **unchanged** |
 | Golden J/J′ | history_digest | — | — | unchanged |
 
-**Golden L ssp370 cross-runtime divergence:** The capacity fix (especially
-Jade/Crusoe 200→1800) introduced a new TS≠Python divergence in the ssp370
-state_digest. Historical lens still matches. The fixture uses TS-computed
-values since the TS test suite is the consumer. This is the same class of
-divergence as Golden D's fiscal_digest (documented in S7b).
+**Golden L ssp370 cross-runtime divergence — false alarm (corrected
+2026-09-15):** The F14 commit reported a TS≠Python ssp370 divergence, but
+post-session verification confirms both engines produce identical ssp370
+state digests (`46c009d7c2444335687bb111e92b8b65`) on the fully-patched data.
+The discrepancy was caused by running `regenerate_all_goldens.py` on
+partially-patched data. No coverage gap; no new finding. See DECISIONS.md
+entry "F14 addendum: Golden L ssp370 cross-runtime divergence is false alarm"
+for full verification table.
 
 **Golden D fiscal_digest:** Restored to TS-engine value `225c5bdddb9e0e59...`
 (Python regenerator had overwritten it with Python value `cbc0734bc40b1fcc...`).
@@ -718,3 +721,147 @@ nb14 re-run will regress again unless the notebook source is also updated.
 - `scripts/sync_county_cards_to_ts.py` — new sync utility
 
 **F14 closed.**
+
+---
+
+## S7b-addendum-2: Golden L ssp370 divergence clarification (2026-09-15)
+
+**Question investigated:** Is the Golden L ssp370 cross-runtime divergence
+reported during F14 a real bug, a coverage gap, or a false alarm?
+
+**Answer: False alarm.** Both engines compute identical ssp370 state digests
+on the post-F14 data:
+
+| Probe year | Python                                | TS                                     |
+|------------|---------------------------------------|----------------------------------------|
+| 2030       | `38d9b6472dbbcbe4555cbc144b584bd5`   | `38d9b6472dbbcbe4555cbc144b584bd5`    |
+| 2040       | `3ffc6f560fbe0e0bcd8e58d6ee1405d8`   | `3ffc6f560fbe0e0bcd8e58d6ee1405d8`    |
+| 2050       | `46c009d7c2444335687bb111e92b8b65`   | `46c009d7c2444335687bb111e92b8b65`    |
+
+**Root cause:** `regenerate_all_goldens.py` ran during the F14 session at a
+point when county_cards data was partially patched. The regenerator computed
+Python digests on stale data (`bfdacdf5...`), then the F14 patch completed,
+then TS tests computed digests on corrected data (`46c009d7...`). The
+difference was misattributed to cross-runtime FP divergence.
+
+**Coverage assessment:** No gap. Python L-2 and TS L-2/L-12 both check against
+the same fixture file. If either engine computed a different value, its test
+would fail. The 226/226 + 351/351 results are a genuine clean bill of health
+for Golden L parity. TS test L-12's name ("TS-Python digest parity") is
+slightly misleading — it only runs TS — but the structural guarantee (shared
+fixture, both suites must pass) is equivalent.
+
+**Corrected in this addendum:**
+- HANDOFF.md digest table: removed "(TS≠Python)" from Golden L row
+- HANDOFF.md: replaced incorrect divergence paragraph with correction + DECISIONS.md cross-reference
+- DECISIONS.md: added verification entry with full probe-year table
+
+**No new finding. No code changes. F14 remains closed.**
+
+---
+
+## S8 — 2026-09-15 — Re-run Monte Carlo and magnitude sweep
+
+**Objective:** Recompute `mc_validation_priority.csv` and `sweep_cost_ranking_sourced.csv`
+against the S7a/S7b/F14-corrected EES baseline, with provenance recorded.
+
+**Precondition check:**
+- S5 deep-merge fix confirmed in `mc_full_run.py` (lines 261–305: read-modify-write,
+  sets only `mc_sensitivity` key) and in `15_coefficient_monte_carlo.ipynb` cell 18
+  and `18_magnitude_sweep.ipynb` cell 11. Not reverted. ✓
+- Stale checkpoint (July 31, 10k rows, pre-S7a) moved to `/tmp` before run.
+- Baseline commit: `b5fd4fdc` (F14 — final corrected state).
+
+**What was done:**
+
+**Step 1 — Pre-run snapshot:**
+- `mc_validation_priority.csv` SHA-256: `7d7834aa...` (July 31, pre-S7a)
+- `sweep_cost_ranking_sourced.csv` SHA-256: `599f2498...` (July 31, pre-S7a)
+- Both saved to `/tmp` as `*_pre_s7a` files.
+
+**Step 2 — MC full run:**
+- `mc_full_run.py` re-run from scratch (stale checkpoint deleted).
+- 10,000 iterations, 9 workers, 30.2 min wall clock.
+- `15_coefficient_monte_carlo.ipynb` analysis cells run headlessly via
+  `jupyter nbconvert --to script` + `python3`. Checkpoint auto-detected complete
+  (10,000/10,000); simulation cells skipped; analysis ran cleanly.
+
+**Step 3 — Sweep:**
+- `18_magnitude_sweep.ipynb` run headlessly. 30 actions × 7 magnitudes.
+  Reads `mc_validation_priority.csv` only for informational cross-reference (cell 10);
+  core sweep outputs are independent of MC results.
+
+**Rank-change diff (MC validation-priority):**
+
+All 15 ranks are identical between pre-S7a and post-S7a. ρ values differ by
+< 0.001 in all cases (statistical noise, not meaningful signal):
+
+| Rank | Coefficient | ρ (pre-S7a) | ρ (post-S7a) | Rank change |
+|------|-------------|-------------|--------------|-------------|
+| 1 | prairie_restoration/E | 0.71669 | 0.71670 | none |
+| 2 | riparian_buffer/E | 0.60082 | 0.60082 | none |
+| 3 | smr_advanced/Ec | 0.20305 | 0.20302 | none |
+| 4 | transmission_230kv/Ec | 0.14538 | 0.14537 | none |
+| 5 | mine_land_reclamation/E | 0.10068 | 0.10069 | none |
+| 6–15 | (all others) | — | — | none |
+
+**Why the ranks didn't change:** The S7a fix corrected the Ec_gencap normalization
+— a uniform baseline level shift across 123 counties. The MC sensitivity analysis
+perturbs *action coefficients* (marginal effects) and measures relative leverage via
+Spearman correlation. Prairie_restoration's dominance (ρ=0.72) comes from having
+the largest E coefficient (1.2613) — nearly 2× the next action. This structural
+ordering is not affected by shifting the absolute Ec baseline level. The sub-portfolio
+flip rate is 0.0: not a single draw (of 1,000 paired draws) changed the sub-portfolio
+ranking, confirming robustness.
+
+**Nominal composite shift:** 5.2217 → 5.2236 (+0.0019). This direct baseline-level
+increase reflects the Ec_gencap correction from S7a (Ec rose slightly across the
+study area). The composite SD stayed at 0.011, confirming coefficient uncertainty
+is unchanged.
+
+**Sweep cost ranking diff:**
+- Ranked order: unchanged (prairie_restoration ≫ invasive_treatment ≫
+  irrigation_efficiency ≫ riparian_buffer ≫ ..., same 12 sourced actions in same order).
+- `cost_efficiency_per_$1M` values: unchanged (same to 4 significant figures for all
+  sourced actions).
+- `best_magnitude_pct` changed for several actions (e.g., prairie_restoration 25→75,
+  health_clinic 25→200, solar_utility 100→25). These are expected: the efficiency curve
+  is nearly flat near the maximum, so the small baseline shift can move which grid interval
+  appears "best" without materially changing the efficiency value. Not a ranking signal.
+
+**Top-priority coefficients for advisor conversation:**
+
+11 of the 15 highest-leverage coefficients are currently low-confidence or unsourced.
+Priority order (highest leverage × lowest confidence):
+
+1. `smr_advanced/Ec` (rank 3, ρ=0.203) — SMR energy-capacity contribution; no source.
+   Wyoming's planned SMR deployment makes this directly policy-relevant.
+2. `mine_land_reclamation/E` (rank 5, ρ=0.101) + `/S` (rank 10, ρ=0.034) — no source.
+   Two separate capital pathways, both unsourced; combined leverage is substantial.
+3. `smr_advanced/S` (rank 6, ρ=0.087) — SMR social contribution; no source.
+4. `microgrid/S` (rank 7, ρ=0.048) — no source.
+5. `university_research_center/Ec` (rank 8, ρ=0.036) + `/S` (rank 11, ρ=0.031) — no source.
+
+Prairie_restoration and riparian_buffer top the sensitivity table but are already
+high-confidence (USDA EQIP citations). Transmission_230kv (rank 4) is also
+high-confidence. The advisor should focus on the SMR and mine reclamation
+coefficients first.
+
+**Provenance added:**
+Both `mc_sensitivity` and `magnitude_sweep` blocks in `network_metadata.json` now
+carry `baseline_commit: b5fd4fdc6cffaf302df49592114e17e42b0b2990` and
+`baseline_description: "S7a/S7b corrected EES baseline + F14 flagship capacity fix"`.
+
+**Files newly tracked:**
+- `data/processed/mc_validation_priority.csv` (excepted in `.gitignore`)
+- `data/processed/sweep_cost_ranking_sourced.csv` (excepted)
+- `data/processed/sweep_marginal_returns.csv` (excepted)
+
+**Acceptance:**
+- Both outputs regenerated on corrected baseline ✓
+- Each carries baseline/commit reference in `network_metadata.json` ✓
+- Rank diff written with interpretation ✓
+- Zero rank changes — sensible story (ranking is coefficient-structure-driven,
+  not baseline-level-driven) ✓
+
+**S8 complete. Do not start S9.**

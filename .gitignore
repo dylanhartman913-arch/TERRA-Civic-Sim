@@ -68,6 +68,9 @@ data/processed/figures/14_lmp_map.html
 !data/processed/network_metadata.json
 !data/processed/wy_grazing_allotments.csv
 !data/processed/wy_ag_sources.csv
+!data/processed/mc_validation_priority.csv
+!data/processed/sweep_cost_ranking_sourced.csv
+!data/processed/sweep_marginal_returns.csv
 # county_crosswalk and generators_with_costs: deterministic parquet outputs,
 # 12 KB and 245 KB respectively, required by initialize_state() and
 # _build_fuel_mix_map(). Excepted here (after *.parquet rule) so negation wins.

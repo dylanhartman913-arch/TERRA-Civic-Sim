@@ -1,0 +1,16 @@
+rank,action_id,indicator_field,capital_tier,nominal_coeff,spearman_corr_composite,current_confidence,current_source,HIGH_LEVERAGE_LOW_CONF
+1,prairie_restoration,E,terrestrial_ecosystem,1.2613,0.7167004694186204,high,USDA EQIP Practice 643; EPA ecosystem services valuations,False
+2,riparian_buffer,E,hydrological_restoration,1.0812,0.6008155880592355,high,USDA EQIP Practice 391; EPA ecosystem services,False
+3,smr_advanced,Ec,energy_generation,0.35,0.20301766506410607,,,True
+4,transmission_230kv,Ec,energy_transmission,0.2879,0.14536738898065704,high,Liming & Tegen 2011; DOE National Transmission Needs Study 2023,False
+5,mine_land_reclamation,E,hydrological_restoration,0.18,0.10069163533647946,,,True
+6,smr_advanced,S,energy_generation,0.12,0.08651545711046076,,,True
+7,microgrid,S,energy_transmission,0.1,0.048307461057960084,,,True
+8,university_research_center,Ec,settlement_social,0.25,0.03554988286809369,,,True
+9,affordable_housing,S,settlement_social,0.4079,0.03461258943167015,high,NLIHC Out of Reach 2023; HUD Mountain West data,False
+10,mine_land_reclamation,S,hydrological_restoration,0.04,0.03379384502754456,,,True
+11,university_research_center,S,settlement_social,0.2,0.031063512871370068,,,True
+12,spring_seep_development,E,hydrological_restoration,0.15,-0.02451195242179256,,,True
+13,ev_charging_network,S,transport,0.06,0.02387551636671405,,,True
+14,data_center_hyperscale,S,energy_demand,0.15,0.023602296369229954,low,,True
+15,transmission_500kv,E,energy_transmission,-0.03,0.02176385790728052,,,True

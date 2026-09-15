@@ -206,3 +206,37 @@ which has the correct values (816.7, 152, 1800). Both `mw_county_cards.json` and
 Python is always authoritative. When the Python source itself contains a regression,
 the sync propagates it. S11's dual-path identity check should verify flagship
 capacities against `mw_anchor_facilities.geojson` directly.
+
+---
+
+## 2026-09-15 — F14 addendum: Golden L ssp370 cross-runtime divergence is false alarm
+
+**Decision:** The Golden L ssp370 "TS≠Python cross-runtime divergence" reported
+during F14 does not exist. Both engines produce identical ssp370 state digests
+on the post-F14 data. The HANDOFF.md text asserting a divergence has been
+corrected.
+
+**Verification (2026-09-15):**
+
+| Probe year | Python ssp370 state_md5             | TS ssp370 state_md5                  | Match? |
+|------------|--------------------------------------|---------------------------------------|--------|
+| 2030       | `38d9b6472dbbcbe4555cbc144b584bd5`  | `38d9b6472dbbcbe4555cbc144b584bd5`   | yes    |
+| 2040       | `3ffc6f560fbe0e0bcd8e58d6ee1405d8`  | `3ffc6f560fbe0e0bcd8e58d6ee1405d8`   | yes    |
+| 2050       | `46c009d7c2444335687bb111e92b8b65`  | `46c009d7c2444335687bb111e92b8b65`   | yes    |
+
+All probe-year and final state digests match. Python 11/11, TS 12/12 pass.
+
+**Root cause of false alarm:** During F14, `regenerate_all_goldens.py` ran at a
+point when the county_cards data was in a partially-patched state (before the
+F14 capacity restoration was complete). The regenerator computed Python digests
+on stale data, producing `bfdacdf590bdd34128ae79d04e1d01ce`. After the F14 patch
+was applied, TS tests computed `46c009d7c2444335687bb111e92b8b65` on the
+corrected data. The difference was misdiagnosed as a cross-runtime divergence.
+On the fully-patched data, both engines agree.
+
+**Test coverage note:** TS test L-12 is named "TS-Python digest parity" but
+only runs the TS engine against the shared fixture. True cross-runtime parity
+is enforced structurally: both Python L-2 and TS L-2 check against the same
+fixture value, so a disagreement would cause one suite to fail. This is indirect
+but effective — no coverage gap exists as long as both suites run. No new finding
+needed.

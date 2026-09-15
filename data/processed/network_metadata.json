@@ -23,7 +23,7 @@
     ]
   },
   "mc_sensitivity": {
-    "run_date": "2026-07-31T18:03:29.494051+00:00",
+    "run_date": "2026-09-15T20:29:57.273622+00:00",
     "notebook": "15_coefficient_monte_carlo.ipynb",
     "quick_test": false,
     "n_iterations_requested": 10000,
@@ -33,41 +33,43 @@
     "coeff_ci_z": 1.96,
     "sigma": 0.2551,
     "n_perturbable_coefficients": 141,
-    "composite_mean": 5.2215,
+    "composite_mean": 5.2234,
     "composite_sd": 0.011,
-    "composite_p5": 5.2035,
-    "composite_p95": 5.2399,
-    "nominal_composite": 5.2217,
+    "composite_p5": 5.2054,
+    "composite_p95": 5.2418,
+    "nominal_composite": 5.2236,
     "top5_coefficients_by_sensitivity": [
       {
         "action_id": "prairie_restoration",
         "capital": "E",
-        "spearman_composite": 0.7166928543865265
+        "spearman_composite": 0.7167004694186204
       },
       {
         "action_id": "riparian_buffer",
         "capital": "E",
-        "spearman_composite": 0.6008152400869032
+        "spearman_composite": 0.6008155880592355
       },
       {
         "action_id": "smr_advanced",
         "capital": "Ec",
-        "spearman_composite": 0.203048619755327
+        "spearman_composite": 0.20301766506410607
       },
       {
         "action_id": "transmission_230kv",
         "capital": "Ec",
-        "spearman_composite": 0.14537506910139159
+        "spearman_composite": 0.14536738898065704
       },
       {
         "action_id": "mine_land_reclamation",
         "capital": "E",
-        "spearman_composite": 0.10068051063667476
+        "spearman_composite": 0.10069163533647946
       }
     ],
     "n_high_leverage_low_confidence": 11,
     "sub_portfolio_flip_rate": 0.0,
-    "sub_portfolio_n_draws": 1000
+    "sub_portfolio_n_draws": 1000,
+    "baseline_commit": "b5fd4fdc6cffaf302df49592114e17e42b0b2990",
+    "baseline_description": "S7a/S7b corrected EES baseline + F14 flagship capacity fix"
   },
   "_provenance": {
     "total_buses": "repo_artifact: data/processed/synthetic_topology_validation.json (n_buses)",
@@ -186,5 +188,15 @@
     },
     "frozen": true,
     "timestamp": "2026-09-14T03:08:45.338532+00:00"
+  },
+  "magnitude_sweep": {
+    "run_date": "2026-09-15T20:06:09.046331+00:00",
+    "notebook": "18_magnitude_sweep.ipynb",
+    "n_actions_swept": 30,
+    "n_sourced_actions": 12,
+    "marginal_csv": "sweep_marginal_returns.csv",
+    "cost_ranking_csv": "sweep_cost_ranking_sourced.csv",
+    "baseline_commit": "b5fd4fdc6cffaf302df49592114e17e42b0b2990",
+    "baseline_description": "S7a/S7b corrected EES baseline + F14 flagship capacity fix"
   }
 }
