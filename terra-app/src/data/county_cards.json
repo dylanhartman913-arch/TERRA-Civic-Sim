@@ -11913,10 +11913,12 @@
         "state": "WY",
         "type": "coal",
         "status": "operating",
-        "capacity_or_load_mw": 762,
+        "capacity_or_load_mw": 816.7,
         "operational_year": 1959,
         "source_url": "https://www.eia.gov/electricity/data/eia860/",
-        "notes": "PacifiCorp / Pacific Power; Glenrock WY. Capacity verified from EIA-860 2024."
+        "notes": "PacifiCorp / Pacific Power; Glenrock WY. The selected value is the four-unit EIA operating-generator nameplate total (816.7 MW) for 2026-05. The same source reports 745 MW net summer and 755 MW net winter capacity.",
+        "capacity_basis": "nameplate",
+        "capacity_vintage": "2026-05"
       }
     ],
     "fuel_mix": {
@@ -12460,10 +12462,12 @@
         "state": "WY",
         "type": "data_center",
         "status": "under_construction",
-        "capacity_or_load_mw": 100,
+        "capacity_or_load_mw": 152,
         "operational_year": null,
         "source_url": "needs_citation",
-        "notes": "Meta hyperscale campus in Cheyenne WY. Cite Meta Infrastructure announcements for source_url."
+        "notes": "Meta hyperscale campus in Cheyenne WY. Cite Meta Infrastructure announcements for source_url.",
+        "capacity_basis": "load",
+        "capacity_vintage": "2026-07"
       },
       {
         "name": "Jade/Crusoe Campus Phase 1 (Cheyenne)",
@@ -12472,10 +12476,12 @@
         "state": "WY",
         "type": "data_center",
         "status": "approved_2026",
-        "capacity_or_load_mw": 200,
+        "capacity_or_load_mw": 1800,
         "operational_year": 2026,
         "source_url": "needs_citation",
-        "notes": "Jade/Crusoe AI computing campus; Laramie County approval 2026. Cite Crusoe Energy / Jade Data Centers press release."
+        "notes": "Jade/Crusoe AI computing campus; Laramie County approval 2026. Cite Crusoe Energy / Jade Data Centers press release.",
+        "capacity_basis": "load",
+        "capacity_vintage": "2025-07"
       }
     ],
     "fuel_mix": {
@@ -12587,7 +12593,9 @@
         "capacity_or_load_mw": 345,
         "operational_year": 2031,
         "source_url": "https://www.terrapower.com/natrium/",
-        "notes": "TerraPower/GE-Hitachi Natrium sodium-cooled fast reactor; DOE Milestone-Based Demonstration Program. Source URL is TerraPower press page; see also DOE Office of Nuclear Energy announcements."
+        "notes": "TerraPower/GE-Hitachi Natrium sodium-cooled fast reactor; DOE Milestone-Based Demonstration Program. Source URL is TerraPower press page; see also DOE Office of Nuclear Energy announcements.",
+        "capacity_basis": "planning",
+        "capacity_vintage": "2025-01"
       },
       {
         "name": "Naughton Gas Conversion",
@@ -13252,7 +13260,9 @@
         "capacity_or_load_mw": 2120,
         "operational_year": 1974,
         "source_url": "https://www.eia.gov/electricity/data/eia860/",
-        "notes": "PacifiCorp / Pacific Power. Units 3-4 targeted for early retirement under PacifiCorp IRP; verify current status."
+        "notes": "PacifiCorp / Pacific Power. Units 3-4 targeted for early retirement under PacifiCorp IRP; verify current status.",
+        "capacity_basis": "planning",
+        "capacity_vintage": "2024"
       }
     ],
     "fuel_mix": {

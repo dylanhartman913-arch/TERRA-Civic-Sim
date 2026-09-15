@@ -31,30 +31,30 @@
     "bus_56037_init_capacity_mw": 2401.8,
     "yr2027_dj_lifecycle": "retired",
     "yr2027_jb_lifecycle": "operating",
-    "yr2027_bus_56009_capacity_mw": 482.5,
+    "yr2027_bus_56009_capacity_mw": 427.79999999999995,
     "yr2027_bus_56037_capacity_mw": 2401.8,
     "yr2031_dj_lifecycle": "retired",
     "yr2031_jb_lifecycle": "retired",
-    "yr2031_bus_56009_capacity_mw": 482.5,
+    "yr2031_bus_56009_capacity_mw": 427.79999999999995,
     "yr2031_bus_56037_capacity_mw": 281.8000000000002,
-    "yr2045_bus_56009_capacity_mw": 482.5,
+    "yr2045_bus_56009_capacity_mw": 427.79999999999995,
     "yr2045_bus_56037_capacity_mw": 281.8000000000002,
-    "dj_capacity_drop_mw": 762.0,
+    "dj_capacity_drop_mw": 816.7,
     "jb_capacity_drop_mw": 2120
   },
   "digests_yr2027": {
-    "state_digest_md5": "599f4f27a9e1b69a22a43603acd557fc",
+    "state_digest_md5": "09ace8a7ea5bc02922fa63b258b138cc",
     "fiscal_digest_md5": "63ecffeb94175ed53150c042b96b7c03",
-    "existing_assets_digest_md5": "ad3a1e1a3645eabab15e2b736ad3d511"
+    "existing_assets_digest_md5": "16e0a22c63d167e88a6848301bee543d"
   },
   "digests_yr2031": {
-    "state_digest_md5": "1ab45d5cfde1a39bc05ac987f5e2edf0",
+    "state_digest_md5": "da75c12523d1c042fb64871465d02de4",
     "fiscal_digest_md5": "ad9da9c73fda224a42f0d9c1e5c685e4",
-    "existing_assets_digest_md5": "60af778999086403b0eb75336fbc8e34"
+    "existing_assets_digest_md5": "55585d51d2f5c505e269dd0a21d2457d"
   },
   "digests_yr2045": {
-    "state_digest_md5": "cc3333f5f182570894d10bcde3e29105",
+    "state_digest_md5": "463cf365979b1a76cb72becd60e8944d",
     "fiscal_digest_md5": "045f30e465a518e78870f00bb9b27aea",
-    "existing_assets_digest_md5": "07744b36e91debe1f3756e6408bf82a6"
+    "existing_assets_digest_md5": "b3149201da004e2eba6a0a8fb869bf44"
   }
 }

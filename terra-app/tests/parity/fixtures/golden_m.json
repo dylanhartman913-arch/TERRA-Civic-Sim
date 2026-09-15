@@ -1,9 +1,9 @@
 {
   "description": "C4-ii resilience fork; lens enters only through sampled events and existing-handler consequences",
   "pre_c4_historical_control": {
-    "state_digest_md5": "f3f925f347f67e966a5f5aa981da5550",
+    "state_digest_md5": "ab75f525e863e9df60fc2656ddb64142",
     "fiscal_digest_md5": "58bd2636ea88f814328ecb24aad8a75a",
-    "existing_assets_digest_md5": "1192d016fb8b5418217fc684e3d8763d",
+    "existing_assets_digest_md5": "18db39b4f65bd77f0af0a001d440f795",
     "history_digest_md5": "a146e194dd763a8a20f9a0cf9e0e13c6",
     "event_count": 0,
     "event_stream_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
@@ -15,9 +15,9 @@
   },
   "results": {
     "historical": {
-      "state_digest_md5": "f3f925f347f67e966a5f5aa981da5550",
+      "state_digest_md5": "ab75f525e863e9df60fc2656ddb64142",
       "fiscal_digest_md5": "58bd2636ea88f814328ecb24aad8a75a",
-      "existing_assets_digest_md5": "1192d016fb8b5418217fc684e3d8763d",
+      "existing_assets_digest_md5": "18db39b4f65bd77f0af0a001d440f795",
       "history_digest_md5": "a146e194dd763a8a20f9a0cf9e0e13c6",
       "event_count": 0,
       "event_stream_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
@@ -28,9 +28,9 @@
       }
     },
     "ssp245": {
-      "state_digest_md5": "324549424f2b910a82242f2eefad3d37",
+      "state_digest_md5": "869ccbd2e9b99f21ee2df4fcad45163f",
       "fiscal_digest_md5": "58bd2636ea88f814328ecb24aad8a75a",
-      "existing_assets_digest_md5": "1192d016fb8b5418217fc684e3d8763d",
+      "existing_assets_digest_md5": "18db39b4f65bd77f0af0a001d440f795",
       "history_digest_md5": "396dca6c4b261128e6784a4798b9ffd1",
       "event_count": 1506,
       "event_stream_sha256": "c3472a7254110b124eabdde2a9e232acdc240ecd0ef8c766564282e1cf9a850f",
@@ -41,9 +41,9 @@
       }
     },
     "ssp370": {
-      "state_digest_md5": "22224f7300154dbef6c7200ada0a19a6",
+      "state_digest_md5": "5ff3e857604abf35acec487bd2bf2d56",
       "fiscal_digest_md5": "58bd2636ea88f814328ecb24aad8a75a",
-      "existing_assets_digest_md5": "1192d016fb8b5418217fc684e3d8763d",
+      "existing_assets_digest_md5": "18db39b4f65bd77f0af0a001d440f795",
       "history_digest_md5": "328a04bd457b468a897d0eb386e7bbbd",
       "event_count": 1530,
       "event_stream_sha256": "7e06cf0fa7f21b76a2f3869b7b851ef89bddd55e580426002e7d2ad72d8a9f6c",

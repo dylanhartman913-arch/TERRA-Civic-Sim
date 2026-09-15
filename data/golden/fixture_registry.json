@@ -72,7 +72,7 @@
       "amendment_number": 2,
       "amends": "golden_g",
       "amendment_date": "2026-07-03",
-      "amendment_reason": "Engine v3.1: autonomous PRB coal surface decline (-2.0%/yr compound, geoid 56005) + reclamation obligation tracking (cohort log \u2192 active_reclamation_acres \u2192 reclamation_jobs_direct). state_digest stable. fiscal_digest and existing_assets_digest reflect annual production volume erosion."
+      "amendment_reason": "Engine v3.1: autonomous PRB coal surface decline (-2.0%/yr compound, geoid 56005) + reclamation obligation tracking (cohort log → active_reclamation_acres → reclamation_jobs_direct). state_digest stable. fiscal_digest and existing_assets_digest reflect annual production volume erosion."
     },
     {
       "fixture_id": "golden_j",
@@ -103,7 +103,7 @@
       "amends": "golden_j",
       "amendment_date": "2026-07-05",
       "amendment_reason": "Engine v4.2: population advanced per-year in county_ees (working_age_population field added). IndicatorSnapshot gains population+working_age_population fields, changing history_digest_md5 from b314878564e4118e7a60d6fc04d6a03d to 7b05722c9b11c2b405faf953c729977d. Campbell sfpc more negative (declining pop / same recapture); Laramie pop grows strongly from data-center + SMR ops migration. Also fixed: countPlayerOpsJobs now reads magnitude when capacity_mw is null, so migration was silently zero before this amendment. EES, labor_utilization, payback_year unchanged.",
-      "description": "Golden J\u2019 \u2014 60-year projection from Golden B 2028 end-state with v4.2 dynamic population denominators",
+      "description": "Golden J’ — 60-year projection from Golden B 2028 end-state with v4.2 dynamic population denominators",
       "created": "2026-07-05",
       "history_digest_md5": "7b05722c9b11c2b405faf953c729977d",
       "history_n_years": 63,
@@ -118,7 +118,7 @@
       "location": "terra-app/tests/parity/fixtures/golden_k.json",
       "superseded_by": null,
       "status": "active",
-      "description": "Golden K \u2014 anchor lifecycle (F1 Session). Retire WE Soda trona anchor (Sweetwater, 722 emp) in 2030; retire Black Thunder coal anchor (Campbell, 808 emp) in 2028; queue solar_utility on mine site; place SMR on Sweetwater in 2035. Tests anchor retirement \u2192 site spawn \u2192 succession discount chain. Employment-sized workforce pools (not MW-based).",
+      "description": "Golden K — anchor lifecycle (F1 Session). Retire WE Soda trona anchor (Sweetwater, 722 emp) in 2030; retire Black Thunder coal anchor (Campbell, 808 emp) in 2028; queue solar_utility on mine site; place SMR on Sweetwater in 2035. Tests anchor retirement → site spawn → succession discount chain. Employment-sized workforce pools (not MW-based).",
       "created": "2026-07-12",
       "state_digest_md5": "457b215ab9efb0891fe4376984249ba0",
       "fiscal_digest_md5": "469ae713294c18fc2fe06797e6cabbed",
@@ -129,7 +129,7 @@
         2026,
         2040
       ],
-      "note": "New fixture \u2014 no amendment consumed. Four-contract parity confirmed (Python \u2194 TS, 12 tests)."
+      "note": "New fixture — no amendment consumed. Four-contract parity confirmed (Python ↔ TS, 12 tests)."
     },
     {
       "fixture_id": "golden_m",
@@ -137,24 +137,24 @@
       "location": "terra-app/tests/parity/fixtures/golden_m.json",
       "superseded_by": null,
       "status": "active",
-      "description": "Golden M \u2014 C4-ii resilience fork. One heat-resilience action, seed 42, years 2026-2030; lens enters only through sampled events and existing-handler consequences.",
+      "description": "Golden M — C4-ii resilience fork. One heat-resilience action, seed 42, years 2026-2030; lens enters only through sampled events and existing-handler consequences.",
       "created": "2026-07-16",
       "historical": {
-        "state_digest_md5": "f3f925f347f67e966a5f5aa981da5550",
+        "state_digest_md5": "ab75f525e863e9df60fc2656ddb64142",
         "fiscal_digest_md5": "58bd2636ea88f814328ecb24aad8a75a",
         "existing_assets_digest_md5": "1192d016fb8b5418217fc684e3d8763d",
         "history_digest_md5": "a146e194dd763a8a20f9a0cf9e0e13c6",
         "event_count": 0
       },
       "ssp245": {
-        "state_digest_md5": "324549424f2b910a82242f2eefad3d37",
+        "state_digest_md5": "869ccbd2e9b99f21ee2df4fcad45163f",
         "fiscal_digest_md5": "58bd2636ea88f814328ecb24aad8a75a",
         "existing_assets_digest_md5": "1192d016fb8b5418217fc684e3d8763d",
         "history_digest_md5": "396dca6c4b261128e6784a4798b9ffd1",
         "event_count": 1506
       },
       "ssp370": {
-        "state_digest_md5": "22224f7300154dbef6c7200ada0a19a6",
+        "state_digest_md5": "5ff3e857604abf35acec487bd2bf2d56",
         "fiscal_digest_md5": "58bd2636ea88f814328ecb24aad8a75a",
         "existing_assets_digest_md5": "1192d016fb8b5418217fc684e3d8763d",
         "history_digest_md5": "328a04bd457b468a897d0eb386e7bbbd",
@@ -168,7 +168,7 @@
       "location": "terra-app/tests/parity/fixtures/golden_n.json",
       "superseded_by": null,
       "status": "active",
-      "description": "Golden N \u2014 Fremont and Converse county-ag arcs: invasive treatment decay/maintenance, irrigation efficiency, solar valuation swap, wind shared acres, and two-year D1 drought under historical and SSP3-7.0.",
+      "description": "Golden N — Fremont and Converse county-ag arcs: invasive treatment decay/maintenance, irrigation efficiency, solar valuation swap, wind shared acres, and two-year D1 drought under historical and SSP3-7.0.",
       "created": "2026-07-19",
       "historical_ag_digest_md5": "a61e8b16b4cea0e3ae743f9ccd7a26d0",
       "ssp370_ag_digest_md5": "ea66457fa0fc4c5f2364b0995d797b0d",
@@ -179,8 +179,8 @@
       "golden": "H",
       "file": "golden_h.json",
       "description": "Lincoln County Kemmerer boomtown 2026-2034",
-      "state_digest_md5_a": "7e31dc3fb03d70bb9ed8bc4f206882fe",
-      "state_digest_md5_b": "58493d9c4ab9b7776f69948c28f996bb"
+      "state_digest_md5_a": "c75f500dbe3ac75d3ba6fd954a7deaf4",
+      "state_digest_md5_b": "a636b60e0ba97be8ad72f5729f0ba80a"
     }
   ]
 }

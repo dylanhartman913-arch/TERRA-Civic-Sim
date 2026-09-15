@@ -179,3 +179,30 @@ which is unrelated and was not touched).
 
 Updated `src/terra_engine.py:2292` and `scripts/check_generators.py:58` to
 reference the new filename.
+
+---
+
+## 2026-09-15 — F14: county_cards flagship capacity regression from nb14 re-run
+
+**Finding:** S7a re-ran `notebooks/14_county_foundation.ipynb`, which regenerated
+`data/processed/mw_county_cards.json` from its hardcoded `FLAGSHIP_ASSETS` list
+(Cell 4f). That list was never patched as part of F1/W7-0, so the regeneration
+silently reverted three capacity corrections: Dave Johnston (816.7→762),
+Meta AI (152→100), Jade/Crusoe (1800→200). S7b's Python→TS sync then propagated
+the regression into the TS data file.
+
+**Decision:** Patch the output file via `scripts/patch_county_cards_f14.py` (same
+approach as S6's `patch_anchor_facilities.py`). The notebook source is NOT patched
+in this commit — that is deferred to a future nb14 maintenance pass. The output
+file patch is the immediate fix; the notebook is the root cause and should be
+addressed before the next nb14 re-run.
+
+**Defect class:** F1 (capacity mismatch vs authoritative mw_anchor_facilities.geojson).
+The authoritative source for flagship capacities is `mw_anchor_facilities.geojson`,
+which has the correct values (816.7, 152, 1800). Both `mw_county_cards.json` and
+`terra-app/src/data/county_cards.json` now agree with the authoritative source.
+
+**Sync pattern risk:** The S7b "copy Python shared fields into TS" sync assumed
+Python is always authoritative. When the Python source itself contains a regression,
+the sync propagates it. S11's dual-path identity check should verify flagship
+capacities against `mw_anchor_facilities.geojson` directly.

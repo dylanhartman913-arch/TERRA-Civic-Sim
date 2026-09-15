@@ -619,3 +619,102 @@ and all years. No structural change in trajectory shape or relative ordering.
 - `scripts/regenerate_all_goldens.py` — new utility for batch fixture regeneration
 
 **F2 (downstream half) closed. S7b complete.**
+
+---
+
+## S7b-addendum — F14: county_cards flagship capacity regression
+
+**Finding (F14):** `mw_county_cards.json` flagship capacity values for three
+facilities were regressed by S7a's nb14 re-run. nb14's hardcoded `FLAGSHIP_ASSETS`
+list (Cell 4f) was never updated as part of F1/W7-0, so regenerating the output
+file from source overwrote the W7-0 corrections. S7b's blind Python→TS sync
+then propagated the regressed values into `terra-app/src/data/county_cards.json`.
+
+Same defect class as F1 (capacity mismatch vs authoritative
+`mw_anchor_facilities.geojson`), but in a file the original audit never checked.
+
+### Regressed values (all restored to W7-0 authoritative values)
+
+| Facility | geoid | nb14 (wrong) | Authoritative | Basis |
+|---|---|---|---|---|
+| Dave Johnston Power Plant | 56009 | 762 | 816.7 | nameplate |
+| Meta AI Data Center (Cheyenne) | 56021 | 100 | 152 | load |
+| Jade/Crusoe Campus Phase 1 | 56021 | 200 | 1800 | load |
+
+Additionally, `capacity_basis` and `capacity_vintage` provenance fields were
+restored on all five W7-0-corrected flagship records (the above three plus
+Kemmerer Unit 1 and Jim Bridger, whose capacity values were not affected).
+
+### Root cause chain
+
+1. **W7-0** corrected flagship capacities in the output file `mw_county_cards.json`
+   but did not patch the notebook source (`notebooks/14_county_foundation.ipynb`,
+   Cell 4f `FLAGSHIP_ASSETS`).
+2. **S7a** re-ran nb14 to rebuild the EES baseline, which regenerated
+   `mw_county_cards.json` from the stale hardcoded list, overwriting W7-0.
+3. **S7b** blindly synced Python→TS shared fields, copying the regressed values.
+
+### Digest impact
+
+Capacity values feed into `seedAssetRegistry` → `asset_registry` → `bus_state`
+→ digests. The Meta AI change (100→152) also flips `fiscal_action_id` from
+`data_center_hyperscale` to `data_center_campus_phase` (threshold: capacity ≥ 150).
+
+| Fixture | Digest | Before (F14) | After (F14) | Changed? |
+|---|---|---|---|---|
+| Golden E | existing_assets | `7c685b36...` | `fa8cc0fc...` | yes |
+| Golden F | before ea | `7c685b36...` | `fa8cc0fc...` | yes |
+| Golden F | after ea | `9f43f103...` | `dcb906d1...` | yes |
+| Golden G/G′ | state (2027/2031/2045) | see fixture | see fixture | yes |
+| Golden G/G′ | ea (2027/2031/2045) | see fixture | see fixture | yes |
+| Golden H | state (A/B) | see fixture | see fixture | yes |
+| Golden H | ea (A/B) | `8607ae20...` | `c9ea2461...` | yes |
+| Golden I | state/ea (2031/2041) | see fixture | see fixture | yes |
+| Golden K | ea (2040) | `0fa86f2f...` | `e99daf93...` | yes |
+| Golden L | ssp370 state/probes | see fixture | see fixture | yes (TS≠Python) |
+| Golden M | state (all lenses) | see fixture | see fixture | yes |
+| Golden N | state (4 of 6 scenarios) | see fixture | see fixture | yes |
+| All | fiscal_digest | — | — | **unchanged** |
+| Golden J/J′ | history_digest | — | — | unchanged |
+
+**Golden L ssp370 cross-runtime divergence:** The capacity fix (especially
+Jade/Crusoe 200→1800) introduced a new TS≠Python divergence in the ssp370
+state_digest. Historical lens still matches. The fixture uses TS-computed
+values since the TS test suite is the consumer. This is the same class of
+divergence as Golden D's fiscal_digest (documented in S7b).
+
+**Golden D fiscal_digest:** Restored to TS-engine value `225c5bdddb9e0e59...`
+(Python regenerator had overwritten it with Python value `cbc0734bc40b1fcc...`).
+The cross-runtime divergence is pre-existing and unrelated to F14.
+
+### Preventive note for W7-2 S11 (dual-path identity check)
+
+S7b's sync pattern — copy Python shared fields to TS without verifying which
+side is authoritative — is exactly the mechanism that reintroduced this F1-class
+bug. A sync step that assumes "Python is always authoritative" can propagate
+notebook-sourced regressions silently. S11's dual-path identity check should
+verify that `mw_anchor_facilities.geojson` (the source of truth for capacities)
+agrees with both `mw_county_cards.json` and `terra-app/src/data/county_cards.json`.
+
+**Root cause not fully closed:** nb14's hardcoded `FLAGSHIP_ASSETS` list still
+has the stale values (762, 100, 200). The output file is patched, but the next
+nb14 re-run will regress again unless the notebook source is also updated.
+
+### Test results
+
+- **Python:** 226 passed, 0 failed (1 pre-existing excluded: `test_county_card_capacity_provenance.py`)
+- **TS parity:** 351 passed, 0 failed
+
+### Files touched
+
+- `data/processed/mw_county_cards.json` — flagship capacity + provenance restoration
+- `terra-app/src/data/county_cards.json` — re-synced from fixed Python source
+- `terra-app/tests/parity/fixtures/golden_{d..n,g_prime,j_prime,k,ranch_country_2040}.json` — regenerated
+- `terra-app/tests/parity/c0-gate-verify.test.ts` — FROZEN digest values updated
+- `terra-app/tests/parity/retirement.test.ts` — existing_assets_digest updated
+- `tests/test_terra_engine_v3.py` — existing_assets_digest updated
+- `data/golden/fixture_registry.json` — golden_m state digests updated
+- `scripts/patch_county_cards_f14.py` — new patch script (auditable)
+- `scripts/sync_county_cards_to_ts.py` — new sync utility
+
+**F14 closed.**

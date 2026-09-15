@@ -235,7 +235,7 @@ class TestExistingAssetsDigest:
     def test_digest_unchanged_no_retirements(self):
         state = load_state()
         digest = te.existing_assets_digest(state)
-        assert digest["md5"] == "7c685b368081bb00bdce51bb68a47d9b"
+        assert digest["md5"] == "fa8cc0fc1163b026affb8972ecb4b804"
 
 
 class TestAnchorCommodityField:

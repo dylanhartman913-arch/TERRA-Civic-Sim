@@ -51,9 +51,9 @@
           }
         ],
         "digests": {
-          "state_digest_md5": "efd161e4e6370b4c2ba3a1700c10e6c1",
+          "state_digest_md5": "7295d69e8644e40625abf9349048be07",
           "fiscal_digest_md5": "4fb3eb1b84612723780439595c157537",
-          "existing_assets_digest_md5": "8607ae203ce391d2c44cc653d3cdfb30",
+          "existing_assets_digest_md5": "c9ea2461d82943f1760c603c07b61acf",
           "history_digest_md5": "3a13b788cda969b27959eb3789e7e200",
           "ag_digest_md5": "60294b3decb6c62540516085b9cfdcad"
         }
@@ -107,9 +107,9 @@
           }
         ],
         "digests": {
-          "state_digest_md5": "3b26055abef9352a406b2292d359ca75",
+          "state_digest_md5": "627015cfa13bf7c345d7bdf551da03e1",
           "fiscal_digest_md5": "4fb3eb1b84612723780439595c157537",
-          "existing_assets_digest_md5": "8607ae203ce391d2c44cc653d3cdfb30",
+          "existing_assets_digest_md5": "c9ea2461d82943f1760c603c07b61acf",
           "history_digest_md5": "cff166615cf860496e9644e816a11349",
           "ag_digest_md5": "b81cef0912a17e4af5fa445b4be494ab"
         }
@@ -132,7 +132,7 @@
         "digests": {
           "state_digest_md5": "9e1452e9eebe88f24d1d009168cd4dfc",
           "fiscal_digest_md5": "af67c87f142045222bcaf324cdc9a947",
-          "existing_assets_digest_md5": "7c685b368081bb00bdce51bb68a47d9b",
+          "existing_assets_digest_md5": "fa8cc0fc1163b026affb8972ecb4b804",
           "history_digest_md5": "d751713988987e9331980363e24189ce",
           "ag_digest_md5": "8f5ae69e00d8094b6ec860484a01aaf7"
         }
@@ -220,7 +220,7 @@
         "digests": {
           "state_digest_md5": "30258c3f449eea9c7ad9e53b5310b88d",
           "fiscal_digest_md5": "e9478d4e071c79ad991012052d3b53b2",
-          "existing_assets_digest_md5": "7c685b368081bb00bdce51bb68a47d9b",
+          "existing_assets_digest_md5": "fa8cc0fc1163b026affb8972ecb4b804",
           "history_digest_md5": "d751713988987e9331980363e24189ce",
           "ag_digest_md5": "8a85a3fe55f11fea6a81ea5ff77faf4f"
         }
@@ -238,7 +238,7 @@
         "digests": {
           "state_digest_md5": "746a7fa484c8e0d813577bc438753c69",
           "fiscal_digest_md5": "d47d1bfcc7d9fcc221ea190ded3d8239",
-          "existing_assets_digest_md5": "7c685b368081bb00bdce51bb68a47d9b",
+          "existing_assets_digest_md5": "fa8cc0fc1163b026affb8972ecb4b804",
           "history_digest_md5": "d751713988987e9331980363e24189ce",
           "ag_digest_md5": "08c85b5a3a9dd435b4867e53fc81d94e"
         }
@@ -272,9 +272,9 @@
           }
         ],
         "digests": {
-          "state_digest_md5": "4e6454b3539ae7001cfb1a7f97733b5d",
+          "state_digest_md5": "1b2edbfd6cb6c722867f7dae7224dee8",
           "fiscal_digest_md5": "4b55b15a08079110290331854e19a6b2",
-          "existing_assets_digest_md5": "6f5ab02bb4a9af1d7f6104ac57a46a85",
+          "existing_assets_digest_md5": "c831aba8f93618aa7f7c48985ac20071",
           "history_digest_md5": "19534f3c6e87454a912065fd015a5ade",
           "ag_digest_md5": "a61e8b16b4cea0e3ae743f9ccd7a26d0"
         }
@@ -330,9 +330,9 @@
           }
         ],
         "digests": {
-          "state_digest_md5": "efd161e4e6370b4c2ba3a1700c10e6c1",
+          "state_digest_md5": "7295d69e8644e40625abf9349048be07",
           "fiscal_digest_md5": "4fb3eb1b84612723780439595c157537",
-          "existing_assets_digest_md5": "8607ae203ce391d2c44cc653d3cdfb30",
+          "existing_assets_digest_md5": "c9ea2461d82943f1760c603c07b61acf",
           "history_digest_md5": "3a13b788cda969b27959eb3789e7e200",
           "ag_digest_md5": "60294b3decb6c62540516085b9cfdcad"
         }
@@ -386,9 +386,9 @@
           }
         ],
         "digests": {
-          "state_digest_md5": "3b26055abef9352a406b2292d359ca75",
+          "state_digest_md5": "627015cfa13bf7c345d7bdf551da03e1",
           "fiscal_digest_md5": "4fb3eb1b84612723780439595c157537",
-          "existing_assets_digest_md5": "8607ae203ce391d2c44cc653d3cdfb30",
+          "existing_assets_digest_md5": "c9ea2461d82943f1760c603c07b61acf",
           "history_digest_md5": "cff166615cf860496e9644e816a11349",
           "ag_digest_md5": "b81cef0912a17e4af5fa445b4be494ab"
         }
@@ -411,7 +411,7 @@
         "digests": {
           "state_digest_md5": "9e1452e9eebe88f24d1d009168cd4dfc",
           "fiscal_digest_md5": "af67c87f142045222bcaf324cdc9a947",
-          "existing_assets_digest_md5": "7c685b368081bb00bdce51bb68a47d9b",
+          "existing_assets_digest_md5": "fa8cc0fc1163b026affb8972ecb4b804",
           "history_digest_md5": "d751713988987e9331980363e24189ce",
           "ag_digest_md5": "8f5ae69e00d8094b6ec860484a01aaf7"
         }
@@ -499,7 +499,7 @@
         "digests": {
           "state_digest_md5": "30258c3f449eea9c7ad9e53b5310b88d",
           "fiscal_digest_md5": "e9478d4e071c79ad991012052d3b53b2",
-          "existing_assets_digest_md5": "7c685b368081bb00bdce51bb68a47d9b",
+          "existing_assets_digest_md5": "fa8cc0fc1163b026affb8972ecb4b804",
           "history_digest_md5": "d751713988987e9331980363e24189ce",
           "ag_digest_md5": "8a85a3fe55f11fea6a81ea5ff77faf4f"
         }
@@ -517,7 +517,7 @@
         "digests": {
           "state_digest_md5": "746a7fa484c8e0d813577bc438753c69",
           "fiscal_digest_md5": "d47d1bfcc7d9fcc221ea190ded3d8239",
-          "existing_assets_digest_md5": "7c685b368081bb00bdce51bb68a47d9b",
+          "existing_assets_digest_md5": "fa8cc0fc1163b026affb8972ecb4b804",
           "history_digest_md5": "d751713988987e9331980363e24189ce",
           "ag_digest_md5": "08c85b5a3a9dd435b4867e53fc81d94e"
         }
@@ -551,9 +551,9 @@
           }
         ],
         "digests": {
-          "state_digest_md5": "4e6454b3539ae7001cfb1a7f97733b5d",
+          "state_digest_md5": "1b2edbfd6cb6c722867f7dae7224dee8",
           "fiscal_digest_md5": "4b55b15a08079110290331854e19a6b2",
-          "existing_assets_digest_md5": "6f5ab02bb4a9af1d7f6104ac57a46a85",
+          "existing_assets_digest_md5": "c831aba8f93618aa7f7c48985ac20071",
           "history_digest_md5": "19534f3c6e87454a912065fd015a5ade",
           "ag_digest_md5": "ea66457fa0fc4c5f2364b0995d797b0d"
         }
