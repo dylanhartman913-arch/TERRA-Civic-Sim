@@ -298,3 +298,55 @@ wrong one. This is behavioral failure, not infrastructure failure.
 **Why not a data file:** Corrupting a data file would cascade unpredictably across
 multiple fixtures, making the failure log noisier. A single fixture digest change
 produces a single targeted assertion failure with a clear message.
+
+---
+
+## 2026-09-16 — S11: Step 0 resolution — test_county_card_capacity_provenance.py
+
+**Finding:** Test bug, not a data defect. The county_cards data files were stale
+relative to the `county_card_capacity_audit.csv`:
+
+1. **Missing schema fields:** 3 null-capacity flagships (BWXT, PRB Coal Mines,
+   Naughton) lacked `capacity_basis` and `capacity_vintage` keys entirely —
+   validator requires them to exist even as null.
+2. **Stale source URLs:** 5 records had `needs_citation` placeholders; the audit
+   CSV had been updated with real evidence-bearing URLs.
+3. **Jim Bridger notes:** stripped of "2,326 MW" reconciliation text during nb14
+   re-run; audit CSV has the full reconciliation.
+
+No F1/F2-class defect — no capacity or provenance value diverges between paths
+or from the pinned inventory.
+
+**Fix:** `scripts/patch_county_cards_provenance.py` patches both county_cards
+files to match the audit CSV. `pytest.ini` exclusion removed. 230 Python tests
++ 351 TS parity tests pass.
+
+---
+
+## 2026-09-16 — S11: Dual-path transform pairs (not byte-identical by design)
+
+**Decision:** 5 dual-path file pairs are structural transforms, not byte-identical
+promotions. The dual-path identity check enforces byte identity only on the 8
+"promotion" pairs. The 5 transform pairs are:
+
+| Python path | TS path | Why different |
+|---|---|---|
+| `wy_county_fiscal_baseline.json` | `fiscal_baseline.json` | TS is `py["counties"]` flattened; Python has `state_class_shares` and `state_severance_by_mineral` |
+| `wy_fiscal_coefficients.json` | `fiscal_coefficients.json` | TS drops `_ag_fiscal_coefficients` internal key |
+| `wy_county_ag_baseline.json` | `county_ag_baseline.json` | Python has raw + provenance (`consumers`, `fetch_notes`, etc.); TS has transformed subset |
+| `mw_county_cards.json` | `county_cards.json` | TS adds `anchor_facilities`, `economic_drivers`; different key set by design |
+| `county_crosswalk.parquet` | `county_crosswalk.json` | Different format (parquet vs JSON) |
+
+These are intentional schema transformations — the TS app consumes a simplified
+or restructured version of the Python data. Byte identity is not meaningful for
+these pairs.
+
+---
+
+## 2026-09-16 — S11: provenance_diff.py renamed to generator_capacity_comparison.py
+
+**Decision:** Renamed rather than deleted because `build_generator_attribution.py`
+imports `county_generator_term` and `study_tracts` from it. The old name
+("provenance_diff") implied it was a correctness/drift gate; it is actually a
+one-time analysis script comparing existing vs staged generator capacity data.
+The new name describes what the script does, not what it is not.

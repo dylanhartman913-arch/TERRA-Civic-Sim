@@ -9,7 +9,7 @@ import geopandas as gpd
 import numpy as np
 import pandas as pd
 
-from provenance_diff import county_generator_term, study_tracts
+from generator_capacity_comparison import county_generator_term, study_tracts
 
 
 ROOT = Path(__file__).resolve().parents[1]

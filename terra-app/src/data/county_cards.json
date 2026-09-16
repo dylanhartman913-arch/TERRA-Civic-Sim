@@ -11699,8 +11699,10 @@
         "status": "operating",
         "capacity_or_load_mw": null,
         "operational_year": null,
-        "source_url": "needs_citation",
-        "notes": "BWXT produces TRISO fuel pellets; Gillette WY facility. Cite BWXT press release or DOE HALEU announcement for source_url."
+        "source_url": "https://oilcity.news/community/energy-community/2025/09/25/bwxt-to-court-gillette-for-500m-nuclear-fuel-manufacturing-plant/",
+        "notes": "BWXT produces TRISO fuel pellets; Gillette WY facility announced September 2025. An electrical MW value is not applicable to a fuel manufacturing plant.",
+        "capacity_basis": null,
+        "capacity_vintage": null
       },
       {
         "name": "Powder River Basin Coal Mines",
@@ -11712,7 +11714,9 @@
         "capacity_or_load_mw": null,
         "operational_year": null,
         "source_url": "https://www.eia.gov/coal/data.php",
-        "notes": "Powder River Basin (PRB) is the largest US coal-producing region; Campbell County anchors production. See EIA coal production data for annual output."
+        "notes": "Powder River Basin (PRB) is the largest US coal-producing region; Campbell County anchors production. See EIA coal production data for annual output.",
+        "capacity_basis": null,
+        "capacity_vintage": null
       }
     ],
     "fuel_mix": {
@@ -12464,8 +12468,8 @@
         "status": "under_construction",
         "capacity_or_load_mw": 152,
         "operational_year": null,
-        "source_url": "needs_citation",
-        "notes": "Meta hyperscale campus in Cheyenne WY. Cite Meta Infrastructure announcements for source_url.",
+        "source_url": "https://epoch.ai/data/ai-data-centers/directory/meta-cheyenne",
+        "notes": "Meta hyperscale campus in Cheyenne WY. 152 MW is a dated modeled IT-load estimate (Epoch AI directory, 2026-07-27) rather than an owner-disclosed load; the former 100 figure was its announced permanent-job count, not a MW value.",
         "capacity_basis": "load",
         "capacity_vintage": "2026-07"
       },
@@ -12478,8 +12482,8 @@
         "status": "approved_2026",
         "capacity_or_load_mw": 1800,
         "operational_year": 2026,
-        "source_url": "needs_citation",
-        "notes": "Jade/Crusoe AI computing campus; Laramie County approval 2026. Cite Crusoe Energy / Jade Data Centers press release.",
+        "source_url": "https://tallgrass.com/newsroom/press-releases/Crusoe",
+        "notes": "Jade/Crusoe AI computing campus; Laramie County approval 2026. The developer announcement (Tallgrass, 2025-07-24) describes a 1.8 GW initial campus scalable to 10 GW.",
         "capacity_basis": "load",
         "capacity_vintage": "2025-07"
       }
@@ -12592,8 +12596,8 @@
         "status": "under_construction",
         "capacity_or_load_mw": 345,
         "operational_year": 2031,
-        "source_url": "https://www.terrapower.com/natrium/",
-        "notes": "TerraPower/GE-Hitachi Natrium sodium-cooled fast reactor; DOE Milestone-Based Demonstration Program. Source URL is TerraPower press page; see also DOE Office of Nuclear Energy announcements.",
+        "source_url": "https://www.terrapower.com/terrapower-awarded-pivotal-state-permit-for-natrium-plant",
+        "notes": "TerraPower/GE-Hitachi Natrium sodium-cooled fast reactor; 345 MWe planned reactor output. State permit awarded January 2025.",
         "capacity_basis": "planning",
         "capacity_vintage": "2025-01"
       },
@@ -12606,8 +12610,10 @@
         "status": "planned",
         "capacity_or_load_mw": null,
         "operational_year": 2026,
-        "source_url": "needs_citation",
-        "notes": "PacifiCorp conversion of Naughton coal units to gas; verify exact capacity and schedule in PacifiCorp IRP."
+        "source_url": "https://wyofile.com/kemmerer-power-plants-coal-to-natural-gas-conversion-highlights-uncertainty-for-wyoming-communities/",
+        "notes": "PacifiCorp proposed conversion of Naughton coal units to natural gas (WyoFile, 2020-09-02). An electrical MW value is not asserted for the conversion.",
+        "capacity_basis": null,
+        "capacity_vintage": null
       }
     ],
     "fuel_mix": {
@@ -13260,7 +13266,7 @@
         "capacity_or_load_mw": 2120,
         "operational_year": 1974,
         "source_url": "https://www.eia.gov/electricity/data/eia860/",
-        "notes": "PacifiCorp / Pacific Power. Units 3-4 targeted for early retirement under PacifiCorp IRP; verify current status.",
+        "notes": "PacifiCorp / Pacific Power. Units 3-4 targeted for early retirement under PacifiCorp IRP; verify current status. The county-card value (2,120 MW) is the rounded net-capability/planning representation: EIA reports 2,119 MW net summer and net winter; the distinct four-unit nameplate total is 2,326 MW.",
         "capacity_basis": "planning",
         "capacity_vintage": "2024"
       }

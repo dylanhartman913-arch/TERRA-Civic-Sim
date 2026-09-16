@@ -1056,3 +1056,40 @@ d43c21e  fix(S10): add pyarrow to requirements.txt
 **S10 complete.**
 
 ---
+
+## S10 addendum — Before/after hashes for newly tracked files (backfill by S11)
+
+S10 newly tracked or edited three data files without recording hashes.
+Backfilled here per S11 Step 0.5.
+
+### `data/processed/network_metadata.json` (edited in S10)
+
+Already tracked since S5 (commit 817e1c0). S10 edited it to add the
+`_provenance.magnitude_sweep` entry (commit 1b7657e).
+
+- **Hash-before** (at S8 commit cc92deb): `e02009c8b0cf5f68dd28abbb62e3037c797cde6a7fdaa3f0eb52e8b6d14c9290`
+- **Hash-after** (at S10 commit 1b7657e): `bce2564d2c5795a60190d7531804dd8a967c8129ef06aba92f60d9815a876f56`
+- **Reason:** Added `_provenance.magnitude_sweep` entry that S8 omitted.
+
+### `data/processed/synthetic_plant_assignments.parquet` (newly tracked in S10)
+
+Never tracked before S10. Existed locally but was blocked by the global
+`*.parquet` gitignore rule. S10 added a `.gitignore` exception and committed
+the file (commit 9794542).
+
+- **Hash-before:** N/A — file was never in git prior to S10.
+- **Hash-after** (at S10 commit 9794542): `b92be9b71d6c1f3c2b2dd1a22c4e585b21386782ecf0ae97fe91ae10e0c990b2`
+- **Reason:** `_build_fuel_mix_map()` (`terra_engine.py:602`) requires it; CI pytest fails without it.
+
+### `data/processed/mw_ecoregions.geojson` (re-tracked in S10)
+
+Originally tracked at commit 626ed95, then un-tracked at commit d5ea940
+(OneDrive sync conflict during `git add`). S10 re-tracked it by removing
+the `.gitignore` exclusion comment (commit 1f0a116).
+
+- **Hash-before** (at first-tracked commit 626ed95): `eb8466347d99294aac8855aa19886e652eac2e1e9801705892e15817db2ff438`
+- **Hash-after** (at S10 commit 1f0a116): `eb8466347d99294aac8855aa19886e652eac2e1e9801705892e15817db2ff438`
+- **File unchanged** between tracking events — same SHA-256.
+- **Reason:** `initialize_state():2124` opens it unconditionally; CI pytest fails with FileNotFoundError.
+
+---
