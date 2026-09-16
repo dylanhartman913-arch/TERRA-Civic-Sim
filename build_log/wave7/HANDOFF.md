@@ -865,3 +865,99 @@ carry `baseline_commit: b5fd4fdc6cffaf302df49592114e17e42b0b2990` and
   not baseline-level-driven) ✓
 
 **S8 complete. Do not start S9.**
+
+---
+
+## S9 — 2026-09-15 — docs/PIPELINES.md and data/README.md (F9 docs, F13)
+
+**Objective:** One page that accurately states, for every pipeline in
+this repo, what generates it, whether it's tracked, when it was last
+built, and its current status — grounded in the repo as it actually
+is today (post S1–S8).
+
+**What was done:**
+
+**docs/PIPELINES.md (new):**
+- 9 pipeline rows (A through I) plus TS-only static data, restructured
+  from the original audit's §3 table with every status updated to reflect
+  post-W7 reality.
+- 62 runtime files inventoried across all pipelines. Each row includes:
+  file path, generator, tracked status, last-built date, commit SHA,
+  and SHA-256 hash (first 12 hex chars).
+- Prose notes per pipeline where status needed explaining: Pipeline C's
+  full S7a/S7b/F14 story, Pipeline F's two fork-fix instances, Pipeline I's
+  verification history.
+- Open gaps section documenting all standing backlog items for W7-2/S11.
+
+**scripts/build_pipeline_table.py (new):**
+- Enumerates all 62 runtime-loaded files, finds their generator, reports
+  current SHA-256 hash + last git commit.
+- Supports `--json` flag for machine-readable output.
+- Seed for W7-2/S11 manifest work.
+
+**data/README.md (rewritten):**
+- Converted from a 19-step run-order document to a "what exists and how
+  it was made" reference.
+- Verified all numbers against current data:
+  - 157 counties (verified against `mw_county_cards.json`)
+  - 55 actions, schema 3.3, 22 disturbances (verified against `mw_action_library_v3.json`)
+  - 500 buses, 818 branches (verified against geojson files)
+  - 23 WY fiscal counties (verified against `wy_county_fiscal_baseline.json`)
+  - Anchor SHA `7fd936f7` (verified both copies byte-identical)
+- Removed stale claim that `.gitkeep` is the only committed file in `data/processed/`
+  (many files now tracked via `.gitignore` exceptions).
+- Cross-references `docs/PIPELINES.md` for the full runtime file inventory.
+
+**Acceptance results:**
+- Every runtime-loaded file appears in exactly one row (62 entries, 0 duplicates) ✓
+- Status column reflects current repo state, verified against HANDOFF.md history ✓
+- `python scripts/build_pipeline_table.py` runs cleanly (both markdown and JSON) ✓
+- `data/README.md` contains no stale numbers ✓
+
+**S9 complete. F9 (documentation half) and F13 closed.**
+
+---
+
+## Horizon 1 complete
+
+W7 Horizon 1 (S1–S9) is done. All findings from the September 11 audit have
+been addressed or explicitly documented as standing backlog.
+
+### What still has no generator or is still MISSING
+
+These items constitute the standing backlog for W7-2/S11 (manifest + CI):
+
+1. **`ees_scenario_profiles.json`** — optional load (`terra_engine.py:2292`),
+   no tracked generator. Renamed from `mw_scenario_profiles.json` in S6 but
+   the rename did not create a generator.
+
+2. **`lifecycle_coefficients.json`** — optional load (`terra_engine.py:2417`),
+   no tracked generator.
+
+3. **`synthetic_plant_assignments.parquet`** — required by `_build_fuel_mix_map()`
+   (`terra_engine.py:602`), exists locally but blocked from git by the global
+   `*.parquet` rule. No `.gitignore` exception added.
+
+4. **`spatial_hierarchy_counties.parquet`** and **`spatial_hierarchy_huc8.parquet`**
+   — optional loads (`terra_engine.py:2483–2484`), exist locally but blocked
+   by `*.parquet` rule.
+
+5. **3 critical-read `network_metadata.json` keys** still MISSING (KeyError risk
+   if their Julia/notebook consumers run):
+   - `island_filter_min_nodes` (read by `julia/build_nodal_case.jl:102`)
+   - `validation_deepdive` (read by `julia/build_nodal_case.jl:98`)
+   - `ecoregion_layer` (read by `notebooks/08c_spatial_hierarchy.ipynb`)
+
+6. **15 write-only `network_metadata.json` keys** still MISSING (no downstream
+   consumer reads them directly; will repopulate when notebooks are re-run).
+
+7. **nb14 `FLAGSHIP_ASSETS` hardcoded values** — output files are patched but
+   notebook source (Cell 4f) still carries stale capacities (762/100/200).
+   Next nb14 re-run will regress unless patched.
+
+8. **`test_county_card_capacity_provenance.py`** — pre-existing Python test
+   failure from `mw_county_cards.json` schema divergence after S7a's nb14 re-run.
+   Not in W7-1 scope.
+
+9. **D5 rancher/Extension domain review** for agriculture pipeline — never
+   happened, carried into W7-4.
