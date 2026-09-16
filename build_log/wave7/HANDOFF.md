@@ -1093,3 +1093,143 @@ the `.gitignore` exclusion comment (commit 1f0a116).
 - **Reason:** `initialize_state():2124` opens it unconditionally; CI pytest fails with FileNotFoundError.
 
 ---
+
+## S11 — 2026-09-16 — Provenance Manifest + Dual-Path Identity Check (W7-2a)
+
+**Objective:** Every runtime-loaded file has a manifest entry with generator +
+hash; CI fails if one does not. Closes F6 (retires tautological drift gate),
+targets F1's recurrence class directly.
+
+### Step 0: Resolve excluded test_county_card_capacity_provenance.py
+
+**Finding: Test bug, not a data defect.**
+
+The county_cards data files were stale relative to the audit CSV
+(`county_card_capacity_audit.csv`). Three categories of divergence:
+
+1. **Missing schema fields:** BWXT TRISO, PRB Coal Mines, and Naughton Gas
+   Conversion lacked `capacity_basis` and `capacity_vintage` keys entirely
+   (validator requires them to exist, even as null for null-capacity records).
+
+2. **Stale source URLs:** 5 records had `needs_citation` placeholders or
+   outdated URLs; the audit CSV had real evidence-bearing URLs:
+   - BWXT TRISO: `needs_citation` → oilcity.news announcement
+   - Meta AI: `needs_citation` → epoch.ai directory
+   - Jade/Crusoe: `needs_citation` → tallgrass.com press release
+   - Kemmerer: old natrium page → permit announcement URL
+   - Naughton: `needs_citation` → wyofile.com article
+
+3. **Jim Bridger notes:** stripped of "2,326 MW" nameplate reconciliation text
+   during nb14 re-run; audit CSV has the full reconciliation.
+
+No F1/F2-class defect — no capacity value diverges between paths or from the
+pinned inventory. All flagship capacities match `mw_anchor_facilities.geojson`.
+
+**Fix:** `scripts/patch_county_cards_provenance.py` patches both county_cards
+files. `pytest.ini` exclusion removed. **230 Python tests + 351 TS parity
+tests pass** (was 226+351 with exclusion).
+
+**Before/after hashes (county_cards):**
+- `data/processed/mw_county_cards.json` after: `d73eb4254a9d982df523d9ca1d95ced5d877889a62c5e6a88a9a3706303f9dde`
+- `terra-app/src/data/county_cards.json` after: `eb9397b6dc85c7a44c6a937a7ba5f70dc3ddc3ce265ad100cccde4205a735a2f`
+- (These files are a known transform pair, not byte-identical by design — TS
+  has extra keys `anchor_facilities`, `economic_drivers`.)
+
+### Step 0.5: Backfill S10 file hashes
+
+See "S10 addendum" block above. Three files documented:
+`network_metadata.json` (edited), `synthetic_plant_assignments.parquet`
+(newly tracked), `mw_ecoregions.geojson` (re-tracked).
+
+### Steps 1-2: Manifest schema and seed
+
+**`data/manifest/manifest.json`** — 63 runtime file entries, seeded from S9's
+`build_pipeline_table.py`. Schema per entry:
+
+```
+path, pipeline, generator, generator_commit, sha256, record_count,
+last_built, class (live/frozen/static), tracked, dual_path,
+dual_path_relationship (promotion/transform)
+```
+
+**Manifest hash:** `51d1a4d4cd5af6b06703efce3d2c0745f7e03022ab6394011cf2f488fff24c1d`
+
+File breakdown: 49 live, 10 frozen (golden fixtures), 4 static (TS-only hand-maintained).
+
+### Step 3: Dual-path identity check
+
+**`scripts/check_dual_path.py`** — reads manifest, finds all file pairs where
+`dual_path_relationship == "promotion"`, verifies SHA-256 identity.
+
+**8 promotion pairs (byte-identity enforced):**
+county_ees_baseline.json, mw_anchor_facilities.geojson, asset_exposure_tags.json,
+county_housing_baseline.json, golden_b.json, lifecycle_coefficients.json,
+mw_action_library_v3.json / action_library_v3.json, mw_ecoregions.geojson
+
+**5 transform pairs (reported, not enforced):**
+wy_county_fiscal_baseline / fiscal_baseline, wy_fiscal_coefficients / fiscal_coefficients,
+wy_county_ag_baseline / county_ag_baseline, mw_county_cards / county_cards,
+county_crosswalk.parquet / county_crosswalk.json
+
+See DECISIONS.md "Dual-path transform pairs" entry for why each differs.
+
+### Step 4: Manifest completeness check
+
+**`scripts/check_manifest.py`** — discovers all runtime-loaded files by
+grepping Python (`src/terra_engine.py`) and TS (`terra-app/src/`) import sites.
+Fails if any loaded file has no manifest entry or has a hash mismatch.
+
+2 manifest entries (`spatial_hierarchy_counties.parquet`,
+`spatial_hierarchy_huc8.parquet`) are marked `tracked: false` — they exist
+locally but are blocked by the `*.parquet` gitignore rule. The check skips
+these on CI where they don't exist on disk.
+
+### Step 5: Rename provenance_diff.py
+
+Renamed to `scripts/generator_capacity_comparison.py` (was masquerading as a
+drift gate; is actually a one-time capacity comparison analysis script).
+`build_generator_attribution.py` import updated.
+
+### CI wiring
+
+Added `manifest` job to `.github/workflows/ci.yml`:
+- Runs `check_manifest.py` and `check_dual_path.py` in a single step
+- Both checks run regardless of individual failures; step fails if either fails
+
+### Failure demonstrations
+
+| Branch | Run URL | Failure mode |
+|--------|---------|-------------|
+| `s11-demo-dual-path-break` | [run 35154048570](https://github.com/dylanhartman913-arch/TERRA-Civic-Sim/actions/runs/35154048570) | Perturbed TS county_ees_baseline.json E value by 0.001 → manifest hash mismatch + dual-path identity failure |
+| `s11-demo-unmanifested-file` | [run 35154075314](https://github.com/dylanhartman913-arch/TERRA-Civic-Sim/actions/runs/35154075314) | Added `unmanifested_demo.json` with load reference in terra_engine.py → manifest completeness failure |
+| main | [run 35153928967](https://github.com/dylanhartman913-arch/TERRA-Civic-Sim/actions/runs/35153928967) | All 3 jobs pass (230 pytest, 351 parity, manifest+dual-path green) |
+
+Both demo branches deleted after capturing run URLs.
+
+### Commits (S11)
+
+```
+0e92da8  feat(S11): provenance manifest + dual-path identity check (W7-2a)
+a13f026  fix(S11): skip untracked files in manifest hash check (CI compat)
+ee46a94  fix(S11): run manifest + dual-path checks in single step (both report)
+```
+
+### Files touched
+
+- `data/manifest/manifest.json` — new (63-entry runtime file manifest)
+- `data/processed/mw_county_cards.json` — provenance field patches
+- `terra-app/src/data/county_cards.json` — provenance field patches
+- `.github/workflows/ci.yml` — added manifest job
+- `pytest.ini` — removed test exclusion
+- `scripts/check_dual_path.py` — new
+- `scripts/check_manifest.py` — new
+- `scripts/seed_manifest.py` — new
+- `scripts/patch_county_cards_provenance.py` — new
+- `scripts/provenance_diff.py` → `scripts/generator_capacity_comparison.py` — renamed
+- `scripts/build_generator_attribution.py` — import path updated
+- `build_log/wave7/HANDOFF.md` — S10 hash backfill + this entry
+- `build_log/wave7/DECISIONS.md` — 3 new entries (Step 0, transform pairs, rename)
+
+**S11 complete.**
+
+---
