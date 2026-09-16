@@ -71,12 +71,14 @@ data/processed/figures/14_lmp_map.html
 !data/processed/mc_validation_priority.csv
 !data/processed/sweep_cost_ranking_sourced.csv
 !data/processed/sweep_marginal_returns.csv
-# county_crosswalk and generators_with_costs: deterministic parquet outputs,
-# 12 KB and 245 KB respectively, required by initialize_state() and
-# _build_fuel_mix_map(). Excepted here (after *.parquet rule) so negation wins.
-# Regenerate from nb05 (crosswalk) and nb11 (generators_with_costs) if missing.
+# county_crosswalk, generators_with_costs, synthetic_plant_assignments:
+# required by initialize_state() / _build_fuel_mix_map() (terra_engine.py:602).
+# Excepted here (after *.parquet rule) so negation wins.
+# 119 KB, 12 KB, 245 KB — small enough to track without LFS.
+# Regenerate from nb05 (crosswalk), nb11 (generators_with_costs), nb12 (plant_assignments).
 !data/processed/county_crosswalk.parquet
 !data/processed/generators_with_costs.parquet
+!data/processed/synthetic_plant_assignments.parquet
 
 # ── Notebooks with embedded large outputs ────────────────────────────────────
 notebooks/14_e4st_results.ipynb
