@@ -142,6 +142,10 @@ def main() -> int:
     for entry in manifest["files"]:
         full = ROOT / entry["path"]
         if not full.exists():
+            # Files marked as untracked in the manifest won't exist on CI —
+            # these are known gaps (e.g., gitignored parquet files)
+            if entry.get("tracked") is False:
+                continue
             if entry["class"] != "archived":
                 errors.append(f"MISSING: {entry['path']} is in manifest but does not exist on disk")
             continue
