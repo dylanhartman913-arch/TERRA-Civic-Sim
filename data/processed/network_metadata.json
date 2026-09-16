@@ -93,7 +93,8 @@
     "mc_sensitivity": "recovered: pre-existing key in data/processed/network_metadata.json (2026-07-31 MC run)",
     "county_pivot": "repo_artifact: 14_county_foundation.ipynb cell 8 pivot table summary",
     "ees_baseline": "repo_artifact: 16_engine_v2_golden.ipynb golden fixture generation",
-    "engine_v2": "repo_artifact: 16_engine_v2_golden.ipynb golden fixture generation"
+    "engine_v2": "repo_artifact: 16_engine_v2_golden.ipynb golden fixture generation",
+    "magnitude_sweep": "18_magnitude_sweep.ipynb: written by S8 deep-merge (2026-09-15), run on S7a/S7b/F14-corrected EES baseline (commit b5fd4fdc)"
   },
   "_reconstruction_meta": {
     "reconstructed_by": "S5 / W7 roadmap",

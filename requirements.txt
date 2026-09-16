@@ -1,0 +1,14 @@
+# Python dependencies for TERRA engine tests.
+# Pinned to versions running locally (Python 3.13.12, 2026-09-16).
+# Generated for S10 CI setup.
+
+pytest==9.1.1
+geopandas==1.1.4
+pandas==3.0.2
+numpy==2.4.4
+scipy==1.18.0
+shapely==2.1.2
+python-dotenv==1.2.1
+pyogrio==0.13.0
+pyproj==3.7.2
+fiona==1.10.1

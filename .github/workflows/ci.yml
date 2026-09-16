@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  pytest:
+    name: Python tests (pytest)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true   # county_climate_baseline.json is Git LFS; test_county_climate_baseline.py requires it
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"  # matches local: Python 3.13.12
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run pytest
+        run: pytest tests/
+
+  parity:
+    name: TS parity (npm run parity)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: terra-app
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"  # matches local: v24.14.1
+          cache: npm
+          cache-dependency-path: terra-app/package-lock.json
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Run parity suite
+        run: npm run parity
