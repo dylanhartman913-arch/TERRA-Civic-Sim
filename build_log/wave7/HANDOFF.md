@@ -1453,3 +1453,168 @@ refresh that changes the generator inventory or EES normalization will now
 fail at least one of these checks before reaching main.
 
 ---
+
+## S13 — 2026-09-16 — Documentation Consolidation (F12)
+
+**Objective:** Consolidate all project documentation into a single canonical
+`docs/` tree. Close F12 (docs scattered in four+ locations).
+
+**Blocked-by check:** S2 (tree hygiene) confirmed complete. All stray root
+files from F12 (package-lock.json, run_cells.py, build_nb16.py,
+generate_golden_e.py, terra_configurator.jsx, terra_sandbox.jsx) were resolved
+in S2 commit 4d1d44e. This was verified and documented in DECISIONS.md (new
+"S13: Stray root files already resolved in S2" entry). No further action needed.
+
+### Step 1 — Inventory
+
+| Location | Files inventoried |
+|----------|------------------|
+| Repo root | Wave 2-6 Roadmaps.md, Wave4_roadmap.md, Wave7_roadmap.md, TERRA_county_app_roadmap.md, interrupted_build_status.md, SESSION_LOG_extended_build_001.md, TERRA Build Summary W0 X3.md, MANUAL_FETCH.md |
+| `docs/` root | PIPELINES.md, session_config.md, TERRA_pitch_summary.md, W7_audit_followon_and_path_forward.md + 2 untracked (TERRA_physical_constraints_data_scoping.md, TERRA_physical_constraints_plugin_roadmap.md) |
+| `docs/orchestration/` | Wave4_closeout_report.md, Wave5_roadmap.md |
+| `build_log/wave4/` | _baseline.md, c4-i.md, c5a.md |
+| `build_log/wave5/` | _setup.md, c5a-r.md, t1–t6 task records (7 files) |
+| `build_log/wave6/` | ag2-engine-lock.md, ag3-ui-layer.md |
+| `build_log/wave7/` | HANDOFF.md (active), DECISIONS.md (active), snapshots/ |
+| `terra-app/` | TERRA_build_log.md (~3,400 lines) |
+
+### Step 2 — docs/ tree design
+
+```
+docs/
+├── README.md                  ← new index (cold-start navigation)
+├── PIPELINES.md               ← stays at root (whole-project reference)
+├── TERRA_pitch_summary.md     ← stays at root (no subdir fits)
+├── roadmaps/                  ← plans and scope documents
+├── closeouts/                 ← completed wave summaries, status snapshots
+├── session_logs/              ← narrative session logs, build logs
+└── methods/                   ← how-to guides, schemas, data scoping
+```
+
+All four proposed categories cover the inventory with no force-fits. No fifth
+category was needed.
+
+### Step 3 — Files moved (git mv, history preserved)
+
+**Root → docs/roadmaps/:**
+- `Wave 2-6 Roadmaps.md` (authoritative for R1–R18 per audit)
+- `Wave4_roadmap.md`
+- `Wave7_roadmap.md`
+- `TERRA_county_app_roadmap.md`
+
+**docs/ → docs/roadmaps/:**
+- `W7_audit_followon_and_path_forward.md`
+
+**docs/orchestration/ → docs/roadmaps/:**
+- `Wave5_roadmap.md`
+
+**docs/orchestration/ → docs/closeouts/:**
+- `Wave4_closeout_report.md`
+
+**Root → docs/closeouts/:**
+- `TERRA Build Summary W0 X3.md`
+- `interrupted_build_status.md`
+
+**Root → docs/session_logs/:**
+- `SESSION_LOG_extended_build_001.md`
+
+**terra-app/ → docs/session_logs/:**
+- `TERRA_build_log.md`
+
+**Root → docs/methods/:**
+- `MANUAL_FETCH.md`
+
+**docs/ → docs/methods/:**
+- `session_config.md`
+
+**Newly tracked (no prior git history):**
+- `docs/roadmaps/TERRA_physical_constraints_plugin_roadmap.md`
+- `docs/methods/TERRA_physical_constraints_data_scoping.md`
+
+**docs/orchestration/ is now empty** — removed (git does not track empty dirs).
+
+### Step 4 — Duplicate / superseded assessment
+
+No silent duplicates found. `Wave 2-6 Roadmaps.md` is the authoritative
+consolidated roadmap for R1–R18; individual wave roadmaps (Wave4_roadmap.md,
+Wave5_roadmap.md, Wave7_roadmap.md) are PM operating manuals at a different
+scope — not duplicates.
+
+### Step 5 — Stray root files
+
+Already resolved in S2. See DECISIONS.md for confirmation.
+
+### Step 6 — Code reference updates
+
+One code reference found and updated: `scripts/provision_worktree.sh` had
+hardcoded `Wave4_roadmap.md` at repo root. Updated to `docs/roadmaps/Wave4_roadmap.md`
+with a `mkdir -p` guard. No other code references to any moved doc path were
+found (grepped .py, .sh, .ts, .tsx, .json, .yml across the repo).
+
+### Step 7 — docs/README.md
+
+Written at `docs/README.md`. Covers all four subdirectories + docs/ root items,
+with a `build_log/` section explaining why those files stay in place.
+
+### CI status
+
+**Local checks (pre-commit):**
+- `python scripts/check_manifest.py` → PASSED (48 runtime loads, 0 unmanifested, 0 hash mismatches)
+- `python scripts/check_dual_path.py` → PASSED (all promotion pairs byte-identical)
+- `python scripts/validate_p3_attribution.py` → PASSED (0.000% slope diff)
+
+**Push:** `d540015` pushed to `origin/main`.
+
+**Remote CI:** `gh` CLI not authenticated in this session. Verify CI green at
+https://github.com/dylanhartman913-arch/TERRA-Civic-Sim/actions — the three
+moved doc files are not in any CI check path (no Python test or TS parity test
+references doc paths). The manifest check only audits `data/` files. No CI
+failures expected from pure doc moves.
+
+### Final docs/ tree
+
+```
+docs/
+├── README.md
+├── PIPELINES.md
+├── TERRA_pitch_summary.md
+├── roadmaps/
+│   ├── Wave 2-6 Roadmaps.md
+│   ├── Wave4_roadmap.md
+│   ├── Wave5_roadmap.md
+│   ├── Wave7_roadmap.md
+│   ├── TERRA_county_app_roadmap.md
+│   ├── W7_audit_followon_and_path_forward.md
+│   └── TERRA_physical_constraints_plugin_roadmap.md
+├── closeouts/
+│   ├── TERRA Build Summary W0 X3.md
+│   ├── Wave4_closeout_report.md
+│   └── interrupted_build_status.md
+├── session_logs/
+│   ├── SESSION_LOG_extended_build_001.md
+│   └── TERRA_build_log.md
+└── methods/
+    ├── MANUAL_FETCH.md
+    ├── session_config.md
+    └── TERRA_physical_constraints_data_scoping.md
+```
+
+### Acceptance check
+
+- Every doc from the inventory is accounted for: moved, or left-in-place with
+  reason in DECISIONS.md ✓
+- No document exists in more than one place ✓
+- Repo root is clean of all F12 markdown files ✓
+- `docs/orchestration/` removed (empty after moves) ✓
+- `terra-app/TERRA_build_log.md` moved to `docs/session_logs/` ✓
+- All three stray root file categories confirmed resolved in S2 ✓
+- Local CI checks (manifest, dual-path, P3) pass ✓
+- Remote CI: push confirmed; run URL not captured (gh unauthenticated) — verify manually ✓
+
+### Commit
+
+`d540015` — `docs(S13): consolidate docs into docs/{roadmaps,closeouts,session_logs,methods}/ (F12)`
+
+**F12 closed. S13 complete. Do not start S14.**
+
+---
