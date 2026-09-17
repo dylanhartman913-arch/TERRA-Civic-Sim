@@ -1618,3 +1618,100 @@ docs/
 **F12 closed. S13 complete. Do not start S14.**
 
 ---
+
+## S13a — 2026-09-16 — F12 duplicate reconciliation + CI verification
+
+**Objective:** Confirm CI, resolve Wave 2-6 Roadmaps.md vs individual wave
+roadmap relationship, and produce a full 31-document location inventory.
+
+### Step 1 — CI confirmation
+
+Both S13 commits confirmed green via GitHub REST API:
+
+| Commit | Run ID | Result |
+|--------|--------|--------|
+| `d540015` (doc move) | [35174248977](https://github.com/dylanhartman913-arch/TERRA-Civic-Sim/actions/runs/35174248977) | ✅ success |
+| `f6d12bd` (HANDOFF) | [35174321738](https://github.com/dylanhartman913-arch/TERRA-Civic-Sim/actions/runs/35174321738) | ✅ success |
+
+### Step 2 — Wave 2-6 Roadmaps.md vs individual wave roadmaps
+
+**These are not duplicates. They serve different purposes.**
+
+`Wave 2-6 Roadmaps.md` is the historical record of **rule accumulation**:
+- Lines 1–92: Wave 2 roadmap (session prompts + Gate V2)
+- Lines 93–189: Wave 3 roadmap (session prompts + Gate V3)
+- Lines 186–292: Wave 4 content (compressed, no Markdown headers)
+- Lines 293–364: Wave 5 content (compressed)
+- Lines 365–432: Wave 6 content including R15–R18
+
+The R1–R18 standing rules (the "authoritative" claim from the audit) are
+distributed through the consolidated file and show their provenance:
+R1–R8 added after the Wave 3 incident, R9–R14 from Wave 4/5, R15–R18 from
+Wave 5 postmortem. The consolidated file is authoritative for **rule provenance**.
+
+`Wave4_roadmap.md` and `Wave5_roadmap.md` are formatted PM operating manuals:
+same R1–R8 content but with bold Markdown headers, tick-by-tick execution
+detail, and ticket-level dispatch conditions not in the consolidated file.
+The Wave 4 section in the consolidated file and `Wave4_roadmap.md` carry the
+same substantive text but different formatting; the standalone was the
+document actually used during execution.
+
+**Conclusion:** Both files are retained. `docs/README.md` updated with a
+"Why these are not duplicates" note explaining the distinction for future readers.
+
+### Step 3 — Full 31-document inventory
+
+S13's HANDOFF stated "29 documents" — the actual count is 31. The discrepancy
+is a minor counting error in S13 (wave7/ active files were listed together
+as a directory reference rather than counted individually).
+
+| # | Document | Was at | Now at |
+|---|----------|--------|--------|
+| 1 | `Wave 2-6 Roadmaps.md` | root | `docs/roadmaps/` |
+| 2 | `Wave4_roadmap.md` | root | `docs/roadmaps/` |
+| 3 | `Wave7_roadmap.md` | root | `docs/roadmaps/` |
+| 4 | `TERRA_county_app_roadmap.md` | root | `docs/roadmaps/` |
+| 5 | `TERRA Build Summary W0 X3.md` | root | `docs/closeouts/` |
+| 6 | `interrupted_build_status.md` | root | `docs/closeouts/` |
+| 7 | `SESSION_LOG_extended_build_001.md` | root | `docs/session_logs/` |
+| 8 | `MANUAL_FETCH.md` | root | `docs/methods/` |
+| 9 | `PIPELINES.md` | `docs/` | `docs/` (unchanged) |
+| 10 | `session_config.md` | `docs/` | `docs/methods/` |
+| 11 | `TERRA_pitch_summary.md` | `docs/` | `docs/` (unchanged) |
+| 12 | `W7_audit_followon_and_path_forward.md` | `docs/` | `docs/roadmaps/` |
+| 13 | `TERRA_physical_constraints_data_scoping.md` | `docs/` (untracked) | `docs/methods/` (now tracked) |
+| 14 | `TERRA_physical_constraints_plugin_roadmap.md` | `docs/` (untracked) | `docs/roadmaps/` (now tracked) |
+| 15 | `Wave4_closeout_report.md` | `docs/orchestration/` | `docs/closeouts/` |
+| 16 | `Wave5_roadmap.md` | `docs/orchestration/` | `docs/roadmaps/` |
+| 17 | `build_log/wave4/_baseline.md` | `build_log/wave4/` | `build_log/wave4/` (left in place — provision_worktree.sh ref) |
+| 18 | `build_log/wave4/c4-i.md` | `build_log/wave4/` | `build_log/wave4/` (left in place — historical record) |
+| 19 | `build_log/wave4/c5a.md` | `build_log/wave4/` | `build_log/wave4/` (left in place — historical record) |
+| 20 | `build_log/wave5/_setup.md` | `build_log/wave5/` | `build_log/wave5/` (left in place) |
+| 21 | `build_log/wave5/c5a-r.md` | `build_log/wave5/` | `build_log/wave5/` (left in place) |
+| 22 | `build_log/wave5/t1-c4i-closure.md` | `build_log/wave5/` | `build_log/wave5/` (left in place) |
+| 23 | `build_log/wave5/t2-lint.md` | `build_log/wave5/` | `build_log/wave5/` (left in place) |
+| 24 | `build_log/wave5/t4-c21.md` | `build_log/wave5/` | `build_log/wave5/` (left in place) |
+| 25 | `build_log/wave5/t5-c4ii.md` | `build_log/wave5/` | `build_log/wave5/` (left in place) |
+| 26 | `build_log/wave5/t6-c5b.md` | `build_log/wave5/` | `build_log/wave5/` (left in place) |
+| 27 | `build_log/wave6/ag2-engine-lock.md` | `build_log/wave6/` | `build_log/wave6/` (left in place) |
+| 28 | `build_log/wave6/ag3-ui-layer.md` | `build_log/wave6/` | `build_log/wave6/` (left in place) |
+| 29 | `build_log/wave7/HANDOFF.md` | `build_log/wave7/` | `build_log/wave7/` (active governance) |
+| 30 | `build_log/wave7/DECISIONS.md` | `build_log/wave7/` | `build_log/wave7/` (active governance) |
+| 31 | `terra-app/TERRA_build_log.md` | `terra-app/` | `docs/session_logs/` |
+
+All 31 documents accounted for. Zero unlocated.
+
+### Files changed in S13a
+
+- `docs/README.md` — added "Why Wave 2-6 Roadmaps.md and Wave4/5_roadmap.md are
+  not duplicates" section clarifying the rule-provenance vs operational-guide
+  distinction.
+
+### Handoff
+
+F12 is fully closed. Both S13 CI runs are green (run IDs confirmed above).
+The Wave 2-6 Roadmaps.md / individual-wave-roadmap ambiguity is resolved and
+documented in `docs/README.md`. All 31 inventoried documents have a named
+location. No open items remain for F12.
+
+---

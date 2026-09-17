@@ -20,13 +20,32 @@ Plans and scope documents describing what is to be built.
 
 | File | Wave | What it is |
 |------|------|-----------|
-| `Wave 2-6 Roadmaps.md` | W2–W6 | **Authoritative consolidated roadmap for R1–R18** (per the Sept 2026 audit). Contains Wave 2 replan, all four session prompts, and Gate V2 checklist. |
-| `Wave4_roadmap.md` | W4 | PM operating manual for Wave 4 — ticket scope and dispatch conditions for each Codex branch. |
-| `Wave5_roadmap.md` | W5 | PM operating manual for Wave 5. |
+| `Wave 2-6 Roadmaps.md` | W2–W6 | **Authoritative source for R1–R18 standing rules** (per the Sept 2026 audit). Contains the Wave 2 replan, Waves 2–6 session prompts, Gate V2/V3 checklists, and the accumulated R1–R18 protocol rules that govern how all waves are executed. |
+| `Wave4_roadmap.md` | W4 | Formatted PM operating manual for Wave 4 — ticket scope, dispatch conditions, and PART 0–8 execution guide as actually used. **Not a duplicate of Wave 2-6 Roadmaps.md** (see note below). |
+| `Wave5_roadmap.md` | W5 | Formatted PM operating manual for Wave 5. Same relationship to Wave 2-6 Roadmaps.md as Wave4_roadmap.md. |
 | `Wave7_roadmap.md` | W7 | Current wave roadmap — Parity CI, Provenance CI, and Source-Contract Closure. |
 | `TERRA_county_app_roadmap.md` | W2+ | Shared memory for the TERRA application track; supersedes spatial doctrine in TERRA_MW_roadmap.md for county-app concerns. |
 | `W7_audit_followon_and_path_forward.md` | W7 | September 2026 audit findings and Wave 7 direction — the document that defines the W7 work programme. |
 | `TERRA_physical_constraints_plugin_roadmap.md` | Post-W7 | Roadmap for the physical-constraints plugin. |
+
+### Why Wave 2-6 Roadmaps.md and Wave4/5_roadmap.md are not duplicates
+
+`Wave 2-6 Roadmaps.md` is the **historical record of rule accumulation**: it
+shows how R1–R8 (Wave 3 incident), R9–R14 (Wave 4/5 postmortem), and R15–R18
+(Wave 5 postmortem) were added to the standing protocol over time. It is the
+authoritative source if you need to know *when* a rule was added and *why*.
+
+`Wave4_roadmap.md` and `Wave5_roadmap.md` are **formatted operational guides**
+used to actually execute those waves. They are more readable, contain the same
+rules in bold-formatted Markdown (vs compressed plain text in the consolidated
+file), and include ticket-level dispatch detail not present in the consolidated
+record.
+
+The Wave 4 content inside `Wave 2-6 Roadmaps.md` (lines ~186–292) and
+`Wave4_roadmap.md` carry the same substantive text but in different formats
+and with minor wording differences. Neither supersedes the other: read the
+consolidated file for rule provenance, read the standalone file for execution
+detail. Both files are retained.
 
 ---
 
