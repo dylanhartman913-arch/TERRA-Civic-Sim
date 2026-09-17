@@ -1398,3 +1398,58 @@ This is the general form of F2 prevention.
 **S12 complete. Do not start S13.**
 
 ---
+
+## S12a — 2026-09-16 — Part (i) reconciliation + commit verification
+
+**Objective:** Show per-county numbers, resolve the 0.894 reference, commit,
+confirm CI green.
+
+### Per-county attribution ratios (Crook, Hot Springs, Sheridan)
+
+| County | GEOID | baseline_Ec_contrib | matched_delta_sum | ratio |
+|--------|-------|---------------------|-------------------|-------|
+| Crook | 56011 | 0.000450794116 | 0.000450794116 | 1.000000 |
+| Hot Springs | 56017 | 0.004312649865 | 0.004312649865 | 1.000000 |
+| Sheridan | 56033 | 0.000449441859 | 0.000449441859 | 1.000000 |
+
+All three counties have ratio = 1.0 because each has only 1–2 generators,
+all of which are matched to anchor facilities. 14 counties total are at
+ratio 1.0. No county exceeds 1.0 (Part i assertion holds).
+
+### The 0.894 resolved
+
+`0.894 = old_max / new_max = 5184.8 / 5796.9 = 0.894409`
+
+This is the factor by which every county's Ec_gencap scaled when S7a rebuilt
+the baseline on the complete 25,868-generator inventory (new max 5,796.9 MW)
+vs the stale inventory (old max 5,184.8 MW). Algebraically equivalent to
+`new_slope / old_slope`. It is **uniform across all counties** — not a
+per-county metric.
+
+The roadmap sentence "worst ratio is 0.894 (Crook, Hot Springs, Sheridan)"
+conflated two facts: (1) 0.894 is the global normalization scaling factor
+from F2; (2) Crook, Hot Springs, and Sheridan were named as example counties
+affected by the normalization shift. The per-county attribution/baseline
+ratio for all three is exactly 1.0.
+
+This is **not a coincidental numeric overlap** between unrelated metrics —
+both the 0.894 and the county names trace to the same F2 normalization
+defect. The confusion arose from describing a global constant (the max ratio)
+as though it were a per-county measurement.
+
+### Commit and CI
+
+**Commit:** `8ab6ac0` — `feat(S12): P3 attribution slope check + manifest
+normalization constants (W7-2b)`
+
+**CI:** All 3 jobs green on main ([run 35172599629](https://github.com/dylanhartman913-arch/TERRA-Civic-Sim/actions/runs/35172599629)).
+
+### Handoff
+
+The S10 → S11 → S12 critical path is genuinely closed on committed, CI-verified
+data. No open items to carry into S13. The three CI checks (manifest hash,
+dual-path identity, P3 slope) are independently wired and all green. A data
+refresh that changes the generator inventory or EES normalization will now
+fail at least one of these checks before reaching main.
+
+---
