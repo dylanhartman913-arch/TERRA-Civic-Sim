@@ -1715,3 +1715,127 @@ documented in `docs/README.md`. All 31 inventoried documents have a named
 location. No open items remain for F12.
 
 ---
+
+## S14 — 2026-09-17 — Domain-Review Packet (D5 / W7-4)
+
+**Objective:** Produce a self-contained forage/rangeland review packet that a
+rancher or Extension agent can evaluate without opening the repo.
+
+**What was done:**
+
+- Read `wy_ag_sources.csv`, `wy_county_ag_baseline.json`,
+  `wy_county_ag_engine_baseline.json`, and `wy_grazing_allotments.csv`
+  programmatically for all values used in the packet.
+- Computed confidence breakdown: **27.1% low-confidence** (168 of 621 fields).
+  For comparison, the fiscal tier runs ~44% low-confidence. The ag tier is
+  lower overall, but the low-confidence items concentrate in the fields that
+  matter most for grazing: stocking rate, forage acres, AUM capacity, and the
+  entire BLM allotment layer.
+- Wrote `docs/review/D5_forage_packet.md` (~1,700 words, ≤4 pages).
+  - All values extracted from data files, not reconstructed from memory.
+  - Zero model/pipeline jargon in the body text.
+  - Federal (USFS-proxy) vs private AUM treated as a distinct named category.
+  - BLM data gap stated plainly as the single largest ag data gap.
+  - Every low-confidence item named explicitly in a dedicated section.
+
+**Low-confidence percentage:** 27.1% (vs. fiscal tier's ~44%).
+
+**Three closing questions (verbatim, for PM review before sending):**
+
+1. **Stocking rates by region:** We use 30 acres per AUM statewide. For the
+   counties you know best, what stocking rate would you expect on typical
+   private rangeland — and how much does it vary between the best and worst
+   pastures in that county?
+
+2. **Federal grazing reliance:** In counties along the Bighorn National Forest
+   or the Bridger-Teton, roughly what share of a typical ranch operation's
+   annual AUM comes from federal allotments (BLM + Forest Service combined)
+   versus private deeded and leased land? We're estimating ~19% federal
+   statewide based on Forest Service acres alone, but that's missing all BLM.
+
+3. **Drought destocking timing:** We assume that when forage drops 20% in a
+   drought year, ranchers reduce herd size by about 15% (the rest absorbed
+   through supplemental feed, shorter grazing season, or accepting lower
+   weights). Does that ratio feel right for a moderate (D1) drought year, or
+   do most operations hold tighter / liquidate faster than that?
+
+**Acceptance results:**
+- Packet readable without repo access ✓
+- Length: ~1,700 words (≤4 pages) ✓
+- 27.1% low-confidence stated explicitly (not estimated) ✓
+- All 9 low-confidence item categories named ✓
+- Exactly 3 domain-answerable closing questions ✓
+- No model/pipeline jargon in body ✓
+
+**Packet location:** `docs/review/D5_forage_packet.md`
+
+**D5 complete. Packet ready for PM to route to domain reviewer.**
+
+---
+
+## S14a — 2026-09-17 — Verify D5 packet framing on two largest gaps
+
+**Objective:** Confirm the DOR productive-value fallback and BLM data gap are
+stated plainly in the packet body itself, not just in build-process notes.
+
+**Verification:**
+
+1. **DOR productive values (Section 5, lines 148–161):** The packet states
+   "They are the same number for every county," shows the actual statewide
+   ranges ($10–$1,006/ac for grazing alone), and says explicitly "we could not
+   retrieve county-level DOR assignments — the DOR website was unavailable
+   during our data collection (DNS failure on the property tax division
+   domain). This is a known gap." No change needed — reads honestly.
+
+2. **BLM/federal AUM (Section 1, lines 58–68):** Has its own subsection
+   titled "BLM allotments — missing entirely." Opens with "We have no BLM
+   grazing data." Notes BLM administers more land than USFS in Wyoming and
+   that the private/federal split is wrong in BLM-heavy counties. The
+   preceding USFS subsection (lines 52–56) separately flags that USFS data
+   has acreage but not AUM counts and calls the multiplication "a rough
+   proxy." Not buried in a generic flag. No change needed.
+
+3. **DECISIONS.md entry added** for the DOR outage: documents that the three
+   productive-value figures are statewide fallbacks due to DNS failure on the
+   DOR domain, flags county-level DOR retrieval as a follow-up data-pull item.
+
+**Acceptance results:**
+- Both gaps stated in plain language in the packet body ✓
+- DECISIONS.md entry exists for DOR outage / fallback decision ✓
+- No packet text changes required — both sections already read honestly ✓
+
+**S14a complete.**
+
+---
+
+## S15 — 2026-09-17 — Methods Documentation, Pipelines A–E (W7-5, Part 1)
+
+**Objective:** Write the methods section skeleton for Pipelines A–E — the
+document a dissertation committee or advisor reads to understand how every
+number in the app was produced. Grounded in `docs/PIPELINES.md` (S9) and
+`data/processed/network_metadata.json` (S5), not written from memory.
+
+**Plan reviewed and confirmed before prose written.**
+
+### Pipeline A — committed
+
+**Commit:** `fcd5194` — `docs/methods/pipeline_A_generator_inventory.md`
+
+Covers: EIA-860 pinned inventory (25,868 records, SHA `573f1a7b`), NREL ATB
+2024 v3.0.0 Moderate scenario, nb06 processing steps. No structural gaps.
+Two constraints noted for downstream consumers (aging vintage, no sub-1-MW
+coverage).
+
+### Pipeline B — committed
+
+**Commit:** `adc38d7` — `docs/methods/pipeline_B_synthetic_network.md`
+
+Covers: HIFLD sourcing, ACS 2022 population weighting, all nb07 parameters
+(α=0.45, 500 buses, 75 km prune, 150 km decay, seed 42, headroom 1.25,
+interchange p95, WY floor 6), Delaunay + probabilistic pruning method,
+validation warnings. Five known gaps documented including frozen-pipeline
+status, 18 missing metadata keys, and DELAUNAY_PRUNE discrepancy with
+external methods doc.
+
+**Next in queue:** Pipeline C (EES capital baseline — highest-stakes section,
+site of F2 defect history).
