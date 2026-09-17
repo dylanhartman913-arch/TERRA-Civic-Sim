@@ -1994,3 +1994,26 @@ Known gaps: Eagle CO back-cast failure (2.58°F, LOCA2 mountain cold bias),
 p10/p90 estimated from literature not member-level, 4 MANUAL_FETCH items
 (SNOTEL, WRC fire, NOAA Atlas, design storm), county_climate_baseline.json
 50+ MB in LFS.
+
+### Pipeline H — committed
+
+**Commit:** `da92fe0` — `docs/methods/pipeline_H_agriculture.md`
+
+Covers: Census of Agriculture 2022 (9,893 WY rows, 23/23 counties), USFS EDW
+grazing allotments (686 allotments, 22/23 counties), RAP cover v3 (AFG
+1986-2025), WY DOR ag valuation (statewide fallback due to DNS failure), USDA
+EQIP Practice 315. Four blocked sources documented (BLM RAS, WY SEO water,
+BEA CAINC4, WY DOR county-level).
+
+Processing documented: nb25 baseline pull with 4 credibility gates, nb26 action
+family extension (schema 3.2→3.3, back-cast gate 10/23 pass), engine baseline
+builder, engine integration (seed/refresh/action/advance/digest).
+
+Seven assumptions numbered (30 ac/AUM statewide stocking rate, 0.75 elasticity,
+single D1 drought, DOR statewide, water proxies, federal AUM proxy, 30%
+reinvasion). Confidence breakdown: 621 fields — 6.3% high, 66.7% medium,
+27.1% low.
+
+Known gaps: BLM entirely missing (largest gap), DOR statewide only, water null,
+cattle suppression (3 counties null + 7 suppressed), BEA API key, D5 domain
+review not yet conducted.
