@@ -2212,3 +2212,171 @@ recurrence in W7-2 onward.
   — all three jobs green on `4d1e8c2` ✓
 
 **Part 1 complete. Proceeding to Part 2.**
+
+---
+
+## S16a — 2026-09-17 — Fix F8-LIVE: drought ordering, 3 of 5 sites
+
+**Objective:** All five `engineAdvanceYear` / `applySessionDrought` call sites
+apply drought before the year advance, consistently, with real store-level test
+coverage.
+
+**Blocked-by:** S16 Parts 1–3. This defect is why the release was held.
+
+---
+
+### Step 1 — Re-derived the finding from source, not from S16's report
+
+`grep -rn "engineAdvanceYear\|applySessionDrought" terra-app/src` — five call
+sites, spanning two files. Three wrong.
+
+**Correction to the ticket's premise:** the ticket anticipated "two mechanical
+sites." There was **one**. Neither remaining site was a pure ordering fix:
+
+- `computeTrajectory` — drought absent entirely, not mis-ordered. Has
+  `session_config`/`gameSeed`/`climate_lens` via `ScenarioFile`, so mechanically
+  easy, but adding it is a behaviour change.
+- `replayLog` — signature was `replayLog(log, snapshots)`. **No access** to
+  session config, seed or lens at all. Fixing it required a signature change.
+
+### Step 2 — `enterReplayMode` (the one mechanical fix)
+
+Before (1105–1107):
+```ts
+state = engineAdvanceYear(state);
+if (file.session_config?.drought) {
+  [state] = applySessionDrought(state, file.gameSeed, file.climate_lens ?? 'historical');
+}
+```
+After (1133–1136):
+```ts
+if (file.session_config?.drought) {
+  [state] = applySessionDrought(state, file.gameSeed, file.climate_lens ?? 'historical', state.year + 1);
+}
+
+state = engineAdvanceYear(state);
+```
+
+### Step 3 — PM decisions, taken in-session rather than assumed
+
+Per the ticket's standing rule, work stopped here and both calls were put to the
+PM with the evidence. Both confirmed:
+
+1. **Comparison mode SHOULD honour session drought.** Deciding fact surfaced for
+   the PM: `computeTrajectory` already replayed stochastic disturbance events via
+   `getAllEventsForYear`, so omitting drought made it inconsistent with itself as
+   well as with `replay.ts`.
+2. **Undo SHOULD re-apply drought.** `replayLog` now takes `sessionConfig`,
+   `gameSeed`, `climateLens`, threaded from `undoAction`, which already had all
+   three in scope via `get()`. Drought sampling is seeded and year-keyed, so
+   reconstruction is deterministic.
+
+`redoAction` was checked: it applies/queues on the current `engineState` and
+never advances a year. Unaffected.
+
+### Final state — all five sites
+
+| Site | Before | After |
+|------|--------|-------|
+| `store.ts` `replayLog` (undo) | 186 advance, no drought | 197 drought → 199 advance |
+| `store.ts` `computeTrajectory` | 241 advance, no drought | 261 drought → 264 advance |
+| `store.ts` `advanceYear` action | 790 → 793 ✓ | 813 → 816 ✓ (unchanged) |
+| `store.ts` `enterReplayMode` | 1105 advance → 1107 drought | 1133 drought → 1136 advance |
+| `replay.ts` `replayScenario` | 253 → 256 ✓ | 253 → 256 ✓ (unchanged) |
+
+All four fixed/verified sites pass `targetYear = state.year + 1`.
+
+### Step 4 — Test coverage
+
+`terra-app/tests/parity/f8-store-drought-sites.test.ts` — **8 tests that drive
+the Zustand store**, not the engine.
+
+Placed in `tests/parity/` deliberately: CI runs `vitest run tests/parity/`
+(`.github/workflows/ci.yml:73`), so `tests/ui/` would have recreated the exact
+ungated hole that let this survive five sessions.
+
+Oracle is the F8 bug signature itself — drought-correct AG digest
+`0c537942942e306a22f04bdc44418b07` vs energy-only `756ec0d2d5ddf481be1331a48b38a1cb`.
+Assertions check both directions, so a regression cannot pass by matching
+"something."
+
+**Verified as a real gate.** Stashed the fix, ran the new tests against pre-fix
+code: **2 of 8 failed.**
+
+```
+FAIL  enterReplayMode > reproduces the engine path exactly, and is NOT the energy-only digest
+AssertionError: expected '756ec0d2d5ddf481be1331a48b38a1cb'
+                to be     '0c537942942e306a22f04bdc44418b07'
+FAIL  replayLog (undo) > reconstructs a drought-affected state when undoing across advanced years
+```
+
+**This measures what S16 could only infer.** Replay mode was producing the
+energy-only AG digest for a drought-enabled session — drought had no effect
+whatsoever. Fix restored, 8/8 pass.
+
+### Known limitation — B-11
+
+**The comparison-mode site has no regression gate.** `Trajectory` exposes only
+`years`/`E`/`Ec`/`S`/`material_ledger`/`quest_conditions`/`events` — no ag field
+— and session drought does not move E, Ec or S. Measured on Ranch Country 2040:
+
+```
+ag_digest   0c537942942e306a22f04bdc44418b07  vs  756ec0d2d5ddf481be1331a48b38a1cb
+E           3.1034 == 3.1034   Ec  6.9341 == 6.9341   S  5.2725 == 5.2725
+counties with drought events: 23
+```
+
+The fix is real in the state `computeTrajectory` builds and invisible in what it
+returns. No honest assertion can distinguish fixed from broken there until
+`Trajectory` carries an ag observable. The test pins the measured insensitivity
+so the gap cannot be silently closed. **The PM's rationale is half-served:
+internal state matches, but comparison still cannot show the user that drought
+happened.**
+
+### Steps 5–6 — Gates, all re-run fresh
+
+| Gate | Result |
+|------|--------|
+| `python -m pytest tests/` | **230 passed** in 126.74s |
+| `npm run parity` | **34 files / 359 tests passed** (was 33/351; +1 file, +8 tests) |
+| `npx tsc --noEmit` | clean |
+| `npm run lint` | 0 errors, 1 pre-existing warning in `ActionPalette.tsx` (untouched this session) |
+| `check_manifest.py` | PASSED — 64 entries, 48 runtime loads, 0 unmanifested, 0 hash mismatches |
+| `check_dual_path.py` | PASSED — 8/8 promotion pairs byte-identical |
+| `validate_p3_attribution.py` | ALL CHECKS PASSED — slope difference 0.000000% |
+
+**Digest reconciliation: no fixture moved.**
+`golden_ranch_country_2040.json` before and after:
+`replay_digest 3fa8757964e2d10ff60a00556fe7c613`,
+`ag_digest_md5 0c537942942e306a22f04bdc44418b07` — identical.
+
+This is the expected result and the point of the finding: **the goldens were
+generated through `replay.ts`, which was already correct.** The broken paths were
+ones no fixture ever covered. A moved digest would have meant the engine path was
+wrong too.
+
+### Step 7 — Closeout updated
+
+`docs/closeouts/v0.7.0.md`: F8-LIVE moved from blocking to resolved with
+per-site before/after, the PM decisions, the gate's pre-fix failure output, and
+B-11. Verdict **CHANGES REQUIRED → PASS WITH FOLLOW-UP**. B-6 closed; B-10 and
+B-11 added. Verdict history left visible — the first PASS WITH FOLLOW-UP was
+reached by assuming, this one by fixing and measuring.
+
+### Steps 8–9 — Tag and push
+
+The S16 tag was deleted rather than moved a second time: it had already been
+recreated once during an active CHANGES REQUIRED state, and carrying that
+ambiguity forward would make the tag's meaning depend on when it was read.
+
+Sequencing was deliberate — **push commits first, confirm they landed, then tag
+the confirmed-pushed commit, then push the tag.** Tagging before pushing is what
+created the S16 ambiguity in the first place. Per B-3, `origin/main` alignment
+was confirmed with `git rev-parse` afterward, not assumed.
+
+**Commits (S16a):**
+- `016b36f` — fix: all store.ts drought sites + store-level regression gate
+- `c901aaf` — docs: closeout reflects resolution, verdict to PASS WITH FOLLOW-UP
+- plus this HANDOFF entry
+
+**Push and tag confirmation:** recorded in the closing block below.
