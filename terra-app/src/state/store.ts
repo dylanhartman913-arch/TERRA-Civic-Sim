@@ -156,7 +156,13 @@ const typedFiscalCoefficients = fiscalCoefficientsData as unknown as FiscalCoeff
 
 // ── Undo strategy: memoize snapshots at year boundaries ──────────────────────
 
-function replayLog(log: ActionLogEntry[], snapshots: Map<number, EngineState>): EngineState {
+function replayLog(
+  log: ActionLogEntry[],
+  snapshots: Map<number, EngineState>,
+  sessionConfig: SessionConfig | null,
+  gameSeed: number,
+  climateLens: ClimateLens,
+): EngineState {
   if (log.length === 0) {
     return initializeState(typedBaseline, typedCrosswalk, typedActionLibrary, typedNetwork, typedCards, 2025, typedFiscalBaseline, typedFiscalCoefficients);
   }
@@ -183,6 +189,13 @@ function replayLog(log: ActionLogEntry[], snapshots: Map<number, EngineState>): 
   for (let i = startIdx; i < log.length; i++) {
     const entry = log[i];
     while (state.year < entry.year) {
+      // Apply drought for the upcoming year BEFORE engineAdvanceYear, so undo
+      // reconstruction reproduces the same drought-affected trajectory the
+      // forward path produced. Drought sampling is seeded and year-keyed, so
+      // re-application is deterministic. Matches store.ts:785-793.
+      if (sessionConfig?.drought) {
+        [state] = applySessionDrought(state, gameSeed, climateLens, state.year + 1);
+      }
       state = engineAdvanceYear(state);
     }
     if (entry.type === 'apply') {
@@ -238,6 +251,16 @@ function computeTrajectory(file: ScenarioFile): Trajectory {
         );
       }
     }
+
+    // Apply drought for the upcoming year BEFORE engineAdvanceYear so that
+    // advanceCountyAg records trajectory snapshots with drought-affected
+    // forage values. Comparison mode already replays stochastic disturbance
+    // events below; omitting session drought made it inconsistent with both
+    // itself and replay.ts. Matches replay.ts:250-256.
+    if (file.session_config?.drought) {
+      [state] = applySessionDrought(state, file.gameSeed, file.climate_lens ?? 'historical', state.year + 1);
+    }
+
     state = engineAdvanceYear(state);
 
     const events = getAllEventsForYear(state.year, state, file.gameSeed);
@@ -836,11 +859,11 @@ export const useTerraStore = create<TerraStore>((set, get) => ({
   // ── Undo / Redo ───────────────────────────────────────────────────────────
 
   undoAction: () => {
-    const { actionLog, yearSnapshots, engineState, redoStack } = get();
+    const { actionLog, yearSnapshots, engineState, redoStack, sessionConfig, gameSeed, climateLens } = get();
     if (actionLog.length === 0) return;
     const removedEntry = actionLog[actionLog.length - 1];
     const newLog = actionLog.slice(0, -1);
-    const newState = replayLog(newLog, yearSnapshots);
+    const newState = replayLog(newLog, yearSnapshots, sessionConfig, gameSeed, climateLens);
     const era = getEraForYear(newState.year);
     const remaining = getRemainingBudget(era, newLog, engineState.action_library.actions);
     const newRedoStack = [...redoStack, removedEntry];
@@ -1102,10 +1125,15 @@ export const useTerraStore = create<TerraStore>((set, get) => ({
           state = engineQueueAction(state, entry.actionId, entry.geoid, entry.magnitude, entry.decisionYear ?? year, entry.overrideOp);
         }
       }
-      state = engineAdvanceYear(state);
+      // Apply drought for the upcoming year BEFORE engineAdvanceYear so that
+      // advanceCountyAg (inside engineAdvanceYear) records trajectory snapshots
+      // with drought-affected forage values in the year the drought occurs.
+      // Matches replay.ts:250-256 and the advanceYear store action (store.ts:785-793).
       if (file.session_config?.drought) {
-        [state] = applySessionDrought(state, file.gameSeed, file.climate_lens ?? 'historical');
+        [state] = applySessionDrought(state, file.gameSeed, file.climate_lens ?? 'historical', state.year + 1);
       }
+
+      state = engineAdvanceYear(state);
 
       const events = getAllEventsForYear(state.year, state, file.gameSeed);
       for (const evt of events) {
