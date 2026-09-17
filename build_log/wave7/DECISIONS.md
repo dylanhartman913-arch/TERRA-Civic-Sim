@@ -350,3 +350,76 @@ imports `county_generator_term` and `study_tracts` from it. The old name
 ("provenance_diff") implied it was a correctness/drift gate; it is actually a
 one-time analysis script comparing existing vs staged generator capacity data.
 The new name describes what the script does, not what it is not.
+
+---
+
+## 2026-09-16 — S13: Stray root files already resolved in S2
+
+**Decision:** The five stray root files listed in F12 (package-lock.json,
+run_cells.py, build_nb16.py, generate_golden_e.py, terra_configurator.jsx,
+terra_sandbox.jsx) were already resolved in S2 (2026-09-12). S13 verified
+this via `git log` and the S2 HANDOFF.md block. No further action needed.
+
+**Disposition confirmed:**
+- `package-lock.json` — deleted; was an empty stub (`"packages": {}`) with no
+  `node_modules/` context at root. No code references found.
+- `run_cells.py`, `build_nb16.py`, `generate_golden_e.py` → `scripts/legacy/`
+  (git mv in commit 4d1d44e). Grepped for imports: no active code references.
+- `terra_configurator.jsx`, `terra_sandbox.jsx` → `archive/prototypes/`
+  (git mv in commit 4d1d44e). No active imports found.
+
+---
+
+## 2026-09-16 — S13: build_log/wave{4,5,6,7}/ left in place
+
+**Decision:** The per-wave session and task records in `build_log/wave{4,5,6,7}/`
+are left in place rather than moved to `docs/session_logs/`.
+
+**Reasons:**
+1. `build_log/wave7/HANDOFF.md` and `DECISIONS.md` are active governance files
+   being appended to during the current wave. Moving them mid-wave would break
+   the session protocol and all existing cross-references in S1–S12a entries.
+2. `build_log/wave4/_baseline.md` is referenced by `scripts/provision_worktree.sh`
+   at a hardcoded path. Updating that path is possible but adds risk with no
+   functional gain (Wave 4 worktrees are obsolete).
+3. The `build_log/wave*/` structure already provides per-wave organisation.
+   Flattening it into `docs/session_logs/` would lose that structure.
+
+**Inventory of files left in place (all accounted for):**
+
+| File | Reason left in place |
+|------|---------------------|
+| `build_log/wave4/_baseline.md` | Referenced by provision_worktree.sh |
+| `build_log/wave4/c4-i.md` | Historical Wave 4 ticket record |
+| `build_log/wave4/c5a.md` | Historical Wave 4 ticket record |
+| `build_log/wave5/_setup.md` | Historical Wave 5 P0 record |
+| `build_log/wave5/c5a-r.md` | Historical Wave 5 ticket record |
+| `build_log/wave5/t1-c4i-closure.md` | Historical Wave 5 task record |
+| `build_log/wave5/t2-lint.md` | Historical Wave 5 task record |
+| `build_log/wave5/t4-c21.md` | Historical Wave 5 task record |
+| `build_log/wave5/t5-c4ii.md` | Historical Wave 5 task record |
+| `build_log/wave5/t6-c5b.md` | Historical Wave 5 task record |
+| `build_log/wave6/ag2-engine-lock.md` | Historical Wave 6 session record |
+| `build_log/wave6/ag3-ui-layer.md` | Historical Wave 6 session record |
+| `build_log/wave7/HANDOFF.md` | Active governance — appended to each session |
+| `build_log/wave7/DECISIONS.md` | Active governance — appended to each session |
+| `build_log/wave7/snapshots/` | Wave 7 engine snapshots |
+
+---
+
+## 2026-09-16 — S13: docs/TERRA_pitch_summary.md left at docs/ root
+
+**Decision:** `docs/TERRA_pitch_summary.md` is left at `docs/` root rather than
+moved into a subdirectory. It is a strategic pitch document that doesn't fit
+cleanly into roadmaps (not a build plan), closeouts (not a wave record),
+session_logs (not a narrative log), or methods (not a how-to). Leaving it at
+`docs/` root makes it discoverable without forcing a category mismatch.
+
+---
+
+## 2026-09-16 — S13: docs/PIPELINES.md left at docs/ root
+
+**Decision:** `docs/PIPELINES.md` is left at `docs/` root. It is the pipeline
+reference document for the entire project — not specific to a wave, method, or
+session. The `docs/README.md` index links to it directly. Keeping it at the
+docs root makes it maximally discoverable for any reader starting at docs/.

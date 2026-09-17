@@ -17,7 +17,8 @@
 #       binary format, potentially large, policy-excluded from version control.
 #
 #   Reference docs (Wave 4 context, untracked so git does not dirty the branch):
-#     - Wave4_roadmap.md: ticket scope and dispatch conditions for each branch.
+#     - docs/roadmaps/Wave4_roadmap.md: ticket scope and dispatch conditions for
+#       each branch. (S13: moved from root to docs/roadmaps/ during doc consolidation)
 #     - build_log/wave4/_baseline.md: P0 baseline record (SHAs, test counts,
 #       golden-letter collision check, exposure-tag registry format check).
 #
@@ -83,15 +84,16 @@ done
 echo ""
 echo "Reference docs → $TARGET"
 
-# Wave4_roadmap.md lives at repo root
-ROADMAP_SRC="$REPO_ROOT/Wave4_roadmap.md"
-ROADMAP_DEST="$TARGET/Wave4_roadmap.md"
+# Wave4_roadmap.md lives at docs/roadmaps/ (moved from root in S13)
+ROADMAP_SRC="$REPO_ROOT/docs/roadmaps/Wave4_roadmap.md"
+ROADMAP_DEST="$TARGET/docs/roadmaps/Wave4_roadmap.md"
 if [[ -f "$ROADMAP_SRC" ]]; then
+  mkdir -p "$(dirname "$ROADMAP_DEST")"
   cp "$ROADMAP_SRC" "$ROADMAP_DEST"
   size=$(du -sh "$ROADMAP_DEST" | cut -f1)
-  echo "  copied ($size): Wave4_roadmap.md"
+  echo "  copied ($size): docs/roadmaps/Wave4_roadmap.md"
 else
-  echo "  SKIP (not found in source): Wave4_roadmap.md" >&2
+  echo "  SKIP (not found in source): docs/roadmaps/Wave4_roadmap.md" >&2
 fi
 
 # _baseline.md lives in build_log/wave4/ — create the directory if absent
