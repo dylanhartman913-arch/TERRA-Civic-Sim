@@ -1943,3 +1943,32 @@ digest discipline, three named case studies from W7-5 PART 8).
 **S15 complete.**
 
 ---
+
+## S15b — 2026-09-17 — Methods Documentation, Pipelines F–I + cross_cutting.md (W7-5, Part 2)
+
+**Objective:** Complete the methods documentation for all nine pipelines plus
+cross-cutting governance. Strict 1:1 file-commit / HANDOFF-entry cadence.
+
+**Plan reviewed and confirmed before prose written.**
+
+### Pipeline F — committed
+
+**Commit:** `675b116` — `docs/methods/pipeline_F_anchor_facilities.md`
+
+Covers: EPA GHGRP (2023 emissions), MSHA Mines, BLS QCEW (2024), Census CBP
+(2023), EIA-860 via Pipeline A, FEMA NRI v1.20.0, USFS WRC (2026-04-15), 7
+hand-curated Tier 1 anchors. Full processing methodology documented: anchor
+registry assembly (8 steps), exposure tag assignment (3 steps). Tier 1 vs
+Tier 2 distinction, zero flow deltas at seeding, identity overrides, 0.55
+fuzzy-match threshold.
+
+**F1 defect history** written as a three-phase chronology matching Pipeline C's
+F2 structure: (1) original fork — three flagship capacities diverged between
+anchor registry and county_cards (816.7/762, 152/100, 1800/200), (2) S6 fix
+making both anchor geojson copies byte-identical at SHA `7fd936f7` + Jim
+Bridger capacity_basis schema, (3) F14 second-order regression from nb14's
+stale FLAGSHIP_ASSETS list during S7a re-run, caught and patched.
+
+Known gaps: nb14 regression risk, flood zone low confidence (county-level NRI,
+not parcel-level NFHL), API key dependencies (BEA/Census), CBP suppression,
+coordinate centroid fallbacks.
