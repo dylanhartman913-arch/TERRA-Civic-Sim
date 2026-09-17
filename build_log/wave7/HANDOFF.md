@@ -2035,3 +2035,29 @@ invariant under Spearman correlation).
 
 Known gaps: superseded goldens G/J retained, nb14 source regression risk for
 golden regeneration, amendment budget exhausted (4/4).
+
+### cross_cutting.md — committed
+
+**Commit:** `abc6bf7` — `docs/methods/cross_cutting.md`
+
+Covers: CI architecture (3 jobs — pytest, parity, manifest — in 2 classes:
+behavioral and provenance). Provenance job runs 3 scripts (check_manifest.py,
+check_dual_path.py, validate_p3_attribution.py) with documented check
+responsibilities. Build history: S10 → S11 → S12 incremental additions, each
+failure-demonstrated. Explicit boundary statement: golden fixtures do not
+validate source correctness; provenance checks do not validate engine semantics.
+
+Five digest contracts documented (state/fiscal/existing_assets/history/ag) with
+pipeline dependency map. Climate lens contract referenced.
+
+Three case studies verified against W7-5 PART 8 (lines 520-533):
+1. Pagination truncation (15,034 vs 25,868) — cross-references Pipeline C
+   Phase 1; synthesis angle on what the defect revealed about record-count and
+   slope validation.
+2. Jim Bridger identity and capacity — plant 6204 (Laramie River Station,
+   Platte) vs 8066 (Jim Bridger, Sweetwater). Three figures verified to primary
+   sources: 1,863.0 MW (6204's nameplate, wrong plant), 2,326.0 MW (8066's
+   nameplate, correct), 2,120 MW (8066's net-capability, preserved). Independent
+   identity and capacity defects documented.
+3. Python/TS initialization divergence — unconditional vs opt-in anchor/tag
+   loading, 16 fixture failures, fix at terra_engine.py:2099.
