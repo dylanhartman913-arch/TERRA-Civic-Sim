@@ -423,3 +423,27 @@ session_logs (not a narrative log), or methods (not a how-to). Leaving it at
 reference document for the entire project — not specific to a wave, method, or
 session. The `docs/README.md` index links to it directly. Keeping it at the
 docs root makes it maximally discoverable for any reader starting at docs/.
+
+---
+
+## 2026-09-17 — S14/S14a: DOR productive values are a statewide fallback, not county-sourced
+
+**Decision:** The three DOR productive-value figures used in the ag baseline
+($1,767/ac irrigated, $376/ac dryland, $126/ac grazing) are statewide
+representative values applied uniformly to all 23 counties. They are **not**
+county-level DOR assignments.
+
+**Why:** During the AG0 data pull (2026-07-19), the Wyoming DOR Property Tax
+Division website (`wyo-prop-div.wyo.gov/agricultural` and `dptax.wyo.gov`)
+failed DNS resolution. County-level productive-value tables — which vary by
+Land Resource Area (LRA) and soil class — could not be retrieved. The
+statewide representatives were taken from the DOR 2026 agricultural valuation
+study as a planning fallback. The actual DOR range is wide (grazing land alone
+spans $10–$1,006/acre across LRAs), so the uniform figures are a material
+simplification.
+
+**Follow-up:** Retrieving county-level DOR productive values should be a
+follow-up data-pull item. The DOR domain may have moved; a manual check of
+the current URL and, if available, a direct download of the LRA/soil-class
+tables per county would replace the statewide fallback. This was not attempted
+in S14 — flagged here for a future data session.

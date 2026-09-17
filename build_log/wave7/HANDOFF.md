@@ -1895,3 +1895,51 @@ rights blocked by SEO e-Permit auth, BLM grazing data missing entirely, USFS
 shapefile and RAP deferred.
 
 **All five pipelines (A–E) now committed. Next: index.md.**
+
+### index.md — committed
+
+**Commit:** `f9f487e` — `docs/methods/index.md`
+
+Covers: reading guide with per-pipeline navigation table, five-scale doctrine
+(E/Ec/S + fiscal + agricultural), capacity basis / vintage semantics (with
+Jim Bridger example), source pinning and refresh policy (7 pinned sources
+with vintages), known proxy and manual-source limitations (6 cross-cutting
+items). References only files that exist — F–I and cross_cutting.md noted as
+S15b.
+
+### Acceptance
+
+- **Plan reviewed and confirmed** before prose written ✓
+- **Pipelines A–E covered** with citation/assumption/gap discipline ✓
+- **No claim untraceable** — every citation references PIPELINES.md, the
+  manifest, network_metadata.json, HANDOFF.md session entries, DECISIONS.md,
+  or a named external source with URL/vintage ✓
+- **Gaps stated as gaps** — 4 proxy indicators, nb14 regression risk, 4
+  MANUAL_FETCH items, BLM missing, DOR statewide fallback, 2 generatorless
+  files, 11 unsourced high-leverage coefficients, 18 missing metadata keys ✓
+- **Pipeline C F2 story** written as three-phase chronology with exact numbers
+  (15,034 vs 25,868, 11.8% slope, 123/157 counties, three stale FLAGSHIP
+  values) ✓
+- **Stopped at A–E boundary** — F–I deferred to S15b ✓
+
+### Files created (6 new files in docs/methods/)
+
+```
+docs/methods/index.md                         — master index + cross-cutting doctrines
+docs/methods/pipeline_A_generator_inventory.md — EIA-860 + ATB
+docs/methods/pipeline_B_synthetic_network.md   — HIFLD + nb07 parameters
+docs/methods/pipeline_C_ees_baseline.md        — EES scoring + F2 defect history
+docs/methods/pipeline_D_action_library.md      — 55 actions + MC sensitivity
+docs/methods/pipeline_E_fiscal_ledger.md       — WY fiscal + 4 MANUAL_FETCH gaps
+```
+
+### S15b picks up at
+
+Pipeline F (anchor facilities & exposure tags — the other flagged-for-careful-
+language section, site of F1 fork story). Then G (climate/hazards), H
+(agriculture), I (engine/goldens), and `cross_cutting.md` (CI governance,
+digest discipline, three named case studies from W7-5 PART 8).
+
+**S15 complete.**
+
+---
