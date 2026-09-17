@@ -1875,3 +1875,23 @@ lifecycle_coefficients.json). Seven high-leverage unsourced coefficients
 listed with MC ranks for advisor prioritization.
 
 **Next in queue:** Pipeline E (Wyoming fiscal ledger).
+
+### Pipeline E — committed
+
+**Commit:** `658e3ef` — `docs/methods/pipeline_E_fiscal_ledger.md`
+
+Covers: WY DOR ag valuation (statewide fallback, not county-level — DNS
+failure during data pull documented as material simplification with actual
+range $10–$1,006/ac for grazing alone), BEA CAINC4 farm proprietors income
+(23/23 counties, 0.0% state-total match, Fremont anomaly cleared), NASS
+QuickStats (12/23 counties, 11 suppressed → Census COA fallback), ACS 2022
+housing baseline, W.S. 39-11-102(b) assessment rate. Fiscal coefficient
+methodology documented (county-specific mill levies, employment multipliers,
+school foundation formula).
+
+Known gaps: 4 MANUAL_FETCH items (ONRR, DOR commodity split, severance, LSO
+school finance), ~44% low-confidence rows (highest of any pipeline), WY water
+rights blocked by SEO e-Permit auth, BLM grazing data missing entirely, USFS
+shapefile and RAP deferred.
+
+**All five pipelines (A–E) now committed. Next: index.md.**
