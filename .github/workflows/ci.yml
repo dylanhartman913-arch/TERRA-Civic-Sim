@@ -37,12 +37,17 @@ jobs:
         with:
           python-version: "3.13"
 
-      - name: Check manifest completeness and dual-path identity
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Check manifest completeness, dual-path identity, and P3 attribution
         run: |
           rc=0
           python scripts/check_manifest.py || rc=1
           echo ""
           python scripts/check_dual_path.py || rc=1
+          echo ""
+          python scripts/validate_p3_attribution.py || rc=1
           exit $rc
 
   parity:

@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "generated_by": "scripts/seed_manifest.py",
-  "file_count": 63,
+  "file_count": 64,
   "files": [
     {
       "path": "data/processed/generators_with_costs.parquet",
@@ -747,6 +747,25 @@
       "tracked": true,
       "dual_path": "data/processed/mw_ecoregions.geojson",
       "dual_path_relationship": "promotion"
+    },
+    {
+      "path": "data/processed/mw_tract_ees_scores.parquet",
+      "pipeline": "C",
+      "generator": "08b_ees_baseline.ipynb",
+      "generator_commit": null,
+      "sha256": "853aff492b1865514832a97120e1175f08f85f400d1634353c4249d43de25c58",
+      "record_count": 1676,
+      "last_built": "2026-09-13",
+      "class": "live",
+      "tracked": true,
+      "note": "Newly tracked in S12 for P3 attribution validator. 330 KB, 1676 tracts."
     }
-  ]
+  ],
+  "normalization_constants": {
+    "study_area_max_gen_cap_mw": 5796.9,
+    "ec_slope": 0.0002875099909721863,
+    "baseline_source": "data/processed/mw_tract_ees_scores.parquet",
+    "attribution_source": "generator_anchor_attribution_audit.csv",
+    "note": "F2 was caused by a stale baseline with max 5184.8 MW / slope 3.2145e-4. A data refresh that changes these values should trigger re-verification via validate_p3_attribution.py."
+  }
 }

@@ -81,6 +81,9 @@ data/processed/figures/14_lmp_map.html
 !data/processed/county_crosswalk.parquet
 !data/processed/generators_with_costs.parquet
 !data/processed/synthetic_plant_assignments.parquet
+# P3 validator (validate_p3_attribution.py) requires tract-level baseline
+# to cross-check normalization slope and attribution bounds. 330 KB.
+!data/processed/mw_tract_ees_scores.parquet
 
 # ── Notebooks with embedded large outputs ────────────────────────────────────
 notebooks/14_e4st_results.ipynb

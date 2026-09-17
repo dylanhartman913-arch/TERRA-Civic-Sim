@@ -1233,3 +1233,168 @@ ee46a94  fix(S11): run manifest + dual-path checks in single step (both report)
 **S11 complete.**
 
 ---
+
+## S12 — 2026-09-16 — Stage P3 Amendment: Attribution Slope Check (W7-2b)
+
+**Objective:** Validate attribution against the baseline the engine ACTUALLY
+LOADS, and assert the normalization slopes match. Amendment 1c — the general
+form of F2.
+
+### One-line check: generator_capacity_comparison.py
+
+**Answer:** NOT a promotion-completeness check. It is a one-time analysis
+script that compares generator capacity data between an existing and staged
+inventory, producing a CSV diff report. It also exports `county_generator_term()`
+and `study_tracts()` which `build_generator_attribution.py` imports for Ec
+normalization. S11's rename from `provenance_diff.py` was appropriate. No
+action needed — flag for a future filler session only if the name needs
+further refinement (it does not; "generator_capacity_comparison" accurately
+describes what the script does).
+
+### Part (i): attribution ≤ baseline Ec_gencap per county
+
+**Validator:** `scripts/validate_p3_attribution.py`
+
+Loads the stored baseline tract data (`mw_tract_ees_scores.parquet` — the
+S7a nb08b output underlying the county CSV the engine reads at runtime).
+Computes county-level population-weighted Ec_gencap contribution (Ec_gencap/6).
+Asserts that matched facility attribution deltas never exceed this value.
+
+**Result: PASS.** No county's matched attribution exceeds its baseline
+Ec_gencap contribution.
+
+**Worst ratio: 1.000000** (14 counties, including Crook, Hot Springs,
+and Sheridan). This means all generators in those 14 counties are fully
+accounted for by matched anchor facilities — complete coverage.
+
+**Discrepancy with ticket's 0.894 reference:** The ticket stated the worst
+ratio was 0.894 for Crook, Hot Springs, and Sheridan. This value is actually
+the ratio `old_max / new_max = 5184.8 / 5796.9 = 0.894` — a global
+normalization constant (the pre-S7a to post-S7a max gen_cap ratio), not a
+per-county attribution coverage ratio. The three named counties are among
+14 counties at ratio 1.0 on the current baseline because they have very few
+generators and all are matched to anchors. The per-county attribution bounds
+check is the correct Part (i) validation — no county exceeds, so the check
+passes.
+
+### Part (ii): normalization slope match
+
+**Tolerance: 1% relative.** Justified:
+- F2 was 11.8% slope mismatch → caught with 10× headroom
+- Floating-point jitter is <0.001% → no false positives
+- 1% corresponds to ~58 MW change in study-area max — meaningful enough to
+  represent a real data change
+- Matches the tolerance used in S7a Step 6 (HANDOFF.md)
+
+**Result on current baseline: PASS.**
+- Baseline slope (from stored parquet): 2.875099909721863e-04
+- Attribution slope (from audit CSV): 2.875099909721000e-04
+- Difference: 0.000000%
+
+### Step 4: Regression test (acceptance test)
+
+**Old baseline (pre-S7a) — FAILS as required:**
+```
+$ python scripts/validate_p3_attribution.py --old-baseline-slope 3.2145e-4
+
+  REGRESSION MODE: using override slope 3.214500e-04
+  (simulating pre-S7a baseline)
+
+  override slope:     3.214500000000000e-04
+  attribution slope:  2.875099909721000e-04
+  difference:         11.8048%
+  tolerance:          1.0%
+
+  [FAIL] Slope mismatch: 11.8048% > 1.0% tolerance
+
+RESULT: 1 CHECK(S) FAILED
+Exit code: 1
+```
+
+**Current baseline — PASSES:**
+```
+$ python scripts/validate_p3_attribution.py
+
+  baseline slope:     2.875099909721863e-04
+  attribution slope:  2.875099909721000e-04
+  difference:         0.000000%
+  tolerance:          1.0%
+
+  [PASS] Slopes match within 1.0% tolerance
+
+RESULT: ALL CHECKS PASSED
+Exit code: 0
+```
+
+**Both results demonstrated with actual execution output.**
+The old-baseline slope (3.2145e-4) is derived from max gen_cap 5,184.8 MW
+(the stale pre-S7a inventory), as documented in S7a's HANDOFF entry.
+
+### Normalization constants in manifest
+
+Added `normalization_constants` to `data/manifest/manifest.json`:
+```json
+{
+  "study_area_max_gen_cap_mw": 5796.9,
+  "ec_slope": 2.875099909721863e-04,
+  "baseline_source": "data/processed/mw_tract_ees_scores.parquet",
+  "attribution_source": "generator_anchor_attribution_audit.csv"
+}
+```
+
+The P3 validator cross-checks these against the stored baseline and fails
+if they diverge — a future data refresh that changes the normalization will
+trip this check.
+
+### Newly tracked file
+
+`data/processed/mw_tract_ees_scores.parquet` (330 KB, 1,676 tracts) —
+previously blocked by `*.parquet` gitignore rule. Excepted in `.gitignore`
+and added to manifest (entry 64). Required by P3 validator on CI.
+
+### Before/after hashes
+
+| File | Before | After |
+|------|--------|-------|
+| `data/manifest/manifest.json` | `51d1a4d4...` (S11) | `7c768270...` |
+| `data/processed/mw_tract_ees_scores.parquet` | N/A (untracked) | `853aff49...` |
+
+### CI wiring
+
+Added P3 validator to the manifest CI job (`.github/workflows/ci.yml`):
+- `pip install -r requirements.txt` added to manifest job (P3 validator
+  needs pandas/numpy/pyarrow)
+- `python scripts/validate_p3_attribution.py` runs alongside
+  `check_manifest.py` and `check_dual_path.py`; step fails if any check fails
+
+### Test results
+
+- Python (pytest): 230 passed, 0 failed ✓
+- Manifest + dual-path: PASSED ✓
+- P3 validator: ALL CHECKS PASSED ✓
+
+### Files touched
+
+- `scripts/validate_p3_attribution.py` — new (P3 validator)
+- `data/manifest/manifest.json` — added normalization_constants + tract parquet entry
+- `data/processed/mw_tract_ees_scores.parquet` — newly tracked
+- `.gitignore` — added `!data/processed/mw_tract_ees_scores.parquet` exception
+- `.github/workflows/ci.yml` — added pip install + P3 validator to manifest job
+- `build_log/wave7/HANDOFF.md` — this entry
+
+### Critical path status
+
+**S10 → S11 → S12 critical path is CLOSED.** The three-session sequence
+delivers:
+- S10: CI pipeline running pytest + TS parity on every push
+- S11: Provenance manifest + dual-path identity check + manifest CI job
+- S12: P3 attribution slope check with manifest-stored normalization constants
+
+A data refresh that changes the generator inventory or EES normalization now
+triggers three independent CI failures: manifest hash mismatch (S11),
+dual-path identity failure (S11), and normalization slope mismatch (S12).
+This is the general form of F2 prevention.
+
+**S12 complete. Do not start S13.**
+
+---
