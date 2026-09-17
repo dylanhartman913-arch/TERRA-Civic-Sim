@@ -2061,3 +2061,50 @@ Three case studies verified against W7-5 PART 8 (lines 520-533):
    identity and capacity defects documented.
 3. Python/TS initialization divergence — unconditional vs opt-in anchor/tag
    loading, 16 fixture failures, fix at terra_engine.py:2099.
+
+### index.md — updated
+
+**Commit:** (this commit) — `docs/methods/index.md`
+
+Updated the pipeline navigation table: replaced the F–I placeholder row
+("S15b — not yet written") with four individual rows linking to the new
+pipeline documents. Updated the cross_cutting.md reference from future-tense
+to present-tense.
+
+### Acceptance
+
+- **Plan reviewed and confirmed** before prose written ✓
+- **Pipelines F–I covered** with citation/assumption/gap discipline ✓
+- **Pipeline F's F1 chronology** matches Pipeline C's F2 chronology in
+  structure (three phases + what remains unfixed + prevention) ✓
+- **cross_cutting.md's three case studies** verified against W7-5 PART 8
+  lines 520-533 (not assumed from memory) ✓
+- **Jim Bridger case study** verified to five primary sources:
+  retirement_schedule_audit.csv, generator_anchor_match_audit.csv,
+  generator_anchor_attribution_audit.csv, county_card_capacity_audit.csv,
+  DECISIONS.md S6. Three figures mapped precisely (1,863/2,326/2,120) ✓
+- **CI architecture** described by actual check count (3 jobs, 3 provenance
+  scripts, check-level inventory table), not by aspirational target ✓
+- **Strict 1:1 file-commit / HANDOFF-entry cadence** maintained throughout ✓
+- **No claim without a citation; no gap silently omitted** ✓
+
+### Files created (5 new + 1 updated in docs/methods/)
+
+```
+docs/methods/pipeline_F_anchor_facilities.md  — anchor registry + F1 fork chronology
+docs/methods/pipeline_G_climate_hazards.md    — CMIP6 projections + exogeneity
+docs/methods/pipeline_H_agriculture.md        — WY ag baseline + D5 gaps
+docs/methods/pipeline_I_engine_goldens.md     — 16 goldens + 5 digest contracts + MC/sweep
+docs/methods/cross_cutting.md                 — CI architecture + 3 case studies
+docs/methods/index.md                         — updated: F–I rows + cross_cutting reference
+```
+
+### Methods documentation (W7-5) status
+
+**Complete.** All nine pipelines (A through I) and cross-cutting governance are
+documented in `docs/methods/`. Every pipeline has: data sources with vintages,
+processing methodology, numbered assumptions, and known gaps. The three W7-5
+PART 8 case studies are documented in `cross_cutting.md` with primary-source
+verification.
+
+**S15b complete.**

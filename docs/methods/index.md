@@ -15,11 +15,13 @@ pathway. Start with the pipeline that corresponds to your question:
 | C | `pipeline_C_ees_baseline.md` | How are E/Ec/S scores computed? What was the F2 normalization defect? What proxy indicators remain? |
 | D | `pipeline_D_action_library.md` | How do action coefficients work? Which are well-sourced and which are not? What did the MC sensitivity analysis find? |
 | E | `pipeline_E_fiscal_ledger.md` | How does the Wyoming fiscal layer work? What data couldn't be retrieved? |
-| F–I | *(S15b — not yet written)* | Anchor facilities, climate/hazards, agriculture, engine/goldens |
+| F | `pipeline_F_anchor_facilities.md` | How are anchor facilities identified? What was the F1 capacity fork? How are exposure tags assigned? |
+| G | `pipeline_G_climate_hazards.md` | Where do the climate projections come from? What is the exogeneity principle? What back-cast validation was done? |
+| H | `pipeline_H_agriculture.md` | How is the agriculture baseline built? What data is missing (BLM, DOR, water)? What are the stocking-rate assumptions? |
+| I | `pipeline_I_engine_goldens.md` | What do the 16 golden fixtures test? What are the five digest contracts? What did the MC/sweep find? |
 
-Cross-cutting topics (CI governance, digest discipline, the three named case
-studies from the W7 audit) will be covered in `cross_cutting.md` in S15b,
-after all nine pipeline sections are complete.
+Cross-cutting topics — CI governance, digest discipline, and three named case
+studies from the W7 audit — are covered in `cross_cutting.md`.
 
 **Cross-references.** These documents explain *why* and *what it means*. For
 the *what and where* — file paths, generators, SHA-256 hashes, tracking
