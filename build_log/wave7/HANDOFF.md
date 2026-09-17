@@ -2108,3 +2108,107 @@ PART 8 case studies are documented in `cross_cutting.md` with primary-source
 verification.
 
 **S15b complete.**
+
+---
+
+## S16 — 2026-09-17 — Release Close (W7-6)
+
+**Objective:** Tagged release v0.7.0 with an aggregated verdict; every claim
+in the closeout document checked against the repo, not self-reported.
+
+**Blocked-by:** S10–S15b — all confirmed complete.
+
+---
+
+### Part 1 — Full parity sweep
+
+#### Python test suite
+
+```
+Command: python -m pytest tests/
+Result:  230 passed in 127.46s
+```
+
+**Matches HANDOFF claim** (S11+: 230/230). No discrepancy. ✓
+
+#### TS parity suite
+
+```
+Command: cd terra-app && npm run parity  (vitest run tests/parity/)
+Result:  Test Files 33 passed (33) | Tests 351 passed (351) — 31.24s
+```
+
+**Matches HANDOFF claim** (S3 onward: 351/351, 33 files). No discrepancy. ✓
+
+#### Cross-runtime parity suite
+
+The cross-runtime parity is enforced through the TS parity suite itself
+(`vitest run tests/parity/`): the 33 test files check TS engine digests
+against the same shared fixture values Python tests check. There is no
+separate invocation — the 351/351 result above is the cross-runtime parity
+result. **351/351**. ✓
+
+#### CI run — 4d1e8c2 (current HEAD)
+
+**Run URL:** https://github.com/dylanhartman913-arch/TERRA-Civic-Sim/actions/runs/35261858636
+
+| Job | Status | Completed at |
+|-----|--------|-------------|
+| TS parity (npm run parity) | ✅ success | 2026-09-17T18:57:09Z |
+| Python tests (pytest) | ✅ success | 2026-09-17T19:03:19Z |
+| Manifest + dual-path checks | ✅ success | 2026-09-17T18:56:54Z |
+
+All three jobs green on commit `4d1e8c2`. ✓
+
+---
+
+### Part 1 — Flag: S14–S15b push gap (same class as F3/F5)
+
+**Finding:** At session start, `origin/main` was at `63bdf18` (S13a), while
+local `main` was at `4d1e8c2` (S15b) — **22 commits ahead, never pushed**.
+The S14, S14a, S15, and S15b work (domain-review packet + full nine-pipeline
+methods documentation) had existed only in the local working tree since
+2026-09-16/17.
+
+**Exposure window:** S13a completed 2026-09-16; S15b completed 2026-09-17.
+Approximately one day of committed work was unprotected from local-only loss.
+
+**What was at risk:** `docs/methods/` (9 pipeline docs + index +
+cross_cutting.md), `docs/review/D5_forage_packet.md` (not yet committed —
+still untracked), `build_log/wave7/DECISIONS.md` and `HANDOFF.md` appends
+through S15b.
+
+**Why this happened:** Sessions S14/S14a/S15/S15b are documentation-only
+sessions. No CI-gated data or test file was touched, so there was no
+push-triggering check at the end of each session. The S13a HANDOFF noted "push
+confirmed" and the S15b HANDOFF recorded commits with SHAs but did not verify
+`origin/main` alignment.
+
+**Defect class:** This is structurally identical to F3 (untracked worktree far
+from backup) and F5 (governing docs untracked) from Horizon 1 — committed but
+unprotected work that would be lost on local disk failure or accidental reset.
+F3/F5 applied to content that was never committed; this is content that was
+committed but never replicated to the remote.
+
+**Resolution:** All 22 commits pushed in this session (S16 Part 1). Diff was
+13 doc files only — zero Python, TS, or data changes. CI passed immediately.
+
+**Flag for closeout (Part 2):** The v0.7.0 closeout document should note this
+as a standing protocol gap: documentation-only sessions have no automatic push
+trigger. A session-close checklist item — "push to origin before ending the
+session" — should be added to the Wave 7 governing documents to prevent
+recurrence in W7-2 onward.
+
+---
+
+### Part 1 — Acceptance results
+
+- Python suite: **230/230** (command and output recorded above) ✓
+- TS parity suite: **351/351** (33 files) (command and output recorded above) ✓
+- Cross-runtime parity: **351/351** (enforced via TS parity suite) ✓
+- No count mismatch against HANDOFF-claimed values ✓
+- Push gap flagged explicitly (not smoothed over) ✓
+- CI run URL: [35261858636](https://github.com/dylanhartman913-arch/TERRA-Civic-Sim/actions/runs/35261858636)
+  — all three jobs green on `4d1e8c2` ✓
+
+**Part 1 complete. Proceeding to Part 2.**
