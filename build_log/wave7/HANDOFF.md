@@ -1972,3 +1972,25 @@ stale FLAGSHIP_ASSETS list during S7a re-run, caught and patched.
 Known gaps: nb14 regression risk, flood zone low confidence (county-level NRI,
 not parcel-level NFHL), API key dependencies (BEA/Census), CBP suppression,
 coordinate centroid fallbacks.
+
+### Pipeline G — committed
+
+**Commit:** `ae13747` — `docs/methods/pipeline_G_climate_hazards.md`
+
+Covers: NOAA CRIS LOCA2 (CMIP6, 27-model ensemble, SSP2-4.5/SSP3-7.0, 48,000
+features), PRISM 4km back-cast validation, IPCC AR6 WG1 Ch.11 uncertainty bands,
+FEMA NRI v1.20.0, USFS WRC (2026-04-15), MTBS (2000-2024), WY/CO state
+demography and ACS 2022 trend extrapolation for population projections.
+
+Processing documented: CRIS pull → decadal-to-window averaging → era
+interpolation → uncertainty banding; C2.1 baseline back-derivation; hazard
+summary assembly. 39,888 total projection records (30,144 medium + 9,744 low
+confidence).
+
+Exogeneity principle documented with 6-test enforcement suite (EX-1–EX-6) +
+Python structural enforcement (`sample_hazard_events` state deletion).
+
+Known gaps: Eagle CO back-cast failure (2.58°F, LOCA2 mountain cold bias),
+p10/p90 estimated from literature not member-level, 4 MANUAL_FETCH items
+(SNOTEL, WRC fire, NOAA Atlas, design storm), county_climate_baseline.json
+50+ MB in LFS.
