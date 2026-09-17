@@ -1861,3 +1861,17 @@ water_stress, development_pressure, has_university), nb14 regression risk,
 2 untracked spatial hierarchy parquets, HIFLD live-fetch dependency.
 
 **Next in queue:** Pipeline D (action library & material coefficients).
+
+### Pipeline D — committed
+
+**Commit:** `6be9dac` — `docs/methods/pipeline_D_action_library.md`
+
+Covers: 55 actions (schema 3.3), 22 disturbances, 5 categories. EES effects
+model documented with code reference (`terra_engine.py:2626–2638`): linear in
+magnitude, spatially homogeneous coefficients. ATB 2024 and USDA EQIP as
+primary sources. Full MC sensitivity results (10k iterations, top 5 by
+Spearman ρ). Two generator gaps stated (ees_scenario_profiles.json,
+lifecycle_coefficients.json). Seven high-leverage unsourced coefficients
+listed with MC ranks for advisor prioritization.
+
+**Next in queue:** Pipeline E (Wyoming fiscal ledger).
