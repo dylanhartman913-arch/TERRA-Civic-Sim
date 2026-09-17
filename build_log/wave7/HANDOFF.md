@@ -2380,3 +2380,49 @@ was confirmed with `git rev-parse` afterward, not assumed.
 - plus this HANDOFF entry
 
 **Push and tag confirmation:** recorded in the closing block below.
+
+### S16a closing block — push and tag confirmation (verified, not asserted)
+
+Commits pushed **before** the tag was created, and alignment confirmed against
+the remote rather than from local refs:
+
+```
+$ git push origin main
+   d072b83..b494393  main -> main
+
+$ git rev-parse HEAD          b4943930f66cc33982aaeba1f994039818daba0e
+$ git rev-parse origin/main   b4943930f66cc33982aaeba1f994039818daba0e
+                              IDENTICAL — B-3 step 2 satisfied
+
+$ git ls-remote origin refs/heads/main
+b4943930f66cc33982aaeba1f994039818daba0e	refs/heads/main
+```
+
+Tag then created on that confirmed-pushed commit and pushed:
+
+```
+$ git rev-list -n1 v0.7.0     b4943930f66cc33982aaeba1f994039818daba0e
+$ git push origin v0.7.0      * [new tag]  v0.7.0 -> v0.7.0
+
+$ git ls-remote --tags origin v0.7.0
+a136e16f65475156e10f2e5483e9e5089c72ca49	refs/tags/v0.7.0
+$ git rev-parse v0.7.0
+a136e16f65475156e10f2e5483e9e5089c72ca49    (matches remote tag object)
+```
+
+**Both landed.** Annotated tag object `a136e16`, tagging commit `b494393`, which
+is `origin/main`. Verified with `git ls-remote` — the remote's own answer — not
+with local refs that a failed push would leave stale.
+
+**Not verified:** CI status for `b494393`. `gh` is unauthenticated in this
+environment (`gh auth status` → "not logged into any GitHub hosts"), so the
+Actions run triggered by this push could not be checked. All six gates were run
+locally and are recorded above. Stated rather than assumed.
+
+**Working tree at session end:** 3 untracked paths, all dispositioned —
+`data/staging/ba_territories.geojson` and
+`data/staging/hifld_control_areas_2021-12-08/` (D-13 → B-4),
+`notebooks/08b_ees_baseline_executed.ipynb` (D-15 → B-8, byte-identical
+duplicate). No undispositioned untracked file remains.
+
+**S16a complete. F8-LIVE closed. v0.7.0 released.**
