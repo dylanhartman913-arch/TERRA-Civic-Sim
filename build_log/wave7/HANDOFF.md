@@ -1839,3 +1839,25 @@ external methods doc.
 
 **Next in queue:** Pipeline C (EES capital baseline — highest-stakes section,
 site of F2 defect history).
+
+### Pipeline C — committed
+
+**Commit:** `98c9787` — `docs/methods/pipeline_C_ees_baseline.md`
+
+Highest-stakes section. Covers: ACS 2022 tract data, TIGER 2020, EIA power
+plants via Pipeline A, HIFLD FeatureServer (live fetch), EPA Level III
+Ecoregions. Full scoring methodology documented: Mountain West normalization,
+population weighting, Ec_gencap slope formula (`10 / max / 6`), six Ec
+sub-indicators, tract exclusion rule (>3 missing).
+
+**F2 defect history** written as a three-phase chronology: (1) pagination
+truncation producing 15,034 vs 25,868 records and 11.8% slope mismatch,
+(2) S7a repair on complete inventory, 123/157 counties shifted, (3) F14
+second-order regression from nb14 stale FLAGSHIP_ASSETS. Prevention section
+documents the three CI checks (manifest hash, dual-path identity, P3 slope).
+
+Known gaps: 4 proxy indicators awaiting replacement (eco_base_score,
+water_stress, development_pressure, has_university), nb14 regression risk,
+2 untracked spatial hierarchy parquets, HIFLD live-fetch dependency.
+
+**Next in queue:** Pipeline D (action library & material coefficients).
