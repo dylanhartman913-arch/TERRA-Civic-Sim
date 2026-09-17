@@ -2017,3 +2017,21 @@ reinvasion). Confidence breakdown: 621 fields — 6.3% high, 66.7% medium,
 Known gaps: BLM entirely missing (largest gap), DOR statewide only, water null,
 cattle suppression (3 counties null + 7 suppressed), BEA API key, D5 domain
 review not yet conducted.
+
+### Pipeline I — committed
+
+**Commit:** `db6e9db` — `docs/methods/pipeline_I_engine_goldens.md`
+
+Covers: 16 golden fixtures (A–N, with G→G' and J→J' amendments, 4/4 budget
+used), fixture registry v1.1, five digest contracts (state, fiscal,
+existing_assets, history, ag) documented with introduction timeline. Climate
+lens contract documented (A–L historical only, M three-lens). Full parity test
+structure: 230 Python + 351 TS, cross-runtime guarantee explained.
+
+MC sensitivity: 10k iterations, top 5 by Spearman ρ, 11/15 highest-leverage
+unsourced. Magnitude sweep: 30×7 grid. Both recomputed on corrected baseline
+(S8), zero rank changes, structural stability explained (uniform Ec shift,
+invariant under Spearman correlation).
+
+Known gaps: superseded goldens G/J retained, nb14 source regression risk for
+golden regeneration, amendment budget exhausted (4/4).
