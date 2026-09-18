@@ -2426,3 +2426,65 @@ locally and are recorded above. Stated rather than assumed.
 duplicate). No undispositioned untracked file remains.
 
 **S16a complete. F8-LIVE closed. v0.7.0 released.**
+
+---
+
+## S16a addendum — 2026-09-17 — CI verified; Wave 7 closure conditions recorded
+
+### CI status — the S16a gap closed
+
+S16a reported CI as unverified because `gh` is unauthenticated here. That was an
+incomplete answer, not a real limit: **the repository is public, so the
+unauthenticated REST API answers the question directly.**
+
+| Commit | Run | Status |
+|--------|-----|--------|
+| `0e1ff78` (HEAD) | 35288564989 | ✅ success |
+| **`b494393` (tagged v0.7.0)** | **35288519583** | **✅ success** |
+| `d072b83` (S16 Part 1) | 35263031192 | ✅ success |
+| `4d1e8c2` (S15b) | 35261858636 | ✅ success |
+
+All three jobs green on the tagged commit: TS parity ✓, Python tests ✓,
+Manifest + dual-path checks ✓ (verified per-step via the `/jobs` endpoint).
+
+`d072b83` is now confirmed too — S16 Part 1 could only reason that its
+docs-only diff made CI risk nil.
+
+**Bound on this check.** Job logs require auth (logs endpoint → HTTP 403), so CI
+test *counts* were not read. That the new 8-test gate executed in CI is
+established by construction: `git ls-tree -r b494393` contains
+`terra-app/tests/parity/f8-store-drought-sites.test.ts`, and the workflow runs
+`npm run parity` = `vitest run tests/parity/`. Green over that tree means those
+8 tests passed. Inference from verified facts, labelled as inference.
+
+### Part F added to the closeout — Wave 7 closure conditions
+
+Five items now carry explicit dispositions with named closure conditions
+(`docs/closeouts/v0.7.0.md`, Part F). None exits silently.
+
+| # | Item | Blocked on | Closable by a session? |
+|---|------|-----------|------------------------|
+| C-1 | W7-3 rulebook extraction | nothing | **Yes — dispatch it** |
+| C-2 | D5 domain review conducted | a human domain expert | **No** |
+| C-3 | BLM manual pull | a human at the BLM portal | **No** |
+| C-4 | D4 canvas-performance disposition | real GPU hardware | **No** |
+| C-5 | B-11 comparison-mode observability | a product call | **Yes, after that call** |
+
+**Recorded plainly:** four of the five cannot be closed by any amount of model
+effort. C-2 needs someone who has run cattle in those counties; C-3 needs a
+person at a government portal with no API; C-4 needs hardware this environment
+does not have. C-4 is additionally carried **in knowing violation** of
+`Wave7_roadmap.md` PART 7's "D4 may not be carried unchanged through another
+closeout" — stated rather than smoothed over, because carrying it silently a
+fourth time is what that prohibition exists to prevent.
+
+An explicit recorded decision to descope C-2/C-3/C-4 out of Wave 7 is an
+acceptable disposition. A seventeenth session in which they go unmentioned is
+not.
+
+**The v0.7.0 tag was deliberately NOT moved** to absorb Part F. It had already
+been recreated once during an active CHANGES REQUIRED state; moving it again for
+post-release documentation would make its meaning depend on when it was read.
+`v0.7.0` marks the released tree — Part F is what comes after it.
+
+**S16a addendum complete.**
