@@ -2554,10 +2554,27 @@ attempting C-2/C-3/C-4 (not closable by any session) was maintained.
 Pushed to `origin/main`. Alignment confirmed with `git rev-parse HEAD` vs.
 `git rev-parse origin/main` per B-3.
 
-### CI verification
+### CI verification — verified, not asserted
 
-<CI verification method and result recorded here after push — see S16a's
-public-repo unauthenticated REST API method, applied the same way rather than
-stopping at "unverified.">
+Per S16a's method (this repo is public, so the unauthenticated REST API
+answers CI status directly — `gh` remaining unauthenticated is not a reason to
+stop at "unverified"):
+
+```
+$ curl -s https://api.github.com/repos/dylanhartman913-arch/TERRA-Civic-Sim/commits/f87894d9e146fc9bc6ecbe37f8f65affad1541f8/check-runs
+
+Python tests (pytest)          | completed | success
+Manifest + dual-path checks    | completed | success
+TS parity (npm run parity)     | completed | success
+```
+
+All three jobs green on the pushed commit, run
+`https://github.com/dylanhartman913-arch/TERRA-Civic-Sim/actions/runs/35306879783`.
+Checked via the `/check-runs` endpoint against the exact commit SHA
+(`f87894d`) that `git rev-parse HEAD` and `git rev-parse origin/main` both
+confirmed as identical above — not inferred from a branch-tip query that could
+have drifted. This is a docs-only change (no code paths touched), so a clean
+run here confirms the checks executed and passed, not that they exercised new
+logic.
 
 **S16b complete. C-1 closed under the scope stated above.**
