@@ -23,6 +23,11 @@ pathway. Start with the pipeline that corresponds to your question:
 Cross-cutting topics — CI governance, digest discipline, and three named case
 studies from the W7 audit — are covered in `cross_cutting.md`.
 
+For the standing orchestration rules that govern how sessions in this project
+are dispatched and reviewed (R1–R18), see `RULEBOOK.md` — the canonical,
+single-source home for that rule text, extracted verbatim from
+`docs/roadmaps/Wave 2-6 Roadmaps.md`.
+
 **Cross-references.** These documents explain *why* and *what it means*. For
 the *what and where* — file paths, generators, SHA-256 hashes, tracking
 status — see `docs/PIPELINES.md`. For the manifest of every runtime file and
@@ -131,3 +136,4 @@ any reader evaluating the strength of TERRA's evidence base:
 | `MANUAL_FETCH.md` | Manual fetch log from `23_climate_projection_pull.ipynb` — records data items requiring human download |
 | `session_config.md` | Session config schema and examples — the JSON format for workshop customisation |
 | `TERRA_physical_constraints_data_scoping.md` | Data scoping roadmap for the physical-constraints plugin (P-track, post-W7) |
+| `RULEBOOK.md` | Canonical R1–R18 standing orchestration rules, extracted verbatim from `docs/roadmaps/Wave 2-6 Roadmaps.md` (W7-3 / C-1) |

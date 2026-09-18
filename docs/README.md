@@ -20,7 +20,7 @@ Plans and scope documents describing what is to be built.
 
 | File | Wave | What it is |
 |------|------|-----------|
-| `Wave 2-6 Roadmaps.md` | W2–W6 | **Authoritative source for R1–R18 standing rules** (per the Sept 2026 audit). Contains the Wave 2 replan, Waves 2–6 session prompts, Gate V2/V3 checklists, and the accumulated R1–R18 protocol rules that govern how all waves are executed. |
+| `Wave 2-6 Roadmaps.md` | W2–W6 | **Historical record of R1–R18 rule accumulation.** Contains the Wave 2 replan, Waves 2–6 session prompts, Gate V2/V3 checklists, and the narrative of how the R1–R18 protocol rules were added over time. As of W7-3/C-1, the rule *text* itself is canonical in `docs/methods/RULEBOOK.md` — this file points there rather than carrying a second copy. |
 | `Wave4_roadmap.md` | W4 | Formatted PM operating manual for Wave 4 — ticket scope, dispatch conditions, and PART 0–8 execution guide as actually used. **Not a duplicate of Wave 2-6 Roadmaps.md** (see note below). |
 | `Wave5_roadmap.md` | W5 | Formatted PM operating manual for Wave 5. Same relationship to Wave 2-6 Roadmaps.md as Wave4_roadmap.md. |
 | `Wave7_roadmap.md` | W7 | Current wave roadmap — Parity CI, Provenance CI, and Source-Contract Closure. |

@@ -2488,3 +2488,76 @@ post-release documentation would make its meaning depend on when it was read.
 `v0.7.0` marks the released tree — Part F is what comes after it.
 
 **S16a addendum complete.**
+
+---
+
+## S16b — 2026-09-17 — W7-3 / C-1: rulebook extraction
+
+**Objective.** Close C-1 from Part F's disposition table: give R1–R18 a
+tracked, canonical home outside `docs/roadmaps/Wave 2-6 Roadmaps.md`.
+
+### What was done
+
+1. **Extraction.** All 18 rules located in `Wave 2-6 Roadmaps.md` at three
+   run-on paragraphs (lines 200, 305, 383 — R1–R8, R9–R14, R15–R18
+   respectively) and split at each rule's `R<n>. ` boundary. Text copied
+   verbatim, byte-for-byte, into `docs/methods/RULEBOOK.md`, grouped under
+   their three source sections with a note naming each section's origin.
+
+2. **Cross-check (grep, not by eye).** `grep -oE "R<n>\. "` run for each
+   n in 1–18 against the source: each pattern occurs exactly once, confirming
+   one definition per rule. The one apparent second hit (`R9.` at line 338)
+   was read in context and is a cross-reference ("re-enters at Stage 0 under
+   R9. Pipeline: ...") — a sentence boundary, not a second rule body. The same
+   check against `RULEBOOK.md` confirms all 18 present exactly once there too.
+
+3. **De-duplication.** The three rule paragraphs in `Wave 2-6 Roadmaps.md`
+   were replaced with short pointers ("canonical text now lives in
+   `docs/methods/RULEBOOK.md`. This is a pointer, not a second copy") — unlike
+   the Wave4/5_roadmap.md non-duplication resolution from S13, this is a
+   genuine single-location consolidation, not two documents serving different
+   purposes.
+
+4. **Index updates.** `docs/methods/index.md`'s reading guide and reference
+   table now point to `RULEBOOK.md`. `docs/README.md`'s description of
+   `Wave 2-6 Roadmaps.md` was corrected from "authoritative source for R1–R18"
+   to "historical record of accumulation... rule text itself is canonical in
+   `docs/methods/RULEBOOK.md`."
+
+5. **Repo-wide grep for other references.** `Wave5_roadmap.md:17` mentions
+   "R1–R8 carry forward unchanged" as wave-scope narrative, not a location
+   claim — left as-is. `Wave7_roadmap.md` (lines 83, 447) states the original,
+   fuller PART 6 spec (`docs/orchestration/orchestration_rules.md`, 8 fields
+   per rule) — that is a roadmap document describing what was asked for, not a
+   record of current state, so it was **not** rewritten; the gap between what
+   PART 6 asked for and what this session delivered is recorded explicitly
+   instead (see below and the closeout addendum).
+
+### Scope boundary — what this session did NOT do
+
+This ticket's dispatch prompt scoped C-1 to verbatim extraction only. The
+fuller structure `Wave7_roadmap.md` PART 6 and Part F's own C-1 closure
+condition specify — stable ID, originating artifact/commit, chronological
+amendments, current effective text, enforcement mechanism, evidence required,
+retirement condition, 8 fields per rule, at `docs/orchestration/
+orchestration_rules.md` — was **not** built. `docs/methods/RULEBOOK.md`
+contains the verbatim rule text only, with a scope note at its end stating
+this explicitly so a future reader does not mistake it for PART 6's fuller
+deliverable. Per standing rules, stopping at the ticket boundary rather than
+attempting C-2/C-3/C-4 (not closable by any session) was maintained.
+
+### Commit and push
+
+- `<S16b-commit>` — docs(S16b): W7-3/C-1 — extract R1-R18 into
+  docs/methods/RULEBOOK.md; canonical, single-location
+
+Pushed to `origin/main`. Alignment confirmed with `git rev-parse HEAD` vs.
+`git rev-parse origin/main` per B-3.
+
+### CI verification
+
+<CI verification method and result recorded here after push — see S16a's
+public-repo unauthenticated REST API method, applied the same way rather than
+stopping at "unverified.">
+
+**S16b complete. C-1 closed under the scope stated above.**
