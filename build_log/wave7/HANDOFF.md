@@ -2548,7 +2548,7 @@ attempting C-2/C-3/C-4 (not closable by any session) was maintained.
 
 ### Commit and push
 
-- `<S16b-commit>` — docs(S16b): W7-3/C-1 — extract R1-R18 into
+- `cf75858` — docs(S16b): W7-3/C-1 — extract R1-R18 into
   docs/methods/RULEBOOK.md; canonical, single-location
 
 Pushed to `origin/main`. Alignment confirmed with `git rev-parse HEAD` vs.
