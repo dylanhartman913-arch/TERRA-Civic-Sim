@@ -2939,3 +2939,18 @@ Environment: Expo Go plus an orphaned `serve.mjs` on :8081 are exhausting
 local ports on this machine (see §1).
 
 **W7-F2 complete pending tag.**
+
+### W7-F2 addendum — v0.7.1 tagged
+
+- CI on `6a61e7c` (run `https://github.com/dylanhartman913-arch/TERRA-Civic-Sim/actions/runs/43768408985`):
+  Manifest + dual-path ✅, TS parity ✅, Python tests ✅. Checked against the exact SHA.
+- `git tag -a v0.7.1 6a61e7c`, then pushed. `git ls-remote origin 'refs/tags/v0.7.*'`:
+  ```
+  a136e16f…  refs/tags/v0.7.0
+  b4943930…  refs/tags/v0.7.0^{}
+  6bcea4bc…  refs/tags/v0.7.1
+  6a61e7cd…  refs/tags/v0.7.1^{}
+  ```
+- `v0.7.0` is unmoved. This addendum is post-tag and docs-only.
+
+**W7-F2 complete.**
