@@ -3206,3 +3206,28 @@ that exact SHA → annotated `v0.7.2` on it → push the tag → post-tag addend
   badges should render from the anchor alone.
 
 **W7-F4 complete pending tag.**
+
+### W7-F4 addendum — v0.7.2 tagged
+
+- CI on `8d64b81` (the HANDOFF commit; run `https://github.com/dylanhartman913-arch/TERRA-Civic-Sim/actions/runs/43774184655`):
+  Manifest + dual-path ✅, TS parity ✅, Python tests ✅. Checked against the exact SHA
+  that `git ls-remote origin refs/heads/main` and `git rev-parse HEAD` returned.
+- `git tag -a v0.7.2 8d64b81`, then pushed (attempt 3; `EADDRNOTAVAIL` before that).
+  `git ls-remote origin 'refs/tags/v0.7.*'`:
+  ```
+  a136e16f…  refs/tags/v0.7.0
+  b4943930…  refs/tags/v0.7.0^{}
+  6bcea4bc…  refs/tags/v0.7.1
+  6a61e7cd…  refs/tags/v0.7.1^{}
+  72bbc963…  refs/tags/v0.7.2
+  8d64b813…  refs/tags/v0.7.2^{}
+  ```
+- `v0.7.0` and `v0.7.1` are unmoved. This addendum is post-tag and docs-only.
+
+**Open after W7-F4.** W7-F4-FU-1 (anchor sector colours), W7-F4-FU-2 (ecoregion layers
+never add), W7-F4-FU-3 (badges for unmatched anchors: a product call); T6-FU-2 / D-10(a)
+visual check (now in LFS at `docs/screenshots/w7-f2/`); W7-F3 (C-3, BLM). Untracked and
+undispositioned, unchanged: `docs/review/wyoming-playtest-2026-11-01/`. Environment: ~12–16k
+TIME_WAIT sockets persist (the :8081 orphan is still listening); pushes need retry loops.
+
+**W7-F4 complete.**
