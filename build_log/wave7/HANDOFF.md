@@ -2954,3 +2954,255 @@ local ports on this machine (see §1).
 - `v0.7.0` is unmoved. This addendum is post-tag and docs-only.
 
 **W7-F2 complete.**
+
+---
+
+## W7-F4 — 2026-11-15 — Fix W7-F2-FU-1 and FU-2; dispose FU-3 and T5-FU-2
+
+### Preamble
+
+- `pwd` = `…/energy-map`, branch `main`. HEAD `cb7826f` = GitHub `main`. Git transport
+  to github.com first failed with `EADDRNOTAVAIL` (`Can't assign requested address`,
+  ports 22 and 443). This is the W7-F2 ephemeral-port exhaustion again: 14,681 sockets in
+  TIME_WAIT, and the orphaned `node` on :8081 (PID 83213) is still listening. Not
+  touched. `gh api …/commits/main` (api.github.com) confirmed `cb7826f`. github.com
+  recovered later in the session (`git ls-remote` → `cb7826f`).
+- Tree not strictly clean: the same 5 untracked paths as W7-F2 (the 4 W7-F1 paths plus the
+  W7-F2 trace) and `docs/screenshots/`. Only the FU-3 items were touched.
+- Read the last three HANDOFF blocks (S16b, W7-F1, W7-F2) and DECISIONS.md.
+- `v0.7.0` and `v0.7.1` not moved.
+
+### 1 — FU-1: production white-screen
+
+**Why Wave 5 T3's FU-5 closure did not hold.** The original C5a code passed
+`'var(--choro-3)'` straight into MapLibre `fill-color`. T3's fix (`df3b105`,
+"Resolve C5a UI follow-ups"; `build_log/wave5/c5a-r.md:23` records it as
+IMPLEMENTED / INFERRED, with canvas capture UNVERIFIED) replaced that with a runtime
+`getComputedStyle(document.documentElement).getPropertyValue('--choro-3')`
+that **throws when the value is empty**. PM human verification closed it
+(`TERRA_build_log.md:2946`, `:3171`) on a machine where the stylesheet had always
+applied. One hour later, `eeb6c5d` ("wire full climate choropleth surface") generalised the
+read to `resolvedColor(token)` for `--text-muted`/`--choro-1`/`--choro-5`, kept the
+hard-coded `--choro-3` error message, and moved the call into **render**
+(`useMemo`). The layer is always mounted (MapView renders it whatever the toggle
+says), so any load where the token stylesheet had not applied threw during render.
+With no error boundary, React unmounted the whole tree.
+T3 removed `var()` from paint but made the paint path depend on runtime CSS, and only the
+first of those was ever checked.
+
+**Trigger, demonstrated.** With every stylesheet blocked over CDP, the pre-fix bundle that
+white-screened in W7-F2 (`index-CRPkT3mV.js`) crashed on **5/5 loads** with
+`Error: Missing required --choro-3 design token`. That is the same stack W7-F2 recorded.
+The intermittent W7-F2 failures fit a stylesheet request lost to the machine's port
+exhaustion: the throw needs only that, and W7-F2's harness recorded no network events. That
+cause is inferred, not observed.
+
+**Fix (`1db5241`).**
+- `terra-app/src/ui/theme.ts`: concrete values for every colour token in `tokens.css`
+  (`COLOR_TOKENS`, `tokenColor()`). A gate asserts it equals `tokens.css` `:root`.
+- `HazardChoroplethLayer.tsx` takes colours from `theme.ts`. No DOM read, no throw.
+- **Map-layer-tree grep.** `grep -rn "var(--\|getComputedStyle\|getPropertyValue" src/ui/map/`:
+  every `var(` hit is a DOM `style={{…}}` prop, a JSX SVG attribute, or a comment
+  (`CountyLayer.tsx:237`). **No `var(` inside any MapLibre paint/layout object or
+  `set{Paint,Layout}Property` call.** The only runtime-CSS read feeding MapLibre was
+  HazardChoroplethLayer, now fixed. A static guard over all of `src/ui/map` now enforces
+  this (it scans 41 blocks).
+  The other `getComputedStyle` hit is the deck.gl anchor layer. That is not MapLibre paint, so it
+  is recorded as W7-F4-FU-1 below and not fixed.
+- `MapLayerBoundary.tsx`: a class error boundary. **Each** of the 13 map layers in
+  `MapView` is wrapped in its own boundary, so a failing layer is removed alone, logged, and
+  left as a hidden `[data-map-layer-error]` marker.
+
+**Test, failing before the fix → passing after.**
+`terra-app/tests/parity/w7f4-fu1-hazard-paint-path.test.ts` renders the real
+component (`react-dom/server`, with `useEffect` run inline via the same `vi.mock('react')`
+technique as `c5a-climate-ui.test.ts`). The component's own `addLayer` /
+`setPaintProperty` / `setLayoutProperty` calls go to a recording map that runs every
+layer spec through `@maplibre/maplibre-gl-style-spec` `validateStyleMin`, the
+validator maplibre-gl uses. The DOM is stubbed in the production failure condition: every
+custom property reads `''`. The test covers every lens × every `choroplethMetrics()` value.
+
+Before (command run on `cb7826f` + the test file):
+```
+$ npx vitest run tests/parity/w7f4-fu1-hazard-paint-path.test.ts
+     × mounts and adds a MapLibre-valid fill layer when the token stylesheet has not applied
+     × every lens x metric reaches addLayer and setPaintProperty with valid, concrete colours
+     × the layer reads no CSS at runtime (no getComputedStyle on the paint path)
+Error: Missing required --choro-3 design token
+ Test Files  1 failed (1)
+      Tests  3 failed | 1 passed (4)
+```
+(The 1 that passed is the static `var()` guard, which has no current hits.) After:
+```
+$ npx vitest run tests/parity/w7f4-fu1-hazard-paint-path.test.ts
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+```
+Supporting gate: `w7f4-fu1-theme-and-boundary.test.ts` (6 tests). It checks theme.ts against
+tokens.css in both directions, `getDerivedStateFromError`/`render`/`componentDidCatch`,
+and that every layer import in MapView renders inside a `MapLayerBoundary`. Server
+rendering does not run error boundaries, so the boundary is tested at the unit and
+structural level, not by a live throw.
+
+**Live check.** Production build (`npx vite build` → `index-CMZWvIux.js`;
+`vite preview` :4173), headed Chrome 157, Apple M5:
+```
+$ node scripts/frame-timing-harness.mjs --mode headed --crash-loads 10 --out ../build_log/wave7/snapshots/w7-f4 --screenshots ../docs/screenshots/w7-f4
+load 1: ok | css applied true | hazard {"map":true,"layer":true,"visibility":"visible","fill_color":"[\"case\",[\"get\",\"climate_hazard_no_data\"],\"#484f58\" … | layer errors [] | page errors 2 | net failures 0
+… (loads 2–10 identical)
+crash-loads summary {"loads":10,"crashed":0,"choropleth_visible":10,"map_layer_errors":0,"loads_with_page_errors":10,"loads_with_network_failures":0}
+```
+**0 crashes in 10 loads**, choropleth visible 10/10, 0 boundary catches. The 2 page
+errors per load are MapLibre's `Cannot add layer "ecoregion-fill"/"ecoregion-border"
+before non-existing layer "county-fill"`. They are pre-existing (present in W7-F2's JSONs on the
+pre-fix bundle) and are not throws. Recorded as W7-F4-FU-2.
+Blocked-CSS on the fixed build: `{"loads":5,"crashed":0,"choropleth_visible":5,…}`
+(pre-fix control: `"crashed":5`). Evidence: `build_log/wave7/snapshots/w7-f4/` + README.
+
+### 2 — FU-2: exposure badges
+
+**Why the Wave 5 badge test passed.** `tests/ui/c5a-climate-ui.test.ts` (C5a FU-6, "six
+discriminating tests", `TERRA_build_log.md:2947`) built
+`taggedAsset = { asset_id: 'eia860_467_08019' }`, a synthetic asset whose `asset_id`
+**is an anchor id**. No registry asset has that shape. Real ones are
+`anchor_<geoid>_<slug>` with the anchor id in `anchor_id` (e.g. `eia860_505_56013` →
+`anchor_56013_boysen`). The test checked the component's lookup assumption against itself.
+It is also in `tests/ui/`, which CI does not run.
+
+**Fix (`f96ab90`).** `anchorFacilities.ts` (the canonical anchor module) gains
+`exposureTagsForAnchor(anchorId)`. It resolves through the existing `anchorById` and
+reads only `asset_key_type === 'anchor_id'` rows. `ExposureBadges` calls it with
+`asset.anchor_id`, the same field the engine's `applyExposureTags` (`engine.ts:893`) and
+the anchor card's asset join use. There is no parsing of ids in the component. The c5a fixture
+was corrected to the real shape (`asset_id: 'anchor_08019_cabin_creek', anchor_id:
+'eia860_467_08019'`).
+
+**Test.** `terra-app/tests/parity/w7f4-fu2-exposure-badges.test.ts` uses the real
+`asset_exposure_tags.json`, the app store's real `asset_registry`, and the 15 anchors
+W7-F2 probed. 13 link to a registry asset, and the test asserts ≥ 3 do and that each
+`asset_id ≠ anchor_id`. Before:
+```
+$ npx vitest run tests/parity/w7f4-fu2-exposure-badges.test.ts
+     × renders the badge stack with every tag value from the tag file for each linked anchor
+AssertionError: anchors whose card rendered no badge stack: expected [ 'eia860_505_56013', …(12) ] to deeply equal []
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)
+```
+After:
+```
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+```
+
+**Live check.** The same 15 cards (`--badge-probe`):
+`{"cards":15,"cards_opened":15,"with_registry_asset":13,"with_badges":13}`.
+**13/15 show the 4-badge stack (W7-F2: 0/15).** The 2 without
+(`eia860_4158_56009` Dave Johnston, `eia860_8066_56037` Jim Bridger) are
+`match_confidence: unmatched`, so `seedAnchorFacilities` links no registry asset and
+the card has no Registry Asset section, which is where badges render. Unchanged by this
+ticket. See W7-F4-FU-3. Screenshot:
+`docs/screenshots/w7-f4/anchor-badge-stack-eia860_505_56013.png`.
+
+### 3 — FU-3
+
+`.gitattributes` += `docs/screenshots/**/*.png filter=lfs diff=lfs merge=lfs -text`.
+The 32 w7-f2 PNGs (19 MB) and 3 w7-f4 PNGs are committed as LFS pointers (35/35 checked with
+`git show :<path> | head -1`). The trace is **not committed**. Path, size (7,008,309
+bytes) and SHA-256 (`33081f3b…6d3016`, full value in the README) are recorded in
+`build_log/wave7/snapshots/w7-f2/README.md`. Commit `95bd2af` (also carries the harness
+modes and the w7-f4 evidence).
+
+### 4 — T5-FU-2
+
+`ee9b3f9`: DECISIONS.md is appended (0 removed lines) with "CLOSED, superseded by counts reproduced
+since S16 and run by CI on every push". The entry names the three conflicting records
+(`TERRA_build_log.md:3207`, `:3234–3272`, RULEBOOK R18). RULEBOOK.md rule text
+is unchanged. One header line was added: rule text is historical, and status lives in DECISIONS.md.
+
+### 5 — Gates (fresh, post-change)
+
+| Command | Output |
+|---|---|
+| `python -m pytest tests/ -q` (repo root) | `230 passed in 256.50s (0:04:16)` |
+| `npm run parity` | `Test Files 38 passed (38)` / `Tests 377 passed (377)` |
+| `npx vitest run` | `Test Files 44 passed (44)` / `Tests 419 passed (419)` |
+| `npx tsc --noEmit` / `npx tsc -b --noEmit` | exit 0 / exit 0 |
+| `npm run lint` | 0 errors, 1 pre-existing warning (`ActionPalette.tsx:53`) |
+| `check_manifest.py` / `check_dual_path.py` / `validate_p3_attribution.py` | PASSED / PASSED / ALL CHECKS PASSED |
+
+Reconciliation: parity 364 (W7-F1) + 4 + 6 + 3 = **377**, 35 + 3 = 38 files. Full:
+pre-change baseline this session `Test Files 1 failed | 40 passed (41)` /
+`Tests 1 failed | 405 passed (406)`. The one failure is the known `ag-year-loop-benchmark`
+p90 wall-clock flake (W7-F1), which passed in the post-change run. 406 + 13 = **419**. The c5a
+fixture edit changes no count. Digests: `git diff --stat -- terra-app/tests/parity/fixtures
+tests/ src/ '*.py' terra-app/src/data terra-app/src/engine` → empty.
+
+### Commits and CI
+
+| Commit | What |
+|---|---|
+| `1db5241` | fix: FU-1, theme.ts + HazardChoroplethLayer + MapLayerBoundary + 2 test files |
+| `f96ab90` | fix: FU-2, exposureTagsForAnchor + ExposureBadges + test + c5a fixture |
+| `95bd2af` | chore: FU-3 (LFS screenshots, trace identity) + harness modes + w7-f4 evidence |
+| `ee9b3f9` | docs: T5-FU-2 (DECISIONS append, RULEBOOK header line) |
+| `b954f5a` | ci: LFS pull in every job, screenshots excluded |
+
+`git push origin main` → `cb7826f..ee9b3f9` (LFS: 34/34 objects, 21 MB; 35 PNGs, 2
+byte-identical). Remote verified with `gh api …/commits/main` = `ee9b3f9…`.
+
+**CI on `ee9b3f9` was red.** Run `https://github.com/dylanhartman913-arch/TERRA-Civic-Sim/actions/runs/43771960839`:
+Python tests ✅, Manifest + dual-path ✅, **TS parity ❌**:
+```
+ FAIL  tests/parity/w7f4-fu1-hazard-paint-path.test.ts [ tests/parity/w7f4-fu1-hazard-paint-path.test.ts ]
+Error: expected value at line 1 column 1
+  Plugin: builtin:vite-json
+ Test Files  1 failed | 37 passed (38)
+      Tests  373 passed (373)
+```
+Cause: the parity job's `actions/checkout` had no LFS, so
+`data/processed/county_climate_baseline.json` (imported by `src/ui/climate.ts`) was
+an LFS pointer. This is the first parity test to import `climate.ts`. **Reproduced locally**
+by writing the pointer (`git cat-file -p HEAD:data/processed/county_climate_baseline.json`)
+over the file: `Error: expected value at line 1 column 1` / `Tests no tests`. File
+restored, `git diff --quiet -- data/processed` clean, test 4/4 again.
+
+Fix `b954f5a`: every job now does a plain checkout and then
+`git lfs pull --exclude="docs/screenshots/**"`. Parity gets the baseline. pytest and
+manifest previously used `lfs: true`, which after FU-3 would download the ~21 MB of
+screenshots on every push. They now fetch only the baseline (`git lfs ls-files
+--exclude="docs/screenshots/**"` → `county_climate_baseline.json` only, the same set as
+before FU-3). The workflow parses (Ruby YAML) and the command runs locally (exit 0).
+Push `ee9b3f9..b954f5a` (attempt 8 of a retry loop, `EADDRNOTAVAIL` before that).
+
+**CI on `b954f5a`: green.** Checked with `gh api …/commits/b954f5a819b5e858fe2d3b24afdf60d1ebb59571/check-runs`
+against the exact SHA that `gh api …/commits/main` and `git rev-parse HEAD` both
+returned. Run `https://github.com/dylanhartman913-arch/TERRA-Civic-Sim/actions/runs/43772946892`:
+```
+Python tests (pytest)       | completed | success
+TS parity (npm run parity)  | completed | success
+Manifest + dual-path checks | completed | success
+```
+The CI parity log shows the new files ran: `w7f4-fu1-theme-and-boundary.test.ts (6 tests)`,
+`w7f4-fu2-exposure-badges.test.ts (3 tests)`, `w7f4-fu1-hazard-paint-path.test.ts (4 tests)`,
+`Test Files 38 passed (38)` / `Tests 377 passed (377)`, which equals the local count.
+
+Tag plan (W7-F2 procedure): commit this block → push → `git ls-remote` → CI green on
+that exact SHA → annotated `v0.7.2` on it → push the tag → post-tag addendum.
+
+### New findings (not fixed: outside this ticket)
+
+- **W7-F4-FU-1: anchor sector colours never render.** `AnchorFacilityLayer` reads
+  `--sector-*` with `getComputedStyle` and passes the result to `parseCssColor`
+  (`anchorFacilities.ts`). That function parses only `rgb()/rgba()`, but custom properties read back as the
+  literal `#hex`, so every anchor falls back to grey `[139,148,158]`. That is visible in all
+  w7-f4 screenshots. This is deck.gl, not MapLibre paint. The fix is `theme.ts` + hex parsing. Untested
+  today.
+- **W7-F4-FU-2: ecoregion layers never add.** `EcoregionLayer` adds with
+  `beforeId 'county-fill'`, but it mounts before `CountyLayer`. MapLibre logs
+  `Cannot add layer "ecoregion-fill" before non-existing layer "county-fill"` on every
+  load (pre-existing, in W7-F2 evidence). The Ecoregions toggle probably does nothing.
+- **W7-F4-FU-3: unmatched tier-2 anchors show no badges.** Dave Johnston and Jim Bridger
+  are tagged but `unmatched`, so their cards have no registry section. It is a product call whether
+  badges should render from the anchor alone.
+
+**W7-F4 complete pending tag.**
