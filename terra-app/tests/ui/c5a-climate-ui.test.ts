@@ -27,7 +27,10 @@ vi.mock('../../src/state/store.js', () => ({
   useTerraStore: (selector: (state: { replaySessionFile: () => never }) => unknown) => selector({ replaySessionFile: vi.fn() }),
 }));
 
-const taggedAsset = { asset_id: 'eia860_467_08019' } as AssetInstance;
+// Registry shape: asset_id is the registry id; the C2 tag file is keyed by anchor_id
+// (W7-F2-FU-2 — this fixture previously set asset_id to the anchor id, which no
+// registry asset has, so it passed while every real card showed no badges).
+const taggedAsset = { asset_id: 'anchor_08019_cabin_creek', anchor_id: 'eia860_467_08019' } as AssetInstance;
 const missingTagAsset = { asset_id: 'not-in-c2-exposure-tags' } as AssetInstance;
 
 describe('C5a climate UI', () => {

@@ -1,5 +1,6 @@
 import anchorFacilitiesData from '../../data/mw_anchor_facilities.geojson';
 import anchorSectorTaxonomy from '../../data/anchor_sector_taxonomy.json';
+import exposureTagData from '../../data/asset_exposure_tags.json';
 
 export interface AnchorFeatureProperties {
   anchor_id: string;
@@ -131,6 +132,26 @@ export function visibleAnchorsForZoom(anchors: AnchorFacility[], zoom: number): 
 export function anchorById(anchorId: string | null | undefined): AnchorFacility | null {
   if (!anchorId) return null;
   return ANCHOR_FACILITIES.find(anchor => anchor.properties.anchor_id === anchorId) ?? null;
+}
+
+export interface AnchorExposureTag { value: string; source: string; method: string; confidence: string }
+export interface AnchorExposureEntry { asset_id: string; asset_key_type: string; tags: Record<string, AnchorExposureTag>; judgment_flags?: string[] }
+
+// C2 exposure tags: tier-2 anchor rows are keyed by anchor id (asset_key_type
+// 'anchor_id'); the remaining rows are keyed by ORIS plant id and are not anchors.
+const EXPOSURE_BY_ANCHOR_ID = new Map(
+  (exposureTagData as unknown as { assets: AnchorExposureEntry[] }).assets
+    .filter(entry => entry.asset_key_type === 'anchor_id')
+    .map(entry => [entry.asset_id, entry]),
+);
+
+/**
+ * C2 exposure-tag row for an anchor facility, or null. Takes an anchor id
+ * (a registry asset's `anchor_id`, never its `asset_id`) — W7-F2-FU-2.
+ */
+export function exposureTagsForAnchor(anchorId: string | null | undefined): AnchorExposureEntry | null {
+  const anchor = anchorById(anchorId);
+  return anchor ? EXPOSURE_BY_ANCHOR_ID.get(anchor.properties.anchor_id) ?? null : null;
 }
 
 export function formatSectorName(displaySector: string): string {
