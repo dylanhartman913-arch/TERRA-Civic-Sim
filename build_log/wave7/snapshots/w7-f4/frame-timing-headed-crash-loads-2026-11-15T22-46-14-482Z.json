@@ -1,0 +1,282 @@
+{
+  "mode": "headed",
+  "url": "http://127.0.0.1:4173/",
+  "flags": [
+    "--user-data-dir=/var/folders/t3/4cm6pck10lv33361s22h2gm40000gn/T/terra-ft-TNntBh",
+    "--remote-debugging-port=0",
+    "--no-first-run",
+    "--no-default-browser-check",
+    "--window-size=1440,900",
+    "--window-position=0,0",
+    "--disable-backgrounding-occluded-windows",
+    "--disable-renderer-backgrounding",
+    "about:blank"
+  ],
+  "center": [
+    -105.3,
+    40.6
+  ],
+  "zoom": 6.8,
+  "duration_ms": 10000,
+  "started": "2026-11-15T22:46:14.482Z",
+  "browser": "Chrome/157.0.8103.52",
+  "chrome_gpu_lines": [
+    "* Compositing: Hardware accelerated",
+    "* Rasterization: Hardware accelerated",
+    "* WebGL: Hardware accelerated",
+    "GL_VENDOR :Google Inc. (Apple)",
+    "GL_RENDERER :ANGLE (Apple, ANGLE Metal Renderer: Apple M5, Version 27.0.1 (Build 26A434))",
+    "GL_VERSION :OpenGL ES 3.0 (ANGLE 2.1.29097 git hash: 751417514a52)",
+    "Disabled WebGL Extensions :",
+    "* enable_webgl_timer_query_extensions",
+    "* Expose WebGL's disjoint_timer_query extensions on platforms with site isolation: 808744(http://crbug.com/808744), 870491(http://crbug.com/870491) Applied Workarounds: enable_webgl_timer_query_extensions",
+    "* vulkan_use_rasterization_order_attachment_access: https://crbug.com/42241389(https://crbug.com/42241389): Use VK_EXT_rasterization_order_attachment_access when it is available."
+  ],
+  "page_errors": [
+    "Error: Cannot add layer \"ecoregion-fill\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184044\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)",
+    "Error: Cannot add layer \"ecoregion-border\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184175\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)",
+    "Error: Cannot add layer \"ecoregion-fill\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184044\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)",
+    "Error: Cannot add layer \"ecoregion-border\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184175\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)",
+    "Error: Cannot add layer \"ecoregion-fill\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184044\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)",
+    "Error: Cannot add layer \"ecoregion-border\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184175\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)",
+    "Error: Cannot add layer \"ecoregion-fill\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184044\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)",
+    "Error: Cannot add layer \"ecoregion-border\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184175\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)",
+    "Error: Cannot add layer \"ecoregion-fill\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184044\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)",
+    "Error: Cannot add layer \"ecoregion-border\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184175\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)",
+    "Error: Cannot add layer \"ecoregion-fill\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184044\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)",
+    "Error: Cannot add layer \"ecoregion-border\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184175\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)",
+    "Error: Cannot add layer \"ecoregion-fill\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184044\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)",
+    "Error: Cannot add layer \"ecoregion-border\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184175\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)",
+    "Error: Cannot add layer \"ecoregion-fill\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184044\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)",
+    "Error: Cannot add layer \"ecoregion-border\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184175\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)",
+    "Error: Cannot add layer \"ecoregion-fill\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184044\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)",
+    "Error: Cannot add layer \"ecoregion-border\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184175\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)",
+    "Error: Cannot add layer \"ecoregion-fill\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184044\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)",
+    "Error: Cannot add layer \"ecoregion-border\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184175\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)"
+  ],
+  "crash_loads_screenshot": "/Users/dylanhartman/projects/Energy Modeling/energy-map/docs/screenshots/w7-f4/crash-loads-final.png",
+  "crash_loads": {
+    "block_css": false,
+    "loads": [
+      {
+        "load": 1,
+        "at": "2026-11-15T22:46:23.327Z",
+        "stylesheet_applied": true,
+        "blank_after_entry": false,
+        "choropleth_toggle_checked": true,
+        "hazard_layer": {
+          "map": true,
+          "layer": true,
+          "visibility": "visible",
+          "fill_color": "[\"case\",[\"get\",\"climate_hazard_no_data\"],\"#484f58\",[\"interpolate\",[\"linear\"],[\"get\",\"climate_hazard_value\"],37.83477272727272,\"#0d3d38\",52.70977272727272,\"#99f6e4\"]]"
+        },
+        "blank_final": false,
+        "map_layer_errors": [],
+        "page_errors": [
+          "Error: Cannot add layer \"ecoregion-fill\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184044\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)",
+          "Error: Cannot add layer \"ecoregion-border\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184175\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)"
+        ],
+        "network_failures": [],
+        "crashed": false
+      },
+      {
+        "load": 2,
+        "at": "2026-11-15T22:46:26.828Z",
+        "stylesheet_applied": true,
+        "blank_after_entry": false,
+        "choropleth_toggle_checked": true,
+        "hazard_layer": {
+          "map": true,
+          "layer": true,
+          "visibility": "visible",
+          "fill_color": "[\"case\",[\"get\",\"climate_hazard_no_data\"],\"#484f58\",[\"interpolate\",[\"linear\"],[\"get\",\"climate_hazard_value\"],37.83477272727272,\"#0d3d38\",52.70977272727272,\"#99f6e4\"]]"
+        },
+        "blank_final": false,
+        "map_layer_errors": [],
+        "page_errors": [
+          "Error: Cannot add layer \"ecoregion-fill\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184044\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)",
+          "Error: Cannot add layer \"ecoregion-border\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184175\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)"
+        ],
+        "network_failures": [],
+        "crashed": false
+      },
+      {
+        "load": 3,
+        "at": "2026-11-15T22:46:29.309Z",
+        "stylesheet_applied": true,
+        "blank_after_entry": false,
+        "choropleth_toggle_checked": true,
+        "hazard_layer": {
+          "map": true,
+          "layer": true,
+          "visibility": "visible",
+          "fill_color": "[\"case\",[\"get\",\"climate_hazard_no_data\"],\"#484f58\",[\"interpolate\",[\"linear\"],[\"get\",\"climate_hazard_value\"],37.83477272727272,\"#0d3d38\",52.70977272727272,\"#99f6e4\"]]"
+        },
+        "blank_final": false,
+        "map_layer_errors": [],
+        "page_errors": [
+          "Error: Cannot add layer \"ecoregion-fill\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184044\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)",
+          "Error: Cannot add layer \"ecoregion-border\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184175\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)"
+        ],
+        "network_failures": [],
+        "crashed": false
+      },
+      {
+        "load": 4,
+        "at": "2026-11-15T22:46:32.011Z",
+        "stylesheet_applied": true,
+        "blank_after_entry": false,
+        "choropleth_toggle_checked": true,
+        "hazard_layer": {
+          "map": true,
+          "layer": true,
+          "visibility": "visible",
+          "fill_color": "[\"case\",[\"get\",\"climate_hazard_no_data\"],\"#484f58\",[\"interpolate\",[\"linear\"],[\"get\",\"climate_hazard_value\"],37.83477272727272,\"#0d3d38\",52.70977272727272,\"#99f6e4\"]]"
+        },
+        "blank_final": false,
+        "map_layer_errors": [],
+        "page_errors": [
+          "Error: Cannot add layer \"ecoregion-fill\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184044\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)",
+          "Error: Cannot add layer \"ecoregion-border\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184175\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)"
+        ],
+        "network_failures": [],
+        "crashed": false
+      },
+      {
+        "load": 5,
+        "at": "2026-11-15T22:46:34.693Z",
+        "stylesheet_applied": true,
+        "blank_after_entry": false,
+        "choropleth_toggle_checked": true,
+        "hazard_layer": {
+          "map": true,
+          "layer": true,
+          "visibility": "visible",
+          "fill_color": "[\"case\",[\"get\",\"climate_hazard_no_data\"],\"#484f58\",[\"interpolate\",[\"linear\"],[\"get\",\"climate_hazard_value\"],37.83477272727272,\"#0d3d38\",52.70977272727272,\"#99f6e4\"]]"
+        },
+        "blank_final": false,
+        "map_layer_errors": [],
+        "page_errors": [
+          "Error: Cannot add layer \"ecoregion-fill\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184044\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)",
+          "Error: Cannot add layer \"ecoregion-border\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184175\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)"
+        ],
+        "network_failures": [],
+        "crashed": false
+      },
+      {
+        "load": 6,
+        "at": "2026-11-15T22:46:37.410Z",
+        "stylesheet_applied": true,
+        "blank_after_entry": false,
+        "choropleth_toggle_checked": true,
+        "hazard_layer": {
+          "map": true,
+          "layer": true,
+          "visibility": "visible",
+          "fill_color": "[\"case\",[\"get\",\"climate_hazard_no_data\"],\"#484f58\",[\"interpolate\",[\"linear\"],[\"get\",\"climate_hazard_value\"],37.83477272727272,\"#0d3d38\",52.70977272727272,\"#99f6e4\"]]"
+        },
+        "blank_final": false,
+        "map_layer_errors": [],
+        "page_errors": [
+          "Error: Cannot add layer \"ecoregion-fill\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184044\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)",
+          "Error: Cannot add layer \"ecoregion-border\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184175\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)"
+        ],
+        "network_failures": [],
+        "crashed": false
+      },
+      {
+        "load": 7,
+        "at": "2026-11-15T22:46:39.876Z",
+        "stylesheet_applied": true,
+        "blank_after_entry": false,
+        "choropleth_toggle_checked": true,
+        "hazard_layer": {
+          "map": true,
+          "layer": true,
+          "visibility": "visible",
+          "fill_color": "[\"case\",[\"get\",\"climate_hazard_no_data\"],\"#484f58\",[\"interpolate\",[\"linear\"],[\"get\",\"climate_hazard_value\"],37.83477272727272,\"#0d3d38\",52.70977272727272,\"#99f6e4\"]]"
+        },
+        "blank_final": false,
+        "map_layer_errors": [],
+        "page_errors": [
+          "Error: Cannot add layer \"ecoregion-fill\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184044\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)",
+          "Error: Cannot add layer \"ecoregion-border\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184175\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)"
+        ],
+        "network_failures": [],
+        "crashed": false
+      },
+      {
+        "load": 8,
+        "at": "2026-11-15T22:46:42.359Z",
+        "stylesheet_applied": true,
+        "blank_after_entry": false,
+        "choropleth_toggle_checked": true,
+        "hazard_layer": {
+          "map": true,
+          "layer": true,
+          "visibility": "visible",
+          "fill_color": "[\"case\",[\"get\",\"climate_hazard_no_data\"],\"#484f58\",[\"interpolate\",[\"linear\"],[\"get\",\"climate_hazard_value\"],37.83477272727272,\"#0d3d38\",52.70977272727272,\"#99f6e4\"]]"
+        },
+        "blank_final": false,
+        "map_layer_errors": [],
+        "page_errors": [
+          "Error: Cannot add layer \"ecoregion-fill\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184044\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)",
+          "Error: Cannot add layer \"ecoregion-border\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184175\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)"
+        ],
+        "network_failures": [],
+        "crashed": false
+      },
+      {
+        "load": 9,
+        "at": "2026-11-15T22:46:44.827Z",
+        "stylesheet_applied": true,
+        "blank_after_entry": false,
+        "choropleth_toggle_checked": true,
+        "hazard_layer": {
+          "map": true,
+          "layer": true,
+          "visibility": "visible",
+          "fill_color": "[\"case\",[\"get\",\"climate_hazard_no_data\"],\"#484f58\",[\"interpolate\",[\"linear\"],[\"get\",\"climate_hazard_value\"],37.83477272727272,\"#0d3d38\",52.70977272727272,\"#99f6e4\"]]"
+        },
+        "blank_final": false,
+        "map_layer_errors": [],
+        "page_errors": [
+          "Error: Cannot add layer \"ecoregion-fill\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184044\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)",
+          "Error: Cannot add layer \"ecoregion-border\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184175\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)"
+        ],
+        "network_failures": [],
+        "crashed": false
+      },
+      {
+        "load": 10,
+        "at": "2026-11-15T22:46:47.294Z",
+        "stylesheet_applied": true,
+        "blank_after_entry": false,
+        "choropleth_toggle_checked": true,
+        "hazard_layer": {
+          "map": true,
+          "layer": true,
+          "visibility": "visible",
+          "fill_color": "[\"case\",[\"get\",\"climate_hazard_no_data\"],\"#484f58\",[\"interpolate\",[\"linear\"],[\"get\",\"climate_hazard_value\"],37.83477272727272,\"#0d3d38\",52.70977272727272,\"#99f6e4\"]]"
+        },
+        "blank_final": false,
+        "map_layer_errors": [],
+        "page_errors": [
+          "Error: Cannot add layer \"ecoregion-fill\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184044\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)",
+          "Error: Cannot add layer \"ecoregion-border\" before non-existing layer \"county-fill\".\n    at Vn.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:754:93407)\n    at oo.addLayer (http://127.0.0.1:4173/assets/index-CMZWvIux.js:756:180221)\n    at http://127.0.0.1:4173/assets/index-CMZWvIux.js:918:10184175\n    at Pc (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:91926)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107101)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107122)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)\n    at bl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:107866)\n    at yl (http://127.0.0.1:4173/assets/index-CMZWvIux.js:8:106985)"
+        ],
+        "network_failures": [],
+        "crashed": false
+      }
+    ],
+    "summary": {
+      "loads": 10,
+      "crashed": 0,
+      "choropleth_visible": 10,
+      "map_layer_errors": 0,
+      "loads_with_page_errors": 10,
+      "loads_with_network_failures": 0
+    }
+  },
+  "finished": "2026-11-15T22:46:51.894Z"
+}

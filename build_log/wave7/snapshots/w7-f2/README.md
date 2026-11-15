@@ -11,7 +11,7 @@ Every attempt is kept, including failed and superseded ones.
 |---|---|
 | `frame-timing-headed-2026-11-15T21-53-15-186Z.json` | **Headed measurement**: 3 valid runs plus 1 invalid attempt (map did not pan) and 1 white-screen load failure, all recorded in the file. Raw intervals under `runs[].raw_pan_intervals_ms`. |
 | `frame-timing-headed-2026-11-15T22-02-23-277Z.json` | **The one performance trace** (rule branch 2): traced run plus `trace_summary`, re-summarized offline per thread. |
-| `trace-headed-2026-11-15T22-02-23-277Z.json.gz` | Raw Chrome trace (7 MB). **Not committed**; on disk only. |
+| `trace-headed-2026-11-15T22-02-23-277Z.json.gz` | Raw Chrome trace (7 MB). **Not committed** (W7-F2-FU-3, W7-F4); on disk only. Identity recorded below. |
 | `frame-timing-headed-2026-11-15T22-04-13-541Z.json` | Screenshot pass (`docs/screenshots/w7-f2/`) plus `anchor_badge_probe`. |
 | `frame-timing-headless-2026-11-15T22-06-51-698Z.json` | **Headless** run with the Wave 4 H1.4 flags (`--use-angle=swiftshader`): reproduces p95 ≈ 67 ms. |
 | `frame-timing-headless-renderer-2026-11-15T22-07-38-188Z.json` | Headless with **no** GL flags, renderer probe only: Chrome 157 headless picks Metal (Apple M5). |
@@ -29,3 +29,19 @@ node scripts/frame-timing-harness.mjs --mode headless --runs 1 --out ../build_lo
   --extra-flags "--enable-webgl --ignore-gpu-blocklist --use-angle=swiftshader"
 node scripts/frame-timing-harness.mjs --mode headless --renderer-only --out ../build_log/wave7/snapshots/w7-f2
 ```
+
+## W7-F2-FU-3 disposition (W7-F4, 2026-11-15)
+
+- **Screenshots** (`docs/screenshots/w7-f2/`, 32 PNGs, 19 MB): committed via Git LFS
+  (`.gitattributes`: `docs/screenshots/**/*.png filter=lfs diff=lfs merge=lfs -text`).
+- **Raw trace: not committed.** It stays on the machine that produced it. Its summary
+  is committed in `frame-timing-headed-2026-11-15T22-02-23-277Z.json` (`trace_summary`).
+  Identity, so a copy can be checked:
+
+  | Field | Value |
+  |---|---|
+  | Path | `build_log/wave7/snapshots/w7-f2/trace-headed-2026-11-15T22-02-23-277Z.json.gz` |
+  | Size | 7,008,309 bytes |
+  | SHA-256 | `33081f3bc31c7dbb2653691351e0462520bba77cd440c7a8c54ef2ae1d6d3016` |
+
+  Command: `stat -f "%z bytes" <path>; shasum -a 256 <path>` (macOS).

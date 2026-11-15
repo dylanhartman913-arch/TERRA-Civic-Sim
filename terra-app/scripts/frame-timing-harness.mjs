@@ -17,6 +17,14 @@
  *        --extra-flags "--enable-webgl --ignore-gpu-blocklist --use-angle=swiftshader"
  *   node scripts/frame-timing-harness.mjs --mode headless --renderer-only --out <dir>
  *
+ * W7-F4 live checks (no timing):
+ *   node scripts/frame-timing-harness.mjs --mode headed --crash-loads 10 [--block-css] --out <dir> [--screenshots <dir>]
+ *        N reloads -> Free Play -> Climate hazards on; records white-screens, page
+ *        errors, [data-map-layer-error] markers, layer visibility/paint, failed
+ *        requests. --block-css blocks every stylesheet (tokens never apply).
+ *   node scripts/frame-timing-harness.mjs --mode headed --badge-probe --out <dir> [--screenshots <dir>]
+ *        Opens the 15 W7-F2 tier-2 anchor cards and counts exposure-badge stacks.
+ *
  * Options:
  *   --url <url>            app URL (default http://127.0.0.1:4173/)
  *   --center <lng,lat>     viewport centre (default -105.3,40.6: Front Range + I-80)
@@ -49,6 +57,11 @@ const SHOTS = opt('screenshots', null);
 const RENDERER_ONLY = argv.includes('--renderer-only');
 const TRACE = argv.includes('--trace');
 const SHOTS_ONLY = argv.includes('--shots-only'); // screenshots without timing runs // one valid pan under a Chrome performance trace
+// W7-F4 live checks (no timing): N reloads with the climate-hazard choropleth on,
+// optionally with every stylesheet blocked; and the 15-card exposure-badge probe.
+const CRASH_LOADS = Number(opt('crash-loads', 0));
+const BLOCK_CSS = argv.includes('--block-css');
+const BADGE_PROBE = argv.includes('--badge-probe');
 const EXTRA = String(opt('extra-flags', '')).split(' ').filter(Boolean);
 const CHROME = opt('chrome', '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome');
 mkdirSync(OUT, { recursive: true });
@@ -471,10 +484,7 @@ async function screenshots(c, dir) {
   // own terra:focus-anchor event (Wyoming first). Records whether any card
   // renders [data-testid=exposure-badges]; screenshots the first that does, or
   // else the last card opened, named so the absence is explicit.
-  const geo = JSON.parse(readFileSync(new URL('../src/data/mw_anchor_facilities.geojson', import.meta.url), 'utf8'));
-  const tier2 = geo.features.filter(f => f.properties.tier === 2)
-    .sort((a, b) => (b.properties.geoid.startsWith('56') - a.properties.geoid.startsWith('56')))
-    .map(f => f.properties.anchor_id).slice(0, 15);
+  const tier2 = probedAnchorIds();
   let lastCard = null, found = null;
   const tried = [];
   for (const id of tier2) {
@@ -499,9 +509,121 @@ async function screenshots(c, dir) {
   return files;
 }
 
+// The 15 tier-2 anchors the W7-F2 probe opened (Wyoming first, file order).
+function probedAnchorIds() {
+  const geo = JSON.parse(readFileSync(new URL('../src/data/mw_anchor_facilities.geojson', import.meta.url), 'utf8'));
+  return geo.features.filter(f => f.properties.tier === 2)
+    .sort((a, b) => (b.properties.geoid.startsWith('56') - a.properties.geoid.startsWith('56')))
+    .map(f => f.properties.anchor_id).slice(0, 15);
+}
+
+// ── W7-F4 live checks ────────────────────────────────────────────────────────
+const BLANK = `document.body.innerText.trim() === ''`;
+const HAZARD_LAYER_STATE = `(() => {
+  const m = ${FIND_MAP};
+  if (!m) return { map: false };
+  const id = 'climate-hazard-choropleth';
+  if (!m.getLayer(id)) return { map: true, layer: false };
+  return { map: true, layer: true, visibility: m.getLayoutProperty(id, 'visibility'), fill_color: JSON.stringify(m.getPaintProperty(id, 'fill-color')) };
+})()`;
+
+async function ensureLayer(c, label, on) {
+  return c.eval(`(() => {
+    const l = [...document.querySelectorAll('label')].find(x => x.textContent.trim() === ${JSON.stringify(label)});
+    if (!l) return null;
+    const i = l.querySelector('input');
+    if (i.checked !== ${on}) i.click();
+    return i.checked;
+  })()`);
+}
+
+async function crashLoads(c, n) {
+  await c.send('Network.enable');
+  if (BLOCK_CSS) await c.send('Network.setBlockedURLs', { urls: ['*.css'] });
+  const urls = new Map();
+  const net = [];
+  c.listeners.push(m => {
+    if (m.method === 'Network.requestWillBeSent') urls.set(m.params.requestId, m.params.request.url);
+    if (m.method === 'Network.loadingFailed') net.push({ url: urls.get(m.params.requestId) ?? null, error: m.params.errorText, blocked: m.params.blockedReason ?? null });
+  });
+  const loads = [];
+  for (let load = 1; load <= n; load++) {
+    const e0 = report.page_errors.length, n0 = net.length;
+    const rec = { load, at: new Date().toISOString() };
+    try {
+      await c.send('Page.reload', { ignoreCache: true });
+      await sleep(1000);
+      await waitFor(c, `!!document.querySelector('button')`, 30000, 'title screen');
+      rec.stylesheet_applied = await c.eval(`getComputedStyle(document.documentElement).getPropertyValue('--choro-3').trim() !== ''`);
+      await clickText(c, 'Begin');
+      await waitFor(c, `[...document.querySelectorAll('button')].some(b => b.textContent.includes('Skip to free play'))`, 10000, 'campaign select');
+      await clickText(c, 'Skip to free play');
+      await waitFor(c, `(() => { const m = ${FIND_MAP}; return !!m && m.isStyleLoaded(); })() || ${BLANK}`, 60000, 'map load');
+      rec.blank_after_entry = await c.eval(BLANK);
+      if (!rec.blank_after_entry) {
+        rec.choropleth_toggle_checked = await ensureLayer(c, 'Climate hazards', true);
+        await waitIdle(c);
+        await sleep(500);
+        rec.hazard_layer = await c.eval(HAZARD_LAYER_STATE);
+      }
+      rec.blank_final = await c.eval(BLANK);
+      rec.map_layer_errors = await c.eval(`[...document.querySelectorAll('[data-map-layer-error]')].map(e => e.dataset.mapLayerError)`);
+    } catch (e) {
+      rec.error = String(e.message ?? e);
+    }
+    rec.page_errors = report.page_errors.slice(e0);
+    rec.network_failures = net.slice(n0);
+    rec.crashed = Boolean(rec.blank_after_entry || rec.blank_final || rec.error);
+    loads.push(rec);
+    log(`load ${load}: ${rec.crashed ? 'CRASH' : 'ok'} | css applied ${rec.stylesheet_applied} | hazard ${JSON.stringify(rec.hazard_layer ?? null)?.slice(0, 120)} | layer errors ${JSON.stringify(rec.map_layer_errors ?? null)} | page errors ${rec.page_errors.length} | net failures ${rec.network_failures.length}${rec.error ? ' | ' + rec.error.slice(0, 160) : ''}`);
+  }
+  if (SHOTS && loads.length && !loads.at(-1).crashed) {
+    mkdirSync(resolve(SHOTS), { recursive: true });
+    await setViewport(c);
+    report.crash_loads_screenshot = await shot(c, resolve(SHOTS), `crash-loads-final${BLOCK_CSS ? '-css-blocked' : ''}`);
+  }
+  return {
+    block_css: BLOCK_CSS,
+    loads,
+    summary: {
+      loads: loads.length,
+      crashed: loads.filter(l => l.crashed).length,
+      choropleth_visible: loads.filter(l => l.hazard_layer?.visibility === 'visible').length,
+      map_layer_errors: loads.reduce((s, l) => s + (l.map_layer_errors?.length ?? 0), 0),
+      loads_with_page_errors: loads.filter(l => l.page_errors.length).length,
+      loads_with_network_failures: loads.filter(l => l.network_failures.length).length,
+    },
+  };
+}
+
+async function badgeProbe(c, dir) {
+  await setViewport(c);
+  const probe = [];
+  let shotFile = null;
+  for (const id of probedAnchorIds()) {
+    await c.eval(CLEAR_OVERLAYS);
+    await c.eval(`(window.dispatchEvent(new CustomEvent('terra:focus-anchor', { detail: { anchorId: ${JSON.stringify(id)} } })), true)`);
+    await sleep(1400);
+    const st = await c.eval(`({ card: !!document.querySelector('[data-anchor-card]'), registry: document.querySelector('[data-anchor-card]')?.textContent.includes('Registry Asset') ?? false,
+      badges: document.querySelectorAll('[data-testid="exposure-badges"] span').length,
+      badge_text: [...document.querySelectorAll('[data-testid="exposure-badges"] span')].map(s => s.textContent) })`);
+    probe.push({ id, ...st });
+    log('badge probe', id, JSON.stringify(st));
+    if (dir && st.badges > 0 && !shotFile) {
+      mkdirSync(dir, { recursive: true });
+      shotFile = await shot(c, dir, `anchor-badge-stack-${id}`);
+    }
+  }
+  return {
+    probe,
+    screenshot: shotFile,
+    summary: { cards: probe.length, cards_opened: probe.filter(p => p.card).length, with_registry_asset: probe.filter(p => p.registry).length, with_badges: probe.filter(p => p.badges > 0).length },
+  };
+}
+
 // ── main ─────────────────────────────────────────────────────────────────────
 const report = { mode: MODE, url: APP_URL, flags, center: [CLNG, CLAT], zoom: ZOOM, duration_ms: DURATION, started: new Date().toISOString() };
-try {
+try { run: {
   const port = await devtoolsPort();
   report.browser = await (await fetchRetry(`http://127.0.0.1:${port}/json/version`)).json().then(v => v.Browser);
 
@@ -519,6 +641,12 @@ try {
   await c.send('Runtime.enable');
   await c.send('Page.enable');
   await c.send('Page.bringToFront');
+  if (CRASH_LOADS) {
+    report.crash_loads = await crashLoads(c, CRASH_LOADS);
+    log('crash-loads summary', JSON.stringify(report.crash_loads.summary));
+    c.close();
+    break run;
+  }
   // The app can white-screen on entry (uncaught token-resolution throw in
   // HazardChoroplethLayer; see W7-F2 HANDOFF). Every failed load is recorded.
   report.load_failures = [];
@@ -553,6 +681,9 @@ try {
     writeFileSync(tfile, gzipSync(JSON.stringify(trace)));
     report.trace_file = tfile;
     log('trace', tfile, JSON.stringify(report.trace_summary, null, 1));
+  } else if (BADGE_PROBE) {
+    report.badge_probe = await badgeProbe(c, SHOTS ? resolve(SHOTS) : null);
+    log('badge probe summary', JSON.stringify(report.badge_probe.summary));
   } else if (SHOTS_ONLY) {
     report.screenshots = await screenshots(c, resolve(SHOTS));
   } else if (!RENDERER_ONLY) {
@@ -567,14 +698,15 @@ try {
     if (SHOTS) report.screenshots = await screenshots(c, resolve(SHOTS));
   }
   c.close();
-} catch (e) {
+} } catch (e) {
   report.error = String(e?.stack ?? e);
   console.error(e);
   process.exitCode = 1;
 } finally {
   report.finished = new Date().toISOString();
   const stamp = report.started.replace(/[:.]/g, '-');
-  const file = join(OUT, `frame-timing-${MODE}${RENDERER_ONLY ? '-renderer' : ''}-${stamp}.json`);
+  const kind = CRASH_LOADS ? `-crash-loads${BLOCK_CSS ? '-css-blocked' : ''}` : BADGE_PROBE ? '-badge-probe' : RENDERER_ONLY ? '-renderer' : '';
+  const file = join(OUT, `frame-timing-${MODE}${kind}-${stamp}.json`);
   writeFileSync(file, JSON.stringify(report, null, 2));
   log('wrote', file);
   chrome.kill();
