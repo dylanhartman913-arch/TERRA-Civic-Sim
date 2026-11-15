@@ -2723,3 +2723,219 @@ result above was read after it recovered, against the exact SHA.)
 - B-11 closed. Next: W7-F2 (D4), W7-F3 (C-3).
 
 **W7-F1 complete.**
+
+---
+
+## W7-F2 — 2026-11-15 — D4 frame-timing disposition + v0.7.1 release
+
+### Preamble
+
+- Session start: pushed `b218128` (W7-F1 HANDOFF; held back by a network outage).
+  `git ls-remote origin refs/heads/main` → `b218128ad6030e06…`. Docs-only, so
+  no new CI check was needed.
+- HEAD = `origin/main` = `b218128`. `v0.7.0` → `b494393` (`refs/tags/v0.7.0^{}`),
+  untouched. The same 4 untracked paths as W7-F1, left alone.
+
+### 1 — Harness: built new
+
+**No H1.4 script was ever committed.** The Wave 4 capture (`d4c5408`, recorded
+in `docs/closeouts/Wave4_closeout_report.md` §6) was ad hoc over the DevTools
+protocol, and `git log -S requestAnimationFrame` finds no harness.
+
+New: `terra-app/scripts/frame-timing-harness.mjs`, with zero dependencies (system
+Chrome + CDP over Node 24's built-in WebSocket). It reproduces the documented
+H1.4 method: in-page rAF intervals during a scripted canvas drag. It adds:
+renderer provenance (`UNMASKED_RENDERER_WEBGL` from MapLibre's own GL context,
+chrome://gpu lines); a run-validity gate (the map must emit `move` on ≥ 80 % of
+pan frames, and invalid runs are kept on record); one trace mode; and a
+screenshot mode. It finds the MapLibre instance through React's fiber on the map
+container, which is harness-only introspection with no app change.
+
+Harness defects found and fixed during the session, all visible in the evidence
+directory:
+- v0 released the mouse off the drag end, which clicked overlays open. 1 of 3
+  v0 headed runs never panned. Superseded.
+- The drag start was sometimes covered by the county-drawer backdrop. Pre-run
+  overlay clearing and the validity gate were added.
+- `EADDRNOTAVAIL` on local connects. Cause: **the machine was near ephemeral-port
+  exhaustion** (~16k sockets in TIME_WAIT). Expo Go in the iOS Simulator was
+  reconnecting to :8081, where an orphaned `node serve.mjs` from a different
+  Claude session (project "Sagebrush") is listening. Neither process was
+  touched. The harness retries; `git push` needed 11 attempts.
+
+Running Chrome needs the unsandboxed shell: the sandbox refuses the DevTools-port
+connection.
+
+### 2 — Rendering path proven
+
+Production build: `npx vite build` (vite 8.0.16) + `npx vite preview --port 4173`.
+Chrome 157.0.8103.52, Apple M5.
+
+| Mode | `UNMASKED_RENDERER_WEBGL` (MapLibre context) | chrome://gpu | DPR / canvas |
+|---|---|---|---|
+| **Headed** | `ANGLE (Apple, ANGLE Metal Renderer: Apple M5, Unspecified Version)` | `GL_RENDERER: ANGLE (Apple, ANGLE Metal Renderer: Apple M5, Version 27.0.1 (Build 26A434))` | 2 / 2360×1410 |
+| **Headless + H1.4 flags** (`--use-angle=swiftshader`) | `ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)` | `Display type: ANGLE_SWIFTSHADER`, `GL implementation parts: (gl=egl-angle,angle=swiftshader)` | 1 / 1180×705 |
+| Headless, no GL flags (renderer probe only) | `ANGLE (Apple, ANGLE Metal Renderer: Apple M5, Unspecified Version)` | Metal / Apple M5 | 1 / 1180×705 |
+
+**Explanation of 67 ms:** H1.4 forced software GL with `--use-angle=swiftshader`.
+In current Chrome, headless alone does *not* fall back to software on this
+machine. Note: chrome://gpu's `* WebGL: Hardware accelerated` feature line reads
+the same under SwiftShader, so only `GL_RENDERER` and `Display type`
+discriminate.
+
+### 3 — Measurement (R18: command + raw output)
+
+Viewport: Front Range + I-80, centre (−105.3, 40.6), zoom 6.8, which is F2's
+mid-zoom proxy. Pan: 10 s, 200 px × 80 px Lissajous drag. The window is 1440×900
+with a 1440×813 CSS viewport, matching H1.4.
+
+```
+$ node scripts/frame-timing-harness.mjs --mode headed --runs 3 \
+    --out ../build_log/wave7/snapshots/w7-f2 --screenshots ../docs/screenshots/w7-f2
+load 1 failed: blank page after entry: Error: Missing required --choro-3 design token
+renderer {"version":"WebGL 2.0 (OpenGL ES 3.0 Chromium)","vendor":"Google Inc. (Apple)","renderer":"ANGLE (Apple, ANGLE Metal Renderer: Apple M5, Unspecified Version)"} dpr 2
+attempt 1 INVALID (map did not pan): pan {"n":600,"p50":16.7,"p95":17.3,"p99":17.6,"max":17.7,"mean":16.67,"over_16_7":205,"over_33_3":0} | idle refresh p50 16.7 | mouse 600 moves 141
+attempt 2 VALID: pan {"n":600,"p50":16.7,"p95":17.4,"p99":17.6,"max":17.7,"mean":16.67,"over_16_7":275,"over_33_3":0} | idle refresh p50 16.7 | mouse 599 moves 594
+attempt 3 VALID: pan {"n":599,"p50":16.7,"p95":17.5,"p99":17.6,"max":17.7,"mean":16.67,"over_16_7":227,"over_33_3":0} | idle refresh p50 16.7 | mouse 596 moves 591
+attempt 4 VALID: pan {"n":600,"p50":16.7,"p95":17.3,"p99":17.6,"max":17.7,"mean":16.67,"over_16_7":229,"over_33_3":0} | idle refresh p50 16.7 | mouse 600 moves 594
+```
+
+| Headed run | p50 | p95 | p99 | max | > 33.3 ms |
+|---|---|---|---|---|---|
+| 1 (attempt 2) | 16.7 | 17.4 | 17.6 | 17.7 | 0 |
+| 2 (attempt 3) | 16.7 | 17.5 | 17.6 | 17.7 | 0 |
+| 3 (attempt 4) | 16.7 | 17.3 | 17.6 | 17.7 | 0 |
+
+Distribution (from the raw intervals): p5 ≈ 16.0, mean 16.666 ms. This is
+symmetric jitter around the 60 Hz vsync, with no frame ever skipped. An earlier
+diagnostic session showed a 13.3 ms idle refresh once, so the panel's refresh
+rate is adaptive. All counted runs measured 16.7.
+
+```
+$ node scripts/frame-timing-harness.mjs --mode headless --runs 1 --out ../build_log/wave7/snapshots/w7-f2 \
+    --extra-flags "--enable-webgl --ignore-gpu-blocklist --use-angle=swiftshader"
+attempt 1 VALID: pan {"n":232,"p50":33.4,"p95":66.6,"p99":83.3,"max":333.3,"mean":43.03,"over_16_7":223,"over_33_3":174} | idle refresh p50 33.3 | mouse 231 moves 230
+```
+
+### 4 — Rule applied: branch 2 → D4 CLOSED with a revised 33.3 ms budget
+
+p95 is 17.3–17.5, so 16.7 < p95 ≤ 33.3 and branch 2 applies. One trace:
+
+```
+$ node scripts/frame-timing-harness.mjs --mode headed --trace --out ../build_log/wave7/snapshots/w7-f2
+$ node scripts/frame-timing-harness.mjs --summarize …/trace-headed-2026-11-15T22-02-23-277Z.json.gz --report …/frame-timing-headed-2026-11-15T22-02-23-277Z.json
+thread_busy: CrRendererMain 1198 ms / 13042 ms window = 9.2 %; CrGpuMain 645 ms = 4.9 %; VizCompositor 1.0 %; Compositor 0.8 %
+main-thread JS self time (0.128 ms samples): (idle) 10872 ms, (program) 1472 ms, _render 18.6, draw 17.5,
+  e.S 15.8, useProgram 15.4, update 12.8, up 10.7, possiblyEvaluate 10.0, _calcMatrices 10.0, … (ms over the window)
+```
+
+The top self-time functions are MapLibre internals: the bundle lines contain
+MapLibre's shader prelude and `_render`/`_calcMatrices`. None is in TERRA's
+map-layer components, and the frame is not work-bound in the first place:
+≈1.4 ms of `FireAnimationFrame` per frame. **No fix is possible inside the
+ticket's scope, so the "otherwise" arm applies: D4 CLOSED with a documented
+revised budget of 33.3 ms (30 fps) for panning at the densest viewport.**
+Recorded in DECISIONS.md. Also recorded there: the measured 60 fps, and a
+recommendation to gate dropped frames rather than rAF p95 next time. That
+recommendation is not applied to this decision.
+
+The first in-run trace summary credited MapLibre worker-thread samples to the
+main thread. It was re-summarized offline per thread before any of the above
+was written, and the report carries a note saying so.
+
+### 5 — Screenshots for the T6-FU-2 visual check (not judged here)
+
+`docs/screenshots/w7-f2/`: 32 PNGs, headed, DPR 2, viewport as above, run
+`frame-timing-headed-2026-11-15T22-04-13-541Z.json`:
+- `county-metric-{E,Ec,S}.png`
+- `climate-hazard-{historical,ssp245}-{annual_mean_temp_f, annual_precip_total_in, cdd, days_gt_100f, days_gt_95f, hdd, high_fire_danger_days, max_consecutive_dry_days, precip_99p_daily_in, water_stress_index, snotel_swe_baseline_in, snotel_swe_projected_in}.png` (24). The SNOTEL metrics are the T6-FU-2 gray-fill cases.
+- `ag-choropleth-{forage_trend,invasive_burden,converted_acres}.png`
+- `yield-badge-stacks.png`
+- `anchor-card-NO-exposure-badges-eia860_56841_56009.png`. **No exposure-badge
+  stack could be captured**: see W7-F2-FU-2 below.
+
+**Not committed** (19 MB), and neither is the 7 MB trace. That decision is
+Dylan's (W7-F2-FU-3).
+
+### New findings (not fixed: outside this ticket's scope)
+
+- **W7-F2-FU-1: production white-screen.** `HazardChoroplethLayer.tsx:12–15`
+  throws `Missing required --choro-3 design token` when `getComputedStyle`
+  returns empty, and the message names `--choro-3` whatever token was asked
+  for. With no error boundary, the React tree unmounts on entering Free Play.
+  Seen on at least 3 loads this session; the stack is in
+  `failed-map-load_…21-49-14…json` and in `load_failures` of `…21-53-15…json`.
+- **W7-F2-FU-2: exposure-badge stack unreachable.** `ExposureBadges.tsx:11`
+  matches tags on `asset.asset_id`, but tags are keyed by anchor id. 15 tier-2
+  cards were opened, all 15 ids are in the tags file, and 0 stacks rendered.
+
+### Commits
+
+- `3fb14ca` — docs(W7-F2): D4 closed under rule branch 2 — revised 33.3 ms pan budget
+  (14 files: harness, DECISIONS, and 12 evidence files, i.e. 11 JSON + README;
+  the DECISIONS diff has 0 removed lines)
+
+CI on `3fb14ca` (unauthenticated `/commits/3fb14caf5c39a7c93da252e6ed4bf802c9843582/check-runs`,
+run `https://github.com/dylanhartman913-arch/TERRA-Civic-Sim/actions/runs/43767720445`):
+
+```
+Manifest + dual-path checks | completed | success
+TS parity (npm run parity)  | completed | success
+Python tests (pytest)       | completed | success
+```
+
+Local checks before commit: `npm run lint` gave 0 errors (1 pre-existing
+warning), `npx tsc -b --noEmit` exited 0, and `check_manifest.py` and
+`check_dual_path.py` both PASSED.
+
+### 7 — Release v0.7.1
+
+Preconditions met: W7-F1 is on main (`b218128`), and CI is green on HEAD
+`3fb14ca`. The closeout is `docs/closeouts/W7_finish.md`.
+
+**Independent verification (Part E).** A general-purpose subagent checked the
+closeout read-only against the repo. It confirmed the commit table, the D4
+numbers against the raw JSON, the decisions, Part F numbering, the collision
+claim, most register statuses, the FU-1/FU-2/FU-3 evidence, and the Part D
+commands (it re-ran manifest, dual-path and lint).
+
+It found 7 claims wrong, overstated or unverifiable. All were corrected before
+the commit:
+1. "No engine or data changes" was wrong. `76960d0` added `Trajectory.ag` to
+   `types.ts` and `store.ts`. It is now stated as an additive app change.
+2. Session label "S16a addendum" is now "S16a closing block + addendum".
+3. D-10(a) "every choropleth mode" is narrowed to what was captured: not
+   ssp370, and not the 5 other county metrics.
+4. "No other item changed status" now names D-10(a), T6-FU-2 and the three new
+   FUs.
+5. T4-FU-1's provenance is now Wave 5 close (`TERRA_build_log.md:3205`). There
+   is no Wave 6 record, and the item was also misnamed.
+6. T5-FU-2 is now marked **conflicting records**: Wave 5 close (`:3207`) says
+   closed, R18 says open.
+7. The FU-2 wording now reads "`assets[].asset_id` values are anchor ids", not
+   "keyed by".
+
+It also noted that T6-FU-2's Wave 5 closure condition asks for an automated
+fill-colour assertion; that note was added. It flagged that the CI and
+verification record was missing; that record is this section.
+
+Tag procedure: commit the closeout and this block → push → `git ls-remote` →
+CI green on that exact SHA → annotated tag `v0.7.1` on it → push the tag. The
+tag confirmation follows in a post-tag addendum, as S16a did.
+
+### Open after W7-F2
+
+D4 is gone from the register. Decisions for Dylan:
+- **W7-F2-FU-3:** commit, LFS or ignore the screenshots and trace.
+- The **T6-FU-2 / D-10(a)** visual check on `docs/screenshots/w7-f2/`.
+- **T5-FU-2:** a ruling between the conflicting records.
+
+Engineering:
+- **W7-F2-FU-1:** white-screen.
+- **W7-F2-FU-2:** exposure-badge join.
+- **W7-F3:** C-3, BLM.
+
+Environment: Expo Go plus an orphaned `serve.mjs` on :8081 are exhausting
+local ports on this machine (see §1).
+
+**W7-F2 complete pending tag.**
