@@ -16,6 +16,7 @@ import { AnchorFacilityLayer } from './AnchorFacilityLayer.js';
 import { MarkerLegend } from './MarkerLegend.js';
 import { HazardChoroplethLayer } from './HazardChoroplethLayer.js';
 import { AgChoroplethLayer } from './AgChoroplethLayer.js';
+import { MapLayerBoundary } from './MapLayerBoundary.js';
 import { AttributionPopover } from '../panels/ClimatePanel.js';
 import type { ClimateRecord } from '../climate.js';
 
@@ -91,26 +92,29 @@ export function MapView() {
     >
       {mapLoaded && mapRef.current && (
         <>
-          <EcoregionLayer map={mapRef.current} visible={layers.ecoregions} />
-          <CountyLayer
-            map={mapRef.current}
-            engineState={engineState}
-            activeMetric={activeMetric}
-            onTooltip={setTooltipState}
-          />
-          <HazardChoroplethLayer map={mapRef.current} visible={layers.climateHazards} lens={climateLens} epoch={climateEpoch} metric={climateMetric} onAttribution={handleHazardAttribution} />
-          <AgChoroplethLayer map={mapRef.current} visible={layers.agChoropleth} engineState={engineState} mode={agChoroplethMode} />
+          {/* One boundary per layer: a failing layer is removed alone and cannot unmount the app (W7-F2-FU-1). */}
+          <MapLayerBoundary name="ecoregions"><EcoregionLayer map={mapRef.current} visible={layers.ecoregions} /></MapLayerBoundary>
+          <MapLayerBoundary name="counties">
+            <CountyLayer
+              map={mapRef.current}
+              engineState={engineState}
+              activeMetric={activeMetric}
+              onTooltip={setTooltipState}
+            />
+          </MapLayerBoundary>
+          <MapLayerBoundary name="climate-hazards"><HazardChoroplethLayer map={mapRef.current} visible={layers.climateHazards} lens={climateLens} epoch={climateEpoch} metric={climateMetric} onAttribution={handleHazardAttribution} /></MapLayerBoundary>
+          <MapLayerBoundary name="ag-choropleth"><AgChoroplethLayer map={mapRef.current} visible={layers.agChoropleth} engineState={engineState} mode={agChoroplethMode} /></MapLayerBoundary>
           {placementMode && (
-            <PlacementOverlay map={mapRef.current} />
+            <MapLayerBoundary name="placement"><PlacementOverlay map={mapRef.current} /></MapLayerBoundary>
           )}
-          <BusLayer map={mapRef.current} engineState={engineState} visible={layers.buses} />
-          <BranchLayer map={mapRef.current} engineState={engineState} visible={layers.branches} />
-          <CouplingLinks map={mapRef.current} engineState={engineState} />
-          <YieldBadges map={mapRef.current} />
-          <AnchorFacilityLayer map={mapRef.current} />
-          <SiteMarkers map={mapRef.current} />
-          <QueuedBuildMarkers map={mapRef.current} />
-          <MarkerLegend />
+          <MapLayerBoundary name="buses"><BusLayer map={mapRef.current} engineState={engineState} visible={layers.buses} /></MapLayerBoundary>
+          <MapLayerBoundary name="branches"><BranchLayer map={mapRef.current} engineState={engineState} visible={layers.branches} /></MapLayerBoundary>
+          <MapLayerBoundary name="coupling-links"><CouplingLinks map={mapRef.current} engineState={engineState} /></MapLayerBoundary>
+          <MapLayerBoundary name="yield-badges"><YieldBadges map={mapRef.current} /></MapLayerBoundary>
+          <MapLayerBoundary name="anchor-facilities"><AnchorFacilityLayer map={mapRef.current} /></MapLayerBoundary>
+          <MapLayerBoundary name="site-markers"><SiteMarkers map={mapRef.current} /></MapLayerBoundary>
+          <MapLayerBoundary name="queued-builds"><QueuedBuildMarkers map={mapRef.current} /></MapLayerBoundary>
+          <MapLayerBoundary name="marker-legend"><MarkerLegend /></MapLayerBoundary>
         </>
       )}
       {tooltipState && (

@@ -4,16 +4,11 @@ import type maplibregl from 'maplibre-gl';
 import countiesGeoJson from '../../data/counties.geojson';
 import { climateSurfaceRecordFor, hasClimateBaselineSurface } from '../climate.js';
 import type { ClimateEpoch, ClimateLens, ClimateMetric, ClimateRecord } from '../climate.js';
+import { tokenColor } from '../theme.js';
 
 const SOURCE_ID = 'climate-hazard-counties';
 const LAYER_ID = 'climate-hazard-choropleth';
 const countyFeatures = (countiesGeoJson as unknown as { features: Array<{ properties?: { GEOID?: string }; [key: string]: unknown }> }).features;
-
-function resolvedColor(token: string) {
-  const color = getComputedStyle(document.documentElement).getPropertyValue(token).trim();
-  if (!color) throw new Error('Missing required --choro-3 design token');
-  return color;
-}
 
 export interface HazardFeatureProperties {
   climate_hazard_value: number | null;
@@ -53,8 +48,8 @@ export function HazardChoroplethLayer({ map, visible, lens, epoch, metric, onAtt
     const min = Math.min(...values);
     const max = Math.max(...values);
     return ['case',
-      ['get', 'climate_hazard_no_data'], resolvedColor('--text-muted'),
-      ['interpolate', ['linear'], ['get', 'climate_hazard_value'], min, resolvedColor('--choro-1'), max, resolvedColor('--choro-5')],
+      ['get', 'climate_hazard_no_data'], tokenColor('--text-muted'),
+      ['interpolate', ['linear'], ['get', 'climate_hazard_value'], min, tokenColor('--choro-1'), max, tokenColor('--choro-5')],
     ] as maplibregl.ExpressionSpecification;
   }, [data]);
 
