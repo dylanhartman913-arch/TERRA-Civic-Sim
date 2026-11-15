@@ -1,0 +1,46 @@
+{
+  "mode": "headed",
+  "url": "http://127.0.0.1:4173/",
+  "flags": [
+    "--user-data-dir=/var/folders/t3/4cm6pck10lv33361s22h2gm40000gn/T/terra-ft-gpl5fs",
+    "--remote-debugging-port=0",
+    "--no-first-run",
+    "--no-default-browser-check",
+    "--window-size=1440,900",
+    "--window-position=0,0",
+    "--disable-backgrounding-occluded-windows",
+    "--disable-renderer-backgrounding",
+    "about:blank"
+  ],
+  "center": [
+    -105.3,
+    40.6
+  ],
+  "zoom": 6.8,
+  "duration_ms": 10000,
+  "started": "2026-11-15T21:49:14.034Z",
+  "browser": "Chrome/157.0.8103.52",
+  "chrome_gpu_lines": [
+    "* Compositing: Hardware accelerated",
+    "* Rasterization: Hardware accelerated",
+    "* WebGL: Hardware accelerated",
+    "GL_VENDOR :Google Inc. (Apple)",
+    "GL_RENDERER :ANGLE (Apple, ANGLE Metal Renderer: Apple M5, Version 27.0.1 (Build 26A434))",
+    "GL_VERSION :OpenGL ES 3.0 (ANGLE 2.1.29097 git hash: 751417514a52)",
+    "Disabled WebGL Extensions :",
+    "* enable_webgl_timer_query_extensions",
+    "* Expose WebGL's disjoint_timer_query extensions on platforms with site isolation: 808744(http://crbug.com/808744), 870491(http://crbug.com/870491) Applied Workarounds: enable_webgl_timer_query_extensions",
+    "* vulkan_use_rasterization_order_attachment_access: https://crbug.com/42241389(https://crbug.com/42241389): Use VK_EXT_rasterization_order_attachment_access when it is available."
+  ],
+  "page_errors": [
+    "Error: Missing required --choro-3 design token\n    at tA (http://127.0.0.1:4173/assets/index-CRPkT3mV.js:2851:39570530)\n    at http://127.0.0.1:4173/assets/index-CRPkT3mV.js:2851:39571137\n    at Object.useMemo (http://127.0.0.1:4173/assets/index-CRPkT3mV.js:8:59936)\n    at e.useMemo (http://127.0.0.1:4173/assets/index-CRPkT3mV.js:1:8429)\n    at rA (http://127.0.0.1:4173/assets/index-CRPkT3mV.js:2851:39570971)\n    at po (http://127.0.0.1:4173/assets/index-CRPkT3mV.js:8:47545)\n    at oc (http://127.0.0.1:4173/assets/index-CRPkT3mV.js:8:70108)\n    at Cc (http://127.0.0.1:4173/assets/index-CRPkT3mV.js:8:80390)\n    at Au (http://127.0.0.1:4173/assets/index-CRPkT3mV.js:8:115959)\n    at Du (http://127.0.0.1:4173/assets/index-CRPkT3mV.js:8:115006)"
+  ],
+  "map_load_diagnostics": {
+    "container": false,
+    "fiberKey": null,
+    "mapFound": false,
+    "body": ""
+  },
+  "error": "Error: timeout waiting for map load\n    at waitFor (file:///Users/dylanhartman/projects/Energy%20Modeling/energy-map/terra-app/scripts/frame-timing-harness.mjs:194:9)\n    at async file:///Users/dylanhartman/projects/Energy%20Modeling/energy-map/terra-app/scripts/frame-timing-harness.mjs:402:3",
+  "finished": "2026-11-15T21:50:18.658Z"
+}

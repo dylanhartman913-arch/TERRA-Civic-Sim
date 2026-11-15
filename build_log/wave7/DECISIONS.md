@@ -503,3 +503,56 @@ is observable, and gate it with a discriminating test (executed in W7-F1).
 notes live in the Claude project (`TERRA_needs_resilience_design.md`,
 `TERRA_needs_thresholds_v0.md`), not in this repo. No N-track code lands in
 Wave 7.
+
+---
+
+## 2026-11-15 — W7-F2: D4 — CLOSED under rule branch 2 with a revised panning budget of 33.3 ms
+
+**Decision:** D4 is **CLOSED** by branch 2 of the rule pre-committed in the
+W7-F2 ticket (16.7 < p95 ≤ 33.3 ms → one trace; top hotspot not fixable inside
+map-layer components → close with a documented revised budget). **Revised
+budget: 33.3 ms (30 fps) frame time for panning at the densest viewport**
+(Front Range + I-80, centre −105.3, 40.6, zoom 6.8). D4 leaves the carried-debt
+register.
+
+**Why branch 2 and not branch 1.** Headed Chrome on real GPU hardware, against
+a production build (`vite build` + `vite preview`), 3 valid runs, rAF
+intervals during a 10 s scripted canvas drag:
+
+| Run | n | p50 | p95 | p99 | max | > 33.3 ms |
+|-----|---|-----|-----|-----|-----|-----------|
+| 1 | 600 | 16.7 | **17.4** | 17.6 | 17.7 | 0 |
+| 2 | 599 | 16.7 | **17.5** | 17.6 | 17.7 | 0 |
+| 3 | 600 | 16.7 | **17.3** | 17.6 | 17.7 | 0 |
+
+p95 exceeds 16.7 in every run, so branch 1 does not apply. The rule was applied
+as written; no criterion was added after seeing the numbers.
+
+**The trace (one, as the rule requires).** Renderer main thread busy 9.2 % of the
+pan window, GPU main thread 4.9 %. Top main-thread JS self time is MapLibre
+library internals (`_render`, `draw`, `useProgram`, `_calcMatrices`,
+`possiblyEvaluate`), each under 20 ms total across the 10 s pan. None of it is
+in TERRA's map-layer components, so there is nothing for this ticket to fix.
+
+**What the numbers actually show (stated so the revised budget is not misread).**
+The headed intervals are symmetric jitter around the 60 Hz vsync period:
+p5 ≈ 16.0, p50 16.7, p95 ≈ 17.4, mean 16.666 ms, max 17.7, zero skipped frames.
+Panning runs at a locked 60 fps. Any vsync-locked app shows a p95 just above
+16.7 ms on this metric. The revised 33.3 ms budget is what the pre-committed
+rule prescribes. It is not a regression finding.
+
+**The historical 67 ms explained.** The Wave 4 H1.4 capture ran
+`--headless=new … --use-angle=swiftshader`, which is software rendering by
+explicit flag. Re-run here with the same flags, 1440×813 viewport and
+1180×705 canvas: p50 33.4 / p95 66.6 / p99 83.3 ms, with renderer
+`ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) …), SwiftShader driver)`.
+Headed: `ANGLE (Apple, ANGLE Metal Renderer: Apple M5, …)` at DPR 2 on a
+2360×1410 canvas, which is 4× the headless pixel count.
+
+**Recommendation for future budgets (not applied to this decision).** Gate
+dropped frames (interval > 1.5 × the measured refresh interval) rather than
+rAF-interval p95 against the vsync period itself.
+
+Evidence: `build_log/wave7/snapshots/w7-f2/` (raw per-frame intervals, renderer
+strings, chrome://gpu lines, trace summary). Harness:
+`terra-app/scripts/frame-timing-harness.mjs`. Full record: HANDOFF W7-F2.
