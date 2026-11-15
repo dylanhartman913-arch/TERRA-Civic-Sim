@@ -447,3 +447,59 @@ follow-up data-pull item. The DOR domain may have moved; a manual check of
 the current URL and, if available, a direct download of the LRA/soil-class
 tables per county would replace the statewide fallback. This was not attempted
 in S14 — flagged here for a future data session.
+
+---
+
+## 2026-11-15 — W7-F1: D4 — canvas performance (decided by Dylan 2026-11-12)
+
+**Decision:** Time-boxed measurement on real GPU hardware with a pre-committed
+exit rule, executed in W7-F2. D4 leaves the carried-debt register after W7-F2
+whatever the outcome — the measurement itself is the disposition, so it cannot
+be carried unchanged through another closeout.
+
+---
+
+## 2026-11-15 — W7-F1: C-2 — D5 domain review DEFERRED (decided by Dylan 2026-11-12)
+
+**Decision:** Named deferral. The D5 domain review is deferred until a pilot
+group exists or the project is committed as a dissertation. C-2 leaves the
+carried-debt register. The review packet stays at
+`docs/review/D5_forage_packet.md`.
+
+---
+
+## 2026-11-15 — W7-F1: C-3 — BLM grazing data as pipeline work (decided by Dylan 2026-11-12)
+
+**Decision:** BLM grazing data will be pulled as pipeline work in W7-F3.
+
+**Correction to the Horizon 2 record:** the claim "BLM has no programmatic API"
+is wrong for allotment geometry. The national allotment polygons are served by
+an ArcGIS FeatureServer and Hub downloads. Only the AUM tables (Rangeland
+Administration System reports) may need a manual export. The S16a addendum's
+C-3 row ("a human at a government portal with no API") is superseded by this
+entry for the geometry part.
+
+---
+
+## 2026-11-15 — W7-F1: C-4 — rulebook format CLOSED as sufficient (decided by Dylan 2026-11-12)
+
+**Decision:** `docs/methods/RULEBOOK.md` (verbatim R1–R18) is the canonical
+format. The 8-field `docs/orchestration/orchestration_rules.md` specified in
+`Wave7_roadmap.md` PART 6 will not be built. This closes the scope gap S16b
+recorded.
+
+---
+
+## 2026-11-15 — W7-F1: B-11 — comparison-mode drought observability (decided by Dylan 2026-11-12)
+
+**Decision:** Option (a). Extend `computeTrajectory`'s output so session drought
+is observable, and gate it with a discriminating test (executed in W7-F1).
+
+---
+
+## 2026-11-15 — W7-F1: Wave 7 successor track (decided by Dylan 2026-11-12)
+
+**Decision:** Wave 7's successor is the needs/resilience track (N-track). Design
+notes live in the Claude project (`TERRA_needs_resilience_design.md`,
+`TERRA_needs_thresholds_v0.md`), not in this repo. No N-track code lands in
+Wave 7.
