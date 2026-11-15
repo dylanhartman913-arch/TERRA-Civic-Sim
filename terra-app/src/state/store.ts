@@ -12,6 +12,7 @@ import type {
   ClimateLens,
   SaveSlotMeta,
   Trajectory,
+  TrajectoryAg,
   MaterialLedgerSummary,
   Campaign,
   CampaignFlyTarget,
@@ -27,6 +28,7 @@ import {
   advanceYear as engineAdvanceYear,
   injectDisturbance as engineInjectDisturbance,
   computeEesSummary,
+  getCountyAg,
   reduceProductionAsset as engineReduceProductionAsset,
   scheduleRetirement as engineScheduleRetirement,
   accelerateRetirement as engineAccelerateRetirement,
@@ -216,7 +218,18 @@ function replayFile(file: ScenarioFile): EngineState {
 
 // ── Helper: compute trajectory for comparison mode ─────────────────────────
 
+/** B-11: per-county forage index at the current year, read via getCountyAg. */
+function forageIndexSnapshot(state: EngineState): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const geoid of Object.keys(state.county_ag).sort()) {
+    const ag = getCountyAg(state, geoid);
+    if (ag) out[ag.geoid] = ag.levels.forage_aum.index;
+  }
+  return out;
+}
+
 function computeTrajectory(file: ScenarioFile): Trajectory {
+  const agObs: TrajectoryAg = { forage_index_by_year: [], drought_events: [] };
   const traj: Trajectory = {
     years: [],
     E: [],
@@ -225,6 +238,7 @@ function computeTrajectory(file: ScenarioFile): Trajectory {
     material_ledger_by_year: [],
     quest_conditions_by_year: [],
     events_by_year: [],
+    ag: agObs,
   };
 
   let state = initializeState(typedBaseline, typedCrosswalk, typedActionLibrary, typedNetwork, typedCards, 2025, typedFiscalBaseline, typedFiscalCoefficients);
@@ -238,6 +252,7 @@ function computeTrajectory(file: ScenarioFile): Trajectory {
   traj.events_by_year.push([]);
   traj.material_ledger_by_year.push({} as MaterialLedgerSummary);
   traj.quest_conditions_by_year.push([]);
+  agObs.forage_index_by_year.push(forageIndexSnapshot(state));
 
   for (let year = file.start_year; year < file.year_reached; year++) {
     const yearEntries = file.actionLog.filter(e => e.year === year);
@@ -283,6 +298,16 @@ function computeTrajectory(file: ScenarioFile): Trajectory {
     traj.events_by_year.push(events);
     traj.material_ledger_by_year.push({} as MaterialLedgerSummary);
     traj.quest_conditions_by_year.push([]);
+    agObs.forage_index_by_year.push(forageIndexSnapshot(state));
+  }
+
+  // Drought events applied during the run. drought_events is append-only in
+  // the engine (applyAgDroughtEvent pushes; nothing prunes), so the final
+  // state holds every event applied. Copied, not recomputed.
+  for (const geoid of Object.keys(state.county_ag).sort()) {
+    for (const evt of state.county_ag[geoid].drought_events) {
+      agObs.drought_events.push({ geoid, ...evt });
+    }
   }
 
   return traj;

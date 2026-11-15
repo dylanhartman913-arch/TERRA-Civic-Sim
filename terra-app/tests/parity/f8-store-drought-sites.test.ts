@@ -136,16 +136,20 @@ describe('F8-LIVE — store.ts:261 computeTrajectory (comparison mode) honors se
    *     S          5.2725                            ==  5.2725
    *     counties with drought events: 23
    *
-   * So the drought fix at this site is real in the state computeTrajectory
-   * builds, but invisible in what it returns. This test therefore CANNOT
-   * distinguish fixed from broken code, and no honest assertion here can until
-   * Trajectory carries an ag observable. Tracked as B-11.
+   * So the drought fix at this site was real in the state computeTrajectory
+   * builds, but invisible in what it returned. This test therefore CANNOT
+   * distinguish fixed from broken code.
    *
-   * The assertion below pins the measured fact so that if E/Ec/S ever DO become
-   * drought-sensitive, this test fails and forces a real regression gate to be
-   * written rather than silently gaining coverage nobody verified.
+   * B-11 RESOLVED (W7-F1): Trajectory now carries an optional `ag` observable
+   * (per-year forage index + drought events applied). The discriminating gate
+   * for this site lives in b11-comparison-drought.test.ts, verified to fail
+   * with the drought call removed.
+   *
+   * The assertion below still pins the measured E/Ec/S insensitivity so that
+   * if E/Ec/S ever DO become drought-sensitive, this test fails and forces that
+   * new sensitivity to be gated deliberately rather than silently.
    */
-  it('documents that E/Ec/S are drought-insensitive, so this site has no regression gate', () => {
+  it('documents that E/Ec/S are drought-insensitive (the B-11 gate is in b11-comparison-drought.test.ts)', () => {
     const store = useTerraStore.getState();
     store.loadComparisonFile(0, droughtFile());
     store.loadComparisonFile(1, energyOnlyFile());
@@ -160,7 +164,7 @@ describe('F8-LIVE — store.ts:261 computeTrajectory (comparison mode) honors se
       || withDrought!.S.some((v, i) => v !== withoutDrought!.S[i]);
     expect(
       differs,
-      'E/Ec/S became drought-sensitive — replace this test with a real regression gate (B-11)',
+      'E/Ec/S became drought-sensitive — gate that deliberately (see b11-comparison-drought.test.ts)',
     ).toBe(false);
   });
 

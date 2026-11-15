@@ -1270,6 +1270,29 @@ export interface Trajectory {
   material_ledger_by_year: MaterialLedgerSummary[];
   quest_conditions_by_year: QuestCondition[][];
   events_by_year: GameEvent[][];
+  /**
+   * B-11: ag observable so session drought is visible in comparison mode.
+   * Optional and additive — consumers that ignore it are unaffected. Values
+   * are read from the engine's ag accessor / state; no arithmetic is done
+   * on them.
+   */
+  ag?: TrajectoryAg;
+}
+
+/** Per-year ag state for a comparison-mode trajectory (B-11). */
+export interface TrajectoryAg {
+  /**
+   * Aligned index-for-index with `Trajectory.years`. Each entry maps geoid →
+   * `getCountyAg(state, geoid).levels.forage_aum.index` at that year, for every
+   * county in `state.county_ag` that the accessor returns non-null for.
+   */
+  forage_index_by_year: Array<Record<string, number>>;
+  /**
+   * Drought events applied during the run: `county_ag[geoid].drought_events`
+   * from the final state (append-only in the engine), tagged with geoid,
+   * ordered by geoid then insertion order.
+   */
+  drought_events: Array<{ geoid: string } & CountyAgState['drought_events'][number]>;
 }
 
 // ── Session Mode (workshop) ───────────────────────────────────────────────────
