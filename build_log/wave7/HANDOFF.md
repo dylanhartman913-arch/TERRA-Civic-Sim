@@ -2578,3 +2578,148 @@ run here confirms the checks executed and passed, not that they exercised new
 logic.
 
 **S16b complete. C-1 closed under the scope stated above.**
+
+---
+
+## W7-F1 — 2026-11-15 — Wave 7 decisions on the record + B-11 regression gate
+
+Post-release work. `v0.7.0` verified still at `b494393` (`git ls-remote`:
+`refs/tags/v0.7.0^{}` = `b4943930…`); not moved.
+
+### Preamble
+
+- HEAD `6505b89` = `origin/main` (`git rev-list --left-right --count` → `0 0`).
+- Tree not strictly clean: 4 untracked paths. Three were dispositioned in S16a
+  (`data/staging/ba_territories.geojson`, `data/staging/hifld_control_areas_2021-12-08/`,
+  `notebooks/08b_ees_baseline_executed.ipynb`). **One is new and undispositioned:
+  `docs/review/wyoming-playtest-2026-11-01/`.** Left untouched; needs a call.
+- Ticket cited `0e1ff78` as "the S16a commit"; that commit is HANDOFF-only. The
+  S16a fix is `016b36f`, which is what was read.
+
+### Part 1 — DECISIONS.md
+
+`dbcd2fa` — docs(w7): record D4/C-2/C-3/C-4/B-11 decisions. Append-only (diff
+has 0 removed lines). Entries dated 2026-11-15, decided by Dylan 2026-11-12:
+D4 (GPU measurement in W7-F2, leaves register after F2), C-2 (D5 review named
+deferral; packet stays at `docs/review/D5_forage_packet.md`), C-3 (BLM pull as
+W7-F3 pipeline work, **with the correction** that allotment geometry has an
+ArcGIS FeatureServer/Hub; only RAS AUM tables may need manual export), C-4
+(RULEBOOK.md canonical; 8-field orchestration_rules.md will not be built),
+B-11 (option a), and the N-track successor note (no N-track code in Wave 7).
+
+### Part 2 — B-11
+
+**Call-site audit** (Explore subagent, verified against source):
+
+| Site | Role | Reads | Change needed |
+|---|---|---|---|
+| `terra-app/src/state/store.ts:231` | `computeTrajectory` definition (module-private) | — | yes (populates `ag`) |
+| `terra-app/src/state/store.ts:~1218` | `loadComparisonFile` — sole caller; stores whole object | none | no |
+| `terra-app/src/ui/panels/ComparisonView.tsx:163–296` | `ComparisonView` | `years`, `E/Ec/S`, `events_by_year` | no — ignores `ag` |
+| `terra-app/src/ui/panels/ComparisonView.tsx:103` | `QuestList` | `quest_conditions_by_year` | no — ignores `ag` |
+| `terra-app/src/state/store.ts:498/693` | `comparisonTrajectories` field/initialiser | type only | no |
+| `terra-app/tests/parity/f8-store-drought-sites.test.ts:119–177` | f8 comparison tests | `years`, `E/Ec/S` | comment only |
+
+No debrief, export or persistence path references `Trajectory` or
+`computeTrajectory`. Adding `ag` to the debrief export is **not** done — possible
+follow-up.
+
+**Design.** One optional field `Trajectory.ag?: TrajectoryAg`
+(`terra-app/src/engine/types.ts`):
+- `forage_index_by_year: Array<Record<geoid, number>>` — aligned with `years`;
+  each value is `getCountyAg(state, geoid).levels.forage_aum.index`.
+- `drought_events: Array<{geoid} & CountyAgState['drought_events'][number]>` —
+  final-state `county_ag[*].drought_events`, copied. Sound because
+  `applyAgDroughtEvent` only pushes and nothing prunes.
+
+Forage index is the one ag scalar session drought moves directly (via
+`drought.forage_multiplier` in `advanceCountyAg`), so it is the smallest per-year
+observable that separates on from off; the events list names the cause. No new
+arithmetic — accessor reads and copies only. `computeTrajectory` feeds no
+digest, so no digest contract is touched.
+
+**Gate:** `terra-app/tests/parity/b11-comparison-drought.test.ts` (5 tests, in
+`tests/parity/` so CI runs it): shape aligned with `years`; drought ON vs OFF →
+`ag` differs (events non-empty vs `[]`, forage differs); ON final-year forage +
+events equal the `replay.ts` engine path exactly; OFF deep-equals energy-only
+(whole trajectory); same seed twice → deep-equal. The f8 "no regression gate"
+comment was updated to point here; its E/Ec/S insensitivity assertion is kept.
+
+**Mutation proof.** `applySessionDrought` call removed at `store.ts:275`
+(inside `computeTrajectory`, lines 231–311), then
+`npx vitest run tests/parity/b11-comparison-drought.test.ts`:
+
+```
+     × drought ON vs OFF — the ag field differs (forage index and events) 49ms
+     × drought ON matches the known-correct engine path (replay.ts) at the final year 104ms
+ FAIL  ... > drought ON vs OFF — the ag field differs (forage index and events)
+AssertionError: drought ON applied no drought events: expected 0 to be greater than 0
+ FAIL  ... > drought ON matches the known-correct engine path (replay.ts) at the final year
+AssertionError: expected { '56001': 1, '56003': 1, …(21) } to deeply equal { '56001': 0.8394, …(22) }
+ Test Files  1 failed (1)
+      Tests  2 failed | 3 passed (5)
+```
+
+The 3 that pass under mutation are correct to pass (shape, OFF≡energy-only,
+determinism do not depend on drought). Fix restored from a byte copy
+(`grep -c MUTATION` → 0), same command:
+
+```
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+```
+
+### Gates (fresh, post-change)
+
+| Command | Output |
+|---|---|
+| `python -m pytest tests/ -q` (repo root) | `230 passed in 155.35s` |
+| `npm run parity` (terra-app) | `Test Files 35 passed (35)` / `Tests 364 passed (364)` |
+| `npx vitest run` (terra-app, full) | `Test Files 41 passed (41)` / `Tests 406 passed (406)` |
+| `npx tsc --noEmit` / `npx tsc -b --noEmit` | exit 0 / exit 0 |
+| `npm run lint` | 0 errors, 1 pre-existing warning (`ActionPalette.tsx:53`) |
+
+**Count reconciliation vs the ticket's 230 / 351 / 351:**
+- pytest 230 = 230. Python untouched.
+- parity: 351 is the pre-S16a figure. S16a recorded 34 files / 359 (+8 f8).
+  359 + 5 (b11) = **364**, 35 files. Fully accounted for.
+- full TS: 351 was never the full-suite count on this tree. Pre-change baseline
+  this session, `npx vitest run`: `Test Files 1 failed | 39 passed (40)`,
+  `Tests 1 failed | 400 passed (401)`. 401 + 5 = **406**, 41 files. (Full = 364
+  parity + 42 in `tests/ui/`.)
+- **The one baseline failure** was `ag-year-loop-benchmark.test.ts`
+  `expect(p90Ms).toBeLessThan(P90_BUDGET_MS)` (60 ms wall-clock) on the first,
+  cold run before any change. It passed in the parity and full runs above. The
+  test does not touch the store or `computeTrajectory`. Timing flake, not a
+  logic failure — noted, not fixed.
+
+**Digests: none moved.** `git diff --stat -- terra-app/tests/parity/fixtures tests/ src/ '*.py'` → empty.
+
+### Commits and CI
+
+- `dbcd2fa` — docs(w7): record D4/C-2/C-3/C-4/B-11 decisions
+- `76960d0` — test(w7): B-11 regression gate for comparison-mode drought
+
+`git push origin main` → `6505b89..76960d0`; `git ls-remote origin refs/heads/main`
+= `git rev-parse HEAD` = `76960d07…`.
+
+CI via unauthenticated `/commits/76960d077d6b8789a5ebdd533dd7214c1387fb0f/check-runs`:
+
+```
+TS parity (npm run parity)     | completed | success
+Python tests (pytest)          | completed | success
+Manifest + dual-path checks    | completed | success
+```
+
+Run `https://github.com/dylanhartman913-arch/TERRA-Civic-Sim/actions/runs/43761185832`.
+(GitHub connectivity from this machine dropped for a few minutes mid-check; the
+result above was read after it recovered, against the exact SHA.)
+
+### Open after W7-F1
+
+- `docs/review/wyoming-playtest-2026-11-01/` untracked, undispositioned.
+- Possible follow-up: carry `Trajectory.ag` into the debrief export.
+- Possible follow-up: `ag-year-loop-benchmark` p90 budget is wall-clock-sensitive.
+- B-11 closed. Next: W7-F2 (D4), W7-F3 (C-3).
+
+**W7-F1 complete.**
