@@ -10,8 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          lfs: true   # county_climate_baseline.json is Git LFS; test_county_climate_baseline.py requires it
+
+      - name: Fetch Git LFS data (not screenshots)
+        # county_climate_baseline.json is LFS (pytest and the TS climate layer import it);
+        # docs/screenshots/** is LFS evidence no job reads, so it is not downloaded.
+        run: git lfs pull --exclude="docs/screenshots/**"
 
       - uses: actions/setup-python@v5
         with:
@@ -30,8 +33,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          lfs: true
+
+      - name: Fetch Git LFS data (not screenshots)
+        # county_climate_baseline.json is LFS (pytest and the TS climate layer import it);
+        # docs/screenshots/** is LFS evidence no job reads, so it is not downloaded.
+        run: git lfs pull --exclude="docs/screenshots/**"
 
       - uses: actions/setup-python@v5
         with:
@@ -59,6 +65,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Fetch Git LFS data (not screenshots)
+        working-directory: .
+        # county_climate_baseline.json is LFS (pytest and the TS climate layer import it);
+        # docs/screenshots/** is LFS evidence no job reads, so it is not downloaded.
+        run: git lfs pull --exclude="docs/screenshots/**"
 
       - uses: actions/setup-node@v4
         with:
