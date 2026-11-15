@@ -1,5 +1,7 @@
 # RULEBOOK.md — R1–R18 standing orchestration rules
 
+> **Status note (W7-F4):** rule text below is historical and quoted verbatim; the current status of any item a rule mentions (e.g. T5-FU-2 in R18) lives in `build_log/wave7/DECISIONS.md`.
+
 **Canonical, single-source home for the R1–R18 protocol rules.** Extracted
 verbatim (exact wording and numbering preserved, no rewrite or summarization)
 from `docs/roadmaps/Wave 2-6 Roadmaps.md`, which remains the historical record

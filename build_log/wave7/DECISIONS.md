@@ -556,3 +556,30 @@ rAF-interval p95 against the vsync period itself.
 Evidence: `build_log/wave7/snapshots/w7-f2/` (raw per-frame intervals, renderer
 strings, chrome://gpu lines, trace summary). Harness:
 `terra-app/scripts/frame-timing-harness.mjs`. Full record: HANDOFF W7-F2.
+
+---
+
+## 2026-11-15 — W7-F4: T5-FU-2 — CLOSED, superseded (ruled by Dylan in the W7-F4 ticket)
+
+**Decision:** T5-FU-2 is **CLOSED, superseded by test counts reproduced since S16
+and run by CI on every push.** The origin of the Wave 5 independent reviewer's
+305-test count is not identified and will not be pursued.
+
+**The conflicting records this ruling settles** (W7_finish.md flagged the conflict):
+- `docs/session_logs/TERRA_build_log.md:3207` (Wave 5 close, fb2ef4c): "documented,
+  closed". That entry reconciled a different comparison (32/356 → 33/364).
+- `TERRA_build_log.md:3234–3272` (Correction 2): reopened; the 305-vs-332
+  reproduction gap is unexplained.
+- `docs/methods/RULEBOOK.md` R18: "a 27-test reproduction gap ... remains open".
+
+**Why it is superseded.** R18's concern was a count that could not be reproduced.
+Since S16, every reported count carries its command and captured output (S16:
+`pytest` 230 passed, `npm run parity` 33 files / 351 tests), and the CI workflow
+added in S10 (`.github/workflows/ci.yml`, `on: push`) runs `pytest tests/` and
+`npm run parity` on every push. Each later handoff checked the result per commit
+SHA through `/check-runs`. A count that does not reproduce now fails CI instead of
+surfacing as a historical gap.
+
+**RULEBOOK.md is not edited.** It quotes R18 verbatim, including the "remains open"
+clause. Its header now says that rule text is historical and that current status
+lives in this file.
