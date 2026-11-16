@@ -3446,3 +3446,13 @@ No operator names or addresses: the export has no such columns; the allotment na
 Decisions: (1) confirm JC-3; (2) Campbell expectation: accept the evidence and amend the gate, or hold; (3) promote BLM into the engine and regenerate goldens, or not.
 Data: USFS AUMs (no source yet); Teton RAS-vs-SMA gap; the 33 RAS-only allotments (8,603 AUMs) have no geometry; Dylan's portal steps for MANUAL_FETCH.md.
 Carried from W7-F4: W7-F4-FU-1/2/3, T6-FU-2 visual check; untracked `docs/review/wyoming-playtest-2026-11-01/` undispositioned.
+
+### W7-F3 addendum — CI
+
+- Commit `aebef1f` pushed (`d23cdba..aebef1f`); `git ls-remote origin refs/heads/main` and `git rev-parse HEAD` both returned
+  `aebef1fa311f85cd09acbd35c953b8c240b06bd6`.
+- Unauthenticated `GET /repos/dylanhartman913-arch/TERRA-Civic-Sim/commits/aebef1fa…/check-runs`: Manifest + dual-path checks `completed/success`,
+  TS parity `completed/success`, Python tests `completed/success`.
+- No tag created or moved. This addendum is docs-only.
+
+**W7-F3 complete (unpromoted; three decisions open, see above).**
