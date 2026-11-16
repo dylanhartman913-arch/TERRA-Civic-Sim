@@ -3584,3 +3584,13 @@ not regenerated, to keep that file's hash, the manifest entry and `provision_wor
 | `npx vitest run` (terra-app) | `Test Files 44 passed (44)` / `Tests 419 passed (419)` (= F3) |
 | `check_manifest.py` / `check_dual_path.py` / `validate_p3_attribution.py` | PASSED / PASSED / PASSED |
 | `git diff --stat -- terra-app/tests/parity/fixtures src/ terra-app/src/data terra-app/src/engine data/` | empty |
+
+### W7-F5 addendum — CI
+
+- Commit `a65ac2a` pushed (`606c601..a65ac2a`); `git ls-remote origin refs/heads/main` and `git rev-parse HEAD`
+  both returned `a65ac2a0787a6bf1f56c71f6c0bfbe6359ba768d`.
+- Unauthenticated check-runs on that SHA: Python tests `completed/success`, Manifest + dual-path
+  `completed/success`, TS parity `completed/success`.
+- No tag created or moved. This addendum is docs-only.
+
+**W7-F5 complete. Wave 7 closed.**
