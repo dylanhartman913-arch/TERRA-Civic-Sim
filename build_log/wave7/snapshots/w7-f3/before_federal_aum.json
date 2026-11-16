@@ -1,0 +1,1002 @@
+{
+ "baseline_schema_version": "wy_county_ag_baseline_v1",
+ "counties": {
+  "56001": {
+   "county_name": "Albany",
+   "engine_federal_authorized_use_acres": 375307.21,
+   "engine_forage_aum": {
+    "federal": 12497.730093,
+    "index": 1.0,
+    "private": 40368.0
+   },
+   "federal_aums": {
+    "blm_authorized_aum": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras",
+     "unit": "AUM/year",
+     "value": null,
+     "year": null
+    },
+    "federal_aum_share": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras + usfs_grazing",
+     "unit": "fraction",
+     "value": null,
+     "year": null
+    },
+    "usfs_authorized_aum": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area.",
+     "source": "usfs_grazing",
+     "unit": "AUM/year",
+     "value": 0,
+     "year": 2024
+    },
+    "usfs_authorized_use_acres": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (59 polygon pieces). 5 invalid geometries repaired via buffer(0).",
+     "source": "usfs_grazing",
+     "unit": "acres",
+     "value": 439895,
+     "year": 2024
+    }
+   }
+  },
+  "56003": {
+   "county_name": "Big Horn",
+   "engine_federal_authorized_use_acres": 303143.078,
+   "engine_forage_aum": {
+    "federal": 10094.664497,
+    "index": 1.0,
+    "private": 11040.0
+   },
+   "federal_aums": {
+    "blm_authorized_aum": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras",
+     "unit": "AUM/year",
+     "value": null,
+     "year": null
+    },
+    "federal_aum_share": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras + usfs_grazing",
+     "unit": "fraction",
+     "value": null,
+     "year": null
+    },
+    "usfs_authorized_aum": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area.",
+     "source": "usfs_grazing",
+     "unit": "AUM/year",
+     "value": 0,
+     "year": 2024
+    },
+    "usfs_authorized_use_acres": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (35 polygon pieces). 5 invalid geometries repaired via buffer(0).",
+     "source": "usfs_grazing",
+     "unit": "acres",
+     "value": 309813,
+     "year": 2024
+    }
+   }
+  },
+  "56005": {
+   "county_name": "Campbell",
+   "engine_federal_authorized_use_acres": 313191.963,
+   "engine_forage_aum": {
+    "federal": 10429.292368,
+    "index": 1.0,
+    "private": 81232.0
+   },
+   "federal_aums": {
+    "blm_authorized_aum": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras",
+     "unit": "AUM/year",
+     "value": null,
+     "year": null
+    },
+    "federal_aum_share": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras + usfs_grazing",
+     "unit": "fraction",
+     "value": null,
+     "year": null
+    },
+    "usfs_authorized_aum": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area.",
+     "source": "usfs_grazing",
+     "unit": "AUM/year",
+     "value": 0,
+     "year": 2024
+    },
+    "usfs_authorized_use_acres": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (50 polygon pieces). 5 invalid geometries repaired via buffer(0).",
+     "source": "usfs_grazing",
+     "unit": "acres",
+     "value": 314199,
+     "year": 2024
+    }
+   }
+  },
+  "56007": {
+   "county_name": "Carbon",
+   "engine_federal_authorized_use_acres": 551682.895,
+   "engine_forage_aum": {
+    "federal": 18371.040404,
+    "index": 1.0,
+    "private": 88250.0
+   },
+   "federal_aums": {
+    "blm_authorized_aum": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras",
+     "unit": "AUM/year",
+     "value": null,
+     "year": null
+    },
+    "federal_aum_share": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras + usfs_grazing",
+     "unit": "fraction",
+     "value": null,
+     "year": null
+    },
+    "usfs_authorized_aum": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area.",
+     "source": "usfs_grazing",
+     "unit": "AUM/year",
+     "value": 0,
+     "year": 2024
+    },
+    "usfs_authorized_use_acres": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (42 polygon pieces). 5 invalid geometries repaired via buffer(0).",
+     "source": "usfs_grazing",
+     "unit": "acres",
+     "value": 641208,
+     "year": 2024
+    }
+   }
+  },
+  "56009": {
+   "county_name": "Converse",
+   "engine_federal_authorized_use_acres": 491823.2,
+   "engine_forage_aum": {
+    "federal": 16377.71256,
+    "index": 1.0,
+    "private": 76952.0
+   },
+   "federal_aums": {
+    "blm_authorized_aum": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras",
+     "unit": "AUM/year",
+     "value": null,
+     "year": null
+    },
+    "federal_aum_share": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras + usfs_grazing",
+     "unit": "fraction",
+     "value": null,
+     "year": null
+    },
+    "usfs_authorized_aum": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area.",
+     "source": "usfs_grazing",
+     "unit": "AUM/year",
+     "value": 0,
+     "year": 2024
+    },
+    "usfs_authorized_use_acres": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (71 polygon pieces). 5 invalid geometries repaired via buffer(0).",
+     "source": "usfs_grazing",
+     "unit": "acres",
+     "value": 496089,
+     "year": 2024
+    }
+   }
+  },
+  "56011": {
+   "county_name": "Crook",
+   "engine_federal_authorized_use_acres": 184375.799,
+   "engine_forage_aum": {
+    "federal": 6139.714107,
+    "index": 1.0,
+    "private": 38596.0
+   },
+   "federal_aums": {
+    "blm_authorized_aum": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras",
+     "unit": "AUM/year",
+     "value": null,
+     "year": null
+    },
+    "federal_aum_share": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras + usfs_grazing",
+     "unit": "fraction",
+     "value": null,
+     "year": null
+    },
+    "usfs_authorized_aum": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area.",
+     "source": "usfs_grazing",
+     "unit": "AUM/year",
+     "value": 0,
+     "year": 2024
+    },
+    "usfs_authorized_use_acres": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (36 polygon pieces). 5 invalid geometries repaired via buffer(0).",
+     "source": "usfs_grazing",
+     "unit": "acres",
+     "value": 184376,
+     "year": 2024
+    }
+   }
+  },
+  "56013": {
+   "county_name": "Fremont",
+   "engine_federal_authorized_use_acres": 448295.053,
+   "engine_forage_aum": {
+    "federal": 14928.225265,
+    "index": 1.0,
+    "private": 36093.0
+   },
+   "federal_aums": {
+    "blm_authorized_aum": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras",
+     "unit": "AUM/year",
+     "value": null,
+     "year": null
+    },
+    "federal_aum_share": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras + usfs_grazing",
+     "unit": "fraction",
+     "value": null,
+     "year": null
+    },
+    "usfs_authorized_aum": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area.",
+     "source": "usfs_grazing",
+     "unit": "AUM/year",
+     "value": 0,
+     "year": 2024
+    },
+    "usfs_authorized_use_acres": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (40 polygon pieces). 5 invalid geometries repaired via buffer(0).",
+     "source": "usfs_grazing",
+     "unit": "acres",
+     "value": 476483,
+     "year": 2024
+    }
+   }
+  },
+  "56015": {
+   "county_name": "Goshen",
+   "engine_federal_authorized_use_acres": 0.0,
+   "engine_forage_aum": {
+    "federal": 0.0,
+    "index": 1.0,
+    "private": 33173.0
+   },
+   "federal_aums": {
+    "blm_authorized_aum": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras",
+     "unit": "AUM/year",
+     "value": null,
+     "year": null
+    },
+    "federal_aum_share": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras + usfs_grazing",
+     "unit": "fraction",
+     "value": null,
+     "year": null
+    },
+    "usfs_authorized_aum": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area.",
+     "source": "usfs_grazing",
+     "unit": "AUM/year",
+     "value": 0,
+     "year": 2024
+    },
+    "usfs_authorized_use_acres": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (0 polygon pieces). 5 invalid geometries repaired via buffer(0).",
+     "source": "usfs_grazing",
+     "unit": "acres",
+     "value": 0,
+     "year": 2024
+    }
+   }
+  },
+  "56017": {
+   "county_name": "Hot Springs",
+   "engine_federal_authorized_use_acres": 33645.477,
+   "engine_forage_aum": {
+    "federal": 1120.394384,
+    "index": 1.0,
+    "private": 17705.0
+   },
+   "federal_aums": {
+    "blm_authorized_aum": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras",
+     "unit": "AUM/year",
+     "value": null,
+     "year": null
+    },
+    "federal_aum_share": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras + usfs_grazing",
+     "unit": "fraction",
+     "value": null,
+     "year": null
+    },
+    "usfs_authorized_aum": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area.",
+     "source": "usfs_grazing",
+     "unit": "AUM/year",
+     "value": 0,
+     "year": 2024
+    },
+    "usfs_authorized_use_acres": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (8 polygon pieces). 5 invalid geometries repaired via buffer(0).",
+     "source": "usfs_grazing",
+     "unit": "acres",
+     "value": 41364,
+     "year": 2024
+    }
+   }
+  },
+  "56019": {
+   "county_name": "Johnson",
+   "engine_federal_authorized_use_acres": 204113.478,
+   "engine_forage_aum": {
+    "federal": 6796.978817,
+    "index": 1.0,
+    "private": 65908.0
+   },
+   "federal_aums": {
+    "blm_authorized_aum": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras",
+     "unit": "AUM/year",
+     "value": null,
+     "year": null
+    },
+    "federal_aum_share": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras + usfs_grazing",
+     "unit": "fraction",
+     "value": null,
+     "year": null
+    },
+    "usfs_authorized_aum": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area.",
+     "source": "usfs_grazing",
+     "unit": "AUM/year",
+     "value": 0,
+     "year": 2024
+    },
+    "usfs_authorized_use_acres": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (23 polygon pieces). 5 invalid geometries repaired via buffer(0).",
+     "source": "usfs_grazing",
+     "unit": "acres",
+     "value": 221110,
+     "year": 2024
+    }
+   }
+  },
+  "56021": {
+   "county_name": "Laramie",
+   "engine_federal_authorized_use_acres": 0.0,
+   "engine_forage_aum": {
+    "federal": 0.0,
+    "index": 1.0,
+    "private": 37691.0
+   },
+   "federal_aums": {
+    "blm_authorized_aum": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras",
+     "unit": "AUM/year",
+     "value": null,
+     "year": null
+    },
+    "federal_aum_share": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras + usfs_grazing",
+     "unit": "fraction",
+     "value": null,
+     "year": null
+    },
+    "usfs_authorized_aum": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area.",
+     "source": "usfs_grazing",
+     "unit": "AUM/year",
+     "value": 0,
+     "year": 2024
+    },
+    "usfs_authorized_use_acres": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (0 polygon pieces). 5 invalid geometries repaired via buffer(0).",
+     "source": "usfs_grazing",
+     "unit": "acres",
+     "value": 0,
+     "year": 2024
+    }
+   }
+  },
+  "56023": {
+   "county_name": "Lincoln",
+   "engine_federal_authorized_use_acres": 628883.769,
+   "engine_forage_aum": {
+    "federal": 20941.829508,
+    "index": 1.0,
+    "private": 6734.0
+   },
+   "federal_aums": {
+    "blm_authorized_aum": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras",
+     "unit": "AUM/year",
+     "value": null,
+     "year": null
+    },
+    "federal_aum_share": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras + usfs_grazing",
+     "unit": "fraction",
+     "value": null,
+     "year": null
+    },
+    "usfs_authorized_aum": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area.",
+     "source": "usfs_grazing",
+     "unit": "AUM/year",
+     "value": 0,
+     "year": 2024
+    },
+    "usfs_authorized_use_acres": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (82 polygon pieces). 5 invalid geometries repaired via buffer(0).",
+     "source": "usfs_grazing",
+     "unit": "acres",
+     "value": 768365,
+     "year": 2024
+    }
+   }
+  },
+  "56025": {
+   "county_name": "Natrona",
+   "engine_federal_authorized_use_acres": 14667.054,
+   "engine_forage_aum": {
+    "federal": 488.412898,
+    "index": 1.0,
+    "private": 65911.0
+   },
+   "federal_aums": {
+    "blm_authorized_aum": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras",
+     "unit": "AUM/year",
+     "value": null,
+     "year": null
+    },
+    "federal_aum_share": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras + usfs_grazing",
+     "unit": "fraction",
+     "value": null,
+     "year": null
+    },
+    "usfs_authorized_aum": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area.",
+     "source": "usfs_grazing",
+     "unit": "AUM/year",
+     "value": 0,
+     "year": 2024
+    },
+    "usfs_authorized_use_acres": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (4 polygon pieces). 5 invalid geometries repaired via buffer(0).",
+     "source": "usfs_grazing",
+     "unit": "acres",
+     "value": 14667,
+     "year": 2024
+    }
+   }
+  },
+  "56027": {
+   "county_name": "Niobrara",
+   "engine_federal_authorized_use_acres": 16987.668,
+   "engine_forage_aum": {
+    "federal": 565.689344,
+    "index": 1.0,
+    "private": 41559.0
+   },
+   "federal_aums": {
+    "blm_authorized_aum": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras",
+     "unit": "AUM/year",
+     "value": null,
+     "year": null
+    },
+    "federal_aum_share": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras + usfs_grazing",
+     "unit": "fraction",
+     "value": null,
+     "year": null
+    },
+    "usfs_authorized_aum": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area.",
+     "source": "usfs_grazing",
+     "unit": "AUM/year",
+     "value": 0,
+     "year": 2024
+    },
+    "usfs_authorized_use_acres": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (11 polygon pieces). 5 invalid geometries repaired via buffer(0).",
+     "source": "usfs_grazing",
+     "unit": "acres",
+     "value": 16988,
+     "year": 2024
+    }
+   }
+  },
+  "56029": {
+   "county_name": "Park",
+   "engine_federal_authorized_use_acres": 502597.229,
+   "engine_forage_aum": {
+    "federal": 16736.487726,
+    "index": 1.0,
+    "private": 18429.0
+   },
+   "federal_aums": {
+    "blm_authorized_aum": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras",
+     "unit": "AUM/year",
+     "value": null,
+     "year": null
+    },
+    "federal_aum_share": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras + usfs_grazing",
+     "unit": "fraction",
+     "value": null,
+     "year": null
+    },
+    "usfs_authorized_aum": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area.",
+     "source": "usfs_grazing",
+     "unit": "AUM/year",
+     "value": 0,
+     "year": 2024
+    },
+    "usfs_authorized_use_acres": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (52 polygon pieces). 5 invalid geometries repaired via buffer(0).",
+     "source": "usfs_grazing",
+     "unit": "acres",
+     "value": 536868,
+     "year": 2024
+    }
+   }
+  },
+  "56031": {
+   "county_name": "Platte",
+   "engine_federal_authorized_use_acres": 6026.513,
+   "engine_forage_aum": {
+    "federal": 200.682883,
+    "index": 1.0,
+    "private": 36608.0
+   },
+   "federal_aums": {
+    "blm_authorized_aum": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras",
+     "unit": "AUM/year",
+     "value": null,
+     "year": null
+    },
+    "federal_aum_share": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras + usfs_grazing",
+     "unit": "fraction",
+     "value": null,
+     "year": null
+    },
+    "usfs_authorized_aum": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area.",
+     "source": "usfs_grazing",
+     "unit": "AUM/year",
+     "value": 0,
+     "year": 2024
+    },
+    "usfs_authorized_use_acres": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (6 polygon pieces). 5 invalid geometries repaired via buffer(0).",
+     "source": "usfs_grazing",
+     "unit": "acres",
+     "value": 6027,
+     "year": 2024
+    }
+   }
+  },
+  "56033": {
+   "county_name": "Sheridan",
+   "engine_federal_authorized_use_acres": 343871.143,
+   "engine_forage_aum": {
+    "federal": 11450.909062,
+    "index": 1.0,
+    "private": 37692.0
+   },
+   "federal_aums": {
+    "blm_authorized_aum": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras",
+     "unit": "AUM/year",
+     "value": null,
+     "year": null
+    },
+    "federal_aum_share": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras + usfs_grazing",
+     "unit": "fraction",
+     "value": null,
+     "year": null
+    },
+    "usfs_authorized_aum": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area.",
+     "source": "usfs_grazing",
+     "unit": "AUM/year",
+     "value": 0,
+     "year": 2024
+    },
+    "usfs_authorized_use_acres": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (45 polygon pieces). 5 invalid geometries repaired via buffer(0).",
+     "source": "usfs_grazing",
+     "unit": "acres",
+     "value": 367807,
+     "year": 2024
+    }
+   }
+  },
+  "56035": {
+   "county_name": "Sublette",
+   "engine_federal_authorized_use_acres": 700136.472,
+   "engine_forage_aum": {
+    "federal": 23314.544518,
+    "index": 1.0,
+    "private": 12361.0
+   },
+   "federal_aums": {
+    "blm_authorized_aum": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras",
+     "unit": "AUM/year",
+     "value": null,
+     "year": null
+    },
+    "federal_aum_share": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras + usfs_grazing",
+     "unit": "fraction",
+     "value": null,
+     "year": null
+    },
+    "usfs_authorized_aum": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area.",
+     "source": "usfs_grazing",
+     "unit": "AUM/year",
+     "value": 0,
+     "year": 2024
+    },
+    "usfs_authorized_use_acres": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (60 polygon pieces). 5 invalid geometries repaired via buffer(0).",
+     "source": "usfs_grazing",
+     "unit": "acres",
+     "value": 902986,
+     "year": 2024
+    }
+   }
+  },
+  "56037": {
+   "county_name": "Sweetwater",
+   "engine_federal_authorized_use_acres": 72587.773,
+   "engine_forage_aum": {
+    "federal": 2417.172841,
+    "index": 1.0,
+    "private": 44307.0
+   },
+   "federal_aums": {
+    "blm_authorized_aum": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras",
+     "unit": "AUM/year",
+     "value": null,
+     "year": null
+    },
+    "federal_aum_share": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras + usfs_grazing",
+     "unit": "fraction",
+     "value": null,
+     "year": null
+    },
+    "usfs_authorized_aum": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area.",
+     "source": "usfs_grazing",
+     "unit": "AUM/year",
+     "value": 0,
+     "year": 2024
+    },
+    "usfs_authorized_use_acres": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (6 polygon pieces). 5 invalid geometries repaired via buffer(0).",
+     "source": "usfs_grazing",
+     "unit": "acres",
+     "value": 72723,
+     "year": 2024
+    }
+   }
+  },
+  "56039": {
+   "county_name": "Teton",
+   "engine_federal_authorized_use_acres": 196090.844,
+   "engine_forage_aum": {
+    "federal": 6529.825105,
+    "index": 1.0,
+    "private": 679.0
+   },
+   "federal_aums": {
+    "blm_authorized_aum": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras",
+     "unit": "AUM/year",
+     "value": null,
+     "year": null
+    },
+    "federal_aum_share": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras + usfs_grazing",
+     "unit": "fraction",
+     "value": null,
+     "year": null
+    },
+    "usfs_authorized_aum": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area.",
+     "source": "usfs_grazing",
+     "unit": "AUM/year",
+     "value": 0,
+     "year": 2024
+    },
+    "usfs_authorized_use_acres": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (52 polygon pieces). 5 invalid geometries repaired via buffer(0).",
+     "source": "usfs_grazing",
+     "unit": "acres",
+     "value": 508185,
+     "year": 2024
+    }
+   }
+  },
+  "56041": {
+   "county_name": "Uinta",
+   "engine_federal_authorized_use_acres": 41647.896,
+   "engine_forage_aum": {
+    "federal": 1386.874937,
+    "index": 1.0,
+    "private": 21872.0
+   },
+   "federal_aums": {
+    "blm_authorized_aum": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras",
+     "unit": "AUM/year",
+     "value": null,
+     "year": null
+    },
+    "federal_aum_share": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras + usfs_grazing",
+     "unit": "fraction",
+     "value": null,
+     "year": null
+    },
+    "usfs_authorized_aum": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area.",
+     "source": "usfs_grazing",
+     "unit": "AUM/year",
+     "value": 0,
+     "year": 2024
+    },
+    "usfs_authorized_use_acres": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (5 polygon pieces). 5 invalid geometries repaired via buffer(0).",
+     "source": "usfs_grazing",
+     "unit": "acres",
+     "value": 41815,
+     "year": 2024
+    }
+   }
+  },
+  "56043": {
+   "county_name": "Washakie",
+   "engine_federal_authorized_use_acres": 33089.205,
+   "engine_forage_aum": {
+    "federal": 1101.870527,
+    "index": 1.0,
+    "private": 10600.0
+   },
+   "federal_aums": {
+    "blm_authorized_aum": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras",
+     "unit": "AUM/year",
+     "value": null,
+     "year": null
+    },
+    "federal_aum_share": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras + usfs_grazing",
+     "unit": "fraction",
+     "value": null,
+     "year": null
+    },
+    "usfs_authorized_aum": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area.",
+     "source": "usfs_grazing",
+     "unit": "AUM/year",
+     "value": 0,
+     "year": 2024
+    },
+    "usfs_authorized_use_acres": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (6 polygon pieces). 5 invalid geometries repaired via buffer(0).",
+     "source": "usfs_grazing",
+     "unit": "acres",
+     "value": 33089,
+     "year": 2024
+    }
+   }
+  },
+  "56045": {
+   "county_name": "Weston",
+   "engine_federal_authorized_use_acres": 602549.267,
+   "engine_forage_aum": {
+    "federal": 20064.890591,
+    "index": 1.0,
+    "private": 40961.0
+   },
+   "federal_aums": {
+    "blm_authorized_aum": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras",
+     "unit": "AUM/year",
+     "value": null,
+     "year": null
+    },
+    "federal_aum_share": {
+     "confidence": "low",
+     "notes": "Blocked in sandbox; see MANUAL_FETCH.md.",
+     "source": "blm_ras + usfs_grazing",
+     "unit": "fraction",
+     "value": null,
+     "year": null
+    },
+    "usfs_authorized_aum": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area.",
+     "source": "usfs_grazing",
+     "unit": "AUM/year",
+     "value": 0,
+     "year": 2024
+    },
+    "usfs_authorized_use_acres": {
+     "confidence": "medium",
+     "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (115 polygon pieces). 5 invalid geometries repaired via buffer(0).",
+     "source": "usfs_grazing",
+     "unit": "acres",
+     "value": 602549,
+     "year": 2024
+    }
+   }
+  }
+ },
+ "engine_schema_version": "county-ag-engine-v1",
+ "git_head": "d23cdba",
+ "snapshot": "before_c3",
+ "sources": {
+  "data/processed/wy_county_ag_baseline.json": "8645fc42ff2188f2cb20b712a13e74c48ec6a59db00a87ec4e3dbdfa66ec2593",
+  "data/processed/wy_county_ag_engine_baseline.json": "f3a32fad6d1ddb7e5bc01b6517f5c066fda935a3393e4194e4240ac49c85ed0d"
+ },
+ "taken": "2026-11-16"
+}

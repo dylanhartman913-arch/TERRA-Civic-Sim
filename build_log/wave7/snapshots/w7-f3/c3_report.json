@@ -1,0 +1,91 @@
+{
+ "stats": {
+  "ras_allotments": 3503,
+  "polygon_allotments": 3556,
+  "matched": 3470,
+  "match_rate_ras_to_polygon": 0.9905795032829003,
+  "match_rate_polygon_to_ras": 0.9758155230596175,
+  "ras_rows": 4128,
+  "ras_active_aum_total_all_rows": 1923797.0,
+  "ras_active_aum_wy_admin": 1923355.0,
+  "ras_suspended_aum_wy_admin": 393770.0,
+  "ras_only_count": 33,
+  "ras_only_active_aum": 8603.0,
+  "ras_only_public_acres": 152244.0,
+  "polygon_only_count": 86,
+  "polygon_only_acres": 208099.5915359915,
+  "matched_active_aum": 1915194.0,
+  "matched_zero_wy_overlap_count": 20,
+  "matched_zero_wy_overlap_aum": 851.0,
+  "matched_state_line_crossing_count": 12,
+  "apportioned_active_aum_wy": 1908244.8710056767,
+  "apportioned_suspended_aum_wy": 390189.85084935185,
+  "allotments_multi_polygon": 3,
+  "allotments_multi_ras_rows": 228,
+  "max_ras_rows_one_allotment": 31,
+  "matched_public_prop_capped": 295,
+  "matched_public_acres_null": 4,
+  "invalid_polygons_repaired": 67
+ },
+ "gate": [
+  {
+   "check": "Statewide BLM active AUMs: RAS WY active AUMs (all rows, WY-administered) vs BLM published 1,920,781",
+   "value": 1923355,
+   "expected": 1920781,
+   "deviation": 0.0013,
+   "result": "PASS"
+  },
+  {
+   "check": "Statewide BLM active AUMs: Apportioned to WY counties vs BLM published 1,920,781",
+   "value": 1908245,
+   "expected": 1920781,
+   "deviation": -0.0065,
+   "result": "PASS"
+  },
+  {
+   "check": "Statewide suspended AUMs (RAS) vs BLM published 393,635",
+   "value": 393770,
+   "expected": 393635,
+   "deviation": 0.0003,
+   "result": "PASS"
+  },
+  {
+   "check": "Sweetwater: BLM public acres >= 25% of county area (BLM-heavy)",
+   "value": 0.653,
+   "expected": ">= 0.25",
+   "result": "PASS"
+  },
+  {
+   "check": "Carbon: BLM public acres >= 25% of county area (BLM-heavy)",
+   "value": 0.4,
+   "expected": ">= 0.25",
+   "result": "PASS"
+  },
+  {
+   "check": "Fremont: BLM public acres >= 25% of county area (BLM-heavy)",
+   "value": 0.347,
+   "expected": ">= 0.25",
+   "result": "PASS"
+  },
+  {
+   "check": "Lincoln: BLM public acres >= 25% of county area (BLM-heavy)",
+   "value": 0.365,
+   "expected": ">= 0.25",
+   "result": "PASS"
+  },
+  {
+   "check": "Campbell: BLM public acres >= 25% of county area (BLM-heavy)",
+   "value": 0.073,
+   "expected": ">= 0.25",
+   "result": "FAIL"
+  },
+  {
+   "check": "Teton: BLM public acres < 0.5% of county area and < 1,000 AUMs",
+   "value": "0.0001 / 300 AUM",
+   "expected": "< 0.005 and < 1000",
+   "result": "PASS"
+  }
+ ],
+ "published_source": "BLM Public Land Statistics 2025 (published 2026-07/08), Table 3-9c 'Grazing permits and leases in force as of January 15, 2026', Wyoming row: active AUMs 1,920,781; suspended AUMs 393,635. https://www.blm.gov/sites/default/files/docs/2026-08/BLM-Public-Land-Statistics-2025.pdf",
+ "gate_pass": false
+}

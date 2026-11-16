@@ -55,17 +55,37 @@ county's federal allotment acreage by the same 30-ac/AUM stocking rate. This
 is a rough proxy. Total estimated federal AUM across the study area is roughly
 **202,000 AUM/year**, or about 19% of total estimated AUM.
 
-### BLM allotments — missing entirely
+### BLM allotments — now in the baseline file, not yet in the engine (W7-F3, 2026-11-16)
 
-**We have no BLM grazing data.** The BLM Rangeland Administration System
-(RAS) has no public API or downloadable dataset that we could access. Every
-county's BLM authorized AUM is blank.
+*This section replaces an earlier one that said we had no BLM grazing data.*
+A BLM Rangeland Administration System (RAS) export for Wyoming (saved
+2026-11-15) and BLM's national allotment polygons are now joined and
+apportioned to counties. `data/processed/wy_county_ag_baseline.json`
+(schema `wy_county_ag_baseline_v2`) carries BLM active AUMs, suspended AUMs
+and public acres for every county, with a separate (still empty) USFS AUM
+field and the unchanged private-capacity proxy.
 
-For context, BLM administers more grazing land in Wyoming than the Forest
-Service does. The absence of BLM data means our federal grazing numbers are
-significantly understated, and the private/federal split in any county with
-substantial BLM allotments is wrong. We are not trying to hide this — it is
-the single largest data gap in the agricultural side of the tool.
+What the numbers are: RAS active AUMs summed per allotment (3,503
+allotments), split across counties by the share of each allotment's polygon
+area in the county. The statewide total is 1,908,245 AUMs against BLM's own
+published 1,920,781, a difference of 0.65%. That is a judgment-call
+apportionment (it assumes grazing is spread evenly over an allotment), so
+county values are **low confidence**.
+
+What is still missing or unsettled:
+
+- **The engine does not use BLM AUMs yet.** The runtime baseline is
+  unchanged: its federal forage is still USFS acres x the statewide
+  stocking-rate proxy (about 202,000 AUM). Putting BLM in would raise
+  statewide federal forage roughly tenfold and move the agriculture digests,
+  so it waits on a recorded decision.
+- **USFS AUMs are still absent**, so a combined federal share cannot be
+  computed. The RAS export is BLM-only.
+- **Campbell County does not look BLM-heavy.** BLM manages 7.3% of Campbell
+  by area (about 225,000 acres), confirmed by BLM's separate
+  surface-ownership data, which also shows about 140,000 Forest Service
+  acres. Both are small; most of Campbell is private or state land.
+  Reviewers who expect large BLM grazing in Campbell should say so.
 
 ---
 
@@ -219,8 +239,10 @@ picture.
    non-crop/non-woodland ag land). Not a direct forage-quality measurement.
 3. **Private AUM capacity (all 23 counties):** Product of the two items above
    — inherits both weaknesses.
-4. **BLM authorized AUM (all 23 counties):** Null. No data retrieved.
-5. **Federal AUM share (all 23 counties):** Cannot compute without BLM data.
+4. **BLM active AUM (all 23 counties):** Populated in the baseline file by
+   W7-F3 (low confidence, area apportionment); not yet in the engine.
+5. **Federal AUM share (all 23 counties):** Still null: needs USFS AUMs, which
+   no source here provides. (The 621-value count above predates W7-F3.)
 6. **County water diversions (all 23 counties):** Null. Proxy only.
 7. **County water consumptive use (all 23 counties):** Null. Proxy only.
 8. **Beef cows in Hot Springs, Laramie, and Park counties:** NASS-suppressed,
@@ -242,6 +264,8 @@ picture.
    annual AUM comes from federal allotments (BLM + Forest Service combined)
    versus private deeded and leased land? We're estimating ~19% federal
    statewide based on Forest Service acres alone, but that's missing all BLM.
+   (W7-F3 now has BLM AUMs by county in the baseline file; the engine still
+   uses the Forest-Service-only figure.)
 
 3. **Drought destocking timing:** We assume that when forage drops 20% in a
    drought year, ranchers reduce herd size by about 15% (the rest absorbed

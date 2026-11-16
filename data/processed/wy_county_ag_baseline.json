@@ -1,9 +1,9 @@
 {
-  "schema_version": "wy_county_ag_baseline_v1",
+  "schema_version": "wy_county_ag_baseline_v2",
   "vintage": "2026-07-19",
-  "status": "partial_nass_bea_dor_rap_populated_water_still_blocked",
+  "status": "partial_nass_bea_dor_rap_blm_populated_usfs_aum_and_water_still_blocked",
   "consumers": [
-    "AG1 Dispatch \u2014 Wave 6 agricultural scenario layer"
+    "AG1 Dispatch — Wave 6 agricultural scenario layer"
   ],
   "contract_notes": [
     "Water is represented only as separate diversion and consumptive-use fields.",
@@ -117,7 +117,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -127,15 +127,15 @@
           "year": null,
           "source": "blm_ras",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Superseded by aum_by_ownership.blm_active_aum. RAS 'authorized for use' (billed) AUMs are not in the export; the export carries active (Permitted) and suspended AUMs."
         },
         "usfs_authorized_aum": {
-          "value": 0,
+          "value": null,
           "unit": "AUM/year",
-          "year": 2024,
+          "year": null,
           "source": "usfs_grazing",
-          "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
         },
         "federal_aum_share": {
           "value": null,
@@ -143,7 +143,7 @@
           "year": null,
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Needs USFS active AUMs, which no source here provides. BLM-only share is aum_by_ownership.blm_share_of_forage_capacity."
         },
         "usfs_authorized_use_acres": {
           "value": 439895,
@@ -152,6 +152,30 @@
           "source": "usfs_grazing",
           "confidence": "medium",
           "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (59 polygon pieces). 5 invalid geometries repaired via buffer(0)."
+        },
+        "blm_suspended_aum": {
+          "value": 35.0,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS Suspended AUMs, same apportionment as active AUMs. Not authorized for use; not in engine inputs."
+        },
+        "blm_public_acres": {
+          "value": 290029.8,
+          "unit": "acres",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Polygon overlap x (RAS public acres / polygon acres, capped at 1). Cross-checked against BLM SMA surface acres (see c3 report)."
+        },
+        "blm_allotment_count": {
+          "value": 234,
+          "unit": "allotments",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Matched allotments with polygon area in this county; an allotment spanning counties counts in each."
         }
       },
       "water": {
@@ -217,7 +241,7 @@
           "year": 2022,
           "source": "bea_cainc4_line71",
           "confidence": "high",
-          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars \u00d7 1000."
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
@@ -228,7 +252,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589\u2013$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value \u00d7 9.5% per W.S. 39-11-102(b)."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
           "value": 376,
@@ -236,7 +260,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134\u2013$617/acre. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
           "value": 126,
@@ -244,7 +268,41 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10\u2013$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
+        }
+      },
+      "aum_by_ownership": {
+        "blm_active_aum": {
+          "value": 48336.4,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS active (Permitted) AUMs summed per allotment, apportioned to counties by polygon area share in EPSG:5070 (JC-2); Wyoming share only for allotments crossing the state line. Area apportionment is a judgment call: it assumes AUMs are spread evenly over the allotment."
+        },
+        "usfs_active_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
+        },
+        "private_aum_capacity": {
+          "value": 40368,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "Unchanged AG0 value (cattle_and_forage.aum_capacity): Census forage acres x 0.0333 AUM/acre proxy. Not from RAS. Includes no federal or state allotment AUMs by construction."
+        },
+        "blm_share_of_forage_capacity": {
+          "value": 0.5449,
+          "unit": "fraction",
+          "year": 2026,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "blm_active_aum / (blm_active_aum + private_aum_capacity). USFS and state AUMs are in neither term. Private term is a low-confidence proxy; use blm_public_acres / county area as the physical check."
         }
       }
     },
@@ -354,7 +412,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -364,15 +422,15 @@
           "year": null,
           "source": "blm_ras",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Superseded by aum_by_ownership.blm_active_aum. RAS 'authorized for use' (billed) AUMs are not in the export; the export carries active (Permitted) and suspended AUMs."
         },
         "usfs_authorized_aum": {
-          "value": 0,
+          "value": null,
           "unit": "AUM/year",
-          "year": 2024,
+          "year": null,
           "source": "usfs_grazing",
-          "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
         },
         "federal_aum_share": {
           "value": null,
@@ -380,7 +438,7 @@
           "year": null,
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Needs USFS active AUMs, which no source here provides. BLM-only share is aum_by_ownership.blm_share_of_forage_capacity."
         },
         "usfs_authorized_use_acres": {
           "value": 309813,
@@ -389,6 +447,30 @@
           "source": "usfs_grazing",
           "confidence": "medium",
           "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (35 polygon pieces). 5 invalid geometries repaired via buffer(0)."
+        },
+        "blm_suspended_aum": {
+          "value": 56956.1,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS Suspended AUMs, same apportionment as active AUMs. Not authorized for use; not in engine inputs."
+        },
+        "blm_public_acres": {
+          "value": 1138731.5,
+          "unit": "acres",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Polygon overlap x (RAS public acres / polygon acres, capped at 1). Cross-checked against BLM SMA surface acres (see c3 report)."
+        },
+        "blm_allotment_count": {
+          "value": 165,
+          "unit": "allotments",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Matched allotments with polygon area in this county; an allotment spanning counties counts in each."
         }
       },
       "water": {
@@ -454,7 +536,7 @@
           "year": 2022,
           "source": "bea_cainc4_line71",
           "confidence": "high",
-          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars \u00d7 1000."
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
@@ -465,7 +547,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589\u2013$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value \u00d7 9.5% per W.S. 39-11-102(b)."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
           "value": 376,
@@ -473,7 +555,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134\u2013$617/acre. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
           "value": 126,
@@ -481,7 +563,41 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10\u2013$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
+        }
+      },
+      "aum_by_ownership": {
+        "blm_active_aum": {
+          "value": 71250.8,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS active (Permitted) AUMs summed per allotment, apportioned to counties by polygon area share in EPSG:5070 (JC-2); Wyoming share only for allotments crossing the state line. Area apportionment is a judgment call: it assumes AUMs are spread evenly over the allotment."
+        },
+        "usfs_active_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
+        },
+        "private_aum_capacity": {
+          "value": 11040,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "Unchanged AG0 value (cattle_and_forage.aum_capacity): Census forage acres x 0.0333 AUM/acre proxy. Not from RAS. Includes no federal or state allotment AUMs by construction."
+        },
+        "blm_share_of_forage_capacity": {
+          "value": 0.8658,
+          "unit": "fraction",
+          "year": 2026,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "blm_active_aum / (blm_active_aum + private_aum_capacity). USFS and state AUMs are in neither term. Private term is a low-confidence proxy; use blm_public_acres / county area as the physical check."
         }
       }
     },
@@ -591,7 +707,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -601,15 +717,15 @@
           "year": null,
           "source": "blm_ras",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Superseded by aum_by_ownership.blm_active_aum. RAS 'authorized for use' (billed) AUMs are not in the export; the export carries active (Permitted) and suspended AUMs."
         },
         "usfs_authorized_aum": {
-          "value": 0,
+          "value": null,
           "unit": "AUM/year",
-          "year": 2024,
+          "year": null,
           "source": "usfs_grazing",
-          "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
         },
         "federal_aum_share": {
           "value": null,
@@ -617,7 +733,7 @@
           "year": null,
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Needs USFS active AUMs, which no source here provides. BLM-only share is aum_by_ownership.blm_share_of_forage_capacity."
         },
         "usfs_authorized_use_acres": {
           "value": 314199,
@@ -626,6 +742,30 @@
           "source": "usfs_grazing",
           "confidence": "medium",
           "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (50 polygon pieces). 5 invalid geometries repaired via buffer(0)."
+        },
+        "blm_suspended_aum": {
+          "value": 124.0,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS Suspended AUMs, same apportionment as active AUMs. Not authorized for use; not in engine inputs."
+        },
+        "blm_public_acres": {
+          "value": 225434.9,
+          "unit": "acres",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Polygon overlap x (RAS public acres / polygon acres, capped at 1). Cross-checked against BLM SMA surface acres (see c3 report)."
+        },
+        "blm_allotment_count": {
+          "value": 215,
+          "unit": "allotments",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Matched allotments with polygon area in this county; an allotment spanning counties counts in each."
         }
       },
       "water": {
@@ -691,7 +831,7 @@
           "year": 2022,
           "source": "bea_cainc4_line71",
           "confidence": "high",
-          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars \u00d7 1000."
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
@@ -702,7 +842,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589\u2013$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value \u00d7 9.5% per W.S. 39-11-102(b)."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
           "value": 376,
@@ -710,7 +850,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134\u2013$617/acre. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
           "value": 126,
@@ -718,7 +858,41 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10\u2013$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
+        }
+      },
+      "aum_by_ownership": {
+        "blm_active_aum": {
+          "value": 38171.3,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS active (Permitted) AUMs summed per allotment, apportioned to counties by polygon area share in EPSG:5070 (JC-2); Wyoming share only for allotments crossing the state line. Area apportionment is a judgment call: it assumes AUMs are spread evenly over the allotment."
+        },
+        "usfs_active_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
+        },
+        "private_aum_capacity": {
+          "value": 81232,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "Unchanged AG0 value (cattle_and_forage.aum_capacity): Census forage acres x 0.0333 AUM/acre proxy. Not from RAS. Includes no federal or state allotment AUMs by construction."
+        },
+        "blm_share_of_forage_capacity": {
+          "value": 0.3197,
+          "unit": "fraction",
+          "year": 2026,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "blm_active_aum / (blm_active_aum + private_aum_capacity). USFS and state AUMs are in neither term. Private term is a low-confidence proxy; use blm_public_acres / county area as the physical check."
         }
       }
     },
@@ -828,7 +1002,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -838,15 +1012,15 @@
           "year": null,
           "source": "blm_ras",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Superseded by aum_by_ownership.blm_active_aum. RAS 'authorized for use' (billed) AUMs are not in the export; the export carries active (Permitted) and suspended AUMs."
         },
         "usfs_authorized_aum": {
-          "value": 0,
+          "value": null,
           "unit": "AUM/year",
-          "year": 2024,
+          "year": null,
           "source": "usfs_grazing",
-          "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
         },
         "federal_aum_share": {
           "value": null,
@@ -854,7 +1028,7 @@
           "year": null,
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Needs USFS active AUMs, which no source here provides. BLM-only share is aum_by_ownership.blm_share_of_forage_capacity."
         },
         "usfs_authorized_use_acres": {
           "value": 641208,
@@ -863,6 +1037,30 @@
           "source": "usfs_grazing",
           "confidence": "medium",
           "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (42 polygon pieces). 5 invalid geometries repaired via buffer(0)."
+        },
+        "blm_suspended_aum": {
+          "value": 1748.7,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS Suspended AUMs, same apportionment as active AUMs. Not authorized for use; not in engine inputs."
+        },
+        "blm_public_acres": {
+          "value": 2022494.5,
+          "unit": "acres",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Polygon overlap x (RAS public acres / polygon acres, capped at 1). Cross-checked against BLM SMA surface acres (see c3 report)."
+        },
+        "blm_allotment_count": {
+          "value": 363,
+          "unit": "allotments",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Matched allotments with polygon area in this county; an allotment spanning counties counts in each."
         }
       },
       "water": {
@@ -928,7 +1126,7 @@
           "year": 2022,
           "source": "bea_cainc4_line71",
           "confidence": "high",
-          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars \u00d7 1000."
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
@@ -939,7 +1137,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589\u2013$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value \u00d7 9.5% per W.S. 39-11-102(b)."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
           "value": 376,
@@ -947,7 +1145,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134\u2013$617/acre. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
           "value": 126,
@@ -955,7 +1153,41 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10\u2013$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
+        }
+      },
+      "aum_by_ownership": {
+        "blm_active_aum": {
+          "value": 300330.3,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS active (Permitted) AUMs summed per allotment, apportioned to counties by polygon area share in EPSG:5070 (JC-2); Wyoming share only for allotments crossing the state line. Area apportionment is a judgment call: it assumes AUMs are spread evenly over the allotment."
+        },
+        "usfs_active_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
+        },
+        "private_aum_capacity": {
+          "value": 88250,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "Unchanged AG0 value (cattle_and_forage.aum_capacity): Census forage acres x 0.0333 AUM/acre proxy. Not from RAS. Includes no federal or state allotment AUMs by construction."
+        },
+        "blm_share_of_forage_capacity": {
+          "value": 0.7729,
+          "unit": "fraction",
+          "year": 2026,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "blm_active_aum / (blm_active_aum + private_aum_capacity). USFS and state AUMs are in neither term. Private term is a low-confidence proxy; use blm_public_acres / county area as the physical check."
         }
       }
     },
@@ -1065,7 +1297,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -1075,15 +1307,15 @@
           "year": null,
           "source": "blm_ras",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Superseded by aum_by_ownership.blm_active_aum. RAS 'authorized for use' (billed) AUMs are not in the export; the export carries active (Permitted) and suspended AUMs."
         },
         "usfs_authorized_aum": {
-          "value": 0,
+          "value": null,
           "unit": "AUM/year",
-          "year": 2024,
+          "year": null,
           "source": "usfs_grazing",
-          "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
         },
         "federal_aum_share": {
           "value": null,
@@ -1091,7 +1323,7 @@
           "year": null,
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Needs USFS active AUMs, which no source here provides. BLM-only share is aum_by_ownership.blm_share_of_forage_capacity."
         },
         "usfs_authorized_use_acres": {
           "value": 496089,
@@ -1100,6 +1332,30 @@
           "source": "usfs_grazing",
           "confidence": "medium",
           "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (71 polygon pieces). 5 invalid geometries repaired via buffer(0)."
+        },
+        "blm_suspended_aum": {
+          "value": 0.0,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS Suspended AUMs, same apportionment as active AUMs. Not authorized for use; not in engine inputs."
+        },
+        "blm_public_acres": {
+          "value": 131460.9,
+          "unit": "acres",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Polygon overlap x (RAS public acres / polygon acres, capped at 1). Cross-checked against BLM SMA surface acres (see c3 report)."
+        },
+        "blm_allotment_count": {
+          "value": 139,
+          "unit": "allotments",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Matched allotments with polygon area in this county; an allotment spanning counties counts in each."
         }
       },
       "water": {
@@ -1165,7 +1421,7 @@
           "year": 2022,
           "source": "bea_cainc4_line71",
           "confidence": "high",
-          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars \u00d7 1000."
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
@@ -1176,7 +1432,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589\u2013$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value \u00d7 9.5% per W.S. 39-11-102(b)."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
           "value": 376,
@@ -1184,7 +1440,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134\u2013$617/acre. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
           "value": 126,
@@ -1192,7 +1448,41 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10\u2013$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
+        }
+      },
+      "aum_by_ownership": {
+        "blm_active_aum": {
+          "value": 24967.1,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS active (Permitted) AUMs summed per allotment, apportioned to counties by polygon area share in EPSG:5070 (JC-2); Wyoming share only for allotments crossing the state line. Area apportionment is a judgment call: it assumes AUMs are spread evenly over the allotment."
+        },
+        "usfs_active_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
+        },
+        "private_aum_capacity": {
+          "value": 76952,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "Unchanged AG0 value (cattle_and_forage.aum_capacity): Census forage acres x 0.0333 AUM/acre proxy. Not from RAS. Includes no federal or state allotment AUMs by construction."
+        },
+        "blm_share_of_forage_capacity": {
+          "value": 0.245,
+          "unit": "fraction",
+          "year": 2026,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "blm_active_aum / (blm_active_aum + private_aum_capacity). USFS and state AUMs are in neither term. Private term is a low-confidence proxy; use blm_public_acres / county area as the physical check."
         }
       }
     },
@@ -1302,7 +1592,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -1312,15 +1602,15 @@
           "year": null,
           "source": "blm_ras",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Superseded by aum_by_ownership.blm_active_aum. RAS 'authorized for use' (billed) AUMs are not in the export; the export carries active (Permitted) and suspended AUMs."
         },
         "usfs_authorized_aum": {
-          "value": 0,
+          "value": null,
           "unit": "AUM/year",
-          "year": 2024,
+          "year": null,
           "source": "usfs_grazing",
-          "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
         },
         "federal_aum_share": {
           "value": null,
@@ -1328,7 +1618,7 @@
           "year": null,
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Needs USFS active AUMs, which no source here provides. BLM-only share is aum_by_ownership.blm_share_of_forage_capacity."
         },
         "usfs_authorized_use_acres": {
           "value": 184376,
@@ -1337,6 +1627,30 @@
           "source": "usfs_grazing",
           "confidence": "medium",
           "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (36 polygon pieces). 5 invalid geometries repaired via buffer(0)."
+        },
+        "blm_suspended_aum": {
+          "value": 0.0,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS Suspended AUMs, same apportionment as active AUMs. Not authorized for use; not in engine inputs."
+        },
+        "blm_public_acres": {
+          "value": 87959.0,
+          "unit": "acres",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Polygon overlap x (RAS public acres / polygon acres, capped at 1). Cross-checked against BLM SMA surface acres (see c3 report)."
+        },
+        "blm_allotment_count": {
+          "value": 169,
+          "unit": "allotments",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Matched allotments with polygon area in this county; an allotment spanning counties counts in each."
         }
       },
       "water": {
@@ -1402,7 +1716,7 @@
           "year": 2022,
           "source": "bea_cainc4_line71",
           "confidence": "high",
-          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars \u00d7 1000."
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
@@ -1413,7 +1727,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589\u2013$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value \u00d7 9.5% per W.S. 39-11-102(b)."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
           "value": 376,
@@ -1421,7 +1735,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134\u2013$617/acre. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
           "value": 126,
@@ -1429,7 +1743,41 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10\u2013$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
+        }
+      },
+      "aum_by_ownership": {
+        "blm_active_aum": {
+          "value": 14943.9,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS active (Permitted) AUMs summed per allotment, apportioned to counties by polygon area share in EPSG:5070 (JC-2); Wyoming share only for allotments crossing the state line. Area apportionment is a judgment call: it assumes AUMs are spread evenly over the allotment."
+        },
+        "usfs_active_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
+        },
+        "private_aum_capacity": {
+          "value": 38596,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "Unchanged AG0 value (cattle_and_forage.aum_capacity): Census forage acres x 0.0333 AUM/acre proxy. Not from RAS. Includes no federal or state allotment AUMs by construction."
+        },
+        "blm_share_of_forage_capacity": {
+          "value": 0.2791,
+          "unit": "fraction",
+          "year": 2026,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "blm_active_aum / (blm_active_aum + private_aum_capacity). USFS and state AUMs are in neither term. Private term is a low-confidence proxy; use blm_public_acres / county area as the physical check."
         }
       }
     },
@@ -1539,7 +1887,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -1549,15 +1897,15 @@
           "year": null,
           "source": "blm_ras",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Superseded by aum_by_ownership.blm_active_aum. RAS 'authorized for use' (billed) AUMs are not in the export; the export carries active (Permitted) and suspended AUMs."
         },
         "usfs_authorized_aum": {
-          "value": 0,
+          "value": null,
           "unit": "AUM/year",
-          "year": 2024,
+          "year": null,
           "source": "usfs_grazing",
-          "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
         },
         "federal_aum_share": {
           "value": null,
@@ -1565,7 +1913,7 @@
           "year": null,
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Needs USFS active AUMs, which no source here provides. BLM-only share is aum_by_ownership.blm_share_of_forage_capacity."
         },
         "usfs_authorized_use_acres": {
           "value": 476483,
@@ -1574,6 +1922,30 @@
           "source": "usfs_grazing",
           "confidence": "medium",
           "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (40 polygon pieces). 5 invalid geometries repaired via buffer(0)."
+        },
+        "blm_suspended_aum": {
+          "value": 28753.6,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS Suspended AUMs, same apportionment as active AUMs. Not authorized for use; not in engine inputs."
+        },
+        "blm_public_acres": {
+          "value": 2037415.7,
+          "unit": "acres",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Polygon overlap x (RAS public acres / polygon acres, capped at 1). Cross-checked against BLM SMA surface acres (see c3 report)."
+        },
+        "blm_allotment_count": {
+          "value": 275,
+          "unit": "allotments",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Matched allotments with polygon area in this county; an allotment spanning counties counts in each."
         }
       },
       "water": {
@@ -1639,7 +2011,7 @@
           "year": 2022,
           "source": "bea_cainc4_line71",
           "confidence": "high",
-          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars \u00d7 1000."
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
@@ -1650,7 +2022,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589\u2013$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value \u00d7 9.5% per W.S. 39-11-102(b)."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
           "value": 376,
@@ -1658,7 +2030,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134\u2013$617/acre. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
           "value": 126,
@@ -1666,7 +2038,41 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10\u2013$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
+        }
+      },
+      "aum_by_ownership": {
+        "blm_active_aum": {
+          "value": 224139.7,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS active (Permitted) AUMs summed per allotment, apportioned to counties by polygon area share in EPSG:5070 (JC-2); Wyoming share only for allotments crossing the state line. Area apportionment is a judgment call: it assumes AUMs are spread evenly over the allotment."
+        },
+        "usfs_active_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
+        },
+        "private_aum_capacity": {
+          "value": 36093,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "Unchanged AG0 value (cattle_and_forage.aum_capacity): Census forage acres x 0.0333 AUM/acre proxy. Not from RAS. Includes no federal or state allotment AUMs by construction."
+        },
+        "blm_share_of_forage_capacity": {
+          "value": 0.8613,
+          "unit": "fraction",
+          "year": 2026,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "blm_active_aum / (blm_active_aum + private_aum_capacity). USFS and state AUMs are in neither term. Private term is a low-confidence proxy; use blm_public_acres / county area as the physical check."
         }
       }
     },
@@ -1776,7 +2182,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -1786,15 +2192,15 @@
           "year": null,
           "source": "blm_ras",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Superseded by aum_by_ownership.blm_active_aum. RAS 'authorized for use' (billed) AUMs are not in the export; the export carries active (Permitted) and suspended AUMs."
         },
         "usfs_authorized_aum": {
-          "value": 0,
+          "value": null,
           "unit": "AUM/year",
-          "year": 2024,
+          "year": null,
           "source": "usfs_grazing",
-          "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
         },
         "federal_aum_share": {
           "value": null,
@@ -1802,7 +2208,7 @@
           "year": null,
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Needs USFS active AUMs, which no source here provides. BLM-only share is aum_by_ownership.blm_share_of_forage_capacity."
         },
         "usfs_authorized_use_acres": {
           "value": 0,
@@ -1811,6 +2217,30 @@
           "source": "usfs_grazing",
           "confidence": "medium",
           "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (0 polygon pieces). 5 invalid geometries repaired via buffer(0)."
+        },
+        "blm_suspended_aum": {
+          "value": 0.0,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS Suspended AUMs, same apportionment as active AUMs. Not authorized for use; not in engine inputs."
+        },
+        "blm_public_acres": {
+          "value": 22368.9,
+          "unit": "acres",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Polygon overlap x (RAS public acres / polygon acres, capped at 1). Cross-checked against BLM SMA surface acres (see c3 report)."
+        },
+        "blm_allotment_count": {
+          "value": 100,
+          "unit": "allotments",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Matched allotments with polygon area in this county; an allotment spanning counties counts in each."
         }
       },
       "water": {
@@ -1876,7 +2306,7 @@
           "year": 2022,
           "source": "bea_cainc4_line71",
           "confidence": "high",
-          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars \u00d7 1000."
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
@@ -1887,7 +2317,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589\u2013$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value \u00d7 9.5% per W.S. 39-11-102(b)."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
           "value": 376,
@@ -1895,7 +2325,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134\u2013$617/acre. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
           "value": 126,
@@ -1903,7 +2333,41 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10\u2013$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
+        }
+      },
+      "aum_by_ownership": {
+        "blm_active_aum": {
+          "value": 4684.9,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS active (Permitted) AUMs summed per allotment, apportioned to counties by polygon area share in EPSG:5070 (JC-2); Wyoming share only for allotments crossing the state line. Area apportionment is a judgment call: it assumes AUMs are spread evenly over the allotment."
+        },
+        "usfs_active_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
+        },
+        "private_aum_capacity": {
+          "value": 33173,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "Unchanged AG0 value (cattle_and_forage.aum_capacity): Census forage acres x 0.0333 AUM/acre proxy. Not from RAS. Includes no federal or state allotment AUMs by construction."
+        },
+        "blm_share_of_forage_capacity": {
+          "value": 0.1237,
+          "unit": "fraction",
+          "year": 2026,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "blm_active_aum / (blm_active_aum + private_aum_capacity). USFS and state AUMs are in neither term. Private term is a low-confidence proxy; use blm_public_acres / county area as the physical check."
         }
       }
     },
@@ -2013,7 +2477,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -2023,15 +2487,15 @@
           "year": null,
           "source": "blm_ras",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Superseded by aum_by_ownership.blm_active_aum. RAS 'authorized for use' (billed) AUMs are not in the export; the export carries active (Permitted) and suspended AUMs."
         },
         "usfs_authorized_aum": {
-          "value": 0,
+          "value": null,
           "unit": "AUM/year",
-          "year": 2024,
+          "year": null,
           "source": "usfs_grazing",
-          "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
         },
         "federal_aum_share": {
           "value": null,
@@ -2039,7 +2503,7 @@
           "year": null,
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Needs USFS active AUMs, which no source here provides. BLM-only share is aum_by_ownership.blm_share_of_forage_capacity."
         },
         "usfs_authorized_use_acres": {
           "value": 41364,
@@ -2048,6 +2512,30 @@
           "source": "usfs_grazing",
           "confidence": "medium",
           "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (8 polygon pieces). 5 invalid geometries repaired via buffer(0)."
+        },
+        "blm_suspended_aum": {
+          "value": 23570.7,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS Suspended AUMs, same apportionment as active AUMs. Not authorized for use; not in engine inputs."
+        },
+        "blm_public_acres": {
+          "value": 491804.6,
+          "unit": "acres",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Polygon overlap x (RAS public acres / polygon acres, capped at 1). Cross-checked against BLM SMA surface acres (see c3 report)."
+        },
+        "blm_allotment_count": {
+          "value": 181,
+          "unit": "allotments",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Matched allotments with polygon area in this county; an allotment spanning counties counts in each."
         }
       },
       "water": {
@@ -2113,7 +2601,7 @@
           "year": 2022,
           "source": "bea_cainc4_line71",
           "confidence": "high",
-          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars \u00d7 1000."
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
@@ -2124,7 +2612,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589\u2013$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value \u00d7 9.5% per W.S. 39-11-102(b)."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
           "value": 376,
@@ -2132,7 +2620,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134\u2013$617/acre. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
           "value": 126,
@@ -2140,7 +2628,41 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10\u2013$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
+        }
+      },
+      "aum_by_ownership": {
+        "blm_active_aum": {
+          "value": 68511.8,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS active (Permitted) AUMs summed per allotment, apportioned to counties by polygon area share in EPSG:5070 (JC-2); Wyoming share only for allotments crossing the state line. Area apportionment is a judgment call: it assumes AUMs are spread evenly over the allotment."
+        },
+        "usfs_active_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
+        },
+        "private_aum_capacity": {
+          "value": 17705,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "Unchanged AG0 value (cattle_and_forage.aum_capacity): Census forage acres x 0.0333 AUM/acre proxy. Not from RAS. Includes no federal or state allotment AUMs by construction."
+        },
+        "blm_share_of_forage_capacity": {
+          "value": 0.7946,
+          "unit": "fraction",
+          "year": 2026,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "blm_active_aum / (blm_active_aum + private_aum_capacity). USFS and state AUMs are in neither term. Private term is a low-confidence proxy; use blm_public_acres / county area as the physical check."
         }
       }
     },
@@ -2250,7 +2772,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -2260,15 +2782,15 @@
           "year": null,
           "source": "blm_ras",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Superseded by aum_by_ownership.blm_active_aum. RAS 'authorized for use' (billed) AUMs are not in the export; the export carries active (Permitted) and suspended AUMs."
         },
         "usfs_authorized_aum": {
-          "value": 0,
+          "value": null,
           "unit": "AUM/year",
-          "year": 2024,
+          "year": null,
           "source": "usfs_grazing",
-          "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
         },
         "federal_aum_share": {
           "value": null,
@@ -2276,7 +2798,7 @@
           "year": null,
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Needs USFS active AUMs, which no source here provides. BLM-only share is aum_by_ownership.blm_share_of_forage_capacity."
         },
         "usfs_authorized_use_acres": {
           "value": 221110,
@@ -2285,6 +2807,30 @@
           "source": "usfs_grazing",
           "confidence": "medium",
           "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (23 polygon pieces). 5 invalid geometries repaired via buffer(0)."
+        },
+        "blm_suspended_aum": {
+          "value": 3.3,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS Suspended AUMs, same apportionment as active AUMs. Not authorized for use; not in engine inputs."
+        },
+        "blm_public_acres": {
+          "value": 477774.5,
+          "unit": "acres",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Polygon overlap x (RAS public acres / polygon acres, capped at 1). Cross-checked against BLM SMA surface acres (see c3 report)."
+        },
+        "blm_allotment_count": {
+          "value": 260,
+          "unit": "allotments",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Matched allotments with polygon area in this county; an allotment spanning counties counts in each."
         }
       },
       "water": {
@@ -2350,7 +2896,7 @@
           "year": 2022,
           "source": "bea_cainc4_line71",
           "confidence": "high",
-          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars \u00d7 1000."
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
@@ -2361,7 +2907,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589\u2013$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value \u00d7 9.5% per W.S. 39-11-102(b)."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
           "value": 376,
@@ -2369,7 +2915,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134\u2013$617/acre. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
           "value": 126,
@@ -2377,7 +2923,41 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10\u2013$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
+        }
+      },
+      "aum_by_ownership": {
+        "blm_active_aum": {
+          "value": 53381.1,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS active (Permitted) AUMs summed per allotment, apportioned to counties by polygon area share in EPSG:5070 (JC-2); Wyoming share only for allotments crossing the state line. Area apportionment is a judgment call: it assumes AUMs are spread evenly over the allotment."
+        },
+        "usfs_active_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
+        },
+        "private_aum_capacity": {
+          "value": 65908,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "Unchanged AG0 value (cattle_and_forage.aum_capacity): Census forage acres x 0.0333 AUM/acre proxy. Not from RAS. Includes no federal or state allotment AUMs by construction."
+        },
+        "blm_share_of_forage_capacity": {
+          "value": 0.4475,
+          "unit": "fraction",
+          "year": 2026,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "blm_active_aum / (blm_active_aum + private_aum_capacity). USFS and state AUMs are in neither term. Private term is a low-confidence proxy; use blm_public_acres / county area as the physical check."
         }
       }
     },
@@ -2487,7 +3067,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -2497,15 +3077,15 @@
           "year": null,
           "source": "blm_ras",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Superseded by aum_by_ownership.blm_active_aum. RAS 'authorized for use' (billed) AUMs are not in the export; the export carries active (Permitted) and suspended AUMs."
         },
         "usfs_authorized_aum": {
-          "value": 0,
+          "value": null,
           "unit": "AUM/year",
-          "year": 2024,
+          "year": null,
           "source": "usfs_grazing",
-          "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
         },
         "federal_aum_share": {
           "value": null,
@@ -2513,7 +3093,7 @@
           "year": null,
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Needs USFS active AUMs, which no source here provides. BLM-only share is aum_by_ownership.blm_share_of_forage_capacity."
         },
         "usfs_authorized_use_acres": {
           "value": 0,
@@ -2522,6 +3102,30 @@
           "source": "usfs_grazing",
           "confidence": "medium",
           "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (0 polygon pieces). 5 invalid geometries repaired via buffer(0)."
+        },
+        "blm_suspended_aum": {
+          "value": 0.0,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS Suspended AUMs, same apportionment as active AUMs. Not authorized for use; not in engine inputs."
+        },
+        "blm_public_acres": {
+          "value": 8806.6,
+          "unit": "acres",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Polygon overlap x (RAS public acres / polygon acres, capped at 1). Cross-checked against BLM SMA surface acres (see c3 report)."
+        },
+        "blm_allotment_count": {
+          "value": 27,
+          "unit": "allotments",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Matched allotments with polygon area in this county; an allotment spanning counties counts in each."
         }
       },
       "water": {
@@ -2587,7 +3191,7 @@
           "year": 2022,
           "source": "bea_cainc4_line71",
           "confidence": "high",
-          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars \u00d7 1000."
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
@@ -2598,7 +3202,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589\u2013$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value \u00d7 9.5% per W.S. 39-11-102(b)."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
           "value": 376,
@@ -2606,7 +3210,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134\u2013$617/acre. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
           "value": 126,
@@ -2614,7 +3218,41 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10\u2013$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
+        }
+      },
+      "aum_by_ownership": {
+        "blm_active_aum": {
+          "value": 1632.0,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS active (Permitted) AUMs summed per allotment, apportioned to counties by polygon area share in EPSG:5070 (JC-2); Wyoming share only for allotments crossing the state line. Area apportionment is a judgment call: it assumes AUMs are spread evenly over the allotment."
+        },
+        "usfs_active_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
+        },
+        "private_aum_capacity": {
+          "value": 37691,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "Unchanged AG0 value (cattle_and_forage.aum_capacity): Census forage acres x 0.0333 AUM/acre proxy. Not from RAS. Includes no federal or state allotment AUMs by construction."
+        },
+        "blm_share_of_forage_capacity": {
+          "value": 0.0415,
+          "unit": "fraction",
+          "year": 2026,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "blm_active_aum / (blm_active_aum + private_aum_capacity). USFS and state AUMs are in neither term. Private term is a low-confidence proxy; use blm_public_acres / county area as the physical check."
         }
       }
     },
@@ -2724,7 +3362,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -2734,15 +3372,15 @@
           "year": null,
           "source": "blm_ras",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Superseded by aum_by_ownership.blm_active_aum. RAS 'authorized for use' (billed) AUMs are not in the export; the export carries active (Permitted) and suspended AUMs."
         },
         "usfs_authorized_aum": {
-          "value": 0,
+          "value": null,
           "unit": "AUM/year",
-          "year": 2024,
+          "year": null,
           "source": "usfs_grazing",
-          "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
         },
         "federal_aum_share": {
           "value": null,
@@ -2750,7 +3388,7 @@
           "year": null,
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Needs USFS active AUMs, which no source here provides. BLM-only share is aum_by_ownership.blm_share_of_forage_capacity."
         },
         "usfs_authorized_use_acres": {
           "value": 768365,
@@ -2759,6 +3397,30 @@
           "source": "usfs_grazing",
           "confidence": "medium",
           "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (82 polygon pieces). 5 invalid geometries repaired via buffer(0)."
+        },
+        "blm_suspended_aum": {
+          "value": 31644.0,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS Suspended AUMs, same apportionment as active AUMs. Not authorized for use; not in engine inputs."
+        },
+        "blm_public_acres": {
+          "value": 952376.9,
+          "unit": "acres",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Polygon overlap x (RAS public acres / polygon acres, capped at 1). Cross-checked against BLM SMA surface acres (see c3 report)."
+        },
+        "blm_allotment_count": {
+          "value": 112,
+          "unit": "allotments",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Matched allotments with polygon area in this county; an allotment spanning counties counts in each."
         }
       },
       "water": {
@@ -2824,7 +3486,7 @@
           "year": 2022,
           "source": "bea_cainc4_line71",
           "confidence": "high",
-          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars \u00d7 1000."
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
@@ -2835,7 +3497,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589\u2013$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value \u00d7 9.5% per W.S. 39-11-102(b)."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
           "value": 376,
@@ -2843,7 +3505,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134\u2013$617/acre. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
           "value": 126,
@@ -2851,7 +3513,41 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10\u2013$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
+        }
+      },
+      "aum_by_ownership": {
+        "blm_active_aum": {
+          "value": 105391.4,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS active (Permitted) AUMs summed per allotment, apportioned to counties by polygon area share in EPSG:5070 (JC-2); Wyoming share only for allotments crossing the state line. Area apportionment is a judgment call: it assumes AUMs are spread evenly over the allotment."
+        },
+        "usfs_active_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
+        },
+        "private_aum_capacity": {
+          "value": 6734,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "Unchanged AG0 value (cattle_and_forage.aum_capacity): Census forage acres x 0.0333 AUM/acre proxy. Not from RAS. Includes no federal or state allotment AUMs by construction."
+        },
+        "blm_share_of_forage_capacity": {
+          "value": 0.9399,
+          "unit": "fraction",
+          "year": 2026,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "blm_active_aum / (blm_active_aum + private_aum_capacity). USFS and state AUMs are in neither term. Private term is a low-confidence proxy; use blm_public_acres / county area as the physical check."
         }
       }
     },
@@ -2961,7 +3657,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -2971,15 +3667,15 @@
           "year": null,
           "source": "blm_ras",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Superseded by aum_by_ownership.blm_active_aum. RAS 'authorized for use' (billed) AUMs are not in the export; the export carries active (Permitted) and suspended AUMs."
         },
         "usfs_authorized_aum": {
-          "value": 0,
+          "value": null,
           "unit": "AUM/year",
-          "year": 2024,
+          "year": null,
           "source": "usfs_grazing",
-          "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
         },
         "federal_aum_share": {
           "value": null,
@@ -2987,7 +3683,7 @@
           "year": null,
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Needs USFS active AUMs, which no source here provides. BLM-only share is aum_by_ownership.blm_share_of_forage_capacity."
         },
         "usfs_authorized_use_acres": {
           "value": 14667,
@@ -2996,6 +3692,30 @@
           "source": "usfs_grazing",
           "confidence": "medium",
           "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (4 polygon pieces). 5 invalid geometries repaired via buffer(0)."
+        },
+        "blm_suspended_aum": {
+          "value": 2231.9,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS Suspended AUMs, same apportionment as active AUMs. Not authorized for use; not in engine inputs."
+        },
+        "blm_public_acres": {
+          "value": 1379768.2,
+          "unit": "acres",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Polygon overlap x (RAS public acres / polygon acres, capped at 1). Cross-checked against BLM SMA surface acres (see c3 report)."
+        },
+        "blm_allotment_count": {
+          "value": 285,
+          "unit": "allotments",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Matched allotments with polygon area in this county; an allotment spanning counties counts in each."
         }
       },
       "water": {
@@ -3061,7 +3781,7 @@
           "year": 2022,
           "source": "bea_cainc4_line71",
           "confidence": "high",
-          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars \u00d7 1000."
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
@@ -3072,7 +3792,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589\u2013$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value \u00d7 9.5% per W.S. 39-11-102(b)."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
           "value": 376,
@@ -3080,7 +3800,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134\u2013$617/acre. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
           "value": 126,
@@ -3088,7 +3808,41 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10\u2013$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
+        }
+      },
+      "aum_by_ownership": {
+        "blm_active_aum": {
+          "value": 188755.0,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS active (Permitted) AUMs summed per allotment, apportioned to counties by polygon area share in EPSG:5070 (JC-2); Wyoming share only for allotments crossing the state line. Area apportionment is a judgment call: it assumes AUMs are spread evenly over the allotment."
+        },
+        "usfs_active_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
+        },
+        "private_aum_capacity": {
+          "value": 65911,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "Unchanged AG0 value (cattle_and_forage.aum_capacity): Census forage acres x 0.0333 AUM/acre proxy. Not from RAS. Includes no federal or state allotment AUMs by construction."
+        },
+        "blm_share_of_forage_capacity": {
+          "value": 0.7412,
+          "unit": "fraction",
+          "year": 2026,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "blm_active_aum / (blm_active_aum + private_aum_capacity). USFS and state AUMs are in neither term. Private term is a low-confidence proxy; use blm_public_acres / county area as the physical check."
         }
       }
     },
@@ -3198,7 +3952,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -3208,15 +3962,15 @@
           "year": null,
           "source": "blm_ras",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Superseded by aum_by_ownership.blm_active_aum. RAS 'authorized for use' (billed) AUMs are not in the export; the export carries active (Permitted) and suspended AUMs."
         },
         "usfs_authorized_aum": {
-          "value": 0,
+          "value": null,
           "unit": "AUM/year",
-          "year": 2024,
+          "year": null,
           "source": "usfs_grazing",
-          "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
         },
         "federal_aum_share": {
           "value": null,
@@ -3224,7 +3978,7 @@
           "year": null,
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Needs USFS active AUMs, which no source here provides. BLM-only share is aum_by_ownership.blm_share_of_forage_capacity."
         },
         "usfs_authorized_use_acres": {
           "value": 16988,
@@ -3233,6 +3987,30 @@
           "source": "usfs_grazing",
           "confidence": "medium",
           "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (11 polygon pieces). 5 invalid geometries repaired via buffer(0)."
+        },
+        "blm_suspended_aum": {
+          "value": 0.0,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS Suspended AUMs, same apportionment as active AUMs. Not authorized for use; not in engine inputs."
+        },
+        "blm_public_acres": {
+          "value": 122836.6,
+          "unit": "acres",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Polygon overlap x (RAS public acres / polygon acres, capped at 1). Cross-checked against BLM SMA surface acres (see c3 report)."
+        },
+        "blm_allotment_count": {
+          "value": 139,
+          "unit": "allotments",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Matched allotments with polygon area in this county; an allotment spanning counties counts in each."
         }
       },
       "water": {
@@ -3298,7 +4076,7 @@
           "year": 2022,
           "source": "bea_cainc4_line71",
           "confidence": "high",
-          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars \u00d7 1000."
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
@@ -3309,7 +4087,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589\u2013$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value \u00d7 9.5% per W.S. 39-11-102(b)."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
           "value": 376,
@@ -3317,7 +4095,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134\u2013$617/acre. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
           "value": 126,
@@ -3325,7 +4103,41 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10\u2013$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
+        }
+      },
+      "aum_by_ownership": {
+        "blm_active_aum": {
+          "value": 21633.7,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS active (Permitted) AUMs summed per allotment, apportioned to counties by polygon area share in EPSG:5070 (JC-2); Wyoming share only for allotments crossing the state line. Area apportionment is a judgment call: it assumes AUMs are spread evenly over the allotment."
+        },
+        "usfs_active_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
+        },
+        "private_aum_capacity": {
+          "value": 41559,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "Unchanged AG0 value (cattle_and_forage.aum_capacity): Census forage acres x 0.0333 AUM/acre proxy. Not from RAS. Includes no federal or state allotment AUMs by construction."
+        },
+        "blm_share_of_forage_capacity": {
+          "value": 0.3423,
+          "unit": "fraction",
+          "year": 2026,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "blm_active_aum / (blm_active_aum + private_aum_capacity). USFS and state AUMs are in neither term. Private term is a low-confidence proxy; use blm_public_acres / county area as the physical check."
         }
       }
     },
@@ -3435,7 +4247,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -3445,15 +4257,15 @@
           "year": null,
           "source": "blm_ras",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Superseded by aum_by_ownership.blm_active_aum. RAS 'authorized for use' (billed) AUMs are not in the export; the export carries active (Permitted) and suspended AUMs."
         },
         "usfs_authorized_aum": {
-          "value": 0,
+          "value": null,
           "unit": "AUM/year",
-          "year": 2024,
+          "year": null,
           "source": "usfs_grazing",
-          "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
         },
         "federal_aum_share": {
           "value": null,
@@ -3461,7 +4273,7 @@
           "year": null,
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Needs USFS active AUMs, which no source here provides. BLM-only share is aum_by_ownership.blm_share_of_forage_capacity."
         },
         "usfs_authorized_use_acres": {
           "value": 536868,
@@ -3470,6 +4282,30 @@
           "source": "usfs_grazing",
           "confidence": "medium",
           "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (52 polygon pieces). 5 invalid geometries repaired via buffer(0)."
+        },
+        "blm_suspended_aum": {
+          "value": 15664.8,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS Suspended AUMs, same apportionment as active AUMs. Not authorized for use; not in engine inputs."
+        },
+        "blm_public_acres": {
+          "value": 603993.1,
+          "unit": "acres",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Polygon overlap x (RAS public acres / polygon acres, capped at 1). Cross-checked against BLM SMA surface acres (see c3 report)."
+        },
+        "blm_allotment_count": {
+          "value": 182,
+          "unit": "allotments",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Matched allotments with polygon area in this county; an allotment spanning counties counts in each."
         }
       },
       "water": {
@@ -3535,7 +4371,7 @@
           "year": 2022,
           "source": "bea_cainc4_line71",
           "confidence": "high",
-          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars \u00d7 1000."
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
@@ -3546,7 +4382,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589\u2013$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value \u00d7 9.5% per W.S. 39-11-102(b)."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
           "value": 376,
@@ -3554,7 +4390,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134\u2013$617/acre. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
           "value": 126,
@@ -3562,7 +4398,41 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10\u2013$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
+        }
+      },
+      "aum_by_ownership": {
+        "blm_active_aum": {
+          "value": 62713.1,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS active (Permitted) AUMs summed per allotment, apportioned to counties by polygon area share in EPSG:5070 (JC-2); Wyoming share only for allotments crossing the state line. Area apportionment is a judgment call: it assumes AUMs are spread evenly over the allotment."
+        },
+        "usfs_active_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
+        },
+        "private_aum_capacity": {
+          "value": 18429,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "Unchanged AG0 value (cattle_and_forage.aum_capacity): Census forage acres x 0.0333 AUM/acre proxy. Not from RAS. Includes no federal or state allotment AUMs by construction."
+        },
+        "blm_share_of_forage_capacity": {
+          "value": 0.7729,
+          "unit": "fraction",
+          "year": 2026,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "blm_active_aum / (blm_active_aum + private_aum_capacity). USFS and state AUMs are in neither term. Private term is a low-confidence proxy; use blm_public_acres / county area as the physical check."
         }
       }
     },
@@ -3672,7 +4542,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -3682,15 +4552,15 @@
           "year": null,
           "source": "blm_ras",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Superseded by aum_by_ownership.blm_active_aum. RAS 'authorized for use' (billed) AUMs are not in the export; the export carries active (Permitted) and suspended AUMs."
         },
         "usfs_authorized_aum": {
-          "value": 0,
+          "value": null,
           "unit": "AUM/year",
-          "year": 2024,
+          "year": null,
           "source": "usfs_grazing",
-          "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
         },
         "federal_aum_share": {
           "value": null,
@@ -3698,7 +4568,7 @@
           "year": null,
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Needs USFS active AUMs, which no source here provides. BLM-only share is aum_by_ownership.blm_share_of_forage_capacity."
         },
         "usfs_authorized_use_acres": {
           "value": 6027,
@@ -3707,6 +4577,30 @@
           "source": "usfs_grazing",
           "confidence": "medium",
           "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (6 polygon pieces). 5 invalid geometries repaired via buffer(0)."
+        },
+        "blm_suspended_aum": {
+          "value": 0.0,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS Suspended AUMs, same apportionment as active AUMs. Not authorized for use; not in engine inputs."
+        },
+        "blm_public_acres": {
+          "value": 82514.8,
+          "unit": "acres",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Polygon overlap x (RAS public acres / polygon acres, capped at 1). Cross-checked against BLM SMA surface acres (see c3 report)."
+        },
+        "blm_allotment_count": {
+          "value": 171,
+          "unit": "allotments",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Matched allotments with polygon area in this county; an allotment spanning counties counts in each."
         }
       },
       "water": {
@@ -3772,7 +4666,7 @@
           "year": 2022,
           "source": "bea_cainc4_line71",
           "confidence": "high",
-          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars \u00d7 1000."
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
@@ -3783,7 +4677,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589\u2013$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value \u00d7 9.5% per W.S. 39-11-102(b)."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
           "value": 376,
@@ -3791,7 +4685,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134\u2013$617/acre. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
           "value": 126,
@@ -3799,7 +4693,41 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10\u2013$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
+        }
+      },
+      "aum_by_ownership": {
+        "blm_active_aum": {
+          "value": 13334.5,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS active (Permitted) AUMs summed per allotment, apportioned to counties by polygon area share in EPSG:5070 (JC-2); Wyoming share only for allotments crossing the state line. Area apportionment is a judgment call: it assumes AUMs are spread evenly over the allotment."
+        },
+        "usfs_active_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
+        },
+        "private_aum_capacity": {
+          "value": 36608,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "Unchanged AG0 value (cattle_and_forage.aum_capacity): Census forage acres x 0.0333 AUM/acre proxy. Not from RAS. Includes no federal or state allotment AUMs by construction."
+        },
+        "blm_share_of_forage_capacity": {
+          "value": 0.267,
+          "unit": "fraction",
+          "year": 2026,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "blm_active_aum / (blm_active_aum + private_aum_capacity). USFS and state AUMs are in neither term. Private term is a low-confidence proxy; use blm_public_acres / county area as the physical check."
         }
       }
     },
@@ -3909,7 +4837,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -3919,15 +4847,15 @@
           "year": null,
           "source": "blm_ras",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Superseded by aum_by_ownership.blm_active_aum. RAS 'authorized for use' (billed) AUMs are not in the export; the export carries active (Permitted) and suspended AUMs."
         },
         "usfs_authorized_aum": {
-          "value": 0,
+          "value": null,
           "unit": "AUM/year",
-          "year": 2024,
+          "year": null,
           "source": "usfs_grazing",
-          "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
         },
         "federal_aum_share": {
           "value": null,
@@ -3935,7 +4863,7 @@
           "year": null,
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Needs USFS active AUMs, which no source here provides. BLM-only share is aum_by_ownership.blm_share_of_forage_capacity."
         },
         "usfs_authorized_use_acres": {
           "value": 367807,
@@ -3944,6 +4872,30 @@
           "source": "usfs_grazing",
           "confidence": "medium",
           "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (45 polygon pieces). 5 invalid geometries repaired via buffer(0)."
+        },
+        "blm_suspended_aum": {
+          "value": 0.5,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS Suspended AUMs, same apportionment as active AUMs. Not authorized for use; not in engine inputs."
+        },
+        "blm_public_acres": {
+          "value": 48421.4,
+          "unit": "acres",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Polygon overlap x (RAS public acres / polygon acres, capped at 1). Cross-checked against BLM SMA surface acres (see c3 report)."
+        },
+        "blm_allotment_count": {
+          "value": 82,
+          "unit": "allotments",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Matched allotments with polygon area in this county; an allotment spanning counties counts in each."
         }
       },
       "water": {
@@ -4009,7 +4961,7 @@
           "year": 2022,
           "source": "bea_cainc4_line71",
           "confidence": "high",
-          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars \u00d7 1000."
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
@@ -4020,7 +4972,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589\u2013$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value \u00d7 9.5% per W.S. 39-11-102(b)."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
           "value": 376,
@@ -4028,7 +4980,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134\u2013$617/acre. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
           "value": 126,
@@ -4036,7 +4988,41 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10\u2013$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
+        }
+      },
+      "aum_by_ownership": {
+        "blm_active_aum": {
+          "value": 6437.8,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS active (Permitted) AUMs summed per allotment, apportioned to counties by polygon area share in EPSG:5070 (JC-2); Wyoming share only for allotments crossing the state line. Area apportionment is a judgment call: it assumes AUMs are spread evenly over the allotment."
+        },
+        "usfs_active_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
+        },
+        "private_aum_capacity": {
+          "value": 37692,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "Unchanged AG0 value (cattle_and_forage.aum_capacity): Census forage acres x 0.0333 AUM/acre proxy. Not from RAS. Includes no federal or state allotment AUMs by construction."
+        },
+        "blm_share_of_forage_capacity": {
+          "value": 0.1459,
+          "unit": "fraction",
+          "year": 2026,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "blm_active_aum / (blm_active_aum + private_aum_capacity). USFS and state AUMs are in neither term. Private term is a low-confidence proxy; use blm_public_acres / county area as the physical check."
         }
       }
     },
@@ -4146,7 +5132,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -4156,15 +5142,15 @@
           "year": null,
           "source": "blm_ras",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Superseded by aum_by_ownership.blm_active_aum. RAS 'authorized for use' (billed) AUMs are not in the export; the export carries active (Permitted) and suspended AUMs."
         },
         "usfs_authorized_aum": {
-          "value": 0,
+          "value": null,
           "unit": "AUM/year",
-          "year": 2024,
+          "year": null,
           "source": "usfs_grazing",
-          "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
         },
         "federal_aum_share": {
           "value": null,
@@ -4172,7 +5158,7 @@
           "year": null,
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Needs USFS active AUMs, which no source here provides. BLM-only share is aum_by_ownership.blm_share_of_forage_capacity."
         },
         "usfs_authorized_use_acres": {
           "value": 902986,
@@ -4181,6 +5167,30 @@
           "source": "usfs_grazing",
           "confidence": "medium",
           "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (60 polygon pieces). 5 invalid geometries repaired via buffer(0)."
+        },
+        "blm_suspended_aum": {
+          "value": 57033.2,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS Suspended AUMs, same apportionment as active AUMs. Not authorized for use; not in engine inputs."
+        },
+        "blm_public_acres": {
+          "value": 1258660.1,
+          "unit": "acres",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Polygon overlap x (RAS public acres / polygon acres, capped at 1). Cross-checked against BLM SMA surface acres (see c3 report)."
+        },
+        "blm_allotment_count": {
+          "value": 223,
+          "unit": "allotments",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Matched allotments with polygon area in this county; an allotment spanning counties counts in each."
         }
       },
       "water": {
@@ -4246,7 +5256,7 @@
           "year": 2022,
           "source": "bea_cainc4_line71",
           "confidence": "high",
-          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars \u00d7 1000."
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
@@ -4257,7 +5267,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589\u2013$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value \u00d7 9.5% per W.S. 39-11-102(b)."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
           "value": 376,
@@ -4265,7 +5275,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134\u2013$617/acre. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
           "value": 126,
@@ -4273,7 +5283,41 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10\u2013$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
+        }
+      },
+      "aum_by_ownership": {
+        "blm_active_aum": {
+          "value": 128696.6,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS active (Permitted) AUMs summed per allotment, apportioned to counties by polygon area share in EPSG:5070 (JC-2); Wyoming share only for allotments crossing the state line. Area apportionment is a judgment call: it assumes AUMs are spread evenly over the allotment."
+        },
+        "usfs_active_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
+        },
+        "private_aum_capacity": {
+          "value": 12361,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "Unchanged AG0 value (cattle_and_forage.aum_capacity): Census forage acres x 0.0333 AUM/acre proxy. Not from RAS. Includes no federal or state allotment AUMs by construction."
+        },
+        "blm_share_of_forage_capacity": {
+          "value": 0.9124,
+          "unit": "fraction",
+          "year": 2026,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "blm_active_aum / (blm_active_aum + private_aum_capacity). USFS and state AUMs are in neither term. Private term is a low-confidence proxy; use blm_public_acres / county area as the physical check."
         }
       }
     },
@@ -4384,7 +5428,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -4394,15 +5438,15 @@
           "year": null,
           "source": "blm_ras",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Superseded by aum_by_ownership.blm_active_aum. RAS 'authorized for use' (billed) AUMs are not in the export; the export carries active (Permitted) and suspended AUMs."
         },
         "usfs_authorized_aum": {
-          "value": 0,
+          "value": null,
           "unit": "AUM/year",
-          "year": 2024,
+          "year": null,
           "source": "usfs_grazing",
-          "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
         },
         "federal_aum_share": {
           "value": null,
@@ -4410,7 +5454,7 @@
           "year": null,
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Needs USFS active AUMs, which no source here provides. BLM-only share is aum_by_ownership.blm_share_of_forage_capacity."
         },
         "usfs_authorized_use_acres": {
           "value": 72723,
@@ -4419,6 +5463,30 @@
           "source": "usfs_grazing",
           "confidence": "medium",
           "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (6 polygon pieces). 5 invalid geometries repaired via buffer(0)."
+        },
+        "blm_suspended_aum": {
+          "value": 105055.3,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS Suspended AUMs, same apportionment as active AUMs. Not authorized for use; not in engine inputs."
+        },
+        "blm_public_acres": {
+          "value": 4356674.6,
+          "unit": "acres",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Polygon overlap x (RAS public acres / polygon acres, capped at 1). Cross-checked against BLM SMA surface acres (see c3 report)."
+        },
+        "blm_allotment_count": {
+          "value": 102,
+          "unit": "allotments",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Matched allotments with polygon area in this county; an allotment spanning counties counts in each."
         }
       },
       "water": {
@@ -4484,7 +5552,7 @@
           "year": 2022,
           "source": "bea_cainc4_line71",
           "confidence": "high",
-          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars \u00d7 1000."
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
@@ -4495,7 +5563,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589\u2013$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value \u00d7 9.5% per W.S. 39-11-102(b)."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
           "value": 376,
@@ -4503,7 +5571,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134\u2013$617/acre. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
           "value": 126,
@@ -4511,7 +5579,41 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10\u2013$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
+        }
+      },
+      "aum_by_ownership": {
+        "blm_active_aum": {
+          "value": 365461.0,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS active (Permitted) AUMs summed per allotment, apportioned to counties by polygon area share in EPSG:5070 (JC-2); Wyoming share only for allotments crossing the state line. Area apportionment is a judgment call: it assumes AUMs are spread evenly over the allotment."
+        },
+        "usfs_active_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
+        },
+        "private_aum_capacity": {
+          "value": 44307,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "Unchanged AG0 value (cattle_and_forage.aum_capacity): Census forage acres x 0.0333 AUM/acre proxy. Not from RAS. Includes no federal or state allotment AUMs by construction."
+        },
+        "blm_share_of_forage_capacity": {
+          "value": 0.8919,
+          "unit": "fraction",
+          "year": 2026,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "blm_active_aum / (blm_active_aum + private_aum_capacity). USFS and state AUMs are in neither term. Private term is a low-confidence proxy; use blm_public_acres / county area as the physical check."
         }
       }
     },
@@ -4622,7 +5724,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -4632,15 +5734,15 @@
           "year": null,
           "source": "blm_ras",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Superseded by aum_by_ownership.blm_active_aum. RAS 'authorized for use' (billed) AUMs are not in the export; the export carries active (Permitted) and suspended AUMs."
         },
         "usfs_authorized_aum": {
-          "value": 0,
+          "value": null,
           "unit": "AUM/year",
-          "year": 2024,
+          "year": null,
           "source": "usfs_grazing",
-          "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
         },
         "federal_aum_share": {
           "value": null,
@@ -4648,7 +5750,7 @@
           "year": null,
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Needs USFS active AUMs, which no source here provides. BLM-only share is aum_by_ownership.blm_share_of_forage_capacity."
         },
         "usfs_authorized_use_acres": {
           "value": 508185,
@@ -4657,6 +5759,30 @@
           "source": "usfs_grazing",
           "confidence": "medium",
           "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (52 polygon pieces). 5 invalid geometries repaired via buffer(0)."
+        },
+        "blm_suspended_aum": {
+          "value": 0.0,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS Suspended AUMs, same apportionment as active AUMs. Not authorized for use; not in engine inputs."
+        },
+        "blm_public_acres": {
+          "value": 222.0,
+          "unit": "acres",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Polygon overlap x (RAS public acres / polygon acres, capped at 1). Cross-checked against BLM SMA surface acres (see c3 report)."
+        },
+        "blm_allotment_count": {
+          "value": 4,
+          "unit": "allotments",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Matched allotments with polygon area in this county; an allotment spanning counties counts in each."
         }
       },
       "water": {
@@ -4722,7 +5848,7 @@
           "year": 2022,
           "source": "bea_cainc4_line71",
           "confidence": "high",
-          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars \u00d7 1000."
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
@@ -4733,7 +5859,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589\u2013$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value \u00d7 9.5% per W.S. 39-11-102(b)."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
           "value": 376,
@@ -4741,7 +5867,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134\u2013$617/acre. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
           "value": 126,
@@ -4749,7 +5875,41 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10\u2013$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
+        }
+      },
+      "aum_by_ownership": {
+        "blm_active_aum": {
+          "value": 300.0,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS active (Permitted) AUMs summed per allotment, apportioned to counties by polygon area share in EPSG:5070 (JC-2); Wyoming share only for allotments crossing the state line. Area apportionment is a judgment call: it assumes AUMs are spread evenly over the allotment."
+        },
+        "usfs_active_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
+        },
+        "private_aum_capacity": {
+          "value": 679,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "Unchanged AG0 value (cattle_and_forage.aum_capacity): Census forage acres x 0.0333 AUM/acre proxy. Not from RAS. Includes no federal or state allotment AUMs by construction."
+        },
+        "blm_share_of_forage_capacity": {
+          "value": 0.3064,
+          "unit": "fraction",
+          "year": 2026,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "blm_active_aum / (blm_active_aum + private_aum_capacity). USFS and state AUMs are in neither term. Private term is a low-confidence proxy; use blm_public_acres / county area as the physical check."
         }
       }
     },
@@ -4859,7 +6019,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -4869,15 +6029,15 @@
           "year": null,
           "source": "blm_ras",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Superseded by aum_by_ownership.blm_active_aum. RAS 'authorized for use' (billed) AUMs are not in the export; the export carries active (Permitted) and suspended AUMs."
         },
         "usfs_authorized_aum": {
-          "value": 0,
+          "value": null,
           "unit": "AUM/year",
-          "year": 2024,
+          "year": null,
           "source": "usfs_grazing",
-          "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
         },
         "federal_aum_share": {
           "value": null,
@@ -4885,7 +6045,7 @@
           "year": null,
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Needs USFS active AUMs, which no source here provides. BLM-only share is aum_by_ownership.blm_share_of_forage_capacity."
         },
         "usfs_authorized_use_acres": {
           "value": 41815,
@@ -4894,6 +6054,30 @@
           "source": "usfs_grazing",
           "confidence": "medium",
           "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (5 polygon pieces). 5 invalid geometries repaired via buffer(0)."
+        },
+        "blm_suspended_aum": {
+          "value": 13116.0,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS Suspended AUMs, same apportionment as active AUMs. Not authorized for use; not in engine inputs."
+        },
+        "blm_public_acres": {
+          "value": 490443.1,
+          "unit": "acres",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Polygon overlap x (RAS public acres / polygon acres, capped at 1). Cross-checked against BLM SMA surface acres (see c3 report)."
+        },
+        "blm_allotment_count": {
+          "value": 134,
+          "unit": "allotments",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Matched allotments with polygon area in this county; an allotment spanning counties counts in each."
         }
       },
       "water": {
@@ -4959,7 +6143,7 @@
           "year": 2022,
           "source": "bea_cainc4_line71",
           "confidence": "high",
-          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars \u00d7 1000."
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
@@ -4970,7 +6154,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589\u2013$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value \u00d7 9.5% per W.S. 39-11-102(b)."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
           "value": 376,
@@ -4978,7 +6162,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134\u2013$617/acre. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
           "value": 126,
@@ -4986,7 +6170,41 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10\u2013$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
+        }
+      },
+      "aum_by_ownership": {
+        "blm_active_aum": {
+          "value": 54222.8,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS active (Permitted) AUMs summed per allotment, apportioned to counties by polygon area share in EPSG:5070 (JC-2); Wyoming share only for allotments crossing the state line. Area apportionment is a judgment call: it assumes AUMs are spread evenly over the allotment."
+        },
+        "usfs_active_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
+        },
+        "private_aum_capacity": {
+          "value": 21872,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "Unchanged AG0 value (cattle_and_forage.aum_capacity): Census forage acres x 0.0333 AUM/acre proxy. Not from RAS. Includes no federal or state allotment AUMs by construction."
+        },
+        "blm_share_of_forage_capacity": {
+          "value": 0.7126,
+          "unit": "fraction",
+          "year": 2026,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "blm_active_aum / (blm_active_aum + private_aum_capacity). USFS and state AUMs are in neither term. Private term is a low-confidence proxy; use blm_public_acres / county area as the physical check."
         }
       }
     },
@@ -5096,7 +6314,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -5106,15 +6324,15 @@
           "year": null,
           "source": "blm_ras",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Superseded by aum_by_ownership.blm_active_aum. RAS 'authorized for use' (billed) AUMs are not in the export; the export carries active (Permitted) and suspended AUMs."
         },
         "usfs_authorized_aum": {
-          "value": 0,
+          "value": null,
           "unit": "AUM/year",
-          "year": 2024,
+          "year": null,
           "source": "usfs_grazing",
-          "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
         },
         "federal_aum_share": {
           "value": null,
@@ -5122,7 +6340,7 @@
           "year": null,
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Needs USFS active AUMs, which no source here provides. BLM-only share is aum_by_ownership.blm_share_of_forage_capacity."
         },
         "usfs_authorized_use_acres": {
           "value": 33089,
@@ -5131,6 +6349,30 @@
           "source": "usfs_grazing",
           "confidence": "medium",
           "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (6 polygon pieces). 5 invalid geometries repaired via buffer(0)."
+        },
+        "blm_suspended_aum": {
+          "value": 54252.8,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS Suspended AUMs, same apportionment as active AUMs. Not authorized for use; not in engine inputs."
+        },
+        "blm_public_acres": {
+          "value": 883326.5,
+          "unit": "acres",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Polygon overlap x (RAS public acres / polygon acres, capped at 1). Cross-checked against BLM SMA surface acres (see c3 report)."
+        },
+        "blm_allotment_count": {
+          "value": 222,
+          "unit": "allotments",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Matched allotments with polygon area in this county; an allotment spanning counties counts in each."
         }
       },
       "water": {
@@ -5196,7 +6438,7 @@
           "year": 2022,
           "source": "bea_cainc4_line71",
           "confidence": "high",
-          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars \u00d7 1000."
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
@@ -5207,7 +6449,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589\u2013$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value \u00d7 9.5% per W.S. 39-11-102(b)."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
           "value": 376,
@@ -5215,7 +6457,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134\u2013$617/acre. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
           "value": 126,
@@ -5223,7 +6465,41 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10\u2013$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
+        }
+      },
+      "aum_by_ownership": {
+        "blm_active_aum": {
+          "value": 99064.3,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS active (Permitted) AUMs summed per allotment, apportioned to counties by polygon area share in EPSG:5070 (JC-2); Wyoming share only for allotments crossing the state line. Area apportionment is a judgment call: it assumes AUMs are spread evenly over the allotment."
+        },
+        "usfs_active_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
+        },
+        "private_aum_capacity": {
+          "value": 10600,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "Unchanged AG0 value (cattle_and_forage.aum_capacity): Census forage acres x 0.0333 AUM/acre proxy. Not from RAS. Includes no federal or state allotment AUMs by construction."
+        },
+        "blm_share_of_forage_capacity": {
+          "value": 0.9033,
+          "unit": "fraction",
+          "year": 2026,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "blm_active_aum / (blm_active_aum + private_aum_capacity). USFS and state AUMs are in neither term. Private term is a low-confidence proxy; use blm_public_acres / county area as the physical check."
         }
       }
     },
@@ -5333,7 +6609,7 @@
           "year": 2022,
           "source": "derived",
           "confidence": "low",
-          "notes": "forage_acres \u00d7 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
+          "notes": "forage_acres × 0.0333 AUM/acre. Confidence low: actual stocking rate varies significantly by range condition and federal allotment."
         }
       },
       "federal_aums": {
@@ -5343,15 +6619,15 @@
           "year": null,
           "source": "blm_ras",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Superseded by aum_by_ownership.blm_active_aum. RAS 'authorized for use' (billed) AUMs are not in the export; the export carries active (Permitted) and suspended AUMs."
         },
         "usfs_authorized_aum": {
-          "value": 0,
+          "value": null,
           "unit": "AUM/year",
-          "year": 2024,
+          "year": null,
           "source": "usfs_grazing",
-          "confidence": "medium",
-          "notes": "USFS EDW S_USA.Allotment shapefile (2024), centroid join to county boundaries. No authorized AUM field in source data; AUM count not available. See usfs_authorized_use_acres for allotment area."
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
         },
         "federal_aum_share": {
           "value": null,
@@ -5359,7 +6635,7 @@
           "year": null,
           "source": "blm_ras + usfs_grazing",
           "confidence": "low",
-          "notes": "Blocked in sandbox; see MANUAL_FETCH.md."
+          "notes": "Needs USFS active AUMs, which no source here provides. BLM-only share is aum_by_ownership.blm_share_of_forage_capacity."
         },
         "usfs_authorized_use_acres": {
           "value": 602549,
@@ -5368,6 +6644,30 @@
           "source": "usfs_grazing",
           "confidence": "medium",
           "notes": "USFS EDW S_USA.Allotment.zip; area-weighted intersection split (115 polygon pieces). 5 invalid geometries repaired via buffer(0)."
+        },
+        "blm_suspended_aum": {
+          "value": 0.0,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS Suspended AUMs, same apportionment as active AUMs. Not authorized for use; not in engine inputs."
+        },
+        "blm_public_acres": {
+          "value": 74636.9,
+          "unit": "acres",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Polygon overlap x (RAS public acres / polygon acres, capped at 1). Cross-checked against BLM SMA surface acres (see c3 report)."
+        },
+        "blm_allotment_count": {
+          "value": 87,
+          "unit": "allotments",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "medium",
+          "notes": "Matched allotments with polygon area in this county; an allotment spanning counties counts in each."
         }
       },
       "water": {
@@ -5433,7 +6733,7 @@
           "year": 2022,
           "source": "bea_cainc4_line71",
           "confidence": "high",
-          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars \u00d7 1000."
+          "notes": "BEA CAINC4 table, LineCode 71 (Farm proprietors' income), 2022. Units: USD. BEA raw units: thousands of dollars × 1000."
         }
       },
       "dor_ag_productive_value_coefficients_usd_per_acre": {
@@ -5444,7 +6744,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589\u2013$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value \u00d7 9.5% per W.S. 39-11-102(b)."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 3 tons hay/acre). Full range across all LRAs and soil classes: $589–$3,239/acre. County-level precision requires county assessor LRA/class assignment. Assessed value = productive value × 9.5% per W.S. 39-11-102(b)."
         },
         "dryland": {
           "value": 376,
@@ -5452,7 +6752,7 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134\u2013$617/acre. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA IV, soil class 1-2-3, 28 bu wheat/acre). Full range: $134–$617/acre. Assessed value = productive value × 9.5%."
         },
         "grazing_land": {
           "value": 126,
@@ -5460,7 +6760,41 @@
           "year": 2026,
           "source": "wy_dor_2026_ag_valuation_study",
           "confidence": "medium",
-          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10\u2013$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value \u00d7 9.5%."
+          "notes": "Productive appraised value per acre, statewide representative (LRA 1, Range Group R-5, 0.3 AUM/acre). Full range: $10–$1,006/acre. AUM net income: $22.50/AUM; cap rate: 5.366%. Assessed value = productive value × 9.5%."
+        }
+      },
+      "aum_by_ownership": {
+        "blm_active_aum": {
+          "value": 11885.5,
+          "unit": "AUM/year",
+          "year": 2026,
+          "source": "blm_ras + blm_natl_grazing_allotment_polygons",
+          "confidence": "low",
+          "notes": "RAS active (Permitted) AUMs summed per allotment, apportioned to counties by polygon area share in EPSG:5070 (JC-2); Wyoming share only for allotments crossing the state line. Area apportionment is a judgment call: it assumes AUMs are spread evenly over the allotment."
+        },
+        "usfs_active_aum": {
+          "value": null,
+          "unit": "AUM/year",
+          "year": null,
+          "source": "usfs_grazing",
+          "confidence": "low",
+          "notes": "USFS active AUMs unavailable: the RAS export is BLM-only and the USFS EDW allotment polygons carry no AUM field. Existing source unchanged (usfs_grazing; see federal_aums.usfs_authorized_use_acres)."
+        },
+        "private_aum_capacity": {
+          "value": 40961,
+          "unit": "AUM/year",
+          "year": 2022,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "Unchanged AG0 value (cattle_and_forage.aum_capacity): Census forage acres x 0.0333 AUM/acre proxy. Not from RAS. Includes no federal or state allotment AUMs by construction."
+        },
+        "blm_share_of_forage_capacity": {
+          "value": 0.2249,
+          "unit": "fraction",
+          "year": 2026,
+          "source": "derived",
+          "confidence": "low",
+          "notes": "blm_active_aum / (blm_active_aum + private_aum_capacity). USFS and state AUMs are in neither term. Private term is a low-confidence proxy; use blm_public_acres / county area as the physical check."
         }
       }
     }
@@ -5474,11 +6808,6 @@
         "investigation": "Requires Census 2022 county irrigated acreage."
       },
       {
-        "check": "Campbell and Carbon are rangeland-dominated with large federal AUM shares",
-        "result": "BLOCKED",
-        "investigation": "Requires Census land use plus BLM/USFS AUMs."
-      },
-      {
         "check": "Teton land-in-farms is a small fraction of county area",
         "result": "BLOCKED",
         "investigation": "Requires Census county area and land-in-farms fields."
@@ -5487,28 +6816,33 @@
         "check": "Statewide beef cows within 10% of NASS state total",
         "result": "BLOCKED",
         "investigation": "Requires NASS county and state beef-cow series."
+      },
+      {
+        "check": "Campbell and Carbon are rangeland-dominated with large federal AUM shares",
+        "result": "FAIL (Campbell, BLM)",
+        "investigation": "See c3_blm.credibility_gate. Carbon passes. Campbell BLM public acres are 7.3% of county area, matching independent BLM SMA surface acres (ratio 1.00). Data not changed; stopped for a decision."
       }
     ]
   },
   "fetch_notes": {
-    "census_ag_2022": "SUCCESS \u2014 qs.census2022.txt.gz bulk download, filtered for WY county data (2026-07-17). All land-use, cattle, operations, producers fields populated.",
-    "nass_quickstats": "BLOCKED \u2014 API returns 401; API key required. No DEMO_KEY access.",
-    "blm_ras": "BLOCKED \u2014 BLM ArcGIS endpoints 404; BLM ArcGIS empty service list. Infrastructure finding: BLM RAS reports.blm.gov reachable (200) but no programmatic download.",
-    "usfs_grazing": "BLOCKED \u2014 USFS EDW Box.com links not attempted (50MB shapefile requires direct download; Claude Code network confirmed reachable). Log for manual fetch.",
-    "wy_water_rights": "BLOCKED \u2014 seo.wyo.gov/divisions/water-rights returns 404. Infrastructure finding: URL invalid/changed.",
-    "rap": "BLOCKED \u2014 rangelands.app/api/ 404, api.rangelands.app DNS not found. RAP main site reachable. API endpoint not publicly documented at time of fetch.",
-    "bea_farm_proprietor_income": "BLOCKED \u2014 BEA API returns error for DEMO_KEY (code 1: Invalid API UserId). Requires registered BEA API key.",
-    "wy_dor_ag_valuation": "BLOCKED \u2014 dptax.wyo.gov DNS not found. Infrastructure finding: domain invalid/changed."
+    "census_ag_2022": "SUCCESS — qs.census2022.txt.gz bulk download, filtered for WY county data (2026-07-17). All land-use, cattle, operations, producers fields populated.",
+    "nass_quickstats": "BLOCKED — API returns 401; API key required. No DEMO_KEY access.",
+    "blm_ras": "BLOCKED — BLM ArcGIS endpoints 404; BLM ArcGIS empty service list. Infrastructure finding: BLM RAS reports.blm.gov reachable (200) but no programmatic download.",
+    "usfs_grazing": "BLOCKED — USFS EDW Box.com links not attempted (50MB shapefile requires direct download; Claude Code network confirmed reachable). Log for manual fetch.",
+    "wy_water_rights": "BLOCKED — seo.wyo.gov/divisions/water-rights returns 404. Infrastructure finding: URL invalid/changed.",
+    "rap": "BLOCKED — rangelands.app/api/ 404, api.rangelands.app DNS not found. RAP main site reachable. API endpoint not publicly documented at time of fetch.",
+    "bea_farm_proprietor_income": "BLOCKED — BEA API returns error for DEMO_KEY (code 1: Invalid API UserId). Requires registered BEA API key.",
+    "wy_dor_ag_valuation": "BLOCKED — dptax.wyo.gov DNS not found. Infrastructure finding: domain invalid/changed."
   },
   "sanity_investigations": {
     "check_1_fremont_park_lead_irrigated": {
       "status": "INVESTIGATION_REQUIRED",
       "finding": "2022 COA ranks Carbon (157,301 ac) and Sublette (120,242 ac) above Park (104,747) and Fremont (101,050). Expectation 'Fremont and Park lead' not confirmed for 2022 vintage.",
-      "investigation": "Carbon County: North Platte and Encampment River systems support large irrigated hay production; 157K ac is plausible. Sublette County: near-total cropland irrigation (cropland=120,319 ac, irrigated=120,242 ac) consistent with high-altitude semi-arid climate. Fremont/Park: 2022 was a severe drought year for Wyoming \u2014 Wind River Indian Reservation (Fremont) and Shoshone/Bighorn Basin (Park) systems likely had below-average diversions. Finding documented, not annotated around."
+      "investigation": "Carbon County: North Platte and Encampment River systems support large irrigated hay production; 157K ac is plausible. Sublette County: near-total cropland irrigation (cropland=120,319 ac, irrigated=120,242 ac) consistent with high-altitude semi-arid climate. Fremont/Park: 2022 was a severe drought year for Wyoming — Wind River Indian Reservation (Fremont) and Shoshone/Bighorn Basin (Park) systems likely had below-average diversions. Finding documented, not annotated around."
     },
     "check_2_campbell_carbon_rangeland_federal_aum": {
       "status": "PARTIAL_PASS",
-      "finding": "Campbell (93.3% pastureland/land-in-farms) and Carbon (91.8%) are confirmed pastureland-dominated. Federal AUM share BLOCKED \u2014 BLM RAS and USFS endpoints unavailable."
+      "finding": "Campbell (93.3% pastureland/land-in-farms) and Carbon (91.8%) are confirmed pastureland-dominated. Federal AUM share BLOCKED — BLM RAS and USFS endpoints unavailable."
     },
     "check_3_teton_small_land_in_farms": {
       "status": "PASS",
@@ -5517,6 +6851,157 @@
     "check_4_statewide_beef_cows": {
       "status": "PARTIAL",
       "finding": "2022 COA WY state total: 681,534 beef cows. County sum (16/23, 7 suppressed): 511,723. Suppressed counties (D): Hot Springs, Laramie, Lincoln, Natrona, Niobrara, Park, Sweetwater. County sum = 75% of state total, consistent with 7 suppressed counties. Reference value from same source (COA 2022) so full cross-source validation deferred to next vintage."
+    }
+  },
+  "schema_changelog": [
+    {
+      "version": "wy_county_ag_baseline_v2",
+      "date": "2026-11-16",
+      "ticket": "W7-F3 / C-3",
+      "added": [
+        "federal_aums.blm_suspended_aum",
+        "federal_aums.blm_public_acres",
+        "federal_aums.blm_allotment_count",
+        "aum_by_ownership.{blm_active_aum,usfs_active_aum,private_aum_capacity,blm_share_of_forage_capacity}",
+        "c3_blm (top level)"
+      ],
+      "changed": [
+        "federal_aums.blm_authorized_aum: stays null (superseded by aum_by_ownership.blm_active_aum)",
+        "federal_aums.usfs_authorized_aum: 0 -> null. The 0 was an AG0 placeholder for 'AUM count not available', not a measurement."
+      ],
+      "unchanged": [
+        "land_by_use",
+        "cattle_and_forage",
+        "water",
+        "rap_invasive_cover",
+        "ag_economics",
+        "dor_ag_productive_value_coefficients_usd_per_acre",
+        "federal_aums.usfs_authorized_use_acres"
+      ],
+      "promotion": "NOT promoted. wy_county_ag_engine_baseline.json and terra-app/src/data/county_ag_baseline.json are unchanged (credibility gate failed for Campbell; see c3_blm.credibility_gate)."
+    }
+  ],
+  "c3_blm": {
+    "sources": {
+      "ras": {
+        "file": "data/raw/blm_ras/Allotment Information Report BLM WY State Office 2026-11-15.csv",
+        "sha256": "97faa8cf55f7285136ebb82827e7aeeeba5c8e2720230f22d2fc7d07b5a89482",
+        "role": "authoritative for AUMs and public acres"
+      },
+      "polygons": {
+        "file": "data/raw/blm_grazing/blm_natl_grazing_allotment_polygons_WY_2026-11-16.geojson",
+        "sha256": "bc094b8f06867e60e31a1fa8a898ad8ccef8f7f2fb1866cc0e7863c5024d1254",
+        "url": "https://services1.arcgis.com/KbxwQRRfWyEYLgp4/arcgis/rest/services/BLM_Natl_Grazing_Allotment_Polygons/FeatureServer/1",
+        "role": "supplemental geometry"
+      },
+      "published_total": "BLM Public Land Statistics 2025 (published 2026-07/08), Table 3-9c 'Grazing permits and leases in force as of January 15, 2026', Wyoming row: active AUMs 1,920,781; suspended AUMs 393,635. https://www.blm.gov/sites/default/files/docs/2026-08/BLM-Public-Land-Statistics-2025.pdf"
+    },
+    "judgment_calls": {
+      "JC-1": {
+        "call": "RAS 'Permitted AUMs' is read as BLM active AUMs.",
+        "confidence": "high",
+        "evidence": "Suspended exceeds Permitted in 167 rows, so Permitted cannot include suspended; WY sums 1,923,355 permitted / 393,770 suspended against BLM-published 1,920,781 / 393,635."
+      },
+      "JC-2": {
+        "call": "AUMs apportioned to counties by polygon area share (EPSG:5070).",
+        "confidence": "low-medium",
+        "evidence": "BLM public acres by county from this apportionment are within 5% of independent BLM SMA surface acres in 20 of 23 counties (outliers: Goshen 0.89, Teton 0.09, Johnson 0.947); AUM density within an allotment is assumed uniform."
+      },
+      "JC-3": {
+        "call": "Public-land proportion (RAS public acres / polygon acres, capped at 1) scales acres, not AUMs. RAS AUMs are already public-land AUMs, so county AUMs = AUMs x area share; multiplying by the proportion again would discount private and state inholdings twice and cut the statewide total to about 67% of BLM's published figure (1,285,306 vs 1,920,781).",
+        "confidence": "medium",
+        "sensitivity_literal_reading_statewide_aum": 1285306
+      }
+    },
+    "join": {
+      "ras_allotments": 3503,
+      "polygon_allotments": 3556,
+      "matched": 3470,
+      "match_rate_ras_to_polygon": 0.9905795032829003,
+      "match_rate_polygon_to_ras": 0.9758155230596175,
+      "ras_rows": 4128,
+      "ras_active_aum_total_all_rows": 1923797.0,
+      "ras_active_aum_wy_admin": 1923355.0,
+      "ras_suspended_aum_wy_admin": 393770.0,
+      "ras_only_count": 33,
+      "ras_only_active_aum": 8603.0,
+      "ras_only_public_acres": 152244.0,
+      "polygon_only_count": 86,
+      "polygon_only_acres": 208099.5915359915,
+      "matched_active_aum": 1915194.0,
+      "matched_zero_wy_overlap_count": 20,
+      "matched_zero_wy_overlap_aum": 851.0,
+      "matched_state_line_crossing_count": 12,
+      "apportioned_active_aum_wy": 1908244.8710056767,
+      "apportioned_suspended_aum_wy": 390189.85084935185,
+      "allotments_multi_polygon": 3,
+      "allotments_multi_ras_rows": 228,
+      "max_ras_rows_one_allotment": 31,
+      "matched_public_prop_capped": 295,
+      "matched_public_acres_null": 4,
+      "invalid_polygons_repaired": 67
+    },
+    "credibility_gate": {
+      "pass": false,
+      "rows": [
+        {
+          "check": "Statewide BLM active AUMs: RAS WY active AUMs (all rows, WY-administered) vs BLM published 1,920,781",
+          "value": 1923355,
+          "expected": 1920781,
+          "deviation": 0.0013,
+          "result": "PASS"
+        },
+        {
+          "check": "Statewide BLM active AUMs: Apportioned to WY counties vs BLM published 1,920,781",
+          "value": 1908245,
+          "expected": 1920781,
+          "deviation": -0.0065,
+          "result": "PASS"
+        },
+        {
+          "check": "Statewide suspended AUMs (RAS) vs BLM published 393,635",
+          "value": 393770,
+          "expected": 393635,
+          "deviation": 0.0003,
+          "result": "PASS"
+        },
+        {
+          "check": "Sweetwater: BLM public acres >= 25% of county area (BLM-heavy)",
+          "value": 0.653,
+          "expected": ">= 0.25",
+          "result": "PASS"
+        },
+        {
+          "check": "Carbon: BLM public acres >= 25% of county area (BLM-heavy)",
+          "value": 0.4,
+          "expected": ">= 0.25",
+          "result": "PASS"
+        },
+        {
+          "check": "Fremont: BLM public acres >= 25% of county area (BLM-heavy)",
+          "value": 0.347,
+          "expected": ">= 0.25",
+          "result": "PASS"
+        },
+        {
+          "check": "Lincoln: BLM public acres >= 25% of county area (BLM-heavy)",
+          "value": 0.365,
+          "expected": ">= 0.25",
+          "result": "PASS"
+        },
+        {
+          "check": "Campbell: BLM public acres >= 25% of county area (BLM-heavy)",
+          "value": 0.073,
+          "expected": ">= 0.25",
+          "result": "FAIL"
+        },
+        {
+          "check": "Teton: BLM public acres < 0.5% of county area and < 1,000 AUMs",
+          "value": "0.0001 / 300 AUM",
+          "expected": "< 0.005 and < 1000",
+          "result": "PASS"
+        }
+      ]
     }
   }
 }

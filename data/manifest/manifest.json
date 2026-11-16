@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "generated_by": "scripts/seed_manifest.py",
-  "file_count": 64,
+  "file_count": 69,
   "files": [
     {
       "path": "data/processed/generators_with_costs.parquet",
@@ -499,11 +499,11 @@
     {
       "path": "data/processed/wy_county_ag_baseline.json",
       "pipeline": "H",
-      "generator": "25_wy_ag_baseline_pull.ipynb",
+      "generator": "25_wy_ag_baseline_pull.ipynb (C-3 section) via scripts/build_c3_blm_grazing.py",
       "generator_commit": "9c388dd98b94010bd6b86d00635c4710c228a526",
-      "sha256": "8645fc42ff2188f2cb20b712a13e74c48ec6a59db00a87ec4e3dbdfa66ec2593",
-      "record_count": 9,
-      "last_built": "2026-07-19",
+      "sha256": "e74b1023b0aaafa5bd812fc765fae75f29cd16c741935c2c8c2c5fefd56f56fb",
+      "record_count": 11,
+      "last_built": "2026-11-16",
       "class": "live",
       "tracked": true,
       "dual_path": "terra-app/src/data/county_ag_baseline.json",
@@ -759,6 +759,62 @@
       "class": "live",
       "tracked": true,
       "note": "Newly tracked in S12 for P3 attribution validator. 330 KB, 1676 tracts."
+    },
+    {
+      "path": "data/processed/wy_blm_allotment_aum.csv",
+      "pipeline": "H",
+      "generator": "25_wy_ag_baseline_pull.ipynb (C-3 section) via scripts/build_c3_blm_grazing.py",
+      "generator_commit": null,
+      "sha256": "daee6f2cdd5b9e05789e6dc849dc6e344c6ac837d3b7ce29554e22c574773ea2",
+      "last_built": "2026-11-16",
+      "class": "live",
+      "tracked": true,
+      "record_count": 3589
+    },
+    {
+      "path": "data/processed/wy_blm_allotment_county_aum.csv",
+      "pipeline": "H",
+      "generator": "25_wy_ag_baseline_pull.ipynb (C-3 section) via scripts/build_c3_blm_grazing.py",
+      "generator_commit": null,
+      "sha256": "71355020df3e0c66077b292aaae8afd2abfafe01db361855811c9b7a6a51aa9d",
+      "last_built": "2026-11-16",
+      "class": "live",
+      "tracked": true,
+      "record_count": 3871
+    },
+    {
+      "path": "data/raw/blm_ras/Allotment Information Report BLM WY State Office 2026-11-15.csv",
+      "pipeline": "H",
+      "generator": "manual export (docs/methods/MANUAL_FETCH.md W7-F3)",
+      "generator_commit": null,
+      "sha256": "97faa8cf55f7285136ebb82827e7aeeeba5c8e2720230f22d2fc7d07b5a89482",
+      "last_built": "2026-11-16",
+      "class": "raw",
+      "tracked": true,
+      "record_count": 4128,
+      "note": "RAS export; sha256 identical before and after move into blm_ras/"
+    },
+    {
+      "path": "data/raw/blm_grazing/blm_natl_grazing_allotment_polygons_WY_2026-11-16.geojson",
+      "pipeline": "H",
+      "generator": "scripts/build_c3_blm_grazing.py (ArcGIS FeatureServer pull)",
+      "generator_commit": null,
+      "sha256": "bc094b8f06867e60e31a1fa8a898ad8ccef8f7f2fb1866cc0e7863c5024d1254",
+      "last_built": "2026-11-16",
+      "class": "raw",
+      "tracked": false,
+      "record_count": 3560
+    },
+    {
+      "path": "data/raw/blm_sma/sma_WY_BLM_USFS_2026-11-16.geojson",
+      "pipeline": "H",
+      "generator": "BLM SMA MapServer pull (cross-check)",
+      "generator_commit": null,
+      "sha256": "ad462b2c209c4b19b4d20883b487e0deae6123580dc32dcd4b41eeba57dbec78",
+      "last_built": "2026-11-16",
+      "class": "raw",
+      "tracked": false,
+      "record_count": 4
     }
   ],
   "normalization_constants": {

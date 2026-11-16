@@ -1,0 +1,12 @@
+{
+ "url": "https://gis.blm.gov/arcgis/rest/services/lands/BLM_Natl_SMA_LimitedScale/MapServer/1/query",
+ "query": "where=ADMIN_ST='WY' AND ADMIN_AGENCY_CODE IN ('BLM','USFS')&f=geojson&outSR=4326",
+ "retrieval_date": "2026-11-16",
+ "record_count": 4,
+ "role": "independent cross-check of BLM surface acres only",
+ "tracked_in_git": false,
+ "reason_untracked": "20 MB, reproducible from the URL; hash recorded here",
+ "file": "sma_WY_BLM_USFS_2026-11-16.geojson",
+ "bytes": 19986477,
+ "sha256": "ad462b2c209c4b19b4d20883b487e0deae6123580dc32dcd4b41eeba57dbec78"
+}

@@ -16,7 +16,7 @@ PROVISION = ROOT / "scripts/provision_worktree.sh"
 
 def test_ag_baseline_has_complete_county_contract_and_no_combined_water_metric():
     payload = json.loads(BASELINE.read_text())
-    assert payload["schema_version"] == "wy_county_ag_baseline_v1"
+    assert payload["schema_version"] == "wy_county_ag_baseline_v2"
     assert payload["consumers"] == ["AG1 Dispatch — Wave 6 agricultural scenario layer"]
     assert len(payload["counties"]) == 23
     assert set(payload["counties"]) == {f"56{i:03d}" for i in range(1, 46, 2)}

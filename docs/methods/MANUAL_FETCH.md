@@ -168,3 +168,38 @@ NASS_API_KEY and BEA_API_KEY now available. Resolved items 1, 6, 7; URL-correcte
 - Check 3 (DOR coverage): 23/23. PASS.
 - Check 4 (BEA anomaly): Fremont investigated and cleared (see Item 6 above).
 - Check 5 (NASS vs Census): no county >25% divergence. PASS.
+
+## W7-F3 — BLM RAS Allotment Information export (2026-11-15)
+
+Item 2 (`blm_ras`) above is superseded: the AUM table was exported by hand from
+the BLM Rangeland Administration System. Geometry is scripted (see
+`docs/methods/pipeline_H_agriculture.md`), not manual.
+
+**What the saved file shows (verified from the file, 2026-11-16):**
+
+- Original name: `Allotment Information Report BLM WY State Office 2026-11-15.csv`.
+  Stored at `data/raw/blm_ras/` under the same name; SHA-256
+  `97faa8cf55f7285136ebb82827e7aeeeba5c8e2720230f22d2fc7d07b5a89482`, identical
+  before and after the move from `data/raw/`.
+- Report: RAS **Allotment Information**, BLM **WY State Office**, UTF-8 CSV with a
+  byte-order mark, 4,128 data rows (one per allotment x authorization), 18 columns:
+  Allotment Number, Allotment Name, Available For Grazing, Grazing Decision,
+  Public Acres, Amp Text, AMP Implement Date, Management Stat Text, Field Office
+  (twice), Admin State, Admin Office, Authorization Number, Authorization Status
+  Code, Auth Id, Suspended AUMs, Permitted AUMs, Susp Use Temp.
+- State filter as it appears: 4,127 rows Admin State `WY`, 1 row `MT`
+  (`MT05213`, Cody FO, administered by the WY office).
+- Authorization status: all 4,128 rows `CURRENT`. No other status values appear, so
+  whatever active/authorized option was chosen returned current authorizations only.
+- The export contains no operator or applicant name or address columns. Ingest
+  keeps an explicit column allowlist (`RAS_COLUMNS` in
+  `scripts/build_c3_blm_grazing.py`), so any such column would be dropped.
+  The RAS **Operator Information** report was not used or saved.
+- "Permitted AUMs" is treated as BLM active AUMs (evidence in
+  `wy_county_ag_baseline.json` -> `c3_blm.judgment_calls.JC-1`).
+
+**NOT recorded here, needs Dylan to fill in:** the portal navigation and
+parameter choices used to produce the file (URL path, report menu entries,
+the state/office selection, and which active/authorized checkbox or dropdown
+values were set), because they cannot be recovered from the CSV. Add them
+before this entry is treated as reproducible.

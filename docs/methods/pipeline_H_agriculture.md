@@ -108,11 +108,24 @@ statewide fallback" for the full rationale.
 | URL | Mountain West cost schedules (2023 PDF) |
 | Used for | Invasive treatment cost coefficient in the ag action family |
 
+### BLM allotments and AUMs (W7-F3, C-3)
+
+| Item | Detail |
+|------|--------|
+| AUMs (authoritative) | RAS "Allotment Information" report, BLM WY State Office, manual export 2026-11-15. `data/raw/blm_ras/`, steps in `docs/methods/MANUAL_FETCH.md` |
+| Geometry (supplemental) | BLM National Grazing Allotment Polygons, ArcGIS FeatureServer layer 1 (`ADMIN_ST='WY'`, 3,560 polygons), `data/raw/blm_grazing/` |
+| Cross-check | BLM Surface Management Agency polygons (BLM and USFS, WY), `data/raw/blm_sma/` |
+| Published total | BLM Public Land Statistics 2025, Table 3-9c (as of 2026-01-15): Wyoming 1,920,781 active AUMs |
+| Join key | RAS `Allotment Number` = polygon `ST_ALLOT` (3,470 of 3,503 RAS allotments match, 99.1%; 97.6% of polygons) |
+| Outputs | `wy_blm_allotment_aum.csv`, `wy_blm_allotment_county_aum.csv`, schema-v2 fields in `wy_county_ag_baseline.json` |
+| Generator | `scripts/build_c3_blm_grazing.py`, driven from the C-3 section of NB 25 |
+| Status | In the baseline file only. **Not promoted** to the engine (credibility gate: Campbell fails; digests move) |
+
 ### Sources that could not be retrieved
 
 | Source | URL attempted | Failure mode |
 |--------|--------------|-------------|
-| BLM Rangeland Administration System | `https://reports.blm.gov/reports/ras` | Web portal only, no CSV/API; `gis.blm.gov` returns 404 |
+| BLM Rangeland Administration System (programmatic) | `https://reports.blm.gov/reports/ras` | Web portal only, no CSV/API. Superseded for AUMs by the manual RAS export below (W7-F3) |
 | Wyoming State Engineer water rights | `https://seoweb.wyo.gov/e-Permit/` | URL changed (404); domain moved |
 | BEA CAINC4 farm proprietors income | `https://apps.bea.gov/api/data/` | API key required (error code 1) |
 | Wyoming DOR ag valuation (county-level) | `https://wyo-prop-div.wyo.gov/agricultural` | DNS failure on property tax division domain |
@@ -206,14 +219,17 @@ additive digest surface via `ag_digest()`.
 
 ## Known gaps
 
-### BLM grazing data — entirely missing
+### BLM grazing data — in the baseline file, not in the engine
 
-All 23 counties have null BLM authorised AUM. BLM administers more Wyoming
-grazing land than USFS. The private/federal AUM split cannot be accurately
-computed without BLM data. The statewide federal AUM share (~19% based on
-USFS acres alone) materially understates federal reliance in BLM-heavy
-counties. This is the single largest data gap in the agriculture pipeline
-and is flagged as a cross-pipeline limitation in `docs/methods/index.md`.
+W7-F3 (C-3) populated BLM active AUMs, suspended AUMs and public acres for
+all 23 counties in `wy_county_ag_baseline.json` (schema v2). The engine
+input is **unchanged**, so the engine's federal forage is still USFS acres x
+the statewide stocking-rate proxy (~19% of estimated AUM) and still
+understates federal reliance in BLM-heavy counties. Promotion is blocked on
+two things recorded in HANDOFF W7-F3: the Campbell credibility check fails,
+and promoting moves every Golden N and Ranch Country ag digest. USFS AUMs
+remain unavailable, so a combined federal share is still null. Apportionment
+of AUMs to counties by polygon area is a judgment call (low confidence).
 
 ### DOR productive values — statewide fallback
 

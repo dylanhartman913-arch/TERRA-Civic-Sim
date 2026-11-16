@@ -1,0 +1,12 @@
+{
+ "url": "https://services1.arcgis.com/KbxwQRRfWyEYLgp4/arcgis/rest/services/BLM_Natl_Grazing_Allotment_Polygons/FeatureServer/1/query",
+ "query": "where=ADMIN_ST='WY'&outFields=*&f=geojson&outSR=4326&orderByFields=OBJECTID, resultOffset paging 1000/page",
+ "retrieval_date": "2026-11-16",
+ "record_count": 3560,
+ "crs": "EPSG:4326",
+ "tracked_in_git": false,
+ "reason_untracked": "19 MB, reproducible from the URL; hash recorded here",
+ "file": "blm_natl_grazing_allotment_polygons_WY_2026-11-16.geojson",
+ "bytes": 19023195,
+ "sha256": "bc094b8f06867e60e31a1fa8a898ad8ccef8f7f2fb1866cc0e7863c5024d1254"
+}

@@ -174,14 +174,19 @@ Best-provenanced pipeline. Tested via exogeneity and purity suites.
 
 | File | Tracked | Last built | Commit | SHA-256 (12) |
 |------|---------|------------|--------|--------------|
-| `wy_county_ag_baseline.json` | yes | 2026-07-19 | `9c388dd` | `8645fc42ff21` |
+| `wy_county_ag_baseline.json` | yes | 2026-11-16 | W7-F3 | see manifest (schema v2) |
 | `wy_county_ag_engine_baseline.json` | yes | 2026-07-19 | `8430bcf` | `f3a32fad6d1d` |
 | `wy_grazing_allotments.csv` | yes | 2026-07-19 | `9ffc53a` | `e26dc681c136` |
+| `wy_blm_allotment_aum.csv` | yes | 2026-11-16 | W7-F3 | see manifest |
+| `wy_blm_allotment_county_aum.csv` | yes | 2026-11-16 | W7-F3 | see manifest |
 | `wy_ag_sources.csv` | yes | 2026-07-19 | `9c388dd` | `128ef9321997` |
 | `ts:county_ag_baseline.json` | yes | 2026-07-19 | `8430bcf` | `f3a32fad6d1d` |
 
-Generators: `25_wy_ag_baseline_pull.ipynb`, `26_ag_action_family.ipynb`,
-`scripts/build_county_ag_engine_baseline.py`.
+Generators: `25_wy_ag_baseline_pull.ipynb` (incl. the W7-F3 C-3 section),
+`26_ag_action_family.ipynb`, `scripts/build_county_ag_engine_baseline.py`,
+`scripts/build_c3_blm_grazing.py`. The two `wy_blm_*` CSVs are derived
+outputs, not runtime loads; the BLM fields in the baseline file are **not
+yet promoted** to the engine or `terra-app`.
 
 Current. Golden N frozen. D5 rancher/Extension domain review carried into W7-4.
 

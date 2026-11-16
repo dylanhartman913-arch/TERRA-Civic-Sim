@@ -1,0 +1,14 @@
+{
+ "original_filename": "Allotment Information Report BLM WY State Office 2026-11-15.csv",
+ "source": "BLM Rangeland Administration System (RAS), Allotment Information report, BLM WY State Office",
+ "retrieval": "manual export by Dylan Hartman, 2026-11-15; see docs/methods/MANUAL_FETCH.md (W7-F3)",
+ "retrieval_date": "2026-11-15",
+ "record_count": 4128,
+ "record_unit": "authorization rows (one per allotment x authorization)",
+ "allotments": 3503,
+ "moved_from": "data/raw/ (same bytes; sha256 verified unchanged after move to data/raw/blm_ras/)",
+ "pii": "Export has no operator names or addresses. Ingest uses an explicit column allowlist.",
+ "file": "Allotment Information Report BLM WY State Office 2026-11-15.csv",
+ "bytes": 515747,
+ "sha256": "97faa8cf55f7285136ebb82827e7aeeeba5c8e2720230f22d2fc7d07b5a89482"
+}

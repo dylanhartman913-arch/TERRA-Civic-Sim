@@ -3231,3 +3231,218 @@ undispositioned, unchanged: `docs/review/wyoming-playtest-2026-11-01/`. Environm
 TIME_WAIT sockets persist (the :8081 orphan is still listening); pushes need retry loops.
 
 **W7-F4 complete.**
+
+
+## W7-F3 — 2026-11-16 — C-3: BLM grazing allotments and AUMs into the ag baseline
+
+**Outcome: data and notebook committed UNPROMOTED.** Two independent stops apply: the credibility
+gate fails for Campbell, and promotion would move every Golden N and Ranch Country ag digest.
+No engine path, golden or tag was touched.
+
+### Preamble
+
+- `pwd` = `…/energy-map`, branch `main`, `git rev-list --left-right --count origin/main...main` = `0 0`.
+- HEAD was `d23cdba`, not `8d64b81`. The only intervening commit is `d23cdba` (docs: W7-F4
+  HANDOFF addendum, v0.7.2 tagged), docs-only.
+- Tree not strictly clean: the same 5 untracked paths as W7-F4 (W7-F2 trace, `data/staging/*` x2,
+  `docs/review/wyoming-playtest-2026-11-01/`, `notebooks/08b_ees_baseline_executed.ipynb`). None touched or staged.
+- Tags (annotated, dereferenced): `v0.7.0` -> `b494393`, `v0.7.1` -> `6a61e7c`, `v0.7.2` -> `8d64b81`. Not moved; none created.
+- Read the W7-F4 block and DECISIONS.md. Baselines taken from F4: pytest 230, parity 377 / 38 files, vitest 419 / 44 files.
+
+### 1 — Inputs
+
+- **RAS export**: `Allotment Information Report BLM WY State Office 2026-11-15.csv`, found loose in `data/raw/`.
+  `file` = CSV text (not HTML/PDF), UTF-8 with BOM, 4,128 rows, 18 columns. `data/raw/*` is gitignored, so the file
+  was untracked and moved with `mv` into `data/raw/blm_ras/`. SHA-256 `97faa8cf…89482` before and after (re-checked at commit).
+  **No operator or address columns exist in the export** (columns listed in MANUAL_FETCH.md). Ingest uses an explicit
+  column allowlist, so none could pass through. The RAS Operator Information report was not used.
+- **Polygons**: FeatureServer layer 1, `ADMIN_ST` distinct values confirmed (`WY` present), 3,560 WY polygons via 4 paged
+  queries, 19,023,195 bytes, SHA-256 `bc094b8f…d1254`. Raw file is **not committed** (19 MB, reproducible); its sidecar is.
+- **AG0 `wy_grazing_allotments.csv`**: 808 rows, **USFS only**, `authorized_aum` empty on every row. It has no BLM
+  rows, so C-3 extends rather than duplicates it. Left unchanged.
+- **Independent cross-check (added, not in the ticket)**: BLM Surface Management Agency polygons (BLM and USFS, WY),
+  `data/raw/blm_sma/`, to test BLM acres per county against something other than the allotment layer. Not committed
+  (20 MB); sidecar is.
+- **MANUAL_FETCH.md**: entry added from what the file itself shows. **I could not record Dylan's portal click-steps**
+  (report menu path, state/office selection, active/authorized options): the CSV does not contain them. The entry
+  says so and asks Dylan to fill them in. Observable from the file: all 4,128 rows `CURRENT`; 4,127 `WY`, 1 `MT` (`MT05213`).
+
+### 2 — Join (RAS rows -> allotments -> polygons on `ST_ALLOT`)
+
+| Measure | Value |
+|---|---|
+| RAS rows / allotments | 4,128 / 3,503 (228 allotments have >1 row, max 31; AUMs summed per allotment) |
+| Polygons / unique `ST_ALLOT` | 3,560 / 3,556 (3 matched allotments have 2 polygons; dissolved to one) |
+| Matched | 3,470 |
+| **Match rate RAS -> polygon** | **99.06%** (3,470 / 3,503) |
+| **Match rate polygon -> RAS** | **97.58%** (3,470 / 3,556) |
+| RAS-only (no polygon) | 33 allotments, 8,603 AUMs, 152,244 public acres (incl. `MT05213`, 442 AUMs) |
+| Polygon-only (no RAS row) | 86 allotments, 208,100 polygon acres, no AUMs |
+| Matched but 0% inside WY | 20 allotments, 851 AUMs (19 Nebraska `NE …` allotments plus Petroglyph, Crawford Mountain, NE Cherry) excluded |
+| Matched, crossing the WY line | 12 allotments; Wyoming share only (e.g. Cumberland/Uinta 91.6%, Poison Creek 39.3%) |
+| Public acres > polygon acres | 295 allotments (capped at 1 for the proportion) |
+| Public acres null | 4 allotments (AUMs apportioned; their public acres are null, not guessed) |
+
+Unmatched RAS allotments (not apportioned, not dropped; full list in `c3_unmatched_ras_allotments.csv` and the notebook):
+
+| Allotment | Name | Public acres | Active AUMs |
+|---|---|---|---|
+| MT05213 | COTTONWOOD | 6,274 | 442 |
+| WY00798 | CHEYENNE RIVER DRAW | 1,040 | 312 |
+| WY00799 | TWENTY MILE CREEK 4 | null | 232 |
+| WY00810 | INTERSTATE | 401 | 66 |
+| WY00874 | NORTH ROBINSON DRAW | 40 | 5 |
+| WY00887 | EAST COTTONWOOD | 2,492 | 185 |
+| WY00889 | HART ROAD | 200 | 40 |
+| WY00890 | BAY HORSE ROAD | 40 | 8 |
+| WY00891 | CHALK PRONG | 13 | 1 |
+| WY00896 | JEPSON DRAW | 2,280 | 379 |
+| WY00898 | SAGE PARK | 40 | 4 |
+| WY00899 | FORT RENO | 1,313 | 136 |
+| WY00904 | SUMMER CAMP | 1,291 | 238 |
+| WY00905 | ROUGH CREEK | 60 | 10 |
+| WY00907 | GOSHEN SHEEP CREEK | 160 | 35 |
+| WY00915 | KUIPER DRAW | 120 | 30 |
+| WY00922 | LA PRELE CREEK 5 | 220 | 28 |
+| WY00923 | LA PRELE CREEK 6 | 80 | 20 |
+| WY01639 | ORDWAY POCKET | 2,049 | 592 |
+| WY03404 | RICHIE PASTURE | null | 6 |
+| WY10021 | CLOUD CREEK | 13,158 | 909 |
+| WY10125 | WARD PLACE | 3,834 | 59 |
+| WY10224 | STEWART CREEK | 61,284 | 149 |
+| WY11510 | NORTH WILLOW CREEK | 3,469 | 620 |
+| WY12019 | COOPER CREEK | 1,402 | 194 |
+| WY12020 | COTTONWOOD PASTURE | 2,023 | 265 |
+| WY12243 | ROBB RESERVOIR | 160 | 24 |
+| WY12244 | JAY CREEK | 1,844 | 275 |
+| WY12245 | NORTH PRONG DEAD HORSE | 186 | 34 |
+| WY12246 | BODAN DRAW | 280 | 32 |
+| WY17610 | COTTONWOOD BENCH | 15,709 | 1,235 |
+| WY17643 | STAR CORRAL IND | 506 | 62 |
+| WY32030 | MOUNTAIN | 30,276 | 1,976 |
+
+Unapportioned RAS AUMs: 8,603 (0.45% of the RAS total) plus 851 out-of-state and 6,098 outside-Wyoming share of crossing allotments.
+Apportioned to WY counties: **1,908,245** of 1,923,797 RAS AUMs (all rows).
+
+### 3 — Judgment calls (recorded in the baseline file, `c3_blm`)
+
+- **JC-1: "Permitted AUMs" = active AUMs** (confidence high). Suspended exceeds Permitted in 167 rows, so Permitted cannot
+  include suspended. WY sums 1,923,355 permitted / 393,770 suspended against BLM-published 1,920,781 / 393,635.
+- **JC-2: apportion by polygon area share, EPSG:5070** (confidence low-medium). Assumes uniform AUM density across an allotment.
+- **JC-3: the public-land proportion scales acres, not AUMs. This departs from the ticket's literal wording; please confirm.**
+  RAS AUMs are already public-land AUMs. Multiplying them by (public acres / polygon acres) a second time discounts
+  private and state inholdings twice and gives 1,285,306 AUMs statewide, **67% of BLM's published total**. I applied the proportion to
+  public acres (`blm_public_acres`), conserved the AUMs, and computed the literal reading as a sensitivity.
+  Verification of the acres: see the SMA column below.
+
+### 4 — Credibility gate (printed in NB 25; source: BLM Public Land Statistics 2025 (published 2026-07/08), Table 3-9c 'Grazing permits and leases in force as of January 15, 2026', Wyoming row: active AUMs 1,920,781; suspended AUMs 393,635. https://www.blm.gov/sites/default/files/docs/2026-08/BLM-Public-Land-Statistics-2025.pdf)
+
+| Result | Check | Value | Deviation |
+|---|---|---|---|
+| PASS | RAS WY active AUMs vs BLM published 1,920,781 | 1,923,355 | +0.13% |
+| PASS | Apportioned to WY counties vs 1,920,781 | 1,908,245 | -0.65% |
+| PASS | RAS suspended AUMs vs published 393,635 | 393,770 | +0.03% |
+| PASS | Sweetwater BLM acres >= 25% of county | 65.3% | |
+| PASS | Carbon | 40.0% | |
+| PASS | Fremont | 34.7% | |
+| PASS | Lincoln | 36.5% | |
+| **FAIL** | **Campbell** | **7.3%** | |
+| PASS | Teton < 0.5% of area and < 1,000 AUMs | 0.01% / 300 AUMs | |
+
+The 25% threshold and the use of acres share (rather than AUM share) are mine: the ticket says "large BLM shares" without a number, and
+the AUM-share alternative depends on the low-confidence private-AUM proxy (it reads Teton as 31% BLM because Teton's proxy is only 679 AUMs).
+
+County values (RAS-apportioned; SMA = independent BLM surface acres):
+
+| County | BLM active AUM | BLM suspended | BLM public acres | % of county | SMA BLM acres | RAS/SMA |
+|---|---|---|---|---|---|---|
+| Albany | 48,336 | 35 | 290,030 | 10.6% | 294,933 | 0.98 |
+| Big Horn | 71,251 | 56,956 | 1,138,731 | 56.7% | 1,162,300 | 0.98 |
+| Campbell | 38,171 | 124 | 225,435 | 7.3% | 224,651 | 1.00 |
+| Carbon | 300,330 | 1,749 | 2,022,494 | 40.0% | 2,047,543 | 0.99 |
+| Converse | 24,967 | 0 | 131,461 | 4.8% | 129,768 | 1.01 |
+| Crook | 14,944 | 0 | 87,959 | 4.8% | 88,385 | 1.00 |
+| Fremont | 224,140 | 28,754 | 2,037,416 | 34.7% | 2,101,904 | 0.97 |
+| Goshen | 4,685 | 0 | 22,369 | 1.6% | 25,117 | 0.89 |
+| Hot Springs | 68,512 | 23,571 | 491,805 | 38.3% | 487,735 | 1.01 |
+| Johnson | 53,381 | 3 | 477,775 | 18.0% | 504,541 | 0.95 |
+| Laramie | 1,632 | 0 | 8,807 | 0.5% | 9,160 | 0.96 |
+| Lincoln | 105,391 | 31,644 | 952,377 | 36.5% | 984,417 | 0.97 |
+| Natrona | 188,755 | 2,232 | 1,379,768 | 40.4% | 1,423,143 | 0.97 |
+| Niobrara | 21,634 | 0 | 122,837 | 7.3% | 124,367 | 0.99 |
+| Park | 62,713 | 15,665 | 603,993 | 13.6% | 626,383 | 0.96 |
+| Platte | 13,334 | 0 | 82,515 | 6.2% | 81,762 | 1.01 |
+| Sheridan | 6,438 | 0 | 48,421 | 3.0% | 50,797 | 0.95 |
+| Sublette | 128,697 | 57,033 | 1,258,660 | 40.2% | 1,267,046 | 0.99 |
+| Sweetwater | 365,461 | 105,055 | 4,356,675 | 65.3% | 4,389,286 | 0.99 |
+| Teton | 300 | 0 | 222 | 0.0% | 2,451 | 0.09 |
+| Uinta | 54,223 | 13,116 | 490,443 | 36.8% | 478,905 | 1.02 |
+| Washakie | 99,064 | 54,253 | 883,327 | 61.7% | 917,777 | 0.96 |
+| Weston | 11,885 | 0 | 74,637 | 4.9% | 75,500 | 0.99 |
+
+**Campbell investigation.** I checked the number rather than the expectation. Independent BLM SMA surface polygons give
+224,651 BLM acres in Campbell; the RAS-apportioned figure is 225,435 (ratio 1.00). Campbell is 7.3% BLM by area, and SMA also shows
+about 140,000 USFS acres, so Campbell is mostly private and state land. The data look right and the expectation in the ticket looks
+wrong, but **I am not declaring the gate passed**: the ticket says not to explain a failure away, so Campbell stays FAIL and the run stops unpromoted.
+Elsewhere, RAS-apportioned acres are within 5% of SMA in 20 of 23 counties; outliers are Goshen (0.89), Johnson (0.947) and
+Teton (0.09: RAS 222 acres vs SMA 2,451, both effectively zero, but the gap is unexplained).
+
+### 5 — Engine impact (scratch run; no repo fixture or runtime file touched)
+
+Candidate promotion: engine `forage_aum.federal` = BLM active AUMs + existing USFS-acres proxy. Statewide federal forage
+201,955 -> 2,110,200 AUMs (x10.4).
+
+**Golden N** (Python; `tests/test_golden_n.py::run_golden_n` run unchanged with `te.DATA_DIR` pointed at a scratch dir; control
+against the live data: 0 of 60 moved; candidate: **12 of 60 moved**). Only `ag_digest_md5` moves, in all 6 arcs x 2 lenses:
+
+| Arc | fixture `ag_digest_md5` | candidate | same for ssp370 |
+|---|---|---|---|
+| treatment_without_maintenance | `60294b3d` | `ac50e2a9` | yes |
+| treatment_with_maintenance | `b81cef09` | `19a48721` | yes |
+| irrigation_efficiency | `8f5ae69e` | `b87e7839` | yes |
+| utility_solar | `8a85a3fe` | `82f7a548` | yes |
+| wind_shared_land | `08c85b5a` | `e4599351` | yes |
+| two_year_drought | hist `a61e8b16` / ssp370 `ea66457f` | `9a26f06f` / `837bfc79` | n/a |
+
+State, fiscal, existing-assets and history digests: unchanged in every arc.
+
+**Ranch Country 2040** (TS; scratch copy of `terra-app` with the candidate `county_ag_baseline.json`; control copy: 17/17 pass; candidate: 4 failures in
+`ag4-session-drought.test.ts` and `f8-store-drought-sites.test.ts`): `ag_digest_md5` `0c537942…` -> `8e25daa2…` (drought on);
+`756ec0d2…` -> `ee8c04e4…` (energy-only). `replay_digest` was not separately evaluated: its assertions come after the failing
+`ag_digest` assertions in those tests.
+
+**Decision needed (dated, Dylan):** whether to promote, with golden regeneration, and in what form (BLM added to `forage_aum.federal`
+changes the federal term tenfold). I did not regenerate any golden.
+
+### 6 — Outputs and schema
+
+- `data/processed/wy_county_ag_baseline.json`: `wy_county_ag_baseline_v1` -> **`wy_county_ag_baseline_v2`** (changelog in the file). Added
+  `aum_by_ownership.{blm_active_aum, usfs_active_aum, private_aum_capacity, blm_share_of_forage_capacity}`,
+  `federal_aums.{blm_suspended_aum, blm_public_acres, blm_allotment_count}`, `c3_blm`. `federal_aums.blm_authorized_aum` stays null
+  (superseded). **`federal_aums.usfs_authorized_aum` changed 0 -> null**: the 0 was an AG0 placeholder ("AUM count not available"),
+  not a measurement, and nothing reads it (grep). The export is BLM-only, so `usfs_active_aum` is null with a reason, `private_aum_capacity` keeps
+  its AG0 proxy and source, and `federal_aum_share` stays null (needs USFS AUMs).
+- New: `wy_blm_allotment_aum.csv` (3,589 rows), `wy_blm_allotment_county_aum.csv`, `scripts/build_c3_blm_grazing.py`, `tests/test_c3_blm_baseline.py` (5 tests).
+- Manifest: entries for the two CSVs, the updated baseline, the RAS export (tracked) and the polygon and SMA pulls (`tracked: false`). Sidecars for all three raw files.
+- `scripts/provision_worktree.sh` hash for the baseline updated; `tests/test_wy_ag_baseline_contract.py` schema assertion v1 -> v2.
+- NB 25: C-3 section appended (7 cells, 340 inserted lines, 0 deleted). **Notebook outputs were produced by executing the cell sources in a plain Python
+  process, not a Jupyter kernel (none is installed here).** NB 25 cell 1 asserts branch `w5-verify`, so the notebook cannot run top to bottom on `main`; the C-3 cells are self-contained.
+- Docs: D5 packet (BLM section, items 4/5, federal-share question), `docs/PIPELINES.md`, `docs/methods/pipeline_H_agriculture.md`, `docs/methods/MANUAL_FETCH.md`. D5 "621 values / 27.1% low" counts are noted as predating W7-F3, not recounted.
+
+### 7 — Gates (fresh)
+
+| Command | Output |
+|---|---|
+| `python3 -m pytest tests/ -q` (repo root) | `235 passed in 213.47s (0:03:33)` (F4 baseline 230, +5 new) |
+| `npm run parity` (terra-app) | `Test Files 38 passed (38)` / `Tests 377 passed (377)` (= F4) |
+| `npx vitest run` (terra-app) | `Test Files 44 passed (44)` / `Tests 419 passed (419)` (= F4) |
+| `scripts/check_manifest.py` / `check_dual_path.py` / `validate_p3_attribution.py` | PASSED / PASSED / ALL CHECKS PASSED |
+| `git diff --stat -- terra-app/tests/parity/fixtures src/ terra-app/src/data terra-app/src/engine data/golden` | empty |
+
+No operator names or addresses: the export has no such columns; the allotment names are public place names.
+
+### Open after W7-F3
+
+Decisions: (1) confirm JC-3; (2) Campbell expectation: accept the evidence and amend the gate, or hold; (3) promote BLM into the engine and regenerate goldens, or not.
+Data: USFS AUMs (no source yet); Teton RAS-vs-SMA gap; the 33 RAS-only allotments (8,603 AUMs) have no geometry; Dylan's portal steps for MANUAL_FETCH.md.
+Carried from W7-F4: W7-F4-FU-1/2/3, T6-FU-2 visual check; untracked `docs/review/wyoming-playtest-2026-11-01/` undispositioned.
