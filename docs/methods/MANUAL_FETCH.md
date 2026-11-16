@@ -203,3 +203,16 @@ parameter choices used to produce the file (URL path, report menu entries,
 the state/office selection, and which active/authorized checkbox or dropdown
 values were set), because they cannot be recovered from the CSV. Add them
 before this entry is treated as reproducible.
+
+### W7-F3 portal click-steps — TODO for Dylan (W7-F5; deliberately not filled in)
+
+These fields cannot be recovered from the CSV and were not invented. Fill each in before this entry is
+treated as reproducible.
+
+- Portal URL / entry point: **TODO (Dylan)**
+- Report menu path (menu entries clicked, in order): **TODO (Dylan)**
+- Report selected (expected: Allotment Information): **TODO (Dylan)**
+- State / office selection (expected: WY, BLM WY State Office): **TODO (Dylan)**
+- Active / authorized checkbox or dropdown values set: **TODO (Dylan)**
+- Export format and button used: **TODO (Dylan)**
+- Date and time of export (file name says 2026-11-15): **TODO (Dylan)**

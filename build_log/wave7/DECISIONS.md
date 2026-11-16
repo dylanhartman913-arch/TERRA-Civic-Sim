@@ -583,3 +583,86 @@ surfacing as a historical gap.
 **RULEBOOK.md is not edited.** It quotes R18 verbatim, including the "remains open"
 clause. Its header now says that rule text is historical and that current status
 lives in this file.
+
+---
+
+## 2026-11-16 — W7-F5: C-3 — public-land proportion is applied to acres, not AUMs (decided by Dylan)
+
+**Decision:** The public-land proportion (RAS public acres / polygon acres, capped at 1) scales
+**acres**, not AUMs. RAS AUMs are already public-land AUMs; multiplying them by the proportion a
+second time discounts private and state inholdings twice.
+
+**Figures (W7-F3 HANDOFF; re-printed in NB 25 C-3 cell 4):** the literal reading (AUMs x area share
+x public proportion) gives 1,285,306 active AUMs statewide, **66.9% of BLM's published 1,920,781**
+(Public Land Statistics 2025, Table 3-9c). The adopted reading conserves AUMs: RAS WY active AUMs
+1,923,355 (+0.13% vs published), apportioned to WY counties 1,908,245 (-0.65%).
+
+**The literal reading stays in the file as a labeled sensitivity**
+(`c3_blm.judgment_calls.JC-3.sensitivity_literal_reading_statewide_aum`, and `blm_aum_literal_pp` in
+the county frame). It is not used for any value.
+
+---
+
+## 2026-11-16 — W7-F5: C-3 — credibility gate amended; Campbell; Johnson accepted exception (decided by Dylan)
+
+**The F3 named-county gate was wrong, and the F3 FAIL was correct behavior.** The BLM-heavy county
+list in the W7-F3 ticket (Sweetwater, Carbon, Fremont, Lincoln, Campbell) was written by the PM from
+memory and was wrong for Campbell. Campbell is 7.3% BLM by area; the independent BLM
+surface-ownership layer gives 224,651 BLM acres against 225,435 apportioned (ratio 1.00). The F3 run
+reported FAIL and stopped, as instructed.
+
+**Replacement gate (replaces the named-county gate; implemented in `scripts/build_c3_blm_grazing.py`,
+NB 25 C-3 cell 4, `tests/test_c3_blm_baseline.py`):**
+1. Per county, apportioned BLM acres within **±5% or 5,000 acres, whichever is larger,** of the
+   independent BLM surface-ownership layer (BLM SMA polygons, `data/raw/blm_sma/`).
+2. Statewide active AUMs within **±2%** of BLM's published Wyoming total, 1,920,781 (Public Land
+   Statistics 2025, Table 3-9c). The statewide suspended-AUM check (393,635, ±2%) is retained.
+
+**Tolerances were set after seeing the data.** They were not pre-committed. The named counties
+remain only as a non-gating sanity note.
+
+**Result: the amended gate passed 22 of 23 counties. Johnson FAILED at -5.3%** (477,775 apportioned
+vs 504,541 ownership-layer acres; difference 26,767; tolerance 25,227). Recorded as an **accepted
+exception, not a pass**: the gate result stays FAIL in every table and in `c3_report.json`
+(`gate_pass: false`); the exception is recorded beside it. The rule was not changed.
+
+**Why Johnson is not treated as a blocker — an UNVERIFIED hypothesis:** allotment polygons cover only
+grazing-permitted BLM land, while the ownership layer counts all BLM surface; and the statewide AUM
+checks pass. This was not verified when the exception was accepted. (A diagnostic was then run; see
+HANDOFF W7-F5. It does not confirm the hypothesis in full.)
+
+**Also stated plainly:** Goshen (-10.9%) and Teton (-90.9%) pass **only via the 5,000-acre floor**
+(gaps of 2,748 and 2,229 acres). Crook, Laramie, Platte, Sheridan and Weston also pass via the floor.
+
+**Confidence statement:** the county-level AUM split is validated **by acreage only** and is
+confidence-rated (low-medium), **not independently verified**. No independent source gives AUMs by
+county.
+
+---
+
+## 2026-11-16 — W7-F5: C-3 — promotion of BLM AUMs into the engine DEFERRED (decided by Dylan)
+
+**Decision:** Promotion is deferred to the **first session of the next version**. Nothing is promoted
+in Wave 7; `wy_county_ag_engine_baseline.json` and `terra-app/src/data/county_ag_baseline.json` are
+unchanged. Acceptance conditions, pre-committed now:
+
+1. Only `ag_digest_md5` may move. `state`, `fiscal`, `existing_assets` and `history` digests are
+   identical on every golden fixture.
+2. Python/TS parity holds.
+3. The B-11 drought gate passes.
+4. The S8 Monte Carlo rank-stability analysis is re-run.
+5. The provenance of the old 202k federal forage figure (201,955 AUMs statewide in the engine
+   baseline) is documented **before** the swap.
+6. USFS AUMs are named as an open gap (Campbell / Thunder Basin).
+
+---
+
+## 2026-11-16 — W7-F5: new debt tickets (decided by Dylan)
+
+- **W7-F5-DEBT-1** — NB 25 cell 1 asserts branch `w5-verify`, so the notebook cannot run top to bottom
+  on `main`; and no Jupyter kernel exists in this environment for regenerating notebook outputs
+  (C-3 outputs were produced by executing cell sources in a plain Python process). OPEN.
+- **W7-F5-DEBT-2** — USFS AUM source. None identified; the RAS export is BLM-only and the USFS EDW
+  polygons carry no AUM field. `usfs_active_aum` and `federal_aum_share` stay null. OPEN.
+- **W7-F5-DEBT-3** — Git LFS (or equivalent) for raw BLM pulls (allotment polygons 19 MB, SMA 20 MB,
+  currently untracked with sidecars). OPEN, **low priority**.

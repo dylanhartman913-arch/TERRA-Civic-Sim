@@ -3456,3 +3456,131 @@ Carried from W7-F4: W7-F4-FU-1/2/3, T6-FU-2 visual check; untracked `docs/review
 - No tag created or moved. This addendum is docs-only.
 
 **W7-F3 complete (unpromoted; three decisions open, see above).**
+
+
+---
+
+## W7-F5 — 2026-11-16 — Record C-3 rulings, amend the credibility gate, close Wave 7
+
+**Outcome:** rulings recorded; amended gate implemented and run: **22/23 counties pass, Johnson FAILED
+(accepted exception, recorded, not a pass)**; diagnostic table printed; Wave 7 marked closed. Nothing
+promoted. No tag created or moved.
+
+### Preamble
+
+- `pwd` = `…/energy-map`, branch `main`, HEAD = `origin/main` = `606c601`. Tree: the same 5 untracked
+  paths as W7-F3/F4, none touched. Read W7-F3, W7-F4 blocks and all of DECISIONS.md.
+- Tags untouched (`v0.7.0`, `v0.7.1`, `v0.7.2`).
+- The first run stopped at Johnson, before any file was written. Dylan then ruled: option 1 (accepted
+  exception, rule not changed) plus one non-gating diagnostic.
+
+### 1 — CI on `606c601` (unauthenticated check-runs)
+
+First query: TS parity `completed/success`, Manifest + dual-path `completed/success`, Python tests
+`in_progress`. Re-queried until complete: **all three `completed/success`**.
+
+### 2 — DECISIONS.md
+
+Four dated entries appended (2026-11-16, decided by Dylan; no earlier line edited): (a) acres not AUMs;
+(b) gate amended, Campbell, Johnson accepted exception with the unverified hypothesis, Goshen/Teton floor
+passes, county AUM split validated by acreage only; (c) promotion deferred with pre-committed conditions;
+(d) debt tickets W7-F5-DEBT-1/2/3.
+
+### 3 — Amended gate: old and new side by side
+
+| Old gate (W7-F3) | Result | New gate (W7-F5) | Result |
+|---|---|---|---|
+| RAS WY active AUMs vs 1,920,781 (±2%) | PASS +0.13% | same, retained | PASS +0.13% |
+| Apportioned AUMs vs 1,920,781 (±2%) | PASS −0.65% | same, retained | PASS −0.65% |
+| RAS suspended vs 393,635 (±2%) | PASS +0.03% | same, retained | PASS +0.03% |
+| Sweetwater / Carbon / Fremont / Lincoln BLM ≥25% of area | PASS x4 | **removed as gate**; sanity note only | 65.3 / 40.0 / 34.7 / 36.5% |
+| Campbell BLM ≥25% of area | **FAIL 7.3%** | **removed as gate** (list was wrong for Campbell); sanity note | 7.3% |
+| Teton <0.5% of area and <1,000 AUMs | PASS | sanity note | 0.01% / 300 AUMs |
+| — | — | **Per-county apportioned BLM acres within ±5% or 5,000 ac (larger) of independent BLM surface acres** | **22/23 PASS; Johnson FAIL** |
+
+Nothing was weakened: the statewide checks are kept, and the named-county test is replaced by a stricter,
+independent check (23 counties instead of 5). Tolerances were set after seeing the data.
+
+**Per-county deviation table** (apportioned vs independent BLM surface acres; "floor" = passed only via the
+5,000-acre floor). Maximum |deviation| by percent: Teton −90.9% (floor; 2,229 acres), then Goshen −10.9%
+(floor), Johnson −5.3% (**FAIL**), Sheridan −4.7% (floor), Washakie −3.8%, Laramie −3.9% (floor), Park −3.6%.
+Maximum by acres: Fremont −64,488 (tolerance 105,095).
+
+| County | Apportioned | Ownership layer | Diff | Dev % | Tol (ac) | Result |
+|---|---|---|---|---|---|---|
+| Albany | 290,030 | 294,933 | −4,903 | −1.7 | 14,747 | PASS |
+| Big Horn | 1,138,731 | 1,162,300 | −23,569 | −2.0 | 58,115 | PASS |
+| Campbell | 225,435 | 224,651 | +784 | +0.3 | 11,233 | PASS |
+| Carbon | 2,022,494 | 2,047,543 | −25,049 | −1.2 | 102,377 | PASS |
+| Converse | 131,461 | 129,768 | +1,693 | +1.3 | 6,488 | PASS |
+| Crook | 87,959 | 88,385 | −426 | −0.5 | 5,000 | PASS (floor) |
+| Fremont | 2,037,416 | 2,101,904 | −64,488 | −3.1 | 105,095 | PASS |
+| Goshen | 22,369 | 25,117 | −2,748 | −10.9 | 5,000 | PASS (floor) |
+| Hot Springs | 491,805 | 487,735 | +4,069 | +0.8 | 24,387 | PASS |
+| **Johnson** | 477,775 | 504,541 | −26,767 | **−5.3** | 25,227 | **FAIL (accepted exception)** |
+| Laramie | 8,807 | 9,160 | −353 | −3.9 | 5,000 | PASS (floor) |
+| Lincoln | 952,377 | 984,417 | −32,040 | −3.3 | 49,221 | PASS |
+| Natrona | 1,379,768 | 1,423,143 | −43,375 | −3.0 | 71,157 | PASS |
+| Niobrara | 122,837 | 124,367 | −1,530 | −1.2 | 6,218 | PASS |
+| Park | 603,993 | 626,383 | −22,390 | −3.6 | 31,319 | PASS |
+| Platte | 82,515 | 81,762 | +753 | +0.9 | 5,000 | PASS (floor) |
+| Sheridan | 48,421 | 50,797 | −2,375 | −4.7 | 5,000 | PASS (floor) |
+| Sublette | 1,258,660 | 1,267,046 | −8,386 | −0.7 | 63,352 | PASS |
+| Sweetwater | 4,356,675 | 4,389,286 | −32,611 | −0.7 | 219,464 | PASS |
+| Teton | 222 | 2,451 | −2,229 | −90.9 | 5,000 | PASS (floor) |
+| Uinta | 490,443 | 478,905 | +11,538 | +2.4 | 23,945 | PASS |
+| Washakie | 883,327 | 917,777 | −34,450 | −3.8 | 45,889 | PASS |
+| Weston | 74,637 | 75,500 | −863 | −1.1 | 5,000 | PASS (floor) |
+
+Implemented in `scripts/build_c3_blm_grazing.py` (`county_acre_gate`, `gate_rows`, `sanity_notes`,
+`ACCEPTED_EXCEPTIONS`; the exception is a field beside the FAIL row, `gate_pass` stays `false`), NB 25
+C-3 cell 4 (replaced) and new cell 4b (diagnostic), `tests/test_c3_blm_baseline.py` (+2 tests: exactly
+Johnson fails and only Johnson; tolerances pinned at 0.05 / 5,000; 22/23 recorded; statewide AUM checks).
+Notebook outputs again produced by executing the cell sources in a plain Python process (W7-F5-DEBT-1).
+
+### 3b — Diagnostic (non-gating; no gate, baseline or output changed)
+
+BLM surface acres in the independent ownership layer (BLM SMA) that intersect **no** allotment polygon
+(all 3,560 WY polygons, EPSG:5070). Statewide 249,542 of 17,497,869 BLM ownership-layer acres.
+Full table: `build_log/wave7/snapshots/w7-f3/c3_nonallotted_diagnostic.csv`; also printed in NB 25 cell 4b.
+
+| County | Shortfall (ownership − apportioned) | Dev % | Non-allotted BLM acres | Non-allotted / shortfall |
+|---|---|---|---|---|
+| Johnson | 26,767 | −5.3 | 11,382 | 0.43 |
+| Goshen | 2,748 | −10.9 | 1,968 | 0.72 |
+| Sheridan | 2,375 | −4.7 | 1,268 | 0.53 |
+| Park | 22,390 | −3.6 | 12,240 | 0.55 |
+| Washakie | 34,450 | −3.8 | 27,219 | 0.79 |
+
+**What it shows.** In none of the five named counties do the non-allotted acres equal or exceed the
+shortfall; they cover 43–79% of it. Johnson's shortfall minus its non-allotted acres is 15,385 acres.
+Elsewhere, non-allotted acres are at least the shortfall in Natrona (1.3x), Sublette (1.6x), Niobrara,
+Crook and Weston, and nearly equal in Albany (0.995). Counties with a positive deviation (Campbell,
+Converse, Hot Springs, Platte, Uinta) also have 1,733–5,461 non-allotted acres. Not interpreted further.
+
+**Conclusion.** The diagnostic does **not** explain the negative deviations in full for Johnson, Goshen,
+Sheridan, Park or Washakie, so the hypothesis recorded in DECISIONS.md stays unverified and no one-sided
+rule (apportioned ≤ ownership, gap explained) is put forward as a candidate. That remains Dylan's call
+in a future dated decision.
+
+### 4 — MANUAL_FETCH.md
+
+Portal click-step fields appended as seven explicit `TODO (Dylan)` placeholders. Nothing invented.
+
+### 5 — `docs/closeouts/W7_finish.md`
+
+"Post-v0.7.2 data addendum" appended: what landed unpromoted, three rulings, debt tickets, carried-debt
+register after W7-F5, **Wave 7 marked CLOSED**. Parts A–E untouched.
+Known leftover: `c3_blm.credibility_gate` inside `wy_county_ag_baseline.json` is still the W7-F3 gate. It was
+not regenerated, to keep that file's hash, the manifest entry and `provision_worktree.sh` unchanged
+(acceptance: no baseline file changed). The addendum says so.
+
+### 6 — Gates (fresh)
+
+| Command | Output |
+|---|---|
+| `python3 -m pytest tests/ -q` | `237 passed in 193.68s` (F3 baseline 235, +2 new) |
+| `npm run parity` (terra-app) | final run `Test Files 38 passed (38)` / `Tests 377 passed (377)` (= F3). **Two earlier runs each had 1 failure**: `ag-year-loop-benchmark` "inside the committed regression budget", 2032 ms, `expected 53.49 to be less than 45`, one of them while pytest ran concurrently. This is the W7-F1-FU-3 wall-clock flake (OPEN, unchanged). Not fixed here. |
+| `npx vitest run` (terra-app) | `Test Files 44 passed (44)` / `Tests 419 passed (419)` (= F3) |
+| `check_manifest.py` / `check_dual_path.py` / `validate_p3_attribution.py` | PASSED / PASSED / PASSED |
+| `git diff --stat -- terra-app/tests/parity/fixtures src/ terra-app/src/data terra-app/src/engine data/` | empty |

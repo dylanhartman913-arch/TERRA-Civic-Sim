@@ -83,3 +83,46 @@ def test_ras_export_matches_its_sidecar_and_carries_no_operator_fields():
         assert banned not in lowered, banned
     for path in (ALLOT, ALLOT_CTY):
         assert "operator" not in path.read_text().splitlines()[0].lower()
+
+
+# --- W7-F5: amended credibility gate (replaces the F3 named-county gate; see DECISIONS.md 2026-11-16 b) ---
+
+def _c3():
+    import sys
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import build_c3_blm_grazing as c3
+    return c3
+
+
+def test_amended_gate_per_county_acres_22_of_23_with_johnson_a_recorded_exception():
+    import pandas as pd
+    c3 = _c3()
+    assert (c3.ACRE_TOL_PCT, c3.ACRE_TOL_FLOOR) == (0.05, 5_000.0), "tolerances must not be widened"
+    # tracked snapshot carries both the apportioned and the independent (SMA) acres, so no raw pull is needed
+    cf = pd.read_csv(ROOT / "build_log/wave7/snapshots/w7-f3/c3_county_credibility.csv", dtype={"county_geoid": str})
+    cf["county_name"] = cf["county_name"].astype(str)
+    gate = c3.county_acre_gate(cf)
+    assert len(gate) == 23
+    failed = gate[gate.result == "FAIL"]
+    assert list(failed.county_name) == ["Johnson"]
+    assert set(failed.county_name) <= set(c3.ACCEPTED_EXCEPTIONS)
+    j = failed.iloc[0]
+    assert round(j.blm_public_acres) == 477_775 and round(j.sma_blm_acres) == 504_541
+    assert round(j.tolerance_acres) == 25_227 and round(j.dev_pct, 1) == -5.3
+    # Goshen and Teton pass only through the 5,000-acre floor
+    floor = set(gate[(gate.result == "PASS") & gate.via_floor].county_name)
+    assert {"Goshen", "Teton"} <= floor
+    assert round(float(gate[gate.county_name == "Goshen"].dev_pct.iloc[0]), 1) == -10.9
+    report = json.loads((ROOT / "build_log/wave7/snapshots/w7-f3/c3_report.json").read_text())
+    assert (report["gate_county_pass_count"], report["gate_county_count"]) == (22, 23)
+    assert report["gate_pass"] is False  # recorded as FAIL, not masked by the exception
+
+
+def test_amended_gate_statewide_aums_within_two_percent_for_apportioned_and_ras():
+    c3 = _c3()
+    counties = json.loads(BASELINE.read_text())["counties"]
+    apportioned = sum(c["aum_by_ownership"]["blm_active_aum"]["value"] for c in counties.values())
+    assert abs(apportioned / c3.PUBLISHED_WY_ACTIVE_AUM - 1) <= c3.GATE_TOLERANCE
+    report = json.loads((ROOT / "build_log/wave7/snapshots/w7-f3/c3_report.json").read_text())
+    stat_rows = [r for r in report["gate"] if r["check"].startswith("Statewide")]
+    assert len(stat_rows) == 3 and all(r["result"] == "PASS" for r in stat_rows)

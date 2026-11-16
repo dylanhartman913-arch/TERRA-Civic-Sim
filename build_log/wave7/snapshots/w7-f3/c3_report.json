@@ -29,63 +29,292 @@
  },
  "gate": [
   {
-   "check": "Statewide BLM active AUMs: RAS WY active AUMs (all rows, WY-administered) vs BLM published 1,920,781",
+   "check": "Statewide BLM active AUMs: RAS WY active AUMs (all rows, WY-administered) vs BLM published 1,920,781 (+/-2%)",
    "value": 1923355,
    "expected": 1920781,
    "deviation": 0.0013,
    "result": "PASS"
   },
   {
-   "check": "Statewide BLM active AUMs: Apportioned to WY counties vs BLM published 1,920,781",
+   "check": "Statewide BLM active AUMs: Apportioned to WY counties vs BLM published 1,920,781 (+/-2%)",
    "value": 1908245,
    "expected": 1920781,
    "deviation": -0.0065,
    "result": "PASS"
   },
   {
-   "check": "Statewide suspended AUMs (RAS) vs BLM published 393,635",
+   "check": "Statewide suspended AUMs (RAS) vs BLM published 393,635 (+/-2%)",
    "value": 393770,
    "expected": 393635,
    "deviation": 0.0003,
    "result": "PASS"
   },
   {
-   "check": "Sweetwater: BLM public acres >= 25% of county area (BLM-heavy)",
-   "value": 0.653,
-   "expected": ">= 0.25",
-   "result": "PASS"
+   "check": "Albany: apportioned BLM acres vs independent BLM surface-ownership acres (+/-5% or 5,000 ac, larger)",
+   "value": 290030,
+   "expected": 294933,
+   "deviation": -0.0166,
+   "tolerance_acres": 14747,
+   "passed_via_5000_acre_floor": false,
+   "result": "PASS",
+   "accepted_exception": NaN
   },
   {
-   "check": "Carbon: BLM public acres >= 25% of county area (BLM-heavy)",
-   "value": 0.4,
-   "expected": ">= 0.25",
-   "result": "PASS"
+   "check": "Big Horn: apportioned BLM acres vs independent BLM surface-ownership acres (+/-5% or 5,000 ac, larger)",
+   "value": 1138731,
+   "expected": 1162300,
+   "deviation": -0.0203,
+   "tolerance_acres": 58115,
+   "passed_via_5000_acre_floor": false,
+   "result": "PASS",
+   "accepted_exception": NaN
   },
   {
-   "check": "Fremont: BLM public acres >= 25% of county area (BLM-heavy)",
-   "value": 0.347,
-   "expected": ">= 0.25",
-   "result": "PASS"
+   "check": "Campbell: apportioned BLM acres vs independent BLM surface-ownership acres (+/-5% or 5,000 ac, larger)",
+   "value": 225435,
+   "expected": 224651,
+   "deviation": 0.0035,
+   "tolerance_acres": 11233,
+   "passed_via_5000_acre_floor": false,
+   "result": "PASS",
+   "accepted_exception": NaN
   },
   {
-   "check": "Lincoln: BLM public acres >= 25% of county area (BLM-heavy)",
-   "value": 0.365,
-   "expected": ">= 0.25",
-   "result": "PASS"
+   "check": "Carbon: apportioned BLM acres vs independent BLM surface-ownership acres (+/-5% or 5,000 ac, larger)",
+   "value": 2022494,
+   "expected": 2047543,
+   "deviation": -0.0122,
+   "tolerance_acres": 102377,
+   "passed_via_5000_acre_floor": false,
+   "result": "PASS",
+   "accepted_exception": NaN
   },
   {
-   "check": "Campbell: BLM public acres >= 25% of county area (BLM-heavy)",
-   "value": 0.073,
-   "expected": ">= 0.25",
-   "result": "FAIL"
+   "check": "Converse: apportioned BLM acres vs independent BLM surface-ownership acres (+/-5% or 5,000 ac, larger)",
+   "value": 131461,
+   "expected": 129768,
+   "deviation": 0.013,
+   "tolerance_acres": 6488,
+   "passed_via_5000_acre_floor": false,
+   "result": "PASS",
+   "accepted_exception": NaN
   },
   {
-   "check": "Teton: BLM public acres < 0.5% of county area and < 1,000 AUMs",
-   "value": "0.0001 / 300 AUM",
-   "expected": "< 0.005 and < 1000",
-   "result": "PASS"
+   "check": "Crook: apportioned BLM acres vs independent BLM surface-ownership acres (+/-5% or 5,000 ac, larger)",
+   "value": 87959,
+   "expected": 88385,
+   "deviation": -0.0048,
+   "tolerance_acres": 5000,
+   "passed_via_5000_acre_floor": true,
+   "result": "PASS",
+   "accepted_exception": NaN
+  },
+  {
+   "check": "Fremont: apportioned BLM acres vs independent BLM surface-ownership acres (+/-5% or 5,000 ac, larger)",
+   "value": 2037416,
+   "expected": 2101904,
+   "deviation": -0.0307,
+   "tolerance_acres": 105095,
+   "passed_via_5000_acre_floor": false,
+   "result": "PASS",
+   "accepted_exception": NaN
+  },
+  {
+   "check": "Goshen: apportioned BLM acres vs independent BLM surface-ownership acres (+/-5% or 5,000 ac, larger)",
+   "value": 22369,
+   "expected": 25117,
+   "deviation": -0.1094,
+   "tolerance_acres": 5000,
+   "passed_via_5000_acre_floor": true,
+   "result": "PASS",
+   "accepted_exception": NaN
+  },
+  {
+   "check": "Hot Springs: apportioned BLM acres vs independent BLM surface-ownership acres (+/-5% or 5,000 ac, larger)",
+   "value": 491805,
+   "expected": 487735,
+   "deviation": 0.0083,
+   "tolerance_acres": 24387,
+   "passed_via_5000_acre_floor": false,
+   "result": "PASS",
+   "accepted_exception": NaN
+  },
+  {
+   "check": "Johnson: apportioned BLM acres vs independent BLM surface-ownership acres (+/-5% or 5,000 ac, larger)",
+   "value": 477775,
+   "expected": 504541,
+   "deviation": -0.0531,
+   "tolerance_acres": 25227,
+   "passed_via_5000_acre_floor": false,
+   "result": "FAIL",
+   "accepted_exception": "Accepted exception, DECISIONS.md 2026-11-16 (b): reason unverified hypothesis; rule not changed."
+  },
+  {
+   "check": "Laramie: apportioned BLM acres vs independent BLM surface-ownership acres (+/-5% or 5,000 ac, larger)",
+   "value": 8807,
+   "expected": 9160,
+   "deviation": -0.0386,
+   "tolerance_acres": 5000,
+   "passed_via_5000_acre_floor": true,
+   "result": "PASS",
+   "accepted_exception": NaN
+  },
+  {
+   "check": "Lincoln: apportioned BLM acres vs independent BLM surface-ownership acres (+/-5% or 5,000 ac, larger)",
+   "value": 952377,
+   "expected": 984417,
+   "deviation": -0.0325,
+   "tolerance_acres": 49221,
+   "passed_via_5000_acre_floor": false,
+   "result": "PASS",
+   "accepted_exception": NaN
+  },
+  {
+   "check": "Natrona: apportioned BLM acres vs independent BLM surface-ownership acres (+/-5% or 5,000 ac, larger)",
+   "value": 1379768,
+   "expected": 1423143,
+   "deviation": -0.0305,
+   "tolerance_acres": 71157,
+   "passed_via_5000_acre_floor": false,
+   "result": "PASS",
+   "accepted_exception": NaN
+  },
+  {
+   "check": "Niobrara: apportioned BLM acres vs independent BLM surface-ownership acres (+/-5% or 5,000 ac, larger)",
+   "value": 122837,
+   "expected": 124367,
+   "deviation": -0.0123,
+   "tolerance_acres": 6218,
+   "passed_via_5000_acre_floor": false,
+   "result": "PASS",
+   "accepted_exception": NaN
+  },
+  {
+   "check": "Park: apportioned BLM acres vs independent BLM surface-ownership acres (+/-5% or 5,000 ac, larger)",
+   "value": 603993,
+   "expected": 626383,
+   "deviation": -0.0357,
+   "tolerance_acres": 31319,
+   "passed_via_5000_acre_floor": false,
+   "result": "PASS",
+   "accepted_exception": NaN
+  },
+  {
+   "check": "Platte: apportioned BLM acres vs independent BLM surface-ownership acres (+/-5% or 5,000 ac, larger)",
+   "value": 82515,
+   "expected": 81762,
+   "deviation": 0.0092,
+   "tolerance_acres": 5000,
+   "passed_via_5000_acre_floor": true,
+   "result": "PASS",
+   "accepted_exception": NaN
+  },
+  {
+   "check": "Sheridan: apportioned BLM acres vs independent BLM surface-ownership acres (+/-5% or 5,000 ac, larger)",
+   "value": 48421,
+   "expected": 50797,
+   "deviation": -0.0468,
+   "tolerance_acres": 5000,
+   "passed_via_5000_acre_floor": true,
+   "result": "PASS",
+   "accepted_exception": NaN
+  },
+  {
+   "check": "Sublette: apportioned BLM acres vs independent BLM surface-ownership acres (+/-5% or 5,000 ac, larger)",
+   "value": 1258660,
+   "expected": 1267046,
+   "deviation": -0.0066,
+   "tolerance_acres": 63352,
+   "passed_via_5000_acre_floor": false,
+   "result": "PASS",
+   "accepted_exception": NaN
+  },
+  {
+   "check": "Sweetwater: apportioned BLM acres vs independent BLM surface-ownership acres (+/-5% or 5,000 ac, larger)",
+   "value": 4356675,
+   "expected": 4389286,
+   "deviation": -0.0074,
+   "tolerance_acres": 219464,
+   "passed_via_5000_acre_floor": false,
+   "result": "PASS",
+   "accepted_exception": NaN
+  },
+  {
+   "check": "Teton: apportioned BLM acres vs independent BLM surface-ownership acres (+/-5% or 5,000 ac, larger)",
+   "value": 222,
+   "expected": 2451,
+   "deviation": -0.9094,
+   "tolerance_acres": 5000,
+   "passed_via_5000_acre_floor": true,
+   "result": "PASS",
+   "accepted_exception": NaN
+  },
+  {
+   "check": "Uinta: apportioned BLM acres vs independent BLM surface-ownership acres (+/-5% or 5,000 ac, larger)",
+   "value": 490443,
+   "expected": 478905,
+   "deviation": 0.0241,
+   "tolerance_acres": 23945,
+   "passed_via_5000_acre_floor": false,
+   "result": "PASS",
+   "accepted_exception": NaN
+  },
+  {
+   "check": "Washakie: apportioned BLM acres vs independent BLM surface-ownership acres (+/-5% or 5,000 ac, larger)",
+   "value": 883327,
+   "expected": 917777,
+   "deviation": -0.0375,
+   "tolerance_acres": 45889,
+   "passed_via_5000_acre_floor": false,
+   "result": "PASS",
+   "accepted_exception": NaN
+  },
+  {
+   "check": "Weston: apportioned BLM acres vs independent BLM surface-ownership acres (+/-5% or 5,000 ac, larger)",
+   "value": 74637,
+   "expected": 75500,
+   "deviation": -0.0114,
+   "tolerance_acres": 5000,
+   "passed_via_5000_acre_floor": true,
+   "result": "PASS",
+   "accepted_exception": NaN
   }
  ],
  "published_source": "BLM Public Land Statistics 2025 (published 2026-07/08), Table 3-9c 'Grazing permits and leases in force as of January 15, 2026', Wyoming row: active AUMs 1,920,781; suspended AUMs 393,635. https://www.blm.gov/sites/default/files/docs/2026-08/BLM-Public-Land-Statistics-2025.pdf",
- "gate_pass": false
+ "gate_pass": false,
+ "gate_county_pass_count": 22,
+ "gate_county_count": 23,
+ "sanity_notes": [
+  {
+   "county": "Sweetwater",
+   "blm_share_of_county_area": 0.653,
+   "ge_25pct": true
+  },
+  {
+   "county": "Carbon",
+   "blm_share_of_county_area": 0.4,
+   "ge_25pct": true
+  },
+  {
+   "county": "Fremont",
+   "blm_share_of_county_area": 0.347,
+   "ge_25pct": true
+  },
+  {
+   "county": "Lincoln",
+   "blm_share_of_county_area": 0.365,
+   "ge_25pct": true
+  },
+  {
+   "county": "Campbell",
+   "blm_share_of_county_area": 0.073,
+   "ge_25pct": false
+  },
+  {
+   "county": "Teton",
+   "blm_share_of_county_area": 0.0001,
+   "blm_active_aum": 300,
+   "lt_0_5pct_and_lt_1000_aum": true
+  }
+ ]
 }

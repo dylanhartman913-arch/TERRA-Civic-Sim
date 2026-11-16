@@ -192,3 +192,79 @@ in the first draft, all corrected above:
 - the FU-2 wording.
 
 The CI record it found missing is in HANDOFF W7-F2.
+
+---
+
+## Post-v0.7.2 data addendum (W7-F5, 2026-11-16)
+
+Appended after v0.7.2 (`8d64b81`). Parts A–E above are the v0.7.1 record and are not edited; where
+this addendum disagrees with a "Status after W7-F2" column, this addendum is current. It does not
+tag; `v0.7.0`, `v0.7.1` and `v0.7.2` are untouched.
+
+### What landed, unpromoted (W7-F3, `aebef1f`)
+
+- BLM RAS Allotment Information export (4,128 rows, 3,503 allotments) and BLM allotment polygons
+  joined on `ST_ALLOT` (99.06% RAS to polygon; 97.58% polygon to RAS), apportioned to 23 counties by
+  polygon area share.
+- `data/processed/wy_county_ag_baseline.json` moved to `wy_county_ag_baseline_v2`
+  (`aum_by_ownership`, `federal_aums.blm_*`, `c3_blm`), plus `wy_blm_allotment_aum.csv`,
+  `wy_blm_allotment_county_aum.csv`, `scripts/build_c3_blm_grazing.py`, NB 25 C-3 section, manifest
+  entries and sidecars.
+- **Not promoted.** `wy_county_ag_engine_baseline.json` and `terra-app/src/data/county_ag_baseline.json`
+  are unchanged; no golden, digest or runtime baseline file changed. A scratch run showed promotion
+  would move `ag_digest_md5` in 12 of 60 Golden N cases and in Ranch Country 2040.
+- Note: `c3_blm.credibility_gate` embedded in the baseline file is the **W7-F3 gate** (named
+  counties, Campbell FAIL). It was left byte-for-byte to keep the baseline hash and manifest stable;
+  the current gate result is in `build_log/wave7/snapshots/w7-f3/c3_report.json` and DECISIONS.md.
+
+### Rulings recorded (DECISIONS.md, 2026-11-16, decided by Dylan)
+
+1. Public-land proportion scales acres, not AUMs; the literal reading (66.9% of BLM's published total)
+   stays as a labeled sensitivity.
+2. Gate amended. The F3 named-county list was written from memory and was wrong for Campbell; the F3
+   FAIL was correct behavior. New gate: per county apportioned BLM acres within ±5% or 5,000 acres
+   (larger) of the independent BLM surface-ownership layer; statewide active AUMs within ±2% of
+   1,920,781 (Public Land Statistics 2025, Table 3-9c). Tolerances set after seeing the data.
+   **Result 22 of 23; Johnson FAILED at −5.3% and is an accepted exception, not a pass**, on an
+   unverified hypothesis. County-level AUM split is validated by acreage only and is
+   confidence-rated, not independently verified.
+3. Promotion deferred to the first session of the next version, with pre-committed acceptance
+   conditions (only `ag_digest_md5` may move; parity; B-11 drought gate; S8 Monte Carlo rank
+   stability re-run; provenance of the 202k federal forage figure documented first; USFS AUMs named
+   as an open gap, Campbell / Thunder Basin).
+
+### New debt tickets
+
+| ID | Item | Status |
+|---|---|---|
+| W7-F5-DEBT-1 | NB 25 cell 1 asserts branch `w5-verify` (blocks top-to-bottom runs on `main`); no Jupyter kernel exists to regenerate notebook outputs | **OPEN** |
+| W7-F5-DEBT-2 | USFS AUM source (none identified; RAS export is BLM-only) | **OPEN** |
+| W7-F5-DEBT-3 | Git LFS for raw BLM pulls (allotment polygons 19 MB, SMA 20 MB) | **OPEN**, low priority |
+| C3-PROMOTE | Promotion of BLM AUMs into the engine, with the acceptance conditions above | **DEFERRED** to the first session of the next version |
+| C3-MANUAL-FETCH | Portal click-steps for the RAS export are TODO placeholders in `docs/methods/MANUAL_FETCH.md` | **OPEN**, Dylan |
+
+### Carried-debt register after W7-F5
+
+Changes to the "Status after W7-F2" columns above:
+
+| ID | Item | Status after W7-F5 |
+|---|---|---|
+| C-3 / D-11 | BLM grazing data | Pull **CLOSED** (data landed, `aebef1f`). Promotion **DEFERRED** (C3-PROMOTE). |
+| W7-F2-FU-1 | Production white-screen on entering Free Play | **CLOSED** in W7-F4 (`1db5241`) |
+| W7-F2-FU-2 | Anchor exposure-badge stack never renders | **CLOSED** in W7-F4 (HANDOFF W7-F4) |
+| W7-F2-FU-3 | W7-F2 binaries not committed | **CLOSED** in W7-F4 (`95bd2af`: PNGs in LFS; trace path and SHA-256 recorded, not committed) |
+| T5-FU-2 | TS test-count reconciliation | **CLOSED, superseded** (DECISIONS.md, W7-F4) |
+| W7-F4-FU-1 | Anchor sector colours | **OPEN** |
+| W7-F4-FU-2 | Ecoregion layers never add (`beforeId 'county-fill'`) | **OPEN** |
+| W7-F4-FU-3 | Badges for unmatched tier-2 anchors (product call) | **OPEN** |
+
+Still **OPEN**, unchanged since the W7-F2 register: D-1, D-2, D-3, D-4, D-10 (a: AWAITING HUMAN;
+b: header unchanged), D-13/B-4, D-14/B-5, D-15/B-8, B-1, B-2, B-3, B-7, B-9, B-10, T4-FU-1,
+T6-FU-2 (AWAITING HUMAN), W7-F1-FU-1 (`docs/review/wyoming-playtest-2026-11-01/` untracked),
+W7-F1-FU-2, W7-F1-FU-3. **DEFERRED**: C-2/D-5. Wave 7 successor track: N-track (DECISIONS.md,
+W7-F1).
+
+### Wave 7 status
+
+**Wave 7 is CLOSED** as of W7-F5 (2026-11-16), by Dylan's instruction. The open items above are
+carried, not closed.

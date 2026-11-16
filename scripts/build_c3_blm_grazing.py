@@ -175,7 +175,6 @@ PUBLISHED_SRC = (
     "https://www.blm.gov/sites/default/files/docs/2026-08/BLM-Public-Land-Statistics-2025.pdf"
 )
 GATE_TOLERANCE = 0.02
-BLM_HEAVY = ["Sweetwater", "Carbon", "Fremont", "Lincoln", "Campbell"]
 SMA_FILE = ROOT / "data/raw/blm_sma/sma_WY_BLM_USFS_2026-11-16.geojson"
 
 
@@ -260,31 +259,98 @@ def county_frame(res: dict, baseline: dict) -> pd.DataFrame:
     return out
 
 
+ACRE_TOL_PCT = 0.05
+ACRE_TOL_FLOOR = 5_000.0
+# Accepted exceptions: a row stays FAIL in the table; the exception is recorded beside it, never instead of it.
+ACCEPTED_EXCEPTIONS = {
+    "Johnson": "Accepted exception, DECISIONS.md 2026-11-16 (b): reason unverified hypothesis; rule not changed.",
+}
+SANITY_COUNTIES = ["Sweetwater", "Carbon", "Fremont", "Lincoln", "Campbell"]  # PM-from-memory list; sanity note only
+
+
+def county_acre_gate(cf: pd.DataFrame) -> pd.DataFrame:
+    """Per county: apportioned BLM acres within +/-5% or 5,000 acres (whichever is larger) of the SMA layer."""
+    g = cf[["county_name", "blm_public_acres", "sma_blm_acres"]].copy()
+    g["diff_acres"] = g.blm_public_acres - g.sma_blm_acres
+    g["dev_pct"] = 100 * g.diff_acres / g.sma_blm_acres
+    g["tolerance_acres"] = (ACRE_TOL_PCT * g.sma_blm_acres).clip(lower=ACRE_TOL_FLOOR)
+    g["via_floor"] = (ACRE_TOL_PCT * g.sma_blm_acres) < ACRE_TOL_FLOOR
+    g["result"] = (g.diff_acres.abs() <= g.tolerance_acres).map({True: "PASS", False: "FAIL"})
+    g["exception"] = g.county_name.map(ACCEPTED_EXCEPTIONS).where(g.result == "FAIL", None)
+    return g
+
+
 def gate_rows(stats: dict, cf: pd.DataFrame) -> list[dict]:
-    """Credibility gate. Returns rows; a row's `result` is PASS or FAIL, never annotated away."""
+    """Amended credibility gate (W7-F5). Rows are PASS or FAIL, never annotated away.
+
+    Tolerances were set after seeing the data (DECISIONS.md 2026-11-16 b).
+    """
     rows = []
     for label, got in (("RAS WY active AUMs (all rows, WY-administered)", stats["ras_active_aum_wy_admin"]),
                        ("Apportioned to WY counties", stats["apportioned_active_aum_wy"])):
         dev = got / PUBLISHED_WY_ACTIVE_AUM - 1
-        rows.append({"check": f"Statewide BLM active AUMs: {label} vs BLM published {PUBLISHED_WY_ACTIVE_AUM:,}",
+        rows.append({"check": f"Statewide BLM active AUMs: {label} vs BLM published {PUBLISHED_WY_ACTIVE_AUM:,} (+/-2%)",
                      "value": round(got), "expected": PUBLISHED_WY_ACTIVE_AUM, "deviation": round(dev, 4),
                      "result": "PASS" if abs(dev) <= GATE_TOLERANCE else "FAIL"})
     dev = stats["ras_suspended_aum_wy_admin"] / PUBLISHED_WY_SUSPENDED_AUM - 1
-    rows.append({"check": f"Statewide suspended AUMs (RAS) vs BLM published {PUBLISHED_WY_SUSPENDED_AUM:,}",
+    rows.append({"check": f"Statewide suspended AUMs (RAS) vs BLM published {PUBLISHED_WY_SUSPENDED_AUM:,} (+/-2%)",
                  "value": round(stats["ras_suspended_aum_wy_admin"]), "expected": PUBLISHED_WY_SUSPENDED_AUM,
                  "deviation": round(dev, 4), "result": "PASS" if abs(dev) <= GATE_TOLERANCE else "FAIL"})
-    # BLM-heavy counties: BLM surface >= 25% of county area (physical, independent of the private-AUM proxy).
-    for name in BLM_HEAVY:
-        r = cf[cf.county_name == name].iloc[0]
-        rows.append({"check": f"{name}: BLM public acres >= 25% of county area (BLM-heavy)",
-                     "value": round(r.blm_acres_share_of_county, 3), "expected": ">= 0.25",
-                     "result": "PASS" if r.blm_acres_share_of_county >= 0.25 else "FAIL"})
-    r = cf[cf.county_name == "Teton"].iloc[0]
-    rows.append({"check": "Teton: BLM public acres < 0.5% of county area and < 1,000 AUMs",
-                 "value": f"{r.blm_acres_share_of_county:.4f} / {r.blm_active_aum:.0f} AUM",
-                 "expected": "< 0.005 and < 1000",
-                 "result": "PASS" if r.blm_acres_share_of_county < 0.005 and r.blm_active_aum < 1000 else "FAIL"})
+    for _, r in county_acre_gate(cf).iterrows():
+        row = {"check": f"{r.county_name}: apportioned BLM acres vs independent BLM surface-ownership acres "
+                        f"(+/-5% or 5,000 ac, larger)",
+               "value": round(r.blm_public_acres), "expected": round(r.sma_blm_acres),
+               "deviation": round(r.dev_pct / 100, 4), "tolerance_acres": round(r.tolerance_acres),
+               "passed_via_5000_acre_floor": bool(r.via_floor and r.result == "PASS"),
+               "result": r.result}
+        if r.exception:
+            row["accepted_exception"] = r.exception
+        rows.append(row)
     return rows
+
+
+def sanity_notes(cf: pd.DataFrame) -> list[dict]:
+    """Not gating. The F3 named-county list (BLM share of county area >= 25%) was written from memory and was
+    wrong for Campbell; kept as a sanity note only."""
+    out = []
+    for name in SANITY_COUNTIES:
+        r = cf[cf.county_name == name].iloc[0]
+        out.append({"county": name, "blm_share_of_county_area": round(float(r.blm_acres_share_of_county), 3),
+                    "ge_25pct": bool(r.blm_acres_share_of_county >= 0.25)})
+    t = cf[cf.county_name == "Teton"].iloc[0]
+    out.append({"county": "Teton", "blm_share_of_county_area": round(float(t.blm_acres_share_of_county), 4),
+                "blm_active_aum": round(float(t.blm_active_aum)), "lt_0_5pct_and_lt_1000_aum":
+                bool(t.blm_acres_share_of_county < 0.005 and t.blm_active_aum < 1000)})
+    return out
+
+
+def nonallotted_diagnostic(cf: pd.DataFrame) -> pd.DataFrame | None:
+    """Diagnostic only (W7-F5): BLM surface acres in the ownership layer that intersect no allotment polygon.
+
+    Uses every WY allotment polygon (matched or not). EPSG:5070. Does not feed the gate or any output file
+    other than its own snapshot CSV.
+    """
+    if not SMA_FILE.exists():
+        return None
+    s = gpd.read_file(SMA_FILE)
+    s["geometry"] = s.geometry.make_valid()
+    s = s[s.ADMIN_AGENCY_CODE == "BLM"].to_crs(5070)
+    poly = gpd.read_file(POLYGONS)
+    poly["geometry"] = poly.geometry.make_valid()
+    poly = poly.to_crs(5070)
+    union = gpd.GeoDataFrame(geometry=[poly.geometry.union_all()], crs=5070)
+    cty = gpd.read_file(COUNTIES)
+    cty = cty[cty.STATEFP == "56"][["GEOID", "NAME", "geometry"]].to_crs(5070)
+    non = gpd.overlay(s[["geometry"]], union, how="difference")
+    o = gpd.overlay(non, cty, how="intersection")
+    o["acres"] = o.geometry.area / SQM_PER_ACRE
+    na = o.groupby("NAME").acres.sum().rename("sma_blm_not_in_any_allotment_acres").reset_index().rename(
+        columns={"NAME": "county_name"})
+    g = county_acre_gate(cf).merge(na, on="county_name", how="left")
+    g["sma_blm_not_in_any_allotment_acres"] = g["sma_blm_not_in_any_allotment_acres"].fillna(0.0)
+    g["gap_acres_negative"] = (-g.diff_acres).clip(lower=0)
+    g["non_allotted_over_gap"] = g.sma_blm_not_in_any_allotment_acres / g.diff_acres.abs().where(g.diff_acres != 0)
+    return g
 
 
 def write_report(res: dict, baseline: dict) -> dict:
@@ -301,8 +367,12 @@ def write_report(res: dict, baseline: dict) -> dict:
                                                                "active_aum", "poly_acres"]]
     zero.to_csv(SNAP / "c3_out_of_state_allotments.csv", index=False)
     cf.round(4).to_csv(SNAP / "c3_county_credibility.csv", index=False)
+    cg = county_acre_gate(cf)
+    cg.round(4).to_csv(SNAP / "c3_gate_county_acres.csv", index=False)
     report = {"stats": stats, "gate": gate, "published_source": PUBLISHED_SRC,
-              "gate_pass": all(r["result"] == "PASS" for r in gate)}
+              "gate_pass": all(r["result"] == "PASS" for r in gate),
+              "gate_county_pass_count": int((cg.result == "PASS").sum()), "gate_county_count": int(len(cg)),
+              "sanity_notes": sanity_notes(cf)}
     (SNAP / "c3_report.json").write_text(json.dumps(report, indent=1, default=float))
     return report
 
